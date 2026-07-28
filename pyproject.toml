@@ -1,0 +1,28 @@
+[project]
+name = "caffeine-lane"
+version = "0.1.0"
+description = "Legacy Django application baseline for The Caffeine Lane"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "Django==5.2.5",
+    "Pillow==11.3.0",
+    "cloudinary==1.44.1",
+    "dj-database-url==3.0.1",
+    "django-cloudinary-storage==0.3.0",
+    "django-environ==0.12.0",
+    "gunicorn==23.0.0",
+    "psycopg2-binary==2.9.10",
+    "whitenoise==6.9.0",
+]
+
+[dependency-groups]
+dev = [
+    "black==25.1.0",
+    "django-stubs==5.2.2",
+    "django-stubs-ext==5.2.2",
+    "djlint==1.36.4",
+    "isort==6.0.1",
+]
+
+[tool.uv]
+package = false

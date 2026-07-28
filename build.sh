@@ -1,7 +1,7 @@
 set -o errexit
 
-pip install -r requirements.txt
+uv sync --frozen --no-dev
 
-python manage.py collectstatic --no-input
-python manage.py migrate
-python manage.py loaddata initial_data.json
+uv run --no-sync python manage.py collectstatic --no-input
+uv run --no-sync python manage.py migrate
+uv run --no-sync python manage.py loaddata initial_data.json
