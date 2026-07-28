@@ -1,11 +1,30 @@
+import json
+import logging
+
 from django.conf import settings
 from django.contrib import messages
 from django.core.mail import send_mail
+from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import redirect, render
+from django.views.decorators.csrf import csrf_exempt
 
 from apps.posts.models import Category, Post
 
 from .forms import ContactForm
+
+logger = logging.getLogger(__name__)
+
+
+@csrf_exempt
+def csp_report(request):
+    if request.method != "POST":
+        return HttpResponseNotAllowed(["POST"])
+    try:
+        report = json.loads(request.body or "{}")
+    except json.JSONDecodeError:
+        return HttpResponse(status=400)
+    logger.warning("CSP violation report: %s", report)
+    return HttpResponse(status=204)
 
 
 def landing(request):

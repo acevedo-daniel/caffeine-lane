@@ -20,7 +20,10 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
+from apps.core import views as core_views
+
 urlpatterns = [
+    path("csp-report/", core_views.csp_report, name="csp_report"),
     path("admin/", admin.site.urls),
     path("", include("apps.core.urls")),
     path("posts/", include("apps.posts.urls")),

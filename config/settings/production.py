@@ -1,6 +1,7 @@
 import os
 
 from django.core.exceptions import ImproperlyConfigured
+from django.utils.csp import CSP
 
 from .base import *  # noqa: F403
 from .base import INSTALLED_APPS, MIDDLEWARE, env
@@ -21,6 +22,7 @@ if not os.environ.get("CLOUDINARY_URL"):
 
 INSTALLED_APPS += ["cloudinary_storage", "cloudinary"]
 MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
+MIDDLEWARE.insert(2, "django.middleware.csp.ContentSecurityPolicyMiddleware")
 STORAGES = {
     "default": {"BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage"},
     "staticfiles": {
@@ -46,6 +48,24 @@ if env.bool("USE_X_FORWARDED_PROTO", default=False):
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_REFERRER_POLICY = "same-origin"
 SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin"
+
+_CSP_POLICY = {
+    "default-src": [CSP.SELF],
+    "base-uri": [CSP.SELF],
+    "connect-src": [CSP.SELF],
+    "font-src": [CSP.SELF, "https://fonts.gstatic.com"],
+    "form-action": [CSP.SELF],
+    "frame-ancestors": [CSP.SELF],
+    "img-src": [CSP.SELF, "https://res.cloudinary.com"],
+    "object-src": [CSP.NONE],
+    "script-src": [CSP.SELF],
+    "style-src": [CSP.SELF, "https://fonts.googleapis.com"],
+    "report-uri": ["/csp-report/"],
+}
+if env.bool("CSP_ENFORCE", default=False):
+    SECURE_CSP = _CSP_POLICY
+else:
+    SECURE_CSP_REPORT_ONLY = _CSP_POLICY
 
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.Argon2PasswordHasher",

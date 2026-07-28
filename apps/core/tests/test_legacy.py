@@ -2,7 +2,9 @@ from unittest.mock import patch
 
 from django.template.loader import get_template
 from django.test import TestCase
+from django.test.utils import override_settings
 from django.urls import reverse
+from django.utils.csp import CSP
 
 
 class LegacyCoreCharacterizationTests(TestCase):
@@ -46,3 +48,38 @@ class ErrorPageTests(TestCase):
 
         self.assertEqual(response.status_code, 404)
         self.assertTemplateUsed(response, "404.html")
+
+
+class ContentSecurityPolicyTests(TestCase):
+    @override_settings(
+        MIDDLEWARE=[
+            "django.middleware.security.SecurityMiddleware",
+            "django.middleware.csp.ContentSecurityPolicyMiddleware",
+            "django.contrib.sessions.middleware.SessionMiddleware",
+            "django.middleware.common.CommonMiddleware",
+            "django.middleware.csrf.CsrfViewMiddleware",
+            "django.contrib.auth.middleware.AuthenticationMiddleware",
+            "django.contrib.messages.middleware.MessageMiddleware",
+        ],
+        SECURE_CSP_REPORT_ONLY={
+            "default-src": [CSP.SELF],
+            "script-src": [CSP.SELF],
+        },
+    )
+    def test_report_only_policy_uses_native_django_middleware(self):
+        response = self.client.get(reverse("home"))
+
+        self.assertEqual(
+            response["Content-Security-Policy-Report-Only"],
+            "default-src 'self'; script-src 'self'",
+        )
+        self.assertNotIn("Content-Security-Policy", response)
+
+    def test_csp_report_endpoint_logs_browser_reports(self):
+        response = self.client.post(
+            reverse("csp_report"),
+            data='{"csp-report": {"violated-directive": "script-src"}}',
+            content_type="application/csp-report",
+        )
+
+        self.assertEqual(response.status_code, 204)

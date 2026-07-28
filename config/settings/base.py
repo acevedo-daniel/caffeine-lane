@@ -74,7 +74,11 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "static/"
-STATICFILES_DIRS = [BASE_DIR / "static"]
+STATICFILES_DIRS = [
+    ("dist", BASE_DIR / "static" / "dist"),
+    ("images", BASE_DIR / "static" / "images"),
+    ("vendor", BASE_DIR / "static" / "vendor"),
+]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
