@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.13", "3.14"]
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_DB: caffeine-lane
+          POSTGRES_USER: caffeine-lane
+          POSTGRES_PASSWORD: caffeine-lane
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U caffeine-lane -d caffeine-lane"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DJANGO_SETTINGS_MODULE: config.settings.test
+      TEST_DATABASE_URL: postgresql://caffeine-lane:caffeine-lane@localhost:5432/caffeine-lane
+      SECRET_KEY: ci-only-secret-key-not-for-production-0123456789
+      DEFAULT_FROM_EMAIL: noreply@example.test
+      CONTACT_RECIPIENT_EMAIL: owner@example.test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run python manage.py makemigrations --check --dry-run
+      - run: uv run pytest
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.18.3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run build
+      - name: Check production deployment settings
+        env:
+          DJANGO_SETTINGS_MODULE: config.settings.production
+          SECRET_KEY: ci-production-secret-key-not-for-production-0123456789
+          ALLOWED_HOSTS: example.test
+          CSRF_TRUSTED_ORIGINS: https://example.test
+          CLOUDINARY_URL: cloudinary://123456789012345:ci-secret@example
+          EMAIL_HOST: smtp.example.test
+          EMAIL_HOST_USER: ci-user
+          EMAIL_HOST_PASSWORD: ci-password
+          SECURE_HSTS_SECONDS: "31536000"
+          SECURE_HSTS_INCLUDE_SUBDOMAINS: "true"
+          SECURE_HSTS_PRELOAD: "true"
+        run: uv run python manage.py check --deploy
