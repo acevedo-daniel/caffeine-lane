@@ -10,7 +10,11 @@ urlpatterns = [
     path("<slug:slug>/delete/", views.PostDeleteView.as_view(), name="post_delete"),
     path("category/<slug:category_slug>/", views.category_view, name="category_view"),
     path("comments/<int:comment_id>/edit/", views.comment_edit, name="comment_edit"),
+    path("comments/<int:comment_id>/reply/", views.comment_reply, name="comment_reply"),
     path(
-        "comments/<int:comment_id>/delete/", views.comment_delete, name="comment_delete"
+        "comments/<int:comment_id>/withdraw/",
+        views.comment_withdraw,
+        name="comment_withdraw",
     ),
+    path("comments/<int:comment_id>/hide/", views.comment_hide, name="comment_hide"),
 ]

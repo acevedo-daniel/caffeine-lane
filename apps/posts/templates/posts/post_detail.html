@@ -1,268 +1,74 @@
 {% extends "base.html" %}
-{% load static %}
-{% block title %}
-    {{ post.title }} - The Caffeine Lane
-{% endblock title %}
+{% block title %}{{ post.title }} - The Caffeine Lane{% endblock title %}
 {% block content %}
-    <div class="bg-white py-8 font-mont">
-        <article class="max-w-4xl mx-auto px-4">
-            {# "Go Back" Link & Post Header #}
-            <header class="mb-8">
-                <a href="{{ request.META.HTTP_REFERER|default:post.get_absolute_url }}"
-                   class="text-sm text-gray-500 hover:text-black transition inline-flex items-center mb-6">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         width="24"
-                         height="24"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="2"
-                         stroke-linecap="round"
-                         stroke-linejoin="round"
-                         class="w-4 h-4 mr-1">
-                        <path d="m15 18-6-6 6-6" />
-                    </svg>
-                    Go Back
-                </a>
-                <div class="mb-4">
-                    {% for category in post.categories.all %}
-                        <a href="#"
-                           class="text-xs font-bold uppercase text-white bg-red-600 hover:bg-black transition px-3 py-1 rounded-full">{{ category.name }}</a>
-                    {% endfor %}
-                </div>
-                <h1 class="text-4xl md:text-6xl font-bebas text-black mb-4">{{ post.title }}</h1>
-                <div class="flex items-center text-sm text-gray-500">
-                    <img src="{{ post.author.avatar_url }}"
-                         alt="{{ post.author.username }}'s avatar"
-                         class="w-8 h-8 rounded-full mr-3"
-                         width="32"
-                         height="32" />
-                    <span>By {{ post.author.display_name|default:post.author.username }}</span>
-                    <span class="mx-2">•</span>
-                    <span>{{ post.published_at|date:"F j, Y" }}</span>
-                    <div class="ml-auto flex items-center space-x-2">
-                        {% if perms.posts.change_post %}
-                            <a href="{% url 'post_update' post.slug %}"
-                               class="text-xs text-gray-500 hover:text-blue-600 transition"
-                               title="Edit Post">
-                                <i class="fas fa-edit"></i> Edit
-                            </a>
-                        {% endif %}
-                        {% if perms.posts.delete_post %}
-                            <a href="{% url 'post_delete' post.slug %}"
-                               class="text-xs text-gray-500 hover:text-red-600 transition"
-                               title="Delete Post">
-                                <i class="fas fa-trash"></i> Delete
-                            </a>
-                        {% endif %}
-                    </div>
-                </div>
-            </header>
-            {# Main Post Image with Banner Aspect Ratio #}
-            {% if post.featured_image %}
-                <div class="mb-8 rounded-lg shadow-xl overflow-hidden aspect-video bg-gray-200">
-                    <img src="{{ post.featured_image.url }}"
-                         alt="{{ post.featured_image_alt }}"
-                         class="w-full h-full object-cover"
-                         width="1200"
-                         height="675" />
-                </div>
-            {% endif %}
-            {# Post Content #}
-            <div class="prose prose-lg max-w-none mb-12 text-gray-800 leading-relaxed">{{ post.content|linebreaks }}</div>
-            {# Comments Section #}
-            <section class="border-t border-gray-200 pt-8">
-                <h3 class="text-3xl font-bebas text-black mb-6">Comments ({{ comments.count }})</h3>
-                {# New Comment Form #}
-                {% if user.is_authenticated %}
-                    <div class="mb-8 bg-gray-50 p-6 rounded-lg border border-gray-200">
-                        <h4 class="text-lg font-bold mb-4 font-mont">Leave a Comment</h4>
-                        <form method="post">
-                            {% csrf_token %}
-                            {{ form.content }}
-                            <button type="submit"
-                                    class="mt-4 bg-black text-white font-mont font-medium tracking-wider py-2 px-6 rounded-full hover:bg-stone-800 transition-all duration-300 transform hover:scale-105">
-                                Submit Comment
-                            </button>
-                        </form>
-                    </div>
-                {% else %}
-                    <div class="mb-8 bg-gray-100 border border-gray-200 p-4 rounded-lg text-center">
-                        <p class="text-gray-700">
-                            <a href="{% url "login" %}?next={{ request.path }}"
-                               class="font-bold text-black hover:underline">Log in</a>
-                            to leave a comment.
-                        </p>
-                    </div>
-                {% endif %}
-                {# Comments List #}
-                <div class="comments-list space-y-6">
-                    {% for comment in comments %}
-                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-6">
-                            <div class="flex items-start mb-3">
-                                <img src="{{ comment.author.avatar_url }}"
-                                     alt="{{ comment.author.username }}'s avatar"
-                                     class="w-10 h-10 rounded-full mr-4"
-                                     width="40"
-                                     height="40" />
-                                <div class="flex-1">
-                                    <div class="flex items-center justify-between">
-                                        <div>
-                                            <strong class="text-gray-900 font-bold">{{ comment.author.display_name|default:comment.author.username }}</strong>
-                                            <span class="text-gray-500 text-xs ml-2">{{ comment.created_at|date:"F j, Y, P" }}</span>
-                                        </div>
-                                        {% if request.user == comment.author or perms.posts.delete_comment %}
-                                            <button class="text-gray-500 hover:text-black transition comment-options-btn"
-                                                    data-comment-id="{{ comment.pk }}">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                     class="h-5 w-5"
-                                                     viewBox="0 0 20 20"
-                                                     fill="currentColor">
-                                                    <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                                                </svg>
-                                            </button>
-                                        {% endif %}
-                                    </div>
-                                    <p class="text-gray-700 mt-1">{{ comment.content|linebreaks }}</p>
-                                </div>
-                            </div>
-                            {# Comment Replies #}
-                            {% for reply in comment.replies.all %}
-                                <div class="ml-10 mt-4 border-l-2 border-gray-200 pl-6">
-                                    <div class="flex items-start mb-2">
-                                        <img src="{{ reply.author.avatar_url }}"
-                                             alt="{{ reply.author.username }}'s avatar"
-                                             class="w-8 h-8 rounded-full mr-3"
-                                             width="32"
-                                             height="32" />
-                                        <div class="flex-1">
-                                            <div class="flex items-center">
-                                                <strong class="text-gray-900 text-sm font-bold">{{ reply.author.display_name|default:reply.author.username }}</strong>
-                                                <span class="text-gray-500 text-xs ml-2">{{ reply.created_at|date:"F j, Y, P" }}</span>
-                                            </div>
-                                            <p class="text-gray-700 text-sm mt-1">{{ reply.content|linebreaks }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% empty %}
-                        <p class="text-gray-500 text-center py-8">Be the first to comment on this post.</p>
-                    {% endfor %}
-                </div>
-            </section>
+  <article class="max-w-4xl mx-auto py-8 px-4">
+    <h1>{{ post.title }}</h1>
+    <p>By {{ post.author.display_name|default:post.author.username }} · {{ post.published_at|date:"F j, Y" }}</p>
+    {% if post.featured_image %}<img src="{{ post.featured_image.url }}" alt="{{ post.featured_image_alt }}" width="1200" height="675">{% endif %}
+    <div>{{ post.content|linebreaks }}</div>
+
+    <section class="mt-8 border-t pt-6">
+      <h2>Comments</h2>
+      {% if user.is_authenticated %}
+        <form method="post" class="mb-6">
+          {% csrf_token %}{{ form.website }}{{ form.content }}{{ form.content.errors }}
+          <button type="submit">Submit comment</button>
+        </form>
+      {% else %}
+        <p><a href="{% url 'login' %}?next={{ request.path }}">Log in</a> to comment.</p>
+      {% endif %}
+
+      {% for comment in comments %}
+        <article class="border rounded p-4 mb-4">
+          <header>
+            <strong>{{ comment.author.display_name|default:comment.author.username }}</strong>
+            <small>{{ comment.created_at|date:"F j, Y, P" }}{% if comment.is_edited %} · edited{% endif %}</small>
+          </header>
+          {% if comment.visibility == "visible" %}
+            <p>{{ comment.content|linebreaks }}</p>
+          {% elif comment.visibility == "withdrawn" %}
+            <p><em>This comment was withdrawn by its author.</em></p>
+          {% else %}
+            <p><em>This comment is hidden by moderation.</em></p>
+          {% endif %}
+
+          {% if comment.visibility == "visible" and user.is_authenticated %}
+            <form method="post" action="{% url 'comment_reply' comment.pk %}">
+              {% csrf_token %}{{ form.website }}{{ form.content }}
+              <button type="submit">Reply</button>
+            </form>
+          {% endif %}
+          {% if comment.visibility == "visible" and request.user == comment.author %}
+            <a href="{% url 'comment_edit' comment.pk %}">Edit</a>
+          {% endif %}
+          {% if comment.visibility == "visible" and perms.posts.moderate_comment %}<a href="{% url 'comment_edit' comment.pk %}">Edit</a>{% endif %}
+          {% if comment.visibility == "visible" and request.user == comment.author %}
+            <form method="post" action="{% url 'comment_withdraw' comment.pk %}">{% csrf_token %}<button type="submit">Withdraw</button></form>
+          {% endif %}
+          {% if comment.visibility == "visible" and perms.posts.moderate_comment %}
+            <form method="post" action="{% url 'comment_hide' comment.pk %}">{% csrf_token %}<button type="submit">Hide</button></form>
+          {% endif %}
+
+          {% for reply in comment.replies.all %}
+            <article class="ml-6 mt-4 border-l pl-4">
+              <header><strong>{{ reply.author.display_name|default:reply.author.username }}</strong><small>{% if reply.is_edited %} · edited{% endif %}</small></header>
+              {% if reply.visibility == "visible" %}
+                <p>{{ reply.content|linebreaks }}</p>
+              {% elif reply.visibility == "withdrawn" %}
+                <p><em>This reply was withdrawn by its author.</em></p>
+              {% else %}
+                <p><em>This reply is hidden by moderation.</em></p>
+              {% endif %}
+              {% if reply.visibility == "visible" and request.user == reply.author %}<a href="{% url 'comment_edit' reply.pk %}">Edit</a>{% endif %}
+              {% if reply.visibility == "visible" and perms.posts.moderate_comment %}<a href="{% url 'comment_edit' reply.pk %}">Edit</a>{% endif %}
+              {% if reply.visibility == "visible" and request.user == reply.author %}<form method="post" action="{% url 'comment_withdraw' reply.pk %}">{% csrf_token %}<button type="submit">Withdraw</button></form>{% endif %}
+              {% if reply.visibility == "visible" and perms.posts.moderate_comment %}<form method="post" action="{% url 'comment_hide' reply.pk %}">{% csrf_token %}<button type="submit">Hide</button></form>{% endif %}
+            </article>
+          {% endfor %}
         </article>
-        {# Related Posts Section #}
-        <section class="max-w-7xl mx-auto px-4 py-8 mt-8 border-t border-gray-200">
-            <h3 class="text-3xl font-bebas text-black mb-6 text-center">Related Posts</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {# NOTE: Assumes the view passes a `related_posts` variable #}
-                {% for related_post in related_posts %}
-                    <a href="{% url "post_detail" related_post.slug %}" class="block group">
-                        <div class="bg-white rounded-lg overflow-hidden transition-transform duration-300 group-hover:scale-105 shadow-md">
-                            {% if related_post.featured_image %}
-                                <img src="{{ related_post.featured_image.url }}"
-                                     alt="{{ related_post.featured_image_alt }}"
-                                     class="w-full h-64 object-cover"
-                                     width="400"
-                                     height="256" />
-                            {% endif %}
-                            <div class="p-4">
-                                <div class="text-xs text-gray-600 mb-1">
-                                    <span class="font-bold text-gray-800">{{ related_post.author.username }}</span>
-                                </div>
-                                <h3 class="text-lg font-bold text-gray-900">{{ related_post.title }}</h3>
-                            </div>
-                        </div>
-                    </a>
-                {% empty %}
-                    <p class="text-gray-500 md:col-span-3 text-center">No related posts found.</p>
-                {% endfor %}
-            </div>
-        </section>
-    </div>
-    <div id="commentOptionsModal"
-         class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 opacity-0 pointer-events-none">
-        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm transition-transform duration-300 scale-95">
-            <h3 class="text-xl font-semibold mb-4 text-center">Comment Options</h3>
-            <div class="flex flex-col space-y-4">
-                <a id="editLink"
-                   href="#"
-                   class="block w-full py-3 px-6 text-center text-white bg-black rounded-full font-medium hover:bg-stone-800 transition-colors">
-                    Edit
-                </a>
-                <a id="deleteLink"
-                   href="#"
-                   class="block w-full py-3 px-6 text-center text-red-600 bg-transparent rounded-full font-medium border border-red-600 hover:bg-red-50 transition-colors">
-                    Delete
-                </a>
-                <button id="closeModalButton"
-                        class="w-full py-3 px-6 text-center text-gray-600 bg-transparent rounded-full font-medium border border-gray-300 hover:bg-gray-100 transition-colors mt-4">
-                    Cancel
-                </button>
-            </div>
-        </div>
-    </div>
-    <style>
-    textarea {
-      appearance: none;
-      background-color: #f9fafb;
-      border: 1px solid #d1d5db;
-      color: black;
-      padding: 12px;
-      border-radius: 12px;
-      width: 100%;
-      min-height: 100px;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.9rem;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    textarea:focus {
-      outline: none;
-      border-color: #000;
-      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
-    }
-    </style>
+      {% empty %}
+        <p>No comments yet.</p>
+      {% endfor %}
+    </section>
+  </article>
 {% endblock content %}
-{% block scripts %}
-    {{ block.super }}
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const modal = document.getElementById('commentOptionsModal');
-      const editLink = document.getElementById('editLink');
-      const deleteLink = document.getElementById('deleteLink');
-      const closeModalButton = document.getElementById('closeModalButton');
-      const commentsList = document.querySelector('.comments-list');
-  
-      function openModal(commentId) {
-        editLink.href = `/posts/comments/${commentId}/edit/`;
-        deleteLink.href = `/posts/comments/${commentId}/delete/`;
-        
-        modal.classList.remove('opacity-0', 'pointer-events-none');
-        modal.querySelector('div').classList.remove('scale-95');
-      }
-  
-      function closeModal() {
-        modal.classList.add('opacity-0', 'pointer-events-none');
-        modal.querySelector('div').classList.add('scale-95');
-      }
-  
-      if (commentsList) {
-        commentsList.addEventListener('click', function(event) {
-          const button = event.target.closest('.comment-options-btn');
-          if (button) {
-            const commentId = button.dataset.commentId;
-            openModal(commentId);
-          }
-        });
-      }
-  
-      closeModalButton.addEventListener('click', closeModal);
-      modal.addEventListener('click', function(event) {
-        if (event.target === modal) {
-          closeModal();
-        }
-      });
-    });
-    </script>
-{% endblock scripts %}

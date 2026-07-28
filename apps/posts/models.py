@@ -107,6 +107,11 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
+    class Visibility(models.TextChoices):
+        VISIBLE = "visible", "Visible"
+        WITHDRAWN = "withdrawn", "Withdrawn by author"
+        HIDDEN = "hidden", "Hidden by moderator"
+
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="comments"
@@ -114,8 +119,18 @@ class Comment(models.Model):
     content = models.TextField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField(default=True)
     is_edited = models.BooleanField(default=False)
+    visibility = models.CharField(
+        max_length=10, choices=Visibility.choices, default=Visibility.VISIBLE
+    )
+    moderated_at = models.DateTimeField(null=True, blank=True)
+    moderated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="moderated_comments",
+    )
     parent = models.ForeignKey(
         "self", on_delete=models.CASCADE, null=True, blank=True, related_name="replies"
     )
@@ -123,5 +138,19 @@ class Comment(models.Model):
     def __str__(self):
         return f"Comment by {self.author.username} on {self.post.title}"
 
+    def clean(self):
+        if self.parent:
+            if self.parent.post_id != self.post_id:
+                raise ValidationError(
+                    {"parent": "Replies must belong to the same post."}
+                )
+            if self.parent.parent_id:
+                raise ValidationError({"parent": "Replies can only be one level deep."})
+
+    @property
+    def is_visible(self):
+        return self.visibility == self.Visibility.VISIBLE
+
     class Meta:
         ordering = ["created_at"]
+        permissions = [("moderate_comment", "Can moderate comments")]

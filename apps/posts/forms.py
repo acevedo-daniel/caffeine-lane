@@ -11,6 +11,8 @@ SORT_CHOICES = [
 
 
 class CommentForm(forms.ModelForm):
+    website = forms.CharField(required=False, widget=forms.HiddenInput)
+
     class Meta:
         model = Comment
         fields = ["content"]
@@ -24,6 +26,17 @@ class CommentForm(forms.ModelForm):
             )
         }
         labels = {"content": "Your Comment"}
+
+    def clean_content(self):
+        content = self.cleaned_data["content"].strip()
+        if len(content) < 3:
+            raise forms.ValidationError("Comments must contain at least 3 characters.")
+        return content
+
+    def clean_website(self):
+        if self.cleaned_data["website"]:
+            raise forms.ValidationError("Spam detected.")
+        return ""
 
 
 class PostSearchForm(forms.Form):
