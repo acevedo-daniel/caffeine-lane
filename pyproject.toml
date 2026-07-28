@@ -18,6 +18,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "black==25.1.0",
+    "django-debug-toolbar>=7.0.0",
     "django-stubs==5.2.2",
     "django-stubs-ext==5.2.2",
     "djlint==1.36.4",
@@ -34,7 +35,7 @@ dev = [
 package = false
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "config.settings"
+DJANGO_SETTINGS_MODULE = "config.settings.test"
 python_files = ["test_*.py", "*_test.py"]
 testpaths = ["apps"]
 addopts = "--cov=apps --cov=config --cov-report=term-missing"

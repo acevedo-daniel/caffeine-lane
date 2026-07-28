@@ -60,7 +60,7 @@ def contact(request):
                 subject=f"Contact from Blog: {subject}",
                 message=full_message,
                 from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[settings.DEFAULT_FROM_EMAIL],
+                recipient_list=[settings.CONTACT_RECIPIENT_EMAIL],
             )
 
             messages.success(
