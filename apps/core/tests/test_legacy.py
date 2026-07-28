@@ -1,5 +1,6 @@
 from unittest.mock import patch
 
+from django.template.loader import get_template
 from django.test import TestCase
 from django.urls import reverse
 
@@ -25,3 +26,16 @@ class LegacyCoreCharacterizationTests(TestCase):
 
         self.assertRedirects(response, reverse("contact"))
         send_mail.assert_called_once()
+
+
+class ErrorPageTests(TestCase):
+    def test_custom_error_templates_are_available(self):
+        for template_name in ("400.html", "403.html", "404.html", "500.html"):
+            with self.subTest(template_name=template_name):
+                self.assertIsNotNone(get_template(template_name))
+
+    def test_missing_page_uses_custom_404_template(self):
+        response = self.client.get("/page-that-does-not-exist/")
+
+        self.assertEqual(response.status_code, 404)
+        self.assertTemplateUsed(response, "404.html")
