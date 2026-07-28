@@ -72,6 +72,7 @@ db.sqlite3-journal
 # Subir static propios (CSS, JS, imágenes como logos/)
 # Ignorar solo archivos generados por collectstatic
 staticfiles/
+media/
 
 # Subir media en desarrollo (archivos subidos por usuarios)
 # En producción normalmente se usa almacenamiento externo

@@ -8,6 +8,8 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 
+from apps.core.image_validators import validate_uploaded_image
+
 
 def post_image_path(instance, filename):
     extension = os.path.splitext(filename)[1]
@@ -18,7 +20,9 @@ class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(max_length=120, unique=True, blank=True)
     description = models.TextField(blank=True)
-    image = models.ImageField(upload_to="categories/", blank=True)
+    image = models.ImageField(
+        upload_to="categories/", blank=True, validators=[validate_uploaded_image]
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -57,7 +61,9 @@ class Post(models.Model):
     slug = models.SlugField(max_length=250, unique=True, blank=True)
     excerpt = models.CharField(max_length=300, blank=True)
     content = models.TextField()
-    featured_image = models.ImageField(upload_to=post_image_path, blank=True)
+    featured_image = models.ImageField(
+        upload_to=post_image_path, blank=True, validators=[validate_uploaded_image]
+    )
     featured_image_alt = models.CharField(max_length=255, blank=True)
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="posts"

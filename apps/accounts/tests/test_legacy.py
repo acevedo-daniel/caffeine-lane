@@ -1,4 +1,5 @@
 from django.core import mail
+from django.templatetags.static import static
 from django.test import TestCase
 from django.urls import reverse
 
@@ -79,6 +80,15 @@ class AccountFlowTests(TestCase):
         user.refresh_from_db()
         self.assertEqual(user.display_name, "Updated Rider")
         self.assertTrue(user.has_motorcycle)
+
+    def test_profile_uses_static_default_avatar_when_none_is_uploaded(self):
+        user = User.objects.create_user(
+            email="rider@example.com",
+            username="rider",
+            password="safe-test-password-123",
+        )
+
+        self.assertEqual(user.avatar_url, static("images/default-avatar.svg"))
 
     def test_password_reset_sends_email(self):
         User.objects.create_user(

@@ -1,5 +1,5 @@
 from .base import *  # noqa: F403
-from .base import BASE_DIR, DATABASES, INSTALLED_APPS, MIDDLEWARE, env
+from .base import BASE_DIR, DATABASES, INSTALLED_APPS, MIDDLEWARE, STORAGES, env
 
 DEBUG = env.bool("DEBUG", default=True)
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
@@ -13,6 +13,9 @@ DATABASES["default"] = env.db(
 DATABASES["default"]["CONN_MAX_AGE"] = 0
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+# Uploaded media remains on the local filesystem during development.
+STORAGES["default"] = {"BACKEND": "django.core.files.storage.FileSystemStorage"}
 
 INSTALLED_APPS += ["debug_toolbar"]
 MIDDLEWARE.insert(1, "debug_toolbar.middleware.DebugToolbarMiddleware")

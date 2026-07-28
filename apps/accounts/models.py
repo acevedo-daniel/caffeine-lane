@@ -1,5 +1,8 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
+from django.templatetags.static import static
+
+from apps.core.image_validators import validate_uploaded_image
 
 
 class UserManager(BaseUserManager):
@@ -38,7 +41,9 @@ class User(AbstractUser):
     email = models.EmailField("email address", unique=True)
     display_name = models.CharField(max_length=150, blank=True)
     bio = models.TextField(max_length=500, blank=True)
-    avatar = models.ImageField(upload_to="avatars/", blank=True)
+    avatar = models.ImageField(
+        upload_to="avatars/", blank=True, validators=[validate_uploaded_image]
+    )
     personal_url = models.URLField(blank=True)
     has_motorcycle = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -56,4 +61,4 @@ class User(AbstractUser):
     def avatar_url(self):
         if self.avatar:
             return self.avatar.url
-        return "/static/images/default-avatar.png"
+        return static("images/default-avatar.svg")
