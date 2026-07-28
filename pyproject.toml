@@ -21,8 +21,38 @@ dev = [
     "django-stubs==5.2.2",
     "django-stubs-ext==5.2.2",
     "djlint==1.36.4",
+    "factory-boy>=3.3.3",
     "isort==6.0.1",
+    "pre-commit>=4.6.1",
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+    "pytest-django>=4.12.0",
+    "ruff>=0.16.0",
 ]
 
 [tool.uv]
 package = false
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+python_files = ["test_*.py", "*_test.py"]
+testpaths = ["apps"]
+addopts = "--cov=apps --cov=config --cov-report=term-missing"
+
+[tool.coverage.run]
+branch = true
+source = ["apps", "config"]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 88
+extend-exclude = ["apps/*/migrations", "README.md", "docs"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501", "F401", "F811"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"

@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 
-from .models import Profile
+from apps.accounts.models import Profile
 
 
 class LegacyAccountsCharacterizationTests(TestCase):
@@ -28,7 +28,6 @@ class LegacyAccountsCharacterizationTests(TestCase):
         self.assertRedirects(step_two, reverse("home"))
         user = User.objects.get(username="legacy_new_user")
         self.assertEqual(user.email, "new@example.com")
-        # The legacy flow redirects successfully but drops the affirmative value.
         self.assertFalse(Profile.objects.get(user=user).has_moto)
 
     def test_profile_requires_authentication(self):
