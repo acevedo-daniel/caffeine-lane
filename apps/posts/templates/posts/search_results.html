@@ -102,31 +102,6 @@
     </div>
 {% endblock content %}
 {% block scripts %}
-    {{ block.super }}
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const toggleBtn = document.getElementById('filter-toggle-btn');
-      const filterSection = document.getElementById('filter-section');
-      const form = document.getElementById('search-form');
-      const categorySelect = document.querySelector('select[name="category"]');
-      const sortSelect = document.querySelector('select[name="sort"]');
-  
-      if (toggleBtn && filterSection) {
-        toggleBtn.addEventListener('click', function() {
-          filterSection.classList.toggle('hidden');
-        });
-      }
-  
-      function submitForm() {
-        form.submit();
-      }
-  
-      if (categorySelect) {
-        categorySelect.addEventListener('change', submitForm);
-      }
-      if (sortSelect) {
-        sortSelect.addEventListener('change', submitForm);
-      }
-    });
-    </script>
+    {% load static %}
+    <script defer src="{% static 'dist/js/search-filters.js' %}"></script>
 {% endblock scripts %}

@@ -1,0 +1,12 @@
+{% load static %}
+<footer class="mt-10 bg-black px-4 py-10 text-center text-white">
+  <a href="{% url 'home' %}" class="font-bebas text-4xl">THE CAFFEINE LANE</a>
+  <p class="mx-auto mt-4 max-w-md text-sm">Builds, guides and reviews for people who ride.</p>
+  <nav class="mt-5 flex flex-wrap justify-center gap-4 text-sm" aria-label="Navegación secundaria">
+    <a href="{% url 'about' %}">Acerca de</a>
+    <a href="{% url 'contact' %}">Contacto</a>
+    <a href="{% url 'category_view' category_slug='builds' %}">Builds</a>
+    <a href="{% url 'category_view' category_slug='guides' %}">Guías</a>
+  </nav>
+  <p class="mt-6 text-xs">© 2026 The Caffeine Lane. Todos los derechos reservados.</p>
+</footer>

@@ -1,0 +1,5 @@
+{% if messages %}
+  <div class="mx-auto max-w-4xl px-4 pt-4" aria-live="polite">
+    {% for message in messages %}<p class="rounded bg-gray-100 p-3">{{ message }}</p>{% endfor %}
+  </div>
+{% endif %}

@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@source "../../../templates";
+@source "../../../apps";
+
+@theme {
+  --font-mont: "Montserrat", sans-serif;
+  --font-bebas: "Bebas Neue", sans-serif;
+}
+
+@layer base {
+  :focus-visible {
+    outline: 3px solid var(--color-red-500);
+    outline-offset: 3px;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="url"],
+  input[type="password"],
+  input[type="date"],
+  textarea,
+  select {
+    width: 100%;
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--radius-lg);
+    padding: 0.75rem;
+    color: var(--color-black);
+    background: var(--color-white);
+  }
+
+  textarea { min-height: 7rem; }
+}

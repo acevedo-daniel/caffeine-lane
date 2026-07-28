@@ -12,6 +12,13 @@ class LegacyCoreCharacterizationTests(TestCase):
                 response = self.client.get(reverse(name))
                 self.assertEqual(response.status_code, 200)
 
+    def test_base_layout_uses_compiled_assets_not_tailwind_play_cdn(self):
+        response = self.client.get(reverse("home"))
+
+        self.assertContains(response, "dist/css/app.css")
+        self.assertContains(response, "dist/js/base.js")
+        self.assertNotContains(response, "cdn.tailwindcss.com")
+
     @patch("apps.core.views.send_mail")
     def test_contact_submits_and_redirects(self, send_mail):
         response = self.client.post(

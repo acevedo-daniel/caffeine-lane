@@ -1,0 +1,15 @@
+{
+  "name": "caffeine-lane-assets",
+  "private": true,
+  "scripts": {
+    "dev:css": "pnpm exec tailwindcss -i ./static/src/css/app.css -o ./static/dist/css/app.css --watch",
+    "build:css": "pnpm exec tailwindcss -i ./static/src/css/app.css -o ./static/dist/css/app.css --minify",
+    "build:js": "node scripts/build-assets.mjs",
+    "build": "pnpm run build:css && pnpm run build:js"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.0",
+    "tailwindcss": "^4.1.0"
+  },
+  "packageManager": "pnpm@10.18.3"
+}

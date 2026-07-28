@@ -177,42 +177,6 @@
   </div>
 {% endblock content %}
 {% block scripts %}
-  {{ block.super }}
-  {# Scripts #}
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const carouselContainer = document.getElementById('carousel-container');
-      if (carouselContainer) {
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-        const slides = document.querySelectorAll('.carousel-slide');
-        const totalSlides = slides.length;
-        let currentSlide = 0;
-  
-        function showSlide(index) {
-          if (index >= totalSlides) {
-            currentSlide = 0;
-          } else if (index < 0) {
-            currentSlide = totalSlides - 1;
-          } else {
-            currentSlide = index;
-          }
-          const offset = -currentSlide * 100;
-          carouselContainer.style.transform = `translateX(${offset}%)`;
-        }
-  
-        nextBtn.addEventListener('click', () => {
-          showSlide(currentSlide + 1);
-        });
-  
-        prevBtn.addEventListener('click', () => {
-          showSlide(currentSlide - 1);
-        });
-  
-        setInterval(() => {
-          showSlide(currentSlide + 1);
-        }, 5000);
-      }
-    });
-  </script>
+  {% load static %}
+  <script defer src="{% static 'dist/js/home-carousel.js' %}"></script>
 {% endblock scripts %}
