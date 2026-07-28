@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.cache import cache
 from django.core.mail import EmailMultiAlternatives
-from django.http import HttpResponse, HttpResponseNotAllowed
+from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 
@@ -26,6 +26,10 @@ def csp_report(request):
         return HttpResponse(status=400)
     logger.warning("CSP violation report: %s", report)
     return HttpResponse(status=204)
+
+
+def health(request):
+    return JsonResponse({"status": "ok"})
 
 
 def landing(request):

@@ -17,6 +17,12 @@ class LegacyCoreCharacterizationTests(TestCase):
                 response = self.client.get(reverse(name))
                 self.assertEqual(response.status_code, 200)
 
+    def test_health_endpoint_is_available_without_database_queries(self):
+        with self.assertNumQueries(0):
+            response = self.client.get(reverse("health"))
+
+        self.assertEqual(response.json(), {"status": "ok"})
+
     def test_base_layout_uses_compiled_assets_not_tailwind_play_cdn(self):
         response = self.client.get(reverse("home"))
 
