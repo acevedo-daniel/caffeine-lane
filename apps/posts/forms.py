@@ -3,6 +3,7 @@ from django import forms
 from .models import Category, Comment, Post
 
 SORT_CHOICES = [
+    ("relevance", "Relevance"),
     ("newest", "Most Recent"),
     ("oldest", "Oldest"),
     ("title_asc", "Title (A-Z)"),
@@ -42,7 +43,7 @@ class CommentForm(forms.ModelForm):
 class PostSearchForm(forms.Form):
     q = forms.CharField(
         label="Search",
-        required=True,
+        required=False,
         widget=forms.TextInput(
             attrs={
                 "class": "w-full py-2 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black",
@@ -65,6 +66,7 @@ class PostSearchForm(forms.Form):
         label="Sort by",
         choices=SORT_CHOICES,
         required=False,
+        initial="relevance",
         widget=forms.Select(
             attrs={
                 "class": "w-full py-2 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black",

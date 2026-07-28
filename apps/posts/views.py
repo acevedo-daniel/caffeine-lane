@@ -1,7 +1,10 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.core.exceptions import PermissionDenied, ValidationError
+from django.core.paginator import Paginator
+from django.db import connection
 from django.db.models import Prefetch, Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
@@ -51,6 +54,12 @@ def post_detail(request, slug):
         "post": post,
         "comments": comments,
         "form": form,
+        "related_posts": (
+            Post.objects.for_listing()
+            .filter(categories__in=post.categories.all())
+            .exclude(pk=post.pk)
+            .distinct()[:3]
+        ),
     }
     return render(request, "posts/post_detail.html", context)
 
@@ -80,10 +89,13 @@ def comment_reply(request, comment_id):
 
 def category_view(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug)
-    posts = Post.objects.for_listing().filter(categories=category)
+    paginator = Paginator(Post.objects.for_listing().filter(categories=category), 12)
+    page_obj = paginator.get_page(request.GET.get("page"))
     context = {
         "category": category,
-        "posts": posts,
+        "posts": page_obj.object_list,
+        "page_obj": page_obj,
+        "is_paginated": page_obj.has_other_pages(),
     }
     return render(request, "posts/category_view.html", context)
 
@@ -146,17 +158,32 @@ class PostSearchView(ListView):
     def get_queryset(self):
         queryset = Post.objects.for_listing()
 
-        query = self.request.GET.get("q", "")
-        category_id = self.request.GET.get("category", "")
-        sort_by = self.request.GET.get("sort", "newest")
+        self.search_form = PostSearchForm(self.request.GET)
+        self.search_form.is_valid()
+        query = self.search_form.cleaned_data.get("q", "").strip()
+        category = self.search_form.cleaned_data.get("category")
+        sort_by = self.search_form.cleaned_data.get("sort") or "relevance"
 
         if query:
-            queryset = queryset.filter(
-                Q(title__icontains=query) | Q(content__icontains=query)
-            ).distinct()
+            if connection.vendor == "postgresql":
+                vector = (
+                    SearchVector("title", weight="A")
+                    + SearchVector("excerpt", weight="B")
+                    + SearchVector("content", weight="C")
+                )
+                search_query = SearchQuery(query, search_type="websearch")
+                queryset = queryset.annotate(
+                    rank=SearchRank(vector, search_query)
+                ).filter(rank__gt=0)
+            else:
+                queryset = queryset.filter(
+                    Q(title__icontains=query)
+                    | Q(excerpt__icontains=query)
+                    | Q(content__icontains=query)
+                )
 
-        if category_id:
-            queryset = queryset.filter(categories__id=category_id)
+        if category:
+            queryset = queryset.filter(categories=category)
 
         sort_mapping = {
             "newest": "-created_at",
@@ -164,17 +191,19 @@ class PostSearchView(ListView):
             "title_asc": "title",
             "title_desc": "-title",
         }
-        order_by_field = sort_mapping.get(sort_by, "-created_at")
-        queryset = queryset.order_by(order_by_field)
+        if sort_by == "relevance" and query and connection.vendor == "postgresql":
+            queryset = queryset.order_by("-rank", "-published_at")
+        else:
+            queryset = queryset.order_by(sort_mapping.get(sort_by, "-published_at"))
 
-        return queryset
+        return queryset.distinct()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["form"] = PostSearchForm(self.request.GET or None)
-        context["query"] = self.request.GET.get("q", "")
+        context["form"] = self.search_form
+        context["query"] = self.search_form.cleaned_data.get("q", "")
         context["current_category"] = self.request.GET.get("category", "")
-        context["current_sort"] = self.request.GET.get("sort", "newest")
+        context["current_sort"] = self.search_form.cleaned_data.get("sort", "relevance")
         return context
 
 
