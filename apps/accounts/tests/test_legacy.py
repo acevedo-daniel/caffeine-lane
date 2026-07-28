@@ -1,39 +1,117 @@
-from django.contrib.auth.models import User
+from django.core import mail
 from django.test import TestCase
 from django.urls import reverse
 
-from apps.accounts.models import Profile
+from apps.accounts.models import User
 
 
-class LegacyAccountsCharacterizationTests(TestCase):
-    def test_registration_two_step_creates_user_and_profile(self):
-        step_one = self.client.post(
-            reverse("register_step1"), {"email": "new@example.com"}
-        )
-        self.assertRedirects(step_one, reverse("register_step2"))
-
-        step_two = self.client.post(
+class AccountFlowTests(TestCase):
+    def register(self, *, email="new@example.com", username="new_user"):
+        response = self.client.post(reverse("register_step1"), {"email": email})
+        self.assertRedirects(response, reverse("register_step2"))
+        return self.client.post(
             reverse("register_step2"),
             {
-                "username": "legacy_new_user",
-                "first_name": "Legacy",
-                "last_name": "User",
+                "username": username,
+                "display_name": "New Rider",
                 "password1": "safe-test-password-123",
                 "password2": "safe-test-password-123",
-                "gender": "O",
-                "has_moto": "True",
+                "has_motorcycle": "true",
             },
         )
 
-        self.assertRedirects(step_two, reverse("home"))
-        user = User.objects.get(username="legacy_new_user")
-        self.assertEqual(user.email, "new@example.com")
-        self.assertFalse(Profile.objects.get(user=user).has_moto)
+    def test_registration_creates_custom_user_and_logs_in(self):
+        response = self.register()
 
-    def test_profile_requires_authentication(self):
-        response = self.client.get(reverse("profile"))
-        self.assertRedirects(response, f"{reverse('login')}?next={reverse('profile')}")
+        self.assertRedirects(response, reverse("home"))
+        user = User.objects.get(email="new@example.com")
+        self.assertEqual(user.username, "new_user")
+        self.assertEqual(user.display_name, "New Rider")
+        self.assertTrue(user.has_motorcycle)
+        self.assertEqual(self.client.session["_auth_user_id"], str(user.pk))
 
-    def test_password_reset_page_is_available(self):
-        response = self.client.get(reverse("password_reset"))
-        self.assertEqual(response.status_code, 200)
+    def test_login_uses_email(self):
+        user = User.objects.create_user(
+            email="rider@example.com",
+            username="rider",
+            password="safe-test-password-123",
+        )
+
+        response = self.client.post(
+            reverse("login"),
+            {"username": user.email, "password": "safe-test-password-123"},
+        )
+
+        self.assertRedirects(response, reverse("home"))
+
+    def test_logout_only_accepts_post(self):
+        user = User.objects.create_user(
+            email="rider@example.com",
+            username="rider",
+            password="safe-test-password-123",
+        )
+        self.client.force_login(user)
+
+        self.assertEqual(self.client.get(reverse("logout")).status_code, 405)
+        response = self.client.post(reverse("logout"))
+        self.assertRedirects(response, reverse("home"))
+        self.assertNotIn("_auth_user_id", self.client.session)
+
+    def test_profile_updates_custom_user(self):
+        user = User.objects.create_user(
+            email="rider@example.com",
+            username="rider",
+            password="safe-test-password-123",
+        )
+        self.client.force_login(user)
+
+        response = self.client.post(
+            reverse("profile"),
+            {
+                "display_name": "Updated Rider",
+                "bio": "Ready to ride.",
+                "personal_url": "https://example.com",
+                "has_motorcycle": "on",
+            },
+        )
+
+        self.assertRedirects(response, reverse("profile"))
+        user.refresh_from_db()
+        self.assertEqual(user.display_name, "Updated Rider")
+        self.assertTrue(user.has_motorcycle)
+
+    def test_password_reset_sends_email(self):
+        User.objects.create_user(
+            email="rider@example.com",
+            username="rider",
+            password="safe-test-password-123",
+        )
+
+        response = self.client.post(
+            reverse("password_reset"), {"email": "rider@example.com"}
+        )
+
+        self.assertRedirects(response, reverse("password_reset_done"))
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn("reset/", mail.outbox[0].body)
+
+    def test_password_change_updates_credentials(self):
+        user = User.objects.create_user(
+            email="rider@example.com",
+            username="rider",
+            password="safe-test-password-123",
+        )
+        self.client.force_login(user)
+
+        response = self.client.post(
+            reverse("password_change"),
+            {
+                "old_password": "safe-test-password-123",
+                "new_password1": "even-safer-test-password-456",
+                "new_password2": "even-safer-test-password-456",
+            },
+        )
+
+        self.assertRedirects(response, reverse("password_change_done"))
+        user.refresh_from_db()
+        self.assertTrue(user.check_password("even-safer-test-password-456"))

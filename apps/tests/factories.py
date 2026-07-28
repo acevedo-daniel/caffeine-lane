@@ -1,6 +1,6 @@
 import factory
-from django.contrib.auth.models import User
 
+from apps.accounts.models import User
 from apps.posts.models import Category, Post
 
 

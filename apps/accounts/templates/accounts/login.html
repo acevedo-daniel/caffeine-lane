@@ -30,12 +30,12 @@
         {% endif %}
         <form class="block space-y-6 mt-6" method="post" novalidate>
           {% csrf_token %}
-          {# Username Field #}
+          {# Email Field #}
           <div class="text-left space-y-1">
             <label for="{{ form.username.id_for_label }}"
-                   class="text-xs font-mont font-basic tracking-wide text-black">Username</label>
+                   class="text-xs font-mont font-basic tracking-wide text-black">Email address</label>
             <div class="relative">
-              <i class="fas fa-user absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <i class="fas fa-envelope absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
               {{ form.username }}
             </div>
             {% if form.username.errors %}
@@ -104,7 +104,7 @@
   </div>
   {# Input Styles #}
   <style>
-    input[type="text"],
+    input[type="email"],
     input[type="password"] {
       appearance: none;
       background-color: white;
@@ -116,7 +116,7 @@
       font-family: 'Montserrat', sans-serif;
     }
     
-    input[type="text"]:focus,
+    input[type="email"]:focus,
     input[type="password"]:focus {
       outline: none;
       border-color: #000;

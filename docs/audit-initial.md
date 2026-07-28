@@ -20,6 +20,8 @@ La copia contiene 53 archivos. El directorio privado también contiene `backup-s
 
 No hay `db.sqlite3` en el árbol. La configuración usa SQLite solo como valor local y una base externa cuando existe `DATABASE_URL`; en esta sesión `DATABASE_URL` no estaba disponible. Por ese motivo no fue posible generar una exportación de base de datos verificable. Debe realizarse desde el proveedor de la base en producción antes de cualquier cambio de datos.
 
+El 28 de julio de 2026, antes del reset local de la fase 9, se creó `phase9-pre-reset.dump` en el mismo directorio privado. Es un respaldo de la base de Docker local y no sustituye una exportación de producción.
+
 Tampoco estaban disponibles en esta sesión las variables `SECRET_KEY`, `DATABASE_URL`, `CLOUD_NAME`, `CLOUD_API_KEY` ni `CLOUD_API_SECRET`, y no existe `.env` local. No se exportaron valores ni se publicó ningún secreto. Para completar el resguardo de entorno, copiar los valores vigentes a un gestor de secretos o archivo cifrado fuera del repositorio.
 
 ## Comportamiento y rutas observados

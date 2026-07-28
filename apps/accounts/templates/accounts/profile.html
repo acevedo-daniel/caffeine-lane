@@ -1,157 +1,25 @@
 {% extends "base.html" %}
-{% load static %}
-{% block title %}
-  Your Profile - The Caffeine Lane
-{% endblock title %}
+{% block title %}Your Profile - The Caffeine Lane{% endblock title %}
 {% block content %}
   <div class="py-12 px-4">
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-auto overflow-hidden">
-      {# Profile Header #}
-      <div class="p-8 text-center bg-gray-50 border-b border-gray-200">
-        <div class="w-24 h-24 mx-auto rounded-full overflow-hidden border-4 border-white shadow-lg">
-          <img src="{{ user.profile.avatar.url|default:'/static/images/default-avatar.png' }}"
-               alt="{{ user.username }}'s Avatar"
-               class="w-full h-full object-cover"
-               width="96"
-               height="96" />
-        </div>
-        <h1 class="mt-4 text-3xl font-bebas text-black">{{ user.get_full_name|default:user.username }}</h1>
-        <p class="text-gray-500 font-mont text-sm">{{ user.email }}</p>
-      </div>
-      {# Profile Information Form #}
-      <div class="p-8">
-        {% if messages %}
-          {% for message in messages %}
-            <div class="bg-green-600 text-white px-5 py-3 rounded-lg text-sm font-mont mb-6 shadow-lg">{{ message }}</div>
-          {% endfor %}
-        {% endif %}
-        {% if form.non_field_errors %}
-          <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6 text-sm font-mont">
-            {% for error in form.non_field_errors %}<div>{{ error }}</div>{% endfor %}
-          </div>
-        {% endif %}
-        <form method="post" enctype="multipart/form-data" class="space-y-6">
-          {% csrf_token %}
-          {# Bio Field #}
-          <div class="text-left">
-            <label for="{{ form.bio.id_for_label }}"
-                   class="text-xs font-mont font-medium tracking-wide text-gray-700">Bio</label>
-            {{ form.bio }}
-            {% if form.bio.errors %}<div class="text-red-600 text-xs mt-1">{{ form.bio.errors.0 }}</div>{% endif %}
-          </div>
-          {# Avatar Field #}
-          <div class="text-left">
-            <label for="{{ form.avatar.id_for_label }}"
-                   class="text-xs font-mont font-medium tracking-wide text-gray-700">Update Avatar</label>
-            {{ form.avatar }}
-            {% if form.avatar.errors %}<div class="text-red-600 text-xs mt-1">{{ form.avatar.errors.0 }}</div>{% endif %}
-          </div>
-          {# Personal URL Field #}
-          <div class="text-left">
-            <label for="{{ form.personal_url.id_for_label }}"
-                   class="text-xs font-mont font-medium tracking-wide text-gray-700">Personal URL</label>
-            {{ form.personal_url }}
-            {% if form.personal_url.errors %}
-              <div class="text-red-600 text-xs mt-1">{{ form.personal_url.errors.0 }}</div>
-            {% endif %}
-          </div>
-          {# Birth Date Field #}
-          <div class="text-left">
-            <label for="{{ form.birth_date.id_for_label }}"
-                   class="text-xs font-mont font-medium tracking-wide text-gray-700">Birth Date</label>
-            {{ form.birth_date }}
-            {% if form.birth_date.errors %}<div class="text-red-600 text-xs mt-1">{{ form.birth_date.errors.0 }}</div>{% endif %}
-          </div>
-          {# Gender and Motorcycle Fields #}
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
-            <div class="flex flex-col items-center">
-              <label class="text-xs font-mont tracking-wide text-black uppercase font-bold mb-3 block">
-                {{ form.gender.label }}
-              </label>
-              <div class="flex gap-2 justify-center w-full">
-                {% for radio in form.gender %}
-                  <label class="flex-1 cursor-pointer select-none rounded-full py-2 px-3 text-xs font-mont border border-black text-center min-w-[80px] whitespace-nowrap flex items-center justify-center bg-white text-black radio-btn transition-all duration-300">
-                    {{ radio.tag }}
-                    <span class="block w-full text-center">{{ radio.choice_label }}</span>
-                  </label>
-                {% endfor %}
-              </div>
-            </div>
-            <div class="flex flex-col items-center">
-              <label class="text-xs font-mont tracking-wide text-black uppercase font-bold mb-3 block">
-                {{ form.has_moto.label }}
-              </label>
-              <div class="flex gap-2 justify-center w-full">
-                {% for radio in form.has_moto %}
-                  <label class="flex-1 cursor-pointer select-none rounded-full py-2 px-3 text-xs font-mont border border-black text-center min-w-[80px] whitespace-nowrap flex items-center justify-center bg-white text-black radio-btn transition-all duration-300">
-                    {{ radio.tag }}
-                    <span class="block w-full text-center">{{ radio.choice_label }}</span>
-                  </label>
-                {% endfor %}
-              </div>
-            </div>
-          </div>
-          <div class="pt-4">
-            <button type="submit"
-                    class="w-full py-3 px-8 bg-black text-white font-mont font-medium tracking-wider rounded-full hover:bg-stone-800 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center relative">
-              Save Changes
-            </button>
-          </div>
-        </form>
-      </div>
-      {# Profile Actions #}
-      <div class="px-8 py-4 bg-gray-50 border-t border-gray-200 flex flex-col sm:flex-row gap-3 justify-center">
-        <a href="{% url 'password_change' %}"
-           class="inline-block py-2 px-6 bg-gray-200 text-gray-800 font-mont text-sm uppercase rounded-full hover:bg-gray-300 transition text-center">
-          Change Password
-        </a>
-        <a href="{% url 'logout' %}"
-           class="inline-block py-2 px-6 bg-red-600 text-white font-mont text-sm font-bold uppercase rounded-full hover:bg-red-700 transition text-center">
-          Log Out
-        </a>
-      </div>
+    <div class="bg-white rounded-2xl p-8 max-w-lg mx-auto">
+      {% if user.avatar %}<img src="{{ user.avatar.url }}" alt="{{ user.username }}'s avatar" width="96" height="96">{% endif %}
+      <h1>{{ user.display_name|default:user.username }}</h1>
+      <p>{{ user.email }}</p>
+      <form method="post" enctype="multipart/form-data" class="space-y-4">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div><label for="{{ form.display_name.id_for_label }}">Display name</label>{{ form.display_name }}{{ form.display_name.errors }}</div>
+        <div><label for="{{ form.bio.id_for_label }}">Bio</label>{{ form.bio }}{{ form.bio.errors }}</div>
+        <div><label for="{{ form.avatar.id_for_label }}">Avatar</label>{{ form.avatar }}{{ form.avatar.errors }}</div>
+        <div><label for="{{ form.personal_url.id_for_label }}">Personal URL</label>{{ form.personal_url }}{{ form.personal_url.errors }}</div>
+        <div><label for="{{ form.has_motorcycle.id_for_label }}">Own a motorcycle?</label>{{ form.has_motorcycle }}{{ form.has_motorcycle.errors }}</div>
+        <button type="submit">Save Changes</button>
+      </form>
+      <a href="{% url 'password_change' %}">Change password</a>
+      <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}<button type="submit">Log out</button>
+      </form>
     </div>
   </div>
-  {# Styles for form elements #}
-  <style>
-    /* General styles for text inputs and textareas */
-    input[type='text'],
-    input[type='url'],
-    input[type='date'],
-    textarea {
-      appearance: none;
-      background-color: #f9fafb; /* gray-50 */
-      border: 1px solid #d1d5db; /* gray-300 */
-      color: black;
-      padding: 12px;
-      border-radius: 12px;
-      width: 100%;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.9rem;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    input[type='text']:focus,
-    input[type='url']:focus,
-    input[type='date']:focus,
-    textarea:focus {
-      outline: none;
-      border-color: #000;
-      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Styles for the custom radio buttons */
-    input[type='radio'] {
-      position: absolute;
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-    
-    .radio-btn:has(input:checked) {
-      background-color: #000;
-      color: #fff;
-      border-color: #000;
-    }
-  </style>
 {% endblock content %}

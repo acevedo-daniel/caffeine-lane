@@ -2,10 +2,9 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.http import require_POST
 
 from .forms import EmailRegistrationForm, ProfileForm, RegistrationStep2Form
-from .models import Profile
 
 
 def register_step1(request):
@@ -51,10 +50,8 @@ def register_step2(request):
 
 @login_required
 def profile(request):
-    profile, created = Profile.objects.get_or_create(user=request.user)
-
     if request.method == "POST":
-        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        form = ProfileForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
             messages.success(request, "Profile successfully updated!")
@@ -62,16 +59,13 @@ def profile(request):
         else:
             messages.error(request, "Please correct the errors below.")
     else:
-        form = ProfileForm(instance=profile)
+        form = ProfileForm(instance=request.user)
 
     return render(request, "accounts/profile.html", {"form": form})
 
 
-@csrf_protect
+@require_POST
 def custom_logout(request):
-    if request.method == "POST":
-        logout(request)
-        messages.success(request, "You have successfully logged out!")
-        return redirect("home")
-
-    return render(request, "accounts/logout.html")
+    logout(request)
+    messages.success(request, "You have successfully logged out!")
+    return redirect("home")

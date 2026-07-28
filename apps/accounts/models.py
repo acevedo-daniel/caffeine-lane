@@ -1,42 +1,53 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
 
-class Profile(models.Model):
-    GENDER_CHOICES = [
-        ("M", "Male"),
-        ("F", "Female"),
-        ("O", "Other"),
-    ]
+class UserManager(BaseUserManager):
+    use_in_migrations = True
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    def _create_user(self, email, password, **extra_fields):
+        if not email:
+            raise ValueError("The email address must be set.")
+
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, email, password=None, **extra_fields):
+        extra_fields.setdefault("is_staff", False)
+        extra_fields.setdefault("is_superuser", False)
+        return self._create_user(email, password, **extra_fields)
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("Superuser must have is_staff=True.")
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError("Superuser must have is_superuser=True.")
+        return self._create_user(email, password, **extra_fields)
+
+
+class User(AbstractUser):
+    first_name = None
+    last_name = None
+    date_joined = None
+    email = models.EmailField("email address", unique=True)
+    display_name = models.CharField(max_length=150, blank=True)
     bio = models.TextField(max_length=500, blank=True)
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True)
-    birth_date = models.DateField(null=True, blank=True)
-    avatar = models.ImageField(
-        upload_to="avatars/", null=True, blank=True, default="avatars/default.png"
-    )
+    avatar = models.ImageField(upload_to="avatars/", blank=True)
     personal_url = models.URLField(blank=True)
-    has_moto = models.BooleanField(default=False)
+    has_motorcycle = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["username"]
+
+    objects = UserManager()
+
     def __str__(self):
-        return self.user.username
-
-    class Meta:
-        verbose_name = "Profile"
-        verbose_name_plural = "Profiles"
-
-
-@receiver(post_save, sender=User)
-def create_or_update_user_profile(sender, instance, created, **kwargs):
-    if kwargs.get("raw", False):
-        return
-    if created:
-        Profile.objects.create(user=instance)
-    else:
-        if hasattr(instance, "profile"):
-            instance.profile.save()
+        return self.username
