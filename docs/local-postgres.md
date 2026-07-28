@@ -4,7 +4,7 @@ El desarrollo usa PostgreSQL 18 en Docker y Django se ejecuta en el host con `uv
 
 ## Inicio
 
-1. Copia `.env.example` a `.env` si aún no existe y conserva `DATABASE_URL=postgresql://caffeine:caffeine@localhost:5432/caffeine`.
+1. Copia `.env.example` a `.env` si aún no existe y conserva `DATABASE_URL=postgresql://caffeine-lane:caffeine-lane@localhost:5432/caffeine-lane`.
 2. Inicia la base y espera su healthcheck:
 
    ```powershell

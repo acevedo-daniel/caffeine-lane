@@ -2,9 +2,9 @@ services:
   db:
     image: postgres:18
     environment:
-      POSTGRES_DB: caffeine
-      POSTGRES_USER: caffeine
-      POSTGRES_PASSWORD: caffeine
+      POSTGRES_DB: caffeine-lane
+      POSTGRES_USER: caffeine-lane
+      POSTGRES_PASSWORD: caffeine-lane
     ports:
       - "5432:5432"
     volumes:
