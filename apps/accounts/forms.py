@@ -19,6 +19,7 @@ class EmailRegistrationForm(forms.Form):
             )
         return email
 
+
 class RegistrationStep2Form(UserCreationForm):
     gender = forms.ChoiceField(
         choices=Profile.GENDER_CHOICES,
@@ -49,6 +50,7 @@ class RegistrationStep2Form(UserCreationForm):
             profile.has_moto = self.cleaned_data.get("has_moto") == "True"
             profile.save()
         return user
+
 
 class ProfileForm(forms.ModelForm):
     gender = forms.ChoiceField(

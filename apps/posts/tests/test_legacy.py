@@ -41,7 +41,9 @@ class LegacyPostsCharacterizationTests(TestCase):
         self.client.force_login(self.author)
         response = self.client.post(url, {"content": "Authenticated comment"})
         self.assertRedirects(response, url)
-        self.assertTrue(Comment.objects.filter(content="Authenticated comment").exists())
+        self.assertTrue(
+            Comment.objects.filter(content="Authenticated comment").exists()
+        )
 
     def test_post_creation_requires_permission(self):
         anonymous = self.client.get(reverse("post_create"))
