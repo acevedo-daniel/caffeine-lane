@@ -104,6 +104,7 @@ class AccountFlowTests(TestCase):
         self.assertRedirects(response, reverse("password_reset_done"))
         self.assertEqual(len(mail.outbox), 1)
         self.assertIn("reset/", mail.outbox[0].body)
+        self.assertEqual(mail.outbox[0].alternatives[0].mimetype, "text/html")
 
     def test_password_change_updates_credentials(self):
         user = User.objects.create_user(

@@ -17,6 +17,18 @@ if not ALLOWED_HOSTS:
 
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 
+DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL")
+CONTACT_RECIPIENT_EMAIL = env.str("CONTACT_RECIPIENT_EMAIL")
+EMAIL_BACKEND = env.str(
+    "EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend"
+)
+EMAIL_HOST = env.str("EMAIL_HOST")
+EMAIL_PORT = env.int("EMAIL_PORT", default=587)
+EMAIL_HOST_USER = env.str("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env.str("EMAIL_HOST_PASSWORD")
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)
+EMAIL_TIMEOUT = env.int("EMAIL_TIMEOUT", default=10)
+
 if not os.environ.get("CLOUDINARY_URL"):
     raise ImproperlyConfigured("CLOUDINARY_URL is required in production.")
 

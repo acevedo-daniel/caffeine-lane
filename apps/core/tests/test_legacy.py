@@ -1,5 +1,5 @@
-from unittest.mock import patch
-
+from django.core import mail
+from django.core.cache import cache
 from django.template.loader import get_template
 from django.test import TestCase
 from django.test.utils import override_settings
@@ -8,6 +8,9 @@ from django.utils.csp import CSP
 
 
 class LegacyCoreCharacterizationTests(TestCase):
+    def setUp(self):
+        cache.clear()
+
     def test_public_pages_render(self):
         for name in ("landing", "home", "about", "contact"):
             with self.subTest(name=name):
@@ -21,8 +24,7 @@ class LegacyCoreCharacterizationTests(TestCase):
         self.assertContains(response, "dist/js/base.js")
         self.assertNotContains(response, "cdn.tailwindcss.com")
 
-    @patch("apps.core.views.send_mail")
-    def test_contact_submits_and_redirects(self, send_mail):
+    def test_contact_sends_text_and_html_email_with_reply_to(self):
         response = self.client.post(
             reverse("contact"),
             {
@@ -34,7 +36,34 @@ class LegacyCoreCharacterizationTests(TestCase):
         )
 
         self.assertRedirects(response, reverse("contact"))
-        send_mail.assert_called_once()
+        self.assertEqual(len(mail.outbox), 1)
+        email = mail.outbox[0]
+        self.assertEqual(email.reply_to, ["legacy@example.com"])
+        self.assertIn("Checking the original contact flow.", email.body)
+        self.assertEqual(email.alternatives[0].mimetype, "text/html")
+
+    def test_contact_rejects_honeypot_and_rate_limits_messages(self):
+        payload = {
+            "from_name": "Legacy tester",
+            "from_email": "legacy@example.com",
+            "subject": "Characterization",
+            "message": "Checking the contact flow.",
+        }
+        spam_response = self.client.post(
+            reverse("contact"), {**payload, "website": "x"}
+        )
+
+        self.assertEqual(spam_response.status_code, 200)
+        self.assertEqual(len(mail.outbox), 0)
+
+        for _ in range(5):
+            response = self.client.post(reverse("contact"), payload)
+            self.assertEqual(response.status_code, 302)
+        limited_response = self.client.post(reverse("contact"), payload)
+
+        self.assertEqual(limited_response.status_code, 200)
+        self.assertContains(limited_response, "Too many messages")
+        self.assertEqual(len(mail.outbox), 5)
 
 
 class ErrorPageTests(TestCase):

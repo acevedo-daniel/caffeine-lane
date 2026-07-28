@@ -3,7 +3,8 @@ import logging
 
 from django.conf import settings
 from django.contrib import messages
-from django.core.mail import send_mail
+from django.core.cache import cache
+from django.core.mail import EmailMultiAlternatives
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
@@ -63,19 +64,40 @@ def contact(request):
     if request.method == "POST":
         form = ContactForm(request.POST)
         if form.is_valid():
+            rate_limit_key = f"contact-rate-limit:{request.META.get('REMOTE_ADDR', '')}"
+            if not cache.add(
+                rate_limit_key, 1, timeout=settings.CONTACT_RATE_LIMIT_WINDOW
+            ):
+                cache.incr(rate_limit_key)
+            if cache.get(rate_limit_key, 0) > settings.CONTACT_RATE_LIMIT:
+                form.add_error(None, "Too many messages. Please try again later.")
+                return render(request, "core/contact.html", {"form": form})
+
             name = form.cleaned_data["from_name"]
             email = form.cleaned_data["from_email"]
             subject = form.cleaned_data["subject"]
             message_text = form.cleaned_data["message"]
 
             full_message = f"From: {name} <{email}>\n\n{message_text}"
-
-            send_mail(
+            html_message = render(
+                request,
+                "core/contact_email.html",
+                {
+                    "name": name,
+                    "email": email,
+                    "subject": subject,
+                    "message": message_text,
+                },
+            ).content.decode()
+            message = EmailMultiAlternatives(
                 subject=f"Contact from Blog: {subject}",
-                message=full_message,
+                body=full_message,
                 from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[settings.CONTACT_RECIPIENT_EMAIL],
+                to=[settings.CONTACT_RECIPIENT_EMAIL],
+                reply_to=[email],
             )
+            message.attach_alternative(html_message, "text/html")
+            message.send()
 
             messages.success(
                 request, "Thank you for your message! We will get back to you soon."
