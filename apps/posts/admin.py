@@ -5,15 +5,16 @@ from .models import Category, Comment, Post
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ["title", "author", "status", "created_at"]
-    list_filter = ["status", "created_at", "category"]
-    search_fields = ["title", "content"]
-    prepopulated_fields = {"slug": ("title",)}
+    list_display = ["title", "author", "status", "published_at", "created_at"]
+    list_filter = ["status", "published_at", "categories"]
+    search_fields = ["title", "excerpt", "content"]
+    readonly_fields = ["slug", "created_at", "updated_at"]
 
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ["name"]
+    list_display = ["name", "created_at"]
+    readonly_fields = ["created_at", "updated_at"]
 
 
 @admin.register(Comment)

@@ -11,7 +11,7 @@ from .models import Category, Comment, Post
 
 
 def post_detail(request, slug):
-    post = get_object_or_404(Post, slug=slug, status="published")
+    post = get_object_or_404(Post.objects.published().with_categories(), slug=slug)
     comments = post.comments.filter(is_active=True, parent=None)
     form = CommentForm(request.POST or None)
     if request.method == "POST":
@@ -42,9 +42,7 @@ def post_detail(request, slug):
 
 def category_view(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug)
-    posts = Post.objects.filter(category=category, status="published").order_by(
-        "-created_at"
-    )
+    posts = Post.objects.for_listing().filter(categories=category)
     context = {
         "category": category,
         "posts": posts,
@@ -96,7 +94,7 @@ class PostSearchView(ListView):
     paginate_by = 12
 
     def get_queryset(self):
-        queryset = Post.objects.filter(status="published")
+        queryset = Post.objects.for_listing()
 
         query = self.request.GET.get("q", "")
         category_id = self.request.GET.get("category", "")
@@ -108,7 +106,7 @@ class PostSearchView(ListView):
             ).distinct()
 
         if category_id:
-            queryset = queryset.filter(category__id=category_id)
+            queryset = queryset.filter(categories__id=category_id)
 
         sort_mapping = {
             "newest": "-created_at",

@@ -63,4 +63,27 @@ class PostSearchForm(forms.Form):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ["title", "content", "image", "category", "status"]
+        fields = [
+            "title",
+            "excerpt",
+            "content",
+            "featured_image",
+            "featured_image_alt",
+            "categories",
+            "status",
+            "published_at",
+        ]
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if cleaned_data.get("status") == Post.Status.PUBLISHED and not cleaned_data.get(
+            "published_at"
+        ):
+            self.add_error("published_at", "Published posts require a date.")
+        if cleaned_data.get("featured_image") and not cleaned_data.get(
+            "featured_image_alt"
+        ):
+            self.add_error(
+                "featured_image_alt", "Visible images require alternative text."
+            )
+        return cleaned_data

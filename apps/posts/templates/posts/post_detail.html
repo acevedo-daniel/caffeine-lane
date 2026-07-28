@@ -25,21 +25,21 @@
                     Go Back
                 </a>
                 <div class="mb-4">
-                    {% for category in post.category.all %}
+                    {% for category in post.categories.all %}
                         <a href="#"
                            class="text-xs font-bold uppercase text-white bg-red-600 hover:bg-black transition px-3 py-1 rounded-full">{{ category.name }}</a>
                     {% endfor %}
                 </div>
                 <h1 class="text-4xl md:text-6xl font-bebas text-black mb-4">{{ post.title }}</h1>
                 <div class="flex items-center text-sm text-gray-500">
-                    <img src="{{ post.author.profile.avatar.url|default:'/static/images/default-avatar.png' }}"
+                    <img src="{{ post.author.avatar_url }}"
                          alt="{{ post.author.username }}'s avatar"
                          class="w-8 h-8 rounded-full mr-3"
                          width="32"
                          height="32" />
-                    <span>By {{ post.author.get_full_name|default:post.author.username }}</span>
+                    <span>By {{ post.author.display_name|default:post.author.username }}</span>
                     <span class="mx-2">•</span>
-                    <span>{{ post.created_at|date:"F j, Y" }}</span>
+                    <span>{{ post.published_at|date:"F j, Y" }}</span>
                     <div class="ml-auto flex items-center space-x-2">
                         {% if perms.posts.change_post %}
                             <a href="{% url 'post_update' post.slug %}"
@@ -59,10 +59,10 @@
                 </div>
             </header>
             {# Main Post Image with Banner Aspect Ratio #}
-            {% if post.image %}
+            {% if post.featured_image %}
                 <div class="mb-8 rounded-lg shadow-xl overflow-hidden aspect-video bg-gray-200">
-                    <img src="{{ post.image.url }}"
-                         alt="{{ post.title }}"
+                    <img src="{{ post.featured_image.url }}"
+                         alt="{{ post.featured_image_alt }}"
                          class="w-full h-full object-cover"
                          width="1200"
                          height="675" />
@@ -100,7 +100,7 @@
                     {% for comment in comments %}
                         <div class="bg-gray-50 border border-gray-200 rounded-lg p-6">
                             <div class="flex items-start mb-3">
-                                <img src="{{ comment.author.profile.avatar.url|default:'/static/images/default-avatar.png' }}"
+                                <img src="{{ comment.author.avatar_url }}"
                                      alt="{{ comment.author.username }}'s avatar"
                                      class="w-10 h-10 rounded-full mr-4"
                                      width="40"
@@ -108,7 +108,7 @@
                                 <div class="flex-1">
                                     <div class="flex items-center justify-between">
                                         <div>
-                                            <strong class="text-gray-900 font-bold">{{ comment.author.get_full_name|default:comment.author.username }}</strong>
+                                            <strong class="text-gray-900 font-bold">{{ comment.author.display_name|default:comment.author.username }}</strong>
                                             <span class="text-gray-500 text-xs ml-2">{{ comment.created_at|date:"F j, Y, P" }}</span>
                                         </div>
                                         {% if request.user == comment.author or perms.posts.delete_comment %}
@@ -130,14 +130,14 @@
                             {% for reply in comment.replies.all %}
                                 <div class="ml-10 mt-4 border-l-2 border-gray-200 pl-6">
                                     <div class="flex items-start mb-2">
-                                        <img src="{{ reply.author.profile.avatar.url|default:'/static/images/default-avatar.png' }}"
+                                        <img src="{{ reply.author.avatar_url }}"
                                              alt="{{ reply.author.username }}'s avatar"
                                              class="w-8 h-8 rounded-full mr-3"
                                              width="32"
                                              height="32" />
                                         <div class="flex-1">
                                             <div class="flex items-center">
-                                                <strong class="text-gray-900 text-sm font-bold">{{ reply.author.get_full_name|default:reply.author.username }}</strong>
+                                                <strong class="text-gray-900 text-sm font-bold">{{ reply.author.display_name|default:reply.author.username }}</strong>
                                                 <span class="text-gray-500 text-xs ml-2">{{ reply.created_at|date:"F j, Y, P" }}</span>
                                             </div>
                                             <p class="text-gray-700 text-sm mt-1">{{ reply.content|linebreaks }}</p>
@@ -160,9 +160,9 @@
                 {% for related_post in related_posts %}
                     <a href="{% url "post_detail" related_post.slug %}" class="block group">
                         <div class="bg-white rounded-lg overflow-hidden transition-transform duration-300 group-hover:scale-105 shadow-md">
-                            {% if related_post.image %}
-                                <img src="{{ related_post.image.url }}"
-                                     alt="{{ related_post.title }}"
+                            {% if related_post.featured_image %}
+                                <img src="{{ related_post.featured_image.url }}"
+                                     alt="{{ related_post.featured_image_alt }}"
                                      class="w-full h-64 object-cover"
                                      width="400"
                                      height="256" />

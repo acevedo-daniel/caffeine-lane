@@ -48,9 +48,9 @@
                     {% for post in posts %}
                         <a href="{% url "post_detail" post.slug %}" class="block group">
                             <div class="bg-white overflow-hidden transition-transform duration-300 group-hover:scale-105">
-                                {% if post.image %}
-                                    <img src="{{ post.image.url }}"
-                                         alt="{{ post.title }}"
+                                {% if post.featured_image %}
+                                    <img src="{{ post.featured_image.url }}"
+                                         alt="{{ post.featured_image_alt }}"
                                          class="w-full h-64 object-cover"
                                          width="400"
                                          height="256" />

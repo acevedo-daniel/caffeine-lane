@@ -1,4 +1,5 @@
 import factory
+from django.utils import timezone
 
 from apps.accounts.models import User
 from apps.posts.models import Category, Post
@@ -36,8 +37,9 @@ class PostFactory(factory.django.DjangoModelFactory):
     content = "Factory-generated legacy content."
     author = factory.SubFactory(UserFactory)
     status = "published"
+    published_at = factory.LazyFunction(timezone.now)
 
     @factory.post_generation
-    def category(instance, create, extracted, **kwargs):
+    def categories(instance, create, extracted, **kwargs):
         if create:
-            instance.category.add(extracted or CategoryFactory())
+            instance.categories.add(extracted or CategoryFactory())

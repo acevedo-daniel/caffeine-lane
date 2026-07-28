@@ -13,20 +13,15 @@ def landing(request):
 
 
 def home(request):
-    banner_posts = Post.objects.filter(status="published").order_by("-created_at")[:5]
+    posts = Post.objects.for_listing()
+    banner_posts = posts[:5]
 
-    new_builds = Post.objects.filter(
-        status="published", category__slug="builds"
-    ).order_by("-created_at")[:9]
+    new_builds = posts.filter(categories__slug="builds")[:9]
 
-    new_guides = Post.objects.filter(
-        status="published", category__slug="guides"
-    ).order_by("-created_at")[:6]
+    new_guides = posts.filter(categories__slug="guides")[:6]
 
-    new_reviews = Post.objects.filter(
-        status="published", category__slug="reviews"
-    ).order_by("-created_at")[:4]
-    total_posts = Post.objects.filter(status="published").count()
+    new_reviews = posts.filter(categories__slug="reviews")[:4]
+    total_posts = posts.count()
     categories = Category.objects.all()
 
     context = {
