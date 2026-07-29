@@ -1,13 +1,28 @@
 {% load static %}
-<footer class="mt-16 border-t border-stone-800 bg-stone-950 px-4 py-12 text-center text-white">
-  <a href="{% url 'home' %}" class="font-bebas text-4xl text-white no-underline">THE CAFFEINE LANE</a>
-  <p class="mx-auto mt-3 max-w-md text-sm leading-6 text-stone-300">Builds, guías y reviews para personas que disfrutan rodar.</p>
-  <nav class="mt-6 flex flex-wrap justify-center gap-x-5 gap-y-3 text-sm font-semibold" aria-label="Navegación secundaria">
-    <a class="nav-link" href="{% url 'about' %}">Acerca de</a>
-    <a class="nav-link" href="{% url 'contact' %}">Contacto</a>
-    {% for category in navigation_categories %}
-      <a class="nav-link" href="{% url 'category_view' category_slug=category.slug %}">{{ category.name }}</a>
-    {% endfor %}
-  </nav>
-  <p class="mt-8 text-xs text-stone-400">© 2026 The Caffeine Lane. Todos los derechos reservados.</p>
+<footer class="editorial-footer">
+  <div class="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-3 md:items-center">
+    <nav aria-label="Explorar publicaciones" class="text-center md:text-left">
+      <p class="footer-label">Explorar</p>
+      <ul class="mt-4 space-y-2 text-sm font-semibold">
+        <li><a class="footer-link" href="{% url 'home' %}">Últimas publicaciones</a></li>
+        {% for category in navigation_categories %}
+          <li><a class="footer-link" href="{% url 'category_view' category_slug=category.slug %}">{{ category.name }}</a></li>
+        {% endfor %}
+      </ul>
+    </nav>
+    <div class="text-center">
+      <img src="{% static 'images/caffeinelane-logo-small.png' %}" alt="The Caffeine Lane" class="mx-auto h-28 w-28 rounded-full border border-stone-600 object-cover" width="112" height="112">
+      <a href="{% url 'home' %}" class="mt-4 block font-bebas text-5xl tracking-wide text-white no-underline">THE CAFFEINE LANE</a>
+      <p class="mx-auto mt-3 max-w-xs text-sm leading-6 text-stone-300">Historias de ruta, taller y motocicletas construidas para rodar.</p>
+    </div>
+    <nav aria-label="Información" class="text-center md:text-right">
+      <p class="footer-label">The Caffeine Lane</p>
+      <ul class="mt-4 space-y-2 text-sm font-semibold">
+        <li><a class="footer-link" href="{% url 'about' %}">Acerca de</a></li>
+        <li><a class="footer-link" href="{% url 'contact' %}">Contacto</a></li>
+        <li><a class="footer-link" href="{% url 'search' %}">Buscar publicaciones</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="border-t border-stone-800 px-4 py-5 text-center text-xs text-stone-400">© 2026 The Caffeine Lane. Todos los derechos reservados.</div>
 </footer>

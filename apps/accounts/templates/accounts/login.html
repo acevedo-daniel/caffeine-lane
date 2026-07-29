@@ -1,85 +1,26 @@
 {% extends "base.html" %}
-{% load static %}
-{% block title %}
-  Ingresar - The Caffeine Lane
-{% endblock title %}
-{% block header %}
-{% endblock header %}
-{% block footer %}
-{% endblock footer %}
+{% block title %}Ingresar · The Caffeine Lane{% endblock title %}
 {% block content %}
-  <div class="min-h-screen bg-black flex items-center justify-center py-12 px-4 relative overflow-hidden">
-    <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-5xl w-full">
-      {# Left Column: Form Card #}
-      <div class="bg-white rounded-2xl p-10 text-center w-full max-w-md mx-auto">
-        <div class="container mx-auto px-4">
-          <a href="{% url "home" %}"
-             class="text-xl font-bebas text-black hover:text-stone-800 transition">THE CAFFEINE LANE</a>
-          <h2 class="pt-2 text-4xl font-mont font-bold uppercase text-black">Bienvenido de nuevo</h2>
-        </div>
-        {# Error and Success Messages #}
-        {% if form.non_field_errors %}
-          <div class="bg-red-600 text-white px-5 py-3 rounded-lg text-sm font-mont mt-4 shadow-lg">
-            {% for error in form.non_field_errors %}{{ error }}{% endfor %}
-          </div>
-        {% endif %}
-        <form class="block space-y-6 mt-6" method="post" novalidate>
+  <main class="bg-stone-950 px-5 py-14 sm:px-8 sm:py-20">
+    <div class="mx-auto grid max-w-5xl gap-10 lg:grid-cols-[1fr_0.8fr] lg:items-center">
+      <section class="border-t-4 border-red-700 pt-5 text-white">
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-red-300">The Caffeine Lane · Comunidad</p>
+        <h1 class="mt-2 font-bebas text-6xl leading-[0.88] tracking-wide sm:text-8xl">Volvé a la ruta.</h1>
+        <p class="mt-5 max-w-lg text-lg leading-8 text-stone-300">Ingresá para compartir, comentar y guardar tu próxima historia.</p>
+      </section>
+      <section class="bg-white p-6 sm:p-8" aria-labelledby="login-heading">
+        <h2 id="login-heading" class="font-bebas text-5xl tracking-wide text-stone-950">Ingresar</h2>
+        <p class="mt-2 text-sm text-stone-600">Usá el correo asociado a tu cuenta.</p>
+        <form method="post" class="mt-7 space-y-5" novalidate>
           {% csrf_token %}
-          {# Email Field #}
-          <div class="text-left space-y-1">
-            <label for="{{ form.username.id_for_label }}"
-                   class="text-xs font-mont font-basic tracking-wide text-black">Correo electrónico</label>
-            <div class="relative">
-              <i class="fas fa-envelope absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-              {{ form.username }}
-            </div>
-            {% if form.username.errors %}
-              <p class="font-mont text-red-600 text-xs mt-1">{{ form.username.errors.0 }}</p>
-            {% endif %}
-          </div>
-          {# Password Field #}
-          <div class="text-left space-y-1">
-            <label for="{{ form.password.id_for_label }}"
-                   class="text-xs font-mont font-basic tracking-wide text-black">Contraseña</label>
-            <div class="relative">
-              <i class="fas fa-lock absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-              {{ form.password }}
-            </div>
-            {% if form.password.errors %}
-              <p class="font-mont text-red-600 text-xs mt-1">{{ form.password.errors.0 }}</p>
-            {% endif %}
-          </div>
-          <div class="flex items-center justify-end text-sm">
-            <a href="{% url 'password_reset' %}"
-               class="font-mont text-gray-600 hover:text-black transition">¿Olvidaste tu contraseña?</a>
-          </div>
-          <button type="submit"
-                  class="w-full py-3 px-8 bg-black text-white font-mont font-medium tracking-wider rounded-full hover:bg-stone-800 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center relative">
-            Ingresar
-            <i class="fas fa-arrow-right absolute right-4 top-1/2 transform -translate-y-1/2"></i>
-          </button>
+          {% if form.non_field_errors %}<div class="border-l-4 border-red-700 bg-red-50 p-4 text-sm text-red-900">{{ form.non_field_errors }}</div>{% endif %}
+          {% include "components/form_field.html" with field=form.username %}
+          {% include "components/form_field.html" with field=form.password %}
+          <div class="flex justify-end"><a class="text-sm font-bold text-red-700 hover:text-stone-950" href="{% url 'password_reset' %}">¿Olvidaste tu contraseña?</a></div>
+          <button class="button-primary w-full" type="submit">Ingresar</button>
         </form>
-        <p class="mt-4 text-xs font-mont font-normal text-gray-600">
-          ¿No tenés una cuenta?
-          <a href="{% url "register" %}"
-             class="font-semibold text-black hover:text-stone-800 transition">Registrate</a>
-        </p>
-      </div>
-      {# Right Column: Logo + Welcome Message #}
-      <div class="hidden lg:flex flex-col items-center justify-center text-center">
-        <a href="{% url "home" %}"
-           class="transition-transform duration-300 hover:scale-105">
-          <img src="{% static 'images/caffeinelane-logo-alternative-full.png' %}"
-               alt="The Caffeine Lane Logo"
-               class="h-56 w-auto mb-4 rounded-full"
-               width="224"
-               height="224" />
-        </a>
-        <div class="transition-transform duration-300 hover:scale-105">
-          <h2 class="text-3xl font-mont font-medium text-white">SALÍ A RODAR</h2>
-          <p class="mt-2 text-base font-mont text-gray-300">Construí tu historia. Compartí tu viaje.</p>
-        </div>
-      </div>
+        <p class="mt-6 border-t border-stone-200 pt-5 text-sm text-stone-600">¿No tenés una cuenta? <a class="font-bold text-red-700 hover:text-stone-950" href="{% url 'register' %}">Registrate</a>.</p>
+      </section>
     </div>
-  </div>
+  </main>
 {% endblock content %}

@@ -1,82 +1,53 @@
 {% extends "base.html" %}
-{% load static %}
-{% block title %}
-    {{ category.name }} - The Caffeine Lane
-{% endblock title %}
+{% block title %}{{ category.name }} · The Caffeine Lane{% endblock title %}
 {% block content %}
-    {# Full-width Category Banner Section #}
-    <div class="relative w-full h-[450px] bg-black">
-        {# Background Image #}
-        {% if category.image %}
-            <img src="{{ category.image.url }}"
-                 alt="{{ category.name }}"
-                 class="absolute inset-0 w-full h-full object-cover opacity-50"
-                 width="1920"
-                 height="450" />
-        {% else %}
-            <div class="absolute inset-0 bg-gray-800"></div>
+  <section class="relative isolate overflow-hidden bg-stone-950 text-white">
+    {% if category.image %}
+      <img class="absolute inset-0 -z-20 h-full w-full object-cover opacity-45" src="{{ category.image.url }}" alt="" aria-hidden="true" width="1920" height="520">
+    {% endif %}
+    <div class="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/75 to-stone-950/45"></div>
+    <div class="mx-auto flex min-h-[360px] max-w-7xl flex-col justify-end px-5 py-10 sm:min-h-[460px] sm:px-8 sm:py-14 lg:px-10">
+      <a class="inline-flex w-fit items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-stone-200 no-underline transition hover:text-red-300" href="{% url 'home' %}">
+        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+        Volver al inicio
+      </a>
+      <p class="mt-10 text-xs font-bold uppercase tracking-[0.22em] text-red-300">The Caffeine Lane · Archivo</p>
+      <h1 class="mt-2 max-w-full break-words font-bebas text-5xl leading-[0.85] tracking-wide sm:text-8xl lg:text-9xl">{{ category.name }}</h1>
+      <p class="mt-5 max-w-2xl text-base leading-7 text-stone-200 sm:text-lg">{{ page_obj.paginator.count }} entrada{{ page_obj.paginator.count|pluralize:"s" }} para seguir explorando la ruta.</p>
+    </div>
+  </section>
+
+  <main class="bg-stone-50">
+    <div class="mx-auto max-w-7xl px-5 py-14 sm:px-8 sm:py-20 lg:px-10">
+      <section aria-labelledby="category-posts-heading">
+        <div class="border-t-4 border-stone-950 pt-5">
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-red-700">Últimas publicaciones</p>
+          <h2 id="category-posts-heading" class="mt-1 font-bebas text-5xl tracking-wide text-stone-950 sm:text-6xl">Todo en {{ category.name }}</h2>
+        </div>
+        <div class="mt-7 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {% for post in posts %}
+            {% include "components/post_card.html" with post=post %}
+          {% empty %}
+            <p class="border-l-4 border-red-700 bg-white p-6 text-stone-700 sm:col-span-2 lg:col-span-3">Todavía no hay publicaciones en esta categoría.</p>
+          {% endfor %}
+        </div>
+
+        {% if is_paginated %}
+          <nav class="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-stone-300 pt-6" aria-label="Páginas de {{ category.name }}">
+            <div>
+              {% if page_obj.has_previous %}
+                <a class="inline-flex items-center gap-2 border border-stone-950 px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-stone-950 no-underline transition hover:border-red-700 hover:bg-red-700 hover:text-white" href="?page={{ page_obj.previous_page_number }}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Anterior</a>
+              {% endif %}
+            </div>
+            <p class="text-sm text-stone-600">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</p>
+            <div>
+              {% if page_obj.has_next %}
+                <a class="inline-flex items-center gap-2 border border-stone-950 px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-stone-950 no-underline transition hover:border-red-700 hover:bg-red-700 hover:text-white" href="?page={{ page_obj.next_page_number }}">Siguiente <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+              {% endif %}
+            </div>
+          </nav>
         {% endif %}
-        {# "Go Back" Link, positioned over the banner #}
-        <div class="absolute top-6 left-6 z-20">
-            <a href="{{ request.META.HTTP_REFERER|default:'/' }}"
-               class="text-sm text-white opacity-80 hover:opacity-100 transition inline-flex items-center bg-black bg-opacity-30 px-3 py-1 rounded-full">
-                <svg xmlns="http://www.w3.org/2000/svg"
-                     width="24"
-                     height="24"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="2"
-                     stroke-linecap="round"
-                     stroke-linejoin="round"
-                     class="w-4 h-4 mr-1">
-                    <path d="m15 18-6-6 6-6" />
-                </svg>
-                Volver
-            </a>
-        </div>
-        {# Centered Title #}
-        <div class="relative z-10 flex flex-col items-center justify-center w-full h-full text-white text-center px-4">
-            <h1 class="font-bebas text-7xl md:text-8xl leading-tight">{{ category.name }}</h1>
-        </div>
+      </section>
     </div>
-    {# Posts Grid Section #}
-    <div class="bg-white py-12">
-        <div class="container mx-auto px-4">
-            <section>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {% for post in posts %}
-                        <a href="{% url "post_detail" post.slug %}" class="block group">
-                            <div class="bg-white overflow-hidden transition-transform duration-300 group-hover:scale-105">
-                                {% if post.featured_image %}
-                                    <img src="{{ post.featured_image.url }}"
-                                         alt="{{ post.featured_image_alt }}"
-                                         class="w-full h-64 object-cover"
-                                         width="400"
-                                         height="256" />
-                                {% else %}
-                                    <div class="aspect-video bg-stone-100" aria-hidden="true"></div>
-                                {% endif %}
-                                <div class="p-4">
-                                    <div class="text-xs text-gray-600 mb-1">
-                                        <span class="font-bold text-gray-800">{{ post.author.username }}</span>
-                                    </div>
-                                    <h3 class="min-h-14 text-lg font-bold text-gray-900">{{ post.title }}</h3>
-                                </div>
-                            </div>
-                        </a>
-                    {% empty %}
-                        <p class="rounded-lg bg-gray-50 p-8 text-center text-gray-600 md:col-span-3">Todavía no hay publicaciones en esta categoría.</p>
-                    {% endfor %}
-                </div>
-                {% if is_paginated %}
-                    <nav class="mt-8 flex items-center justify-center gap-4" aria-label="Páginas de categoría">
-                        {% if page_obj.has_previous %}<a class="rounded border px-4 py-2" href="?page={{ page_obj.previous_page_number }}">Anterior</a>{% endif %}
-                        <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
-                        {% if page_obj.has_next %}<a class="rounded border px-4 py-2" href="?page={{ page_obj.next_page_number }}">Siguiente</a>{% endif %}
-                    </nav>
-                {% endif %}
-            </section>
-        </div>
-    </div>
+  </main>
 {% endblock content %}

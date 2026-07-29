@@ -1,33 +1,48 @@
 {% load static %}
 <a class="sr-only focus:not-sr-only" href="#main-content">Saltar al contenido</a>
-<header class="sticky top-0 z-40 border-b border-stone-800 bg-stone-950 text-white shadow-lg">
-  <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-    <a href="{% url 'home' %}" class="font-bebas text-3xl tracking-wide text-white no-underline">THE CAFFEINE LANE</a>
-    <form method="get" action="{% url 'search' %}" class="hidden sm:block">
-      <label class="sr-only" for="site-search">Buscar publicaciones</label>
-      <input id="site-search" name="q" type="search" placeholder="Buscar publicaciones" class="w-56 rounded-full border-0 px-4 py-2 text-sm text-black">
-    </form>
-    <button type="button" data-mobile-menu-button aria-controls="mobile-menu" aria-expanded="false" class="rounded-md border border-stone-500 px-3 py-2 text-sm font-semibold md:hidden">Menú</button>
+<header class="bg-black text-white">
+  <div class="brand-masthead">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
+      <a class="masthead-utility" href="{% url 'contact' %}">Contacto</a>
+      <form method="get" action="{% url 'search' %}" class="hidden w-full max-w-xs sm:block">
+        <label class="sr-only" for="site-search">Buscar publicaciones</label>
+        <div class="relative">
+          <input id="site-search" name="q" type="search" placeholder="Buscar publicaciones" class="masthead-search">
+          <button class="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 hover:text-red-700" type="submit" aria-label="Buscar publicaciones"><i class="fas fa-search" aria-hidden="true"></i></button>
+        </div>
+      </form>
+    </div>
+    <div class="px-4 pb-6 text-center sm:pb-8">
+      <a href="{% url 'home' %}" class="brand-title">THE CAFFEINE LANE</a>
+      <p class="mt-1 text-xs font-semibold uppercase tracking-[0.3em] text-stone-400">Ride · Build · Repeat</p>
+    </div>
   </div>
-  <nav class="hidden border-t border-stone-800 bg-stone-950 px-4 py-4 md:block" data-mobile-menu id="mobile-menu" aria-label="Navegación principal">
-    <div class="mx-auto flex max-w-7xl flex-col gap-4 md:flex-row md:items-center md:justify-between">
-      <div class="flex flex-col gap-3 text-sm font-semibold md:flex-row md:items-center md:gap-5">
-        <a class="nav-link" href="{% url 'home' %}">Inicio</a>
-        {% for category in navigation_categories %}
-          <a class="nav-link" href="{% url 'category_view' category_slug=category.slug %}">{{ category.name }}</a>
-        {% endfor %}
-        <a class="nav-link" href="{% url 'about' %}">Acerca de</a>
-        <a class="nav-link" href="{% url 'contact' %}">Contacto</a>
-      </div>
-      <div class="flex flex-wrap items-center gap-3 text-sm font-semibold">
-        {% if user.is_authenticated %}
-          {% if perms.posts.add_post %}<a class="nav-link" href="{% url 'post_create' %}">Nueva publicación</a>{% endif %}
-          <a class="nav-link" href="{% url 'profile' %}">{{ user.username }}</a>
-          <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit" class="nav-link">Salir</button></form>
-        {% else %}
-          <a class="nav-link" href="{% url 'login' %}">Ingresar</a>
-          <a class="rounded-md bg-red-700 px-3 py-2 text-white no-underline transition hover:bg-red-600" href="{% url 'register' %}">Registrarme</a>
-        {% endif %}
+
+  <nav class="site-nav" data-mobile-menu id="mobile-menu" aria-label="Navegación principal">
+    <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-2 sm:px-6">
+      <a href="{% url 'home' %}" class="flex shrink-0 items-center" aria-label="Ir al inicio">
+        <img src="{% static 'images/caffeinelane-logo-small.png' %}" alt="The Caffeine Lane" class="h-9 w-9 rounded-full border border-stone-600 object-cover" width="36" height="36">
+      </a>
+      <button type="button" data-mobile-menu-button aria-controls="primary-links" aria-expanded="false" class="site-menu-button md:hidden">Menú</button>
+      <div id="primary-links" data-mobile-menu-panel class="hidden w-full flex-col gap-3 border-t border-stone-800 pt-3 md:flex md:w-auto md:flex-row md:items-center md:gap-5 md:border-0 md:pt-0">
+        <div class="flex flex-col gap-3 md:flex-row md:items-center md:gap-5">
+          <a class="nav-link" href="{% url 'home' %}">Inicio</a>
+          <a class="nav-link md:hidden" href="{% url 'search' %}">Buscar</a>
+          {% for category in navigation_categories %}
+            <a class="nav-link" href="{% url 'category_view' category_slug=category.slug %}">{{ category.name }}</a>
+          {% endfor %}
+          <a class="nav-link" href="{% url 'about' %}">Acerca de</a>
+        </div>
+        <div class="flex flex-wrap items-center gap-3 border-t border-stone-800 pt-3 md:ml-3 md:border-l md:border-t-0 md:pl-5 md:pt-0">
+          {% if user.is_authenticated %}
+            {% if perms.posts.add_post %}<a class="nav-link" href="{% url 'post_create' %}">Nueva publicación</a>{% endif %}
+            <a class="nav-link" href="{% url 'profile' %}">{{ user.username }}</a>
+            <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit" class="nav-link">Salir</button></form>
+          {% else %}
+            <a class="nav-link" href="{% url 'login' %}">Ingresar</a>
+            <a class="nav-join" href="{% url 'register' %}">Registrarme</a>
+          {% endif %}
+        </div>
       </div>
     </div>
   </nav>

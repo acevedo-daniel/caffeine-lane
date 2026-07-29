@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   const button = document.querySelector("[data-mobile-menu-button]");
-  const menu = document.querySelector("[data-mobile-menu]");
+  const menu = document.querySelector("[data-mobile-menu-panel]");
   if (!button || !menu) return;
 
   button.addEventListener("click", () => {

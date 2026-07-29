@@ -3,49 +3,49 @@ from django import forms
 
 class ContactForm(forms.Form):
     from_name = forms.CharField(
-        label="Your Name",
+        label="Tu nombre",
         required=True,
         max_length=100,
         widget=forms.TextInput(
             attrs={
                 "class": "w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent",
-                "placeholder": "Tell us who you are",
+                "placeholder": "¿Cómo te llamás?",
             }
         ),
     )
 
     from_email = forms.EmailField(
-        label="Your Email",
+        label="Tu correo electrónico",
         required=True,
         max_length=254,
         widget=forms.EmailInput(
             attrs={
                 "class": "w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent",
-                "placeholder": "So we can reply to you",
+                "placeholder": "Para poder responderte",
             }
         ),
     )
 
     subject = forms.CharField(
-        label="Subject",
+        label="Asunto",
         required=True,
         max_length=150,
         widget=forms.TextInput(
             attrs={
                 "class": "w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent",
-                "placeholder": "What is your message about?",
+                "placeholder": "¿De qué se trata tu mensaje?",
             }
         ),
     )
 
     message = forms.CharField(
-        label="Your Message",
+        label="Tu mensaje",
         required=True,
         max_length=5000,
         widget=forms.Textarea(
             attrs={
                 "class": "w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent",
-                "placeholder": "Write your message here...",
+                "placeholder": "Escribí tu mensaje...",
                 "rows": 5,
             }
         ),

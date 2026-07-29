@@ -1,192 +1,108 @@
 {% extends "base.html" %}
-{% block title %}
-  Home - TheCaffeineLane
-{% endblock title %}
+{% block title %}Home · The Caffeine Lane{% endblock title %}
 {% block content %}
-  {# Main Carousel Section #}
   {% if banner_posts %}
-    <section class="relative h-[440px] w-full overflow-hidden bg-stone-950 shadow-xl md:h-[620px]">
-      <div id="carousel-container"
-           class="absolute inset-0 flex transition-transform duration-500 ease-in-out">
+    <section class="relative h-[470px] overflow-hidden bg-stone-950 shadow-2xl sm:h-[580px] lg:h-[650px]" aria-roledescription="carrusel" aria-label="Publicaciones destacadas">
+      <div id="carousel-container" class="absolute inset-0 flex transition-transform duration-500 ease-in-out">
         {% for post in banner_posts %}
-          <div class="carousel-slide relative flex-none w-full h-full overflow-hidden bg-black">
+          <article class="carousel-slide relative h-full w-full flex-none overflow-hidden bg-stone-950" aria-roledescription="diapositiva" aria-label="Publicación destacada {{ forloop.counter }}">
             {% if post.featured_image %}
-              <img src="{{ post.featured_image.url }}"
-                   alt=""
-                   aria-hidden="true"
-                   class="absolute inset-0 h-full w-full object-cover" />
+              <img class="absolute inset-0 h-full w-full object-cover" src="{{ post.featured_image.url }}" alt="" aria-hidden="true" width="1920" height="650">
             {% else %}
-              <div class="absolute inset-0 bg-gradient-to-br from-stone-800 to-stone-950"></div>
+              <div class="absolute inset-0 bg-gradient-to-br from-red-800 via-stone-950 to-black"></div>
             {% endif %}
-            <div class="absolute inset-0 bg-black bg-opacity-40"></div>
-            <div class="relative z-10 flex flex-col justify-end px-12 py-6 md:px-20 md:py-12 w-full h-full text-white">
-              <div class="max-w-3xl">
-                <div class="text-sm font-light mb-2">
-                  <span class="font-bold">{{ post.author.username }}</span> -
-                  {% for category in post.categories.all %}
-                    <span>{{ category.name }}
-                      {% if not forloop.last %},{% endif %}
-                    </span>
-                  {% endfor %}
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-black/10"></div>
+            <div class="relative mx-auto flex h-full max-w-7xl items-end px-5 py-10 sm:px-8 sm:py-14 lg:px-10">
+              <div class="max-w-3xl text-white">
+                <p class="text-xs font-bold uppercase tracking-[0.2em] text-red-300">
+                  {% for category in post.categories.all %}{{ category.name }}{% if not forloop.last %} · {% endif %}{% endfor %}
+                </p>
+                <h1 class="mt-3 font-bebas text-5xl leading-[0.88] tracking-wide sm:text-7xl lg:text-8xl">{{ post.title }}</h1>
+                <p class="mt-5 max-w-2xl text-base leading-7 text-stone-100 sm:text-lg">{{ post.excerpt|default:post.content|striptags|truncatewords:28 }}</p>
+                <div class="mt-7 flex flex-wrap items-center gap-4">
+                  <a class="inline-flex items-center gap-2 bg-white px-5 py-3 text-sm font-bold uppercase tracking-[0.1em] text-stone-950 no-underline transition hover:bg-red-700 hover:text-white" href="{{ post.get_absolute_url }}">
+                    Leer publicación <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                  </a>
+                  <p class="text-sm text-stone-300">Por {{ post.author.display_name|default:post.author.username }}</p>
                 </div>
-                <h2 class="mb-2 line-clamp-3 font-bebas text-4xl leading-tight md:text-6xl">{{ post.title }}</h2>
-                <p class="mb-4 line-clamp-3 font-mont text-lg font-light md:text-xl">{{ post.content|truncatewords:25 }}</p>
-                <a href="{% url "post_detail" post.slug %}"
-                   class="inline-block rounded-full bg-white px-6 py-3 font-mont font-bold text-black transition hover:bg-red-600 hover:text-white">Leer publicación</a>
               </div>
             </div>
-          </div>
+          </article>
         {% endfor %}
       </div>
-      {# Carousel navigation buttons #}
-      <button id="prev-btn"
-              class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white bg-opacity-30 hover:bg-opacity-50 text-white p-3 rounded-full z-20"
-              aria-label="Publicación anterior">
-        <svg xmlns="http://www.w3.org/2000/svg"
-             width="24"
-             height="24"
-             viewBox="0 0 24 24"
-             fill="none"
-             stroke="currentColor"
-             stroke-width="2"
-             stroke-linecap="round"
-             stroke-linejoin="round"
-             class="lucide lucide-chevron-left">
-          <path d="m15 18-6-6 6-6" />
-        </svg>
+      <button id="prev-btn" class="absolute left-3 top-1/2 z-20 grid size-11 -translate-y-1/2 place-items-center border border-white/60 bg-black/30 text-white transition hover:border-red-600 hover:bg-red-700 focus-visible:outline-white sm:left-6" type="button" aria-label="Publicación anterior">
+        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
       </button>
-      <button id="next-btn"
-              class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white bg-opacity-30 hover:bg-opacity-50 text-white p-3 rounded-full z-20"
-              aria-label="Publicación siguiente">
-        <svg xmlns="http://www.w3.org/2000/svg"
-             width="24"
-             height="24"
-             viewBox="0 0 24 24"
-             fill="none"
-             stroke="currentColor"
-             stroke-width="2"
-             stroke-linecap="round"
-             stroke-linejoin="round"
-             class="lucide lucide-chevron-right">
-          <path d="m9 18 6-6-6-6" />
-        </svg>
+      <button id="next-btn" class="absolute right-3 top-1/2 z-20 grid size-11 -translate-y-1/2 place-items-center border border-white/60 bg-black/30 text-white transition hover:border-red-600 hover:bg-red-700 focus-visible:outline-white sm:right-6" type="button" aria-label="Publicación siguiente">
+        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
       </button>
+    </section>
+  {% else %}
+    <section class="bg-stone-950 px-5 py-20 text-white sm:px-8 sm:py-28">
+      <div class="mx-auto max-w-7xl">
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-red-400">The Caffeine Lane</p>
+        <h1 class="mt-3 font-bebas text-6xl leading-[0.88] tracking-wide sm:text-8xl">Historias para la ruta.</h1>
+        <p class="mt-6 max-w-2xl text-lg text-stone-300">Estamos preparando las próximas publicaciones.</p>
+      </div>
     </section>
   {% endif %}
-  <div class="container mx-auto px-4">
-    {# Builds & Features Section #}
-    <section class="mt-10">
-      <div>
-        <h2 class="font-bebas text-4xl tracking-wide">Builds</h2>
-        <p class="mb-5 text-gray-600">Proyectos de garaje para inspirar tu próxima salida.</p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {% for post in new_builds %}
-          <a href="{% url "post_detail" post.slug %}" class="block group">
-            <div class="bg-white rounded-lg overflow-hidden transition-transform duration-300 group-hover:scale-105">
-              {% if post.featured_image %}
-                <img src="{{ post.featured_image.url }}"
-                     alt="{{ post.featured_image_alt }}"
-                     class="w-full h-64 object-cover"
-                     width="400"
-                     height="256" />
-              {% else %}
-                <div class="aspect-video bg-gray-100" aria-hidden="true"></div>
-              {% endif %}
-              <div class="p-4">
-                <div class="text-xs text-gray-600 mb-1">
-                  <span class="font-bold text-gray-800">{{ post.author.username }}</span> -
-                  {% for category in post.categories.all %}
-                    <span>{{ category.name }}
-                      {% if not forloop.last %},{% endif %}
-                    </span>
-                  {% endfor %}
-                </div>
-                <h3 class="min-h-14 text-lg font-bold text-gray-900">{{ post.title }}</h3>
-              </div>
-            </div>
-          </a>
-        {% endfor %}
-      </div>
-      <div class="flex justify-center">
-        <a href="{% url 'category_view' category_slug=builds_category_slug %}"
-           class="mt-8 rounded-full border-2 border-black bg-white px-8 py-3 text-sm font-medium text-black transition hover:bg-black hover:text-white">Ver todos los builds</a>
-      </div>
-    </section>
-    {# How-To & Guides Section #}
-    <section class="mt-12">
-      <div>
-        <h2 class="font-bebas text-4xl tracking-wide">Guías</h2>
-        <p class="mb-5 text-gray-600">Consejos prácticos para rodar y mantener tu moto.</p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {% for post in new_guides %}
-          <a href="{% url "post_detail" post.slug %}" class="block group">
-            <div class="bg-white rounded-lg overflow-hidden transition-transform duration-300 group-hover:scale-105">
-              {% if post.featured_image %}
-                <img src="{{ post.featured_image.url }}"
-                     alt="{{ post.featured_image_alt }}"
-                     class="w-full h-64 object-cover"
-                     width="400"
-                     height="256" />
-              {% else %}
-                <div class="aspect-video bg-gray-100" aria-hidden="true"></div>
-              {% endif %}
-              <div class="p-4">
-                <div class="text-xs text-gray-600 mb-1">
-                  <span class="font-bold text-gray-800">{{ post.author.username }}</span> -
-                  {% for category in post.categories.all %}
-                    <span>{{ category.name }}
-                      {% if not forloop.last %},{% endif %}
-                    </span>
-                  {% endfor %}
-                </div>
-                <h3 class="min-h-14 text-lg font-bold text-gray-900">{{ post.title }}</h3>
-              </div>
-            </div>
-          </a>
-        {% endfor %}
-      </div>
-      <div class="flex justify-center">
-        <a href="{% url 'category_view' category_slug=guides_category_slug %}"
-           class="mt-8 rounded-full border-2 border-black bg-white px-8 py-3 text-sm font-medium text-black transition hover:bg-black hover:text-white">Ver todas las guías</a>
-      </div>
-    </section>
-    {# Gear & Product Reviews Section #}
-    <section class="mt-12">
-      <div>
-        <h2 class="font-bebas text-4xl tracking-wide">Reviews</h2>
-        <p class="mb-5 text-gray-600">Pruebas sinceras para decidir qué te acompaña en la ruta.</p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        {% for post in new_reviews %}
-          <a href="{% url "post_detail" post.slug %}" class="block group">
-            <div class="overflow-hidden transition-transform duration-300 group-hover:scale-105">
-              {% if post.featured_image %}
-                <img src="{{ post.featured_image.url }}"
-                     alt="{{ post.featured_image_alt }}"
-                     class="w-full h-48 object-cover"
-                     width="300"
-                     height="192" />
-              {% else %}
-                <div class="aspect-video bg-gray-100" aria-hidden="true"></div>
-              {% endif %}
-              <div class="p-2">
-                <div class="text-xs text-gray-600 mb-1">
-                  <span class="font-bold text-gray-800">{{ post.author.username }}</span> -
-                  {% for category in post.categories.all %}
-                    <span>{{ category.name }}
-                      {% if not forloop.last %},{% endif %}
-                    </span>
-                  {% endfor %}
-                </div>
-                <h3 class="min-h-12 text-base font-bold leading-tight text-gray-900">{{ post.title }}</h3>
-              </div>
-            </div>
-          </a>
-        {% endfor %}
-      </div>
-    </section>
+
+  <div class="bg-stone-50">
+    <div class="mx-auto max-w-7xl px-5 py-14 sm:px-8 sm:py-20 lg:px-10">
+      <section aria-labelledby="builds-heading">
+        <div class="flex flex-wrap items-end justify-between gap-5 border-t-4 border-stone-950 pt-5">
+          <div>
+            <p class="text-xs font-bold uppercase tracking-[0.2em] text-red-700">Builds & features</p>
+            <h2 id="builds-heading" class="mt-1 font-bebas text-5xl tracking-wide text-stone-950 sm:text-6xl">Builds</h2>
+            <p class="mt-2 text-stone-600">Proyectos de garaje para inspirar tu próxima salida.</p>
+          </div>
+          <a class="inline-flex items-center gap-2 border border-stone-950 px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-stone-950 no-underline transition hover:border-red-700 hover:bg-red-700 hover:text-white" href="{% url 'category_view' category_slug=builds_category_slug %}">Ver todos <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+        {% if new_builds %}
+          <div class="mt-7 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {% for post in new_builds %}{% include "components/post_card.html" with post=post %}{% endfor %}
+          </div>
+        {% else %}
+          <p class="mt-7 border-l-4 border-red-700 bg-white p-5 text-stone-700">Todavía no hay builds publicados.</p>
+        {% endif %}
+      </section>
+
+      <section class="mt-16" aria-labelledby="guides-heading">
+        <div class="flex flex-wrap items-end justify-between gap-5 border-t-4 border-stone-950 pt-5">
+          <div>
+            <p class="text-xs font-bold uppercase tracking-[0.2em] text-red-700">How-to & guides</p>
+            <h2 id="guides-heading" class="mt-1 font-bebas text-5xl tracking-wide text-stone-950 sm:text-6xl">Guías</h2>
+            <p class="mt-2 text-stone-600">Consejos prácticos para rodar y mantener tu moto.</p>
+          </div>
+          <a class="inline-flex items-center gap-2 border border-stone-950 px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-stone-950 no-underline transition hover:border-red-700 hover:bg-red-700 hover:text-white" href="{% url 'category_view' category_slug=guides_category_slug %}">Ver todas <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+        {% if new_guides %}
+          <div class="mt-7 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {% for post in new_guides %}{% include "components/post_card.html" with post=post %}{% endfor %}
+          </div>
+        {% else %}
+          <p class="mt-7 border-l-4 border-red-700 bg-white p-5 text-stone-700">Todavía no hay guías publicadas.</p>
+        {% endif %}
+      </section>
+
+      <section class="mt-16" aria-labelledby="reviews-heading">
+        <div class="flex flex-wrap items-end justify-between gap-5 border-t-4 border-stone-950 pt-5">
+          <div>
+            <p class="text-xs font-bold uppercase tracking-[0.2em] text-red-700">Gear & product reviews</p>
+            <h2 id="reviews-heading" class="mt-1 font-bebas text-5xl tracking-wide text-stone-950 sm:text-6xl">Reviews</h2>
+            <p class="mt-2 text-stone-600">Pruebas sinceras para decidir qué te acompaña en la ruta.</p>
+          </div>
+          <a class="inline-flex items-center gap-2 border border-stone-950 px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-stone-950 no-underline transition hover:border-red-700 hover:bg-red-700 hover:text-white" href="{% url 'category_view' category_slug=reviews_category_slug %}">Ver todas <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+        {% if new_reviews %}
+          <div class="mt-7 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {% for post in new_reviews %}{% include "components/post_card.html" with post=post card_variant="compact" %}{% endfor %}
+          </div>
+        {% else %}
+          <p class="mt-7 border-l-4 border-red-700 bg-white p-5 text-stone-700">Todavía no hay reviews publicadas.</p>
+        {% endif %}
+      </section>
+    </div>
   </div>
 {% endblock content %}
 {% block scripts %}

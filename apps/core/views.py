@@ -57,6 +57,7 @@ def home(request):
         "new_reviews": new_reviews,
         "builds_category_slug": CategorySlug.BUILDS,
         "guides_category_slug": CategorySlug.GUIDES,
+        "reviews_category_slug": CategorySlug.REVIEWS,
         "total_posts": total_posts,
         "categories": categories,
     }
