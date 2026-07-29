@@ -63,9 +63,7 @@ jobs:
           ALLOWED_HOSTS: example.test
           CSRF_TRUSTED_ORIGINS: https://example.test
           CLOUDINARY_URL: cloudinary://123456789012345:ci-secret@example
-          EMAIL_HOST: smtp.example.test
-          EMAIL_HOST_USER: ci-user
-          EMAIL_HOST_PASSWORD: ci-password
+          RESEND_API_KEY: re_ci_not_a_real_key
           SECURE_HSTS_SECONDS: "31536000"
           SECURE_HSTS_INCLUDE_SUBDOMAINS: "true"
           SECURE_HSTS_PRELOAD: "true"

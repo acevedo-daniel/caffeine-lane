@@ -19,7 +19,7 @@ class LegacyCoreCharacterizationTests(TestCase):
 
     def test_health_endpoint_is_available_without_database_queries(self):
         with self.assertNumQueries(0):
-            response = self.client.get(reverse("health"))
+            response = self.client.get(reverse("healthz"))
 
         self.assertEqual(response.json(), {"status": "ok"})
 

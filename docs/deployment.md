@@ -10,7 +10,7 @@ docker run --rm -p 8000:8000 --env-file .env caffeine-lane
 ```
 
 El contenedor usa `config.settings.production`, recoge estáticos al iniciar y expone
-`GET /health/`. La media se almacena en Cloudinary, por lo que el contenedor no depende
+`GET /healthz/`. La media se almacena en Cloudinary, por lo que el contenedor no depende
 de un volumen de media local.
 
 ## Release de migraciones

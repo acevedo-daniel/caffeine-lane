@@ -19,20 +19,13 @@ CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 
 DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL")
 CONTACT_RECIPIENT_EMAIL = env.str("CONTACT_RECIPIENT_EMAIL")
-EMAIL_BACKEND = env.str(
-    "EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend"
-)
-EMAIL_HOST = env.str("EMAIL_HOST")
-EMAIL_PORT = env.int("EMAIL_PORT", default=587)
-EMAIL_HOST_USER = env.str("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = env.str("EMAIL_HOST_PASSWORD")
-EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)
-EMAIL_TIMEOUT = env.int("EMAIL_TIMEOUT", default=10)
+EMAIL_BACKEND = "anymail.backends.resend.EmailBackend"
+ANYMAIL = {"RESEND_API_KEY": env.str("RESEND_API_KEY")}
 
 if not os.environ.get("CLOUDINARY_URL"):
     raise ImproperlyConfigured("CLOUDINARY_URL is required in production.")
 
-INSTALLED_APPS += ["cloudinary_storage", "cloudinary"]
+INSTALLED_APPS += ["anymail", "cloudinary_storage", "cloudinary"]
 MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
 MIDDLEWARE.insert(2, "django.middleware.csp.ContentSecurityPolicyMiddleware")
 STORAGES = {
@@ -43,7 +36,7 @@ STORAGES = {
 }
 
 SECURE_SSL_REDIRECT = True
-SECURE_REDIRECT_EXEMPT = [r"^health/$"]
+SECURE_REDIRECT_EXEMPT = [r"^health/$", r"^healthz/$"]
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SECURE_HSTS_SECONDS = env.int("SECURE_HSTS_SECONDS", default=3600)

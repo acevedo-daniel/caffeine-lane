@@ -1,4 +1,4 @@
-# The Caffeine Lane
+# Caffeine Lane
 
 > Un blog editorial de motos café racer modernizado como proyecto de portfolio.
 
@@ -20,13 +20,13 @@ base repetible para despliegue con Docker.
 
 ## Project Context
 
-| Field | Details |
-| --- | --- |
-| **Type** | Personal portfolio project; modernization of an academic project |
-| **Purpose** | Demonstrate an end-to-end Django modernization and editorial domain design |
-| **Role** | Solo developer |
-| **Started** | 2025-07 |
-| **Current version** | v2 modernization in progress |
+| Field               | Details                                                                    |
+| ------------------- | -------------------------------------------------------------------------- |
+| **Type**            | Personal portfolio project; modernization of an academic project           |
+| **Purpose**         | Demonstrate an end-to-end Django modernization and editorial domain design |
+| **Role**            | Solo developer                                                             |
+| **Started**         | 2025-07                                                                    |
+| **Current version** | v2 modernization in progress                                               |
 
 ## Key Features
 
@@ -43,17 +43,17 @@ base repetible para despliegue con Docker.
 
 ## Tech Stack
 
-| Area | Technology |
-| --- | --- |
-| **Language** | Python 3.13–3.14 |
-| **Framework** | Django 6.0 |
-| **Database** | PostgreSQL 18 locally; PostgreSQL-compatible managed database in deployment |
-| **Package management** | uv and `uv.lock` |
-| **Frontend assets** | Tailwind CSS 4, pnpm and compiled static files |
-| **Testing** | pytest, pytest-django, coverage and factory-boy |
-| **Quality** | Ruff and pre-commit |
-| **Infrastructure** | Docker multi-stage image, Gunicorn, WhiteNoise and Cloudinary |
-| **CI** | GitHub Actions on Python 3.13 and 3.14 |
+| Area                   | Technology                                                                  |
+| ---------------------- | --------------------------------------------------------------------------- |
+| **Language**           | Python 3.13–3.14                                                            |
+| **Framework**          | Django 6.0                                                                  |
+| **Database**           | PostgreSQL 18 locally; PostgreSQL-compatible managed database in deployment |
+| **Package management** | uv and `uv.lock`                                                            |
+| **Frontend assets**    | Tailwind CSS 4, pnpm and compiled static files                              |
+| **Testing**            | pytest, pytest-django, coverage and factory-boy                             |
+| **Quality**            | Ruff and pre-commit                                                         |
+| **Infrastructure**     | Docker multi-stage image, Gunicorn, WhiteNoise and Cloudinary               |
+| **CI**                 | GitHub Actions on Python 3.13 and 3.14                                      |
 
 ## Scope
 
@@ -112,18 +112,18 @@ pnpm run build
 `.env.example` contains safe development values. Do not commit `.env` or real
 credentials.
 
-| Variable | Required locally | Description |
-| --- | :---: | --- |
-| `DJANGO_SETTINGS_MODULE` | Yes | `config.settings.local` for local work |
-| `SECRET_KEY` | Yes | Local Django secret; production must use a unique secret |
-| `DATABASE_URL` | Yes | PostgreSQL connection string |
-| `ALLOWED_HOSTS` | Yes | Comma-separated allowed hosts |
-| `CSRF_TRUSTED_ORIGINS` | Yes | Trusted form origins including scheme |
-| `CLOUDINARY_URL` | No | Required only by production media storage |
-| `DEFAULT_FROM_EMAIL` | Yes | Sender address for application emails |
-| `CONTACT_RECIPIENT_EMAIL` | Yes | Recipient for contact messages |
-| `EMAIL_HOST`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` | No | Required by production SMTP |
-| `CSP_ENFORCE` | No | Enables enforcing CSP after report-only validation |
+| Variable                                               | Required locally | Description                                              |
+| ------------------------------------------------------ | :--------------: | -------------------------------------------------------- |
+| `DJANGO_SETTINGS_MODULE`                               |       Yes        | `config.settings.local` for local work                   |
+| `SECRET_KEY`                                           |       Yes        | Local Django secret; production must use a unique secret |
+| `DATABASE_URL`                                         |       Yes        | PostgreSQL connection string                             |
+| `ALLOWED_HOSTS`                                        |       Yes        | Comma-separated allowed hosts                            |
+| `CSRF_TRUSTED_ORIGINS`                                 |       Yes        | Trusted form origins including scheme                    |
+| `CLOUDINARY_URL`                                       |        No        | Required only by production media storage                |
+| `DEFAULT_FROM_EMAIL`                                   |       Yes        | Sender address for application emails                    |
+| `CONTACT_RECIPIENT_EMAIL`                              |       Yes        | Recipient for contact messages                           |
+| `RESEND_API_KEY`                                        |        No        | Required by the Resend email backend in production       |
+| `CSP_ENFORCE`                                          |        No        | Enables enforcing CSP after report-only validation       |
 
 ### Database Setup
 
@@ -157,23 +157,23 @@ The application is available at <http://localhost:8000>.
 The liveness endpoint is available at:
 
 ```text
-GET /health/ → {"status": "ok"}
+GET /healthz/ → {"status": "ok"}
 ```
 
 ## Available Scripts
 
-| Command | Description |
-| --- | --- |
-| `docker compose up -d db` | Starts local PostgreSQL 18. |
-| `uv sync` | Creates or updates the local Python environment. |
-| `pnpm run build` | Compiles Tailwind CSS and JavaScript assets. |
-| `uv run python manage.py runserver` | Starts Django locally. |
-| `uv run python manage.py migrate` | Applies database migrations. |
-| `uv run pytest` | Runs the automated test suite with coverage. |
-| `uv run ruff check .` | Runs lint checks. |
-| `uv run ruff format --check .` | Verifies formatting. |
-| `powershell -ExecutionPolicy Bypass -File scripts/check.ps1` | Runs the standard local quality checks. |
-| `powershell -ExecutionPolicy Bypass -File scripts/format.ps1` | Applies Ruff lint fixes and formatting. |
+| Command                                                       | Description                                      |
+| ------------------------------------------------------------- | ------------------------------------------------ |
+| `docker compose up -d db`                                     | Starts local PostgreSQL 18.                      |
+| `uv sync`                                                     | Creates or updates the local Python environment. |
+| `pnpm run build`                                              | Compiles Tailwind CSS and JavaScript assets.     |
+| `uv run python manage.py runserver`                           | Starts Django locally.                           |
+| `uv run python manage.py migrate`                             | Applies database migrations.                     |
+| `uv run pytest`                                               | Runs the automated test suite with coverage.     |
+| `uv run ruff check .`                                         | Runs lint checks.                                |
+| `uv run ruff format --check .`                                | Verifies formatting.                             |
+| `powershell -ExecutionPolicy Bypass -File scripts/check.ps1`  | Runs the standard local quality checks.          |
+| `powershell -ExecutionPolicy Bypass -File scripts/format.ps1` | Applies Ruff lint fixes and formatting.          |
 
 ## Project Structure
 
@@ -271,6 +271,7 @@ environment. See the deployment runbook for the complete process.
 - [Content import](./docs/content-import.md)
 - [Docker deployment](./docs/deployment.md)
 - [Staging rollout](./docs/staging-rollout.md)
+- [Render, Neon, Cloudinary and Resend](./docs/render-neon-cloudinary-resend.md)
 
 ## License
 
