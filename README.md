@@ -124,7 +124,7 @@ database URLs, or provider credentials.
 | `DJANGO_SETTINGS_MODULE` | Yes | Active settings module | `config.settings.local` |
 | `SECRET_KEY` | Yes | Django signing key | local value in `.env.example` |
 | `DATABASE_URL` | Yes | Local PostgreSQL or Neon pooled connection URL | `postgresql://...` |
-| `DIRECT_DATABASE_URL` | Release only | Direct Neon URL used only by the manual migration task | `postgresql://...` |
+| `DIRECT_DATABASE_URL` | Yes | Direct Neon URL used by startup migrations | `postgresql://...` |
 | `ALLOWED_HOSTS` | Yes | Comma-separated allowed hosts | `localhost,127.0.0.1` |
 | `CSRF_TRUSTED_ORIGINS` | Yes | Trusted form origins with scheme | `http://localhost:8000` |
 | `CLOUDINARY_URL` | Production | Cloudinary media-storage credential | provider-issued secret |
@@ -235,11 +235,10 @@ caffeine-lane/
 comments, and `core` owns shared pages, contact email, and health endpoints.
 Settings are isolated by environment.
 
-In production, Render runs the Docker image. The container verifies the fresh
-baseline, collects static files, and starts Gunicorn on Render's assigned
-`PORT`. `DATABASE_URL` is mandatory and uses the pooled Neon connection.
-Database migrations are an explicit one-time release operation that can use
-`DIRECT_DATABASE_URL`.
+In production, Render runs the Docker image. Before Gunicorn starts on Render's
+assigned `PORT`, the container verifies the fresh baseline, applies migrations
+with `DIRECT_DATABASE_URL`, returns to the pooled `DATABASE_URL`, seeds the
+idempotent public portfolio, and collects static files.
 WhiteNoise serves static files, Cloudinary stores uploaded media, Neon stores
 relational data, and Anymail sends email through Resend.
 
@@ -288,12 +287,10 @@ Required production variables are `DJANGO_SETTINGS_MODULE`, `SECRET_KEY`,
 the environment-variable table above.
 
 The Docker entrypoint is the only web-process startup path. It never loads
-fixtures, creates superusers, or executes migrations. From a trusted release
-environment, run `./scripts/release.sh` once with both Neon URLs configured;
-it switches temporarily to `DIRECT_DATABASE_URL`, runs `migrate --noinput`,
-and verifies `posts.0007_create_structural_categories` plus `builds`,
-`guides`, and `reviews`. The web service always requires pooled
-`DATABASE_URL`.
+fixtures or creates superusers. Because Render Free does not offer an execution
+shell, it runs the idempotent migrations and `seed_portfolio` before each web
+process start; migrations use `DIRECT_DATABASE_URL` and the application returns
+to the pooled `DATABASE_URL`. The service therefore requires both URLs.
 
 > [!NOTE]
 > `onboarding@resend.dev` can only send to the email address associated with the

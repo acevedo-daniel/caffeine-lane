@@ -26,6 +26,7 @@ FROM python:3.13.6-slim AS runtime
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     DJANGO_SETTINGS_MODULE=config.settings.production \
+    RUN_RELEASE_TASKS_ON_START=1 \
     PATH="/app/.venv/bin:$PATH"
 
 WORKDIR /app

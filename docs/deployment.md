@@ -26,9 +26,14 @@ detecta la tabla heredada `accounts_profile`. Esta comprobacion no borra datos.
 
 ## Migracion de release
 
-Las migraciones no se ejecutan durante el arranque del servidor. Ejecutalas una
-vez desde una máquina de confianza o un workflow manual de release, con las
-mismas variables de producción y ambas conexiones de Neon:
+Render Free no ofrece una shell de ejecución. Por eso la imagen de producción
+ejecuta tareas idempotentes de release antes de iniciar Gunicorn: migra con
+`DIRECT_DATABASE_URL`, vuelve a la conexión pooled y ejecuta
+`seed_portfolio`. Esto ocurre en cada arranque; la semilla usa
+`update_or_create` y solo sube una imagen si el post todavía no la tiene.
+
+Para ejecutar la misma verificación desde una máquina de confianza, con ambas
+conexiones de Neon:
 
 ```bash
 ./scripts/release.sh
@@ -42,11 +47,10 @@ bash ./scripts/release.sh
 
 El script usa temporalmente `DIRECT_DATABASE_URL`, ejecuta `migrate --noinput`
 y verifica que `posts.0007_create_structural_categories` y las categorías
-`builds`, `guides` y `reviews` estén presentes. Luego, si corresponde, ejecutá
-manualmente `uv run python manage.py seed_portfolio` una única vez para cargar
-el contenido público y sus imágenes en Cloudinary.
+`builds`, `guides` y `reviews` estén presentes. En Render, el entrypoint carga
+el portfolio público y sus imágenes en Cloudinary antes de iniciar Gunicorn.
 
-El Web Service de Render siempre requiere la URL pooled en `DATABASE_URL`; no
-puede iniciar sin ella ni recurrir a SQLite. `DIRECT_DATABASE_URL` solo se usa
-en la tarea manual de release. No se cargan fixtures ni se crean superusuarios
-durante el build o el arranque.
+El Web Service de Render requiere la URL pooled en `DATABASE_URL` y la conexión
+directa en `DIRECT_DATABASE_URL`; no puede iniciar sin ambas ni recurrir a
+SQLite. No se cargan fixtures ni se crean superusuarios durante el build o el
+arranque.
