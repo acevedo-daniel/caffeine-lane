@@ -17,7 +17,10 @@ if not ALLOWED_HOSTS:
 
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 
-DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL")
+DEFAULT_FROM_EMAIL = env.str(
+    "DEFAULT_FROM_EMAIL",
+    default="The Caffeine Lane <onboarding@resend.dev>",
+)
 CONTACT_RECIPIENT_EMAIL = env.str("CONTACT_RECIPIENT_EMAIL")
 EMAIL_BACKEND = "anymail.backends.resend.EmailBackend"
 ANYMAIL = {"RESEND_API_KEY": env.str("RESEND_API_KEY")}
