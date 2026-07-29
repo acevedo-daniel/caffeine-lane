@@ -12,9 +12,9 @@
     <link rel="stylesheet" href="{% static 'vendor/fontawesome-free-7.0.0-web/css/all.min.css' %}">
     <link rel="stylesheet" href="{% static 'dist/css/app.css' %}">
   </head>
-  <body class="min-h-screen bg-white text-black">
+  <body class="flex min-h-screen flex-col bg-stone-50 font-mont text-stone-950 antialiased">
     {% block header %}{% include "components/header.html" %}{% endblock %}
-    <main id="main-content">
+    <main id="main-content" class="flex-1">
       {% include "components/messages.html" %}
       {% block content %}{% endblock %}
     </main>

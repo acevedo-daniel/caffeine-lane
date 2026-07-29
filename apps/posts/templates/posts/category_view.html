@@ -54,12 +54,14 @@
                                          class="w-full h-64 object-cover"
                                          width="400"
                                          height="256" />
+                                {% else %}
+                                    <div class="aspect-video bg-stone-100" aria-hidden="true"></div>
                                 {% endif %}
                                 <div class="p-4">
                                     <div class="text-xs text-gray-600 mb-1">
                                         <span class="font-bold text-gray-800">{{ post.author.username }}</span>
                                     </div>
-                                    <h3 class="text-lg font-bold text-gray-900">{{ post.title }}</h3>
+                                    <h3 class="min-h-14 text-lg font-bold text-gray-900">{{ post.title }}</h3>
                                 </div>
                             </div>
                         </a>

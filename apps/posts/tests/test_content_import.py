@@ -8,6 +8,10 @@ from django.test import TestCase
 
 from apps.accounts.models import User
 from apps.posts.content_import import import_selected_content
+from apps.posts.management.commands.seed_portfolio import (
+    PORTFOLIO_POSTS,
+    RESERVED_SLIDER_ASSET,
+)
 from apps.posts.models import Category, Post
 
 
@@ -61,6 +65,9 @@ class ContentImportTests(TestCase):
             all(post.featured_image.name.endswith(".webp") for post in posts)
         )
         self.assertTrue(all(post.featured_image_alt for post in posts))
+        self.assertNotIn(
+            RESERVED_SLIDER_ASSET, {item["image"] for item in PORTFOLIO_POSTS}
+        )
 
     def test_verify_portfolio_baseline_confirms_migration_and_categories(self):
         call_command("verify_portfolio_baseline")

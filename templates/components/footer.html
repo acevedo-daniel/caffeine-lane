@@ -1,13 +1,13 @@
 {% load static %}
-<footer class="mt-10 bg-black px-4 py-10 text-center text-white">
-  <a href="{% url 'home' %}" class="font-bebas text-4xl">THE CAFFEINE LANE</a>
-  <p class="mx-auto mt-4 max-w-md text-sm">Builds, guides and reviews for people who ride.</p>
-  <nav class="mt-5 flex flex-wrap justify-center gap-4 text-sm" aria-label="Navegación secundaria">
-    <a href="{% url 'about' %}">Acerca de</a>
-    <a href="{% url 'contact' %}">Contacto</a>
+<footer class="mt-16 border-t border-stone-800 bg-stone-950 px-4 py-12 text-center text-white">
+  <a href="{% url 'home' %}" class="font-bebas text-4xl text-white no-underline">THE CAFFEINE LANE</a>
+  <p class="mx-auto mt-3 max-w-md text-sm leading-6 text-stone-300">Builds, guías y reviews para personas que disfrutan rodar.</p>
+  <nav class="mt-6 flex flex-wrap justify-center gap-x-5 gap-y-3 text-sm font-semibold" aria-label="Navegación secundaria">
+    <a class="nav-link" href="{% url 'about' %}">Acerca de</a>
+    <a class="nav-link" href="{% url 'contact' %}">Contacto</a>
     {% for category in navigation_categories %}
-      <a href="{% url 'category_view' category_slug=category.slug %}">{{ category.name }}</a>
+      <a class="nav-link" href="{% url 'category_view' category_slug=category.slug %}">{{ category.name }}</a>
     {% endfor %}
   </nav>
-  <p class="mt-6 text-xs">© 2026 The Caffeine Lane. Todos los derechos reservados.</p>
+  <p class="mt-8 text-xs text-stone-400">© 2026 The Caffeine Lane. Todos los derechos reservados.</p>
 </footer>

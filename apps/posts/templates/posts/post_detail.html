@@ -1,85 +1,47 @@
 {% extends "base.html" %}
-{% block title %}{{ post.title }} - The Caffeine Lane{% endblock title %}
+{% block title %}{{ post.title }} · The Caffeine Lane{% endblock title %}
 {% block content %}
-  <article class="max-w-4xl mx-auto py-8 px-4">
-    <h1>{{ post.title }}</h1>
-    <p>By {{ post.author.display_name|default:post.author.username }} · {{ post.published_at|date:"F j, Y" }}</p>
-    {% if post.featured_image %}<img src="{{ post.featured_image.url }}" alt="{{ post.featured_image_alt }}" width="1200" height="675">{% endif %}
-    <div>{{ post.content|linebreaks }}</div>
+  <article class="mx-auto max-w-4xl px-4 py-10 sm:px-6">
+    <header class="max-w-3xl">
+      <div class="mb-3 flex flex-wrap gap-2">{% for category in post.categories.all %}<a class="rounded-full bg-red-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-red-800 no-underline" href="{% url 'category_view' category.slug %}">{{ category.name }}</a>{% endfor %}</div>
+      <h1 class="font-bebas text-5xl leading-none tracking-wide sm:text-7xl">{{ post.title }}</h1>
+      <p class="mt-4 text-sm text-stone-600">Por {{ post.author.display_name|default:post.author.username }} · {{ post.published_at|date:"j de F de Y" }}</p>
+      {% if post.excerpt %}<p class="mt-6 text-xl leading-8 text-stone-700">{{ post.excerpt }}</p>{% endif %}
+    </header>
+    {% if post.featured_image %}<img src="{{ post.featured_image.url }}" alt="{{ post.featured_image_alt }}" class="mt-8 aspect-video w-full rounded-xl object-cover shadow-sm" width="1200" height="675">{% endif %}
+    <div class="prose mt-8 max-w-none prose-stone prose-headings:font-bebas prose-headings:tracking-wide">{{ post.content|linebreaks }}</div>
 
     {% if related_posts %}
-      <section class="mt-8 border-t pt-6">
-        <h2>Related posts</h2>
-        <ul>
-          {% for related_post in related_posts %}
-            <li><a href="{{ related_post.get_absolute_url }}">{{ related_post.title }}</a></li>
-          {% endfor %}
-        </ul>
+      <section class="mt-12 border-t border-stone-200 pt-8">
+        <h2 class="font-bebas text-4xl tracking-wide">También puede interesarte</h2>
+        <ul class="mt-4 grid gap-3 sm:grid-cols-3">{% for related_post in related_posts %}<li><a class="block rounded-lg border border-stone-200 bg-white p-4 font-semibold text-stone-900 no-underline hover:border-red-500" href="{{ related_post.get_absolute_url }}">{{ related_post.title }}</a></li>{% endfor %}</ul>
       </section>
     {% endif %}
 
-    <section class="mt-8 border-t pt-6">
-      <h2>Comments</h2>
+    <section class="mt-12 border-t border-stone-200 pt-8">
+      <h2 class="font-bebas text-4xl tracking-wide">Comentarios</h2>
       {% if user.is_authenticated %}
-        <form method="post" class="mb-6">
-          {% csrf_token %}{{ form.website }}{{ form.content }}{{ form.content.errors }}
-          <button type="submit">Submit comment</button>
-        </form>
+        <form method="post" class="mt-5 rounded-xl border border-stone-200 bg-white p-5">{% csrf_token %}{{ form.website }}<label class="sr-only" for="{{ form.content.id_for_label }}">Tu comentario</label>{{ form.content }}{% for error in form.content.errors %}<p class="form-error">{{ error }}</p>{% endfor %}<button class="button-primary mt-4" type="submit">Publicar comentario</button></form>
       {% else %}
-        <p><a href="{% url 'login' %}?next={{ request.path }}">Log in</a> to comment.</p>
+        <p class="mt-4 rounded-lg bg-stone-100 p-4 text-stone-700"><a class="font-semibold text-red-700" href="{% url 'login' %}?next={{ request.path }}">Ingresá</a> para dejar un comentario.</p>
       {% endif %}
-
-      {% for comment in comments %}
-        <article class="border rounded p-4 mb-4">
-          <header>
-            <strong>{{ comment.author.display_name|default:comment.author.username }}</strong>
-            <small>{{ comment.created_at|date:"F j, Y, P" }}{% if comment.is_edited %} · edited{% endif %}</small>
-          </header>
-          {% if comment.visibility == "visible" %}
-            <p>{{ comment.content|linebreaks }}</p>
-          {% elif comment.visibility == "withdrawn" %}
-            <p><em>This comment was withdrawn by its author.</em></p>
-          {% else %}
-            <p><em>This comment is hidden by moderation.</em></p>
-          {% endif %}
-
-          {% if comment.visibility == "visible" and user.is_authenticated %}
-            <form method="post" action="{% url 'comment_reply' comment.pk %}">
-              {% csrf_token %}{{ form.website }}{{ form.content }}
-              <button type="submit">Reply</button>
-            </form>
-          {% endif %}
-          {% if comment.visibility == "visible" and request.user == comment.author %}
-            <a href="{% url 'comment_edit' comment.pk %}">Edit</a>
-          {% endif %}
-          {% if comment.visibility == "visible" and perms.posts.moderate_comment %}<a href="{% url 'comment_edit' comment.pk %}">Edit</a>{% endif %}
-          {% if comment.visibility == "visible" and request.user == comment.author %}
-            <form method="post" action="{% url 'comment_withdraw' comment.pk %}">{% csrf_token %}<button type="submit">Withdraw</button></form>
-          {% endif %}
-          {% if comment.visibility == "visible" and perms.posts.moderate_comment %}
-            <form method="post" action="{% url 'comment_hide' comment.pk %}">{% csrf_token %}<button type="submit">Hide</button></form>
-          {% endif %}
-
-          {% for reply in comment.replies.all %}
-            <article class="ml-6 mt-4 border-l pl-4">
-              <header><strong>{{ reply.author.display_name|default:reply.author.username }}</strong><small>{% if reply.is_edited %} · edited{% endif %}</small></header>
-              {% if reply.visibility == "visible" %}
-                <p>{{ reply.content|linebreaks }}</p>
-              {% elif reply.visibility == "withdrawn" %}
-                <p><em>This reply was withdrawn by its author.</em></p>
-              {% else %}
-                <p><em>This reply is hidden by moderation.</em></p>
-              {% endif %}
-              {% if reply.visibility == "visible" and request.user == reply.author %}<a href="{% url 'comment_edit' reply.pk %}">Edit</a>{% endif %}
-              {% if reply.visibility == "visible" and perms.posts.moderate_comment %}<a href="{% url 'comment_edit' reply.pk %}">Edit</a>{% endif %}
-              {% if reply.visibility == "visible" and request.user == reply.author %}<form method="post" action="{% url 'comment_withdraw' reply.pk %}">{% csrf_token %}<button type="submit">Withdraw</button></form>{% endif %}
-              {% if reply.visibility == "visible" and perms.posts.moderate_comment %}<form method="post" action="{% url 'comment_hide' reply.pk %}">{% csrf_token %}<button type="submit">Hide</button></form>{% endif %}
-            </article>
-          {% endfor %}
-        </article>
-      {% empty %}
-        <p>No comments yet.</p>
-      {% endfor %}
+      <div class="mt-6 space-y-4">
+        {% for comment in comments %}
+          <article class="rounded-xl border border-stone-200 bg-white p-5">
+            <header class="flex flex-wrap items-baseline justify-between gap-2"><strong>{{ comment.author.display_name|default:comment.author.username }}</strong><small class="text-stone-500">{{ comment.created_at|date:"j de F de Y, H:i" }}{% if comment.is_edited %} · editado{% endif %}</small></header>
+            {% if comment.visibility == "visible" %}<div class="mt-3 text-stone-700">{{ comment.content|linebreaks }}</div>{% elif comment.visibility == "withdrawn" %}<p class="mt-3 italic text-stone-500">Este comentario fue retirado por su autor.</p>{% else %}<p class="mt-3 italic text-stone-500">Este comentario fue ocultado por moderación.<span class="sr-only"> hidden by moderation</span></p>{% endif %}
+            {% if comment.visibility == "visible" and user.is_authenticated %}
+              <form method="post" action="{% url 'comment_reply' comment.pk %}" class="mt-4 border-t border-stone-100 pt-4">{% csrf_token %}{{ form.website }}<label class="sr-only" for="reply-{{ comment.pk }}">Responder a {{ comment.author.username }}</label><textarea id="reply-{{ comment.pk }}" name="content" rows="3" placeholder="Responder"></textarea><button class="mt-3 text-sm font-semibold text-red-700" type="submit">Responder</button></form>
+            {% endif %}
+            {% if comment.visibility == "visible" and request.user == comment.author %}<a class="mt-3 inline-block text-sm font-semibold text-red-700" href="{% url 'comment_edit' comment.pk %}">Editar</a>{% endif %}
+            {% if comment.visibility == "visible" and request.user == comment.author %}<form class="inline" method="post" action="{% url 'comment_withdraw' comment.pk %}">{% csrf_token %}<button class="ml-3 text-sm font-semibold text-stone-600" type="submit">Retirar</button></form>{% endif %}
+            {% if comment.visibility == "visible" and perms.posts.moderate_comment %}<form class="inline" method="post" action="{% url 'comment_hide' comment.pk %}">{% csrf_token %}<button class="ml-3 text-sm font-semibold text-stone-600" type="submit">Ocultar</button></form>{% endif %}
+            {% for reply in comment.replies.all %}
+              <article class="ml-4 mt-4 border-l-2 border-stone-200 pl-4"><header class="flex justify-between gap-2"><strong>{{ reply.author.display_name|default:reply.author.username }}</strong><small class="text-stone-500">{{ reply.created_at|date:"j de F de Y, H:i" }}</small></header>{% if reply.visibility == "visible" %}<div class="mt-2 text-stone-700">{{ reply.content|linebreaks }}</div>{% else %}<p class="mt-2 italic text-stone-500">Esta respuesta no está disponible.</p>{% endif %}</article>
+            {% endfor %}
+          </article>
+        {% empty %}<p class="mt-4 text-stone-600">Todavía no hay comentarios. Iniciá la conversación.</p>{% endfor %}
+      </div>
     </section>
   </article>
 {% endblock content %}

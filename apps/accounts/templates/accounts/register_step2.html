@@ -1,17 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Registration - The Caffeine Lane{% endblock title %}
+{% block title %}Completar registro · The Caffeine Lane{% endblock title %}
 {% block content %}
-  <div class="py-12 px-4">
-    <form method="post" class="bg-white rounded-2xl p-8 max-w-md mx-auto space-y-4">
-      {% csrf_token %}
-      <h1 class="text-3xl font-bold">Finish creating your account</h1>
-      {{ form.non_field_errors }}
-      <div><label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>{{ form.username }}{{ form.username.errors }}</div>
-      <div><label for="{{ form.display_name.id_for_label }}">{{ form.display_name.label }}</label>{{ form.display_name }}{{ form.display_name.errors }}</div>
-      <div><label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>{{ form.password1 }}{{ form.password1.errors }}</div>
-      <div><label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>{{ form.password2 }}{{ form.password2.errors }}</div>
-      <fieldset><legend>{{ form.has_motorcycle.label }}</legend>{{ form.has_motorcycle }}{{ form.has_motorcycle.errors }}</fieldset>
-      <button type="submit">Create Account</button>
-    </form>
-  </div>
+  <section class="mx-auto max-w-lg px-4 py-12"><form method="post" class="space-y-5 rounded-xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8" novalidate>{% csrf_token %}<header><p class="text-sm font-semibold uppercase tracking-wider text-red-700">Paso 2 de 2</p><h1 class="font-bebas text-5xl tracking-wide">Completá tu cuenta</h1></header>{% if form.non_field_errors %}<div class="rounded-lg border border-red-300 bg-red-50 p-4 text-red-900">{{ form.non_field_errors }}</div>{% endif %}{% for field in form %}<div class="space-y-2">{% if field.field.widget.input_type == "checkbox" %}<label class="flex items-center gap-3 font-semibold">{{ field }} {{ field.label }}</label>{% else %}<label class="block font-semibold" for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% endif %}{% for error in field.errors %}<p class="form-error">{{ error }}</p>{% endfor %}</div>{% endfor %}<button class="button-primary" type="submit">Crear cuenta</button></form></section>
 {% endblock content %}

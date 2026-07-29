@@ -1,32 +1,32 @@
 {% load static %}
 <a class="sr-only focus:not-sr-only" href="#main-content">Saltar al contenido</a>
-<header class="bg-black text-white">
-  <div class="flex items-center justify-between gap-4 px-4 py-3 md:px-6">
-    <a href="{% url 'home' %}" class="font-bebas text-3xl tracking-wide">THE CAFFEINE LANE</a>
+<header class="sticky top-0 z-40 border-b border-stone-800 bg-stone-950 text-white shadow-lg">
+  <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
+    <a href="{% url 'home' %}" class="font-bebas text-3xl tracking-wide text-white no-underline">THE CAFFEINE LANE</a>
     <form method="get" action="{% url 'search' %}" class="hidden sm:block">
       <label class="sr-only" for="site-search">Buscar publicaciones</label>
-      <input id="site-search" name="q" type="search" placeholder="Buscar…" class="w-48 rounded-full px-4 py-1 text-sm text-black">
+      <input id="site-search" name="q" type="search" placeholder="Buscar publicaciones" class="w-56 rounded-full border-0 px-4 py-2 text-sm text-black">
     </form>
-    <button type="button" data-mobile-menu-button aria-controls="mobile-menu" aria-expanded="false" class="rounded border border-white px-3 py-1 md:hidden">Menú</button>
+    <button type="button" data-mobile-menu-button aria-controls="mobile-menu" aria-expanded="false" class="rounded-md border border-stone-500 px-3 py-2 text-sm font-semibold md:hidden">Menú</button>
   </div>
-  <nav class="hidden border-t border-gray-800 px-4 py-3 md:block" data-mobile-menu id="mobile-menu" aria-label="Navegación principal">
-    <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-      <div class="flex flex-col gap-3 md:flex-row">
-        <a href="{% url 'home' %}">Inicio</a>
+  <nav class="hidden border-t border-stone-800 bg-stone-950 px-4 py-4 md:block" data-mobile-menu id="mobile-menu" aria-label="Navegación principal">
+    <div class="mx-auto flex max-w-7xl flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div class="flex flex-col gap-3 text-sm font-semibold md:flex-row md:items-center md:gap-5">
+        <a class="nav-link" href="{% url 'home' %}">Inicio</a>
         {% for category in navigation_categories %}
-          <a href="{% url 'category_view' category_slug=category.slug %}">{{ category.name }}</a>
+          <a class="nav-link" href="{% url 'category_view' category_slug=category.slug %}">{{ category.name }}</a>
         {% endfor %}
-        <a href="{% url 'about' %}">Acerca de</a>
-        <a href="{% url 'contact' %}">Contacto</a>
+        <a class="nav-link" href="{% url 'about' %}">Acerca de</a>
+        <a class="nav-link" href="{% url 'contact' %}">Contacto</a>
       </div>
-      <div class="flex items-center gap-3">
+      <div class="flex flex-wrap items-center gap-3 text-sm font-semibold">
         {% if user.is_authenticated %}
-          {% if perms.posts.add_post %}<a href="{% url 'post_create' %}">Nueva publicación</a>{% endif %}
-          <a href="{% url 'profile' %}">{{ user.username }}</a>
-          <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit">Salir</button></form>
+          {% if perms.posts.add_post %}<a class="nav-link" href="{% url 'post_create' %}">Nueva publicación</a>{% endif %}
+          <a class="nav-link" href="{% url 'profile' %}">{{ user.username }}</a>
+          <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit" class="nav-link">Salir</button></form>
         {% else %}
-          <a href="{% url 'login' %}">Ingresar</a>
-          <a href="{% url 'register' %}">Registrarme</a>
+          <a class="nav-link" href="{% url 'login' %}">Ingresar</a>
+          <a class="rounded-md bg-red-700 px-3 py-2 text-white no-underline transition hover:bg-red-600" href="{% url 'register' %}">Registrarme</a>
         {% endif %}
       </div>
     </div>

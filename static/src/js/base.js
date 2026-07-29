@@ -8,4 +8,11 @@ document.addEventListener("DOMContentLoaded", () => {
     button.setAttribute("aria-expanded", String(!expanded));
     menu.classList.toggle("hidden", expanded);
   });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape" || button.getAttribute("aria-expanded") !== "true") return;
+    button.setAttribute("aria-expanded", "false");
+    menu.classList.add("hidden");
+    button.focus();
+  });
 });

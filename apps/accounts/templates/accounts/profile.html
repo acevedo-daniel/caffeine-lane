@@ -1,25 +1,36 @@
 {% extends "base.html" %}
-{% block title %}Your Profile - The Caffeine Lane{% endblock title %}
+{% block title %}Tu perfil · The Caffeine Lane{% endblock title %}
 {% block content %}
-  <div class="py-12 px-4">
-    <div class="bg-white rounded-2xl p-8 max-w-lg mx-auto">
-      <img src="{{ user.avatar_url }}" alt="{{ user.username }}'s avatar" width="96" height="96">
-      <h1>{{ user.display_name|default:user.username }}</h1>
-      <p>{{ user.email }}</p>
-      <form method="post" enctype="multipart/form-data" class="space-y-4">
+  <section class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+    <div class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8">
+      <header class="flex flex-col gap-4 border-b border-stone-200 pb-6 sm:flex-row sm:items-center">
+        <img src="{{ user.avatar_url }}" alt="Avatar de {{ user.username }}" class="h-20 w-20 rounded-full object-cover" width="80" height="80">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-wider text-red-700">Cuenta</p>
+          <h1 class="font-bebas text-4xl tracking-wide">{{ user.display_name|default:user.username }}</h1>
+          <p class="text-sm text-stone-600">{{ user.email }}</p>
+        </div>
+      </header>
+      <form method="post" enctype="multipart/form-data" class="mt-6 space-y-5" novalidate>
         {% csrf_token %}
-        {{ form.non_field_errors }}
-        <div><label for="{{ form.display_name.id_for_label }}">Display name</label>{{ form.display_name }}{{ form.display_name.errors }}</div>
-        <div><label for="{{ form.bio.id_for_label }}">Bio</label>{{ form.bio }}{{ form.bio.errors }}</div>
-        <div><label for="{{ form.avatar.id_for_label }}">Avatar</label>{{ form.avatar }}{{ form.avatar.errors }}</div>
-        <div><label for="{{ form.personal_url.id_for_label }}">Personal URL</label>{{ form.personal_url }}{{ form.personal_url.errors }}</div>
-        <div><label for="{{ form.has_motorcycle.id_for_label }}">Own a motorcycle?</label>{{ form.has_motorcycle }}{{ form.has_motorcycle.errors }}</div>
-        <button type="submit">Save Changes</button>
+        {% if form.non_field_errors %}<div class="rounded-lg border border-red-300 bg-red-50 p-4 text-red-900">{{ form.non_field_errors }}</div>{% endif %}
+        {% for field in form %}
+          <div class="space-y-2">
+            {% if field.field.widget.input_type == "checkbox" %}
+              <label class="flex items-center gap-3 font-semibold text-stone-800">{{ field }} {{ field.label }}</label>
+            {% else %}
+              <label class="block font-semibold text-stone-800" for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field }}
+            {% endif %}
+            {% for error in field.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+          </div>
+        {% endfor %}
+        <button class="button-primary" type="submit">Guardar cambios</button>
       </form>
-      <a href="{% url 'password_change' %}">Change password</a>
-      <form method="post" action="{% url 'logout' %}">
-        {% csrf_token %}<button type="submit">Log out</button>
-      </form>
+      <div class="mt-6 flex flex-wrap items-center gap-4 border-t border-stone-200 pt-5 text-sm font-semibold">
+        <a class="text-red-700 hover:text-red-800" href="{% url 'password_change' %}">Cambiar contraseña</a>
+        <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit" class="text-stone-700 hover:text-black">Cerrar sesión</button></form>
+      </div>
     </div>
-  </div>
+  </section>
 {% endblock content %}

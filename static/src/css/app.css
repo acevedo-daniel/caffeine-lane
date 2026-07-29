@@ -9,6 +9,10 @@
 }
 
 @layer base {
+  html { scroll-behavior: smooth; }
+
+  body { line-height: 1.5; }
+
   :focus-visible {
     outline: 3px solid var(--color-red-500);
     outline-offset: 3px;
@@ -31,6 +35,8 @@
 
   textarea { min-height: 7rem; }
 
+  input[type="checkbox"] { width: 1rem; height: 1rem; accent-color: var(--color-red-700); }
+
   a {
     text-underline-offset: 0.2em;
   }
@@ -40,5 +46,33 @@
   select,
   textarea {
     font: inherit;
+  }
+}
+
+@layer components {
+  .nav-link {
+    color: var(--color-stone-200);
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+
+  .nav-link:hover { color: var(--color-white); }
+
+  .button-primary {
+    border-radius: var(--radius-md);
+    background: var(--color-stone-950);
+    color: var(--color-white);
+    padding: 0.75rem 1.25rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color 150ms ease;
+  }
+
+  .button-primary:hover { background: var(--color-red-700); }
+
+  .form-error {
+    margin-top: 0.375rem;
+    font-size: 0.875rem;
+    color: var(--color-red-700);
   }
 }

@@ -10,6 +10,8 @@ from apps.accounts.models import User
 from apps.posts.models import Category, Post
 from apps.posts.taxonomy import STRUCTURAL_CATEGORIES, CategorySlug
 
+RESERVED_SLIDER_ASSET = "source/reserved-slider/reserved-slider-01.webp"
+
 PORTFOLIO_POSTS = (
     {
         "slug": "cafe-racer-de-garaje",
@@ -18,7 +20,7 @@ PORTFOLIO_POSTS = (
         "content": "El proyecto empezó por la postura y la confiabilidad. Antes de comprar piezas, ordenamos frenos, cableado y ergonomía para que cada cambio sumara kilómetros y no problemas.",
         "category": CategorySlug.BUILDS,
         "published_at": "2026-02-03T12:00:00+00:00",
-        "image": "workshop-build.webp",
+        "image": "source/builds/build-01.webp",
         "alt": "Café racer negra en restauración dentro de un taller luminoso.",
     },
     {
@@ -28,7 +30,7 @@ PORTFOLIO_POSTS = (
         "content": "Revisamos mangueras, líquido, pastillas y tacto de maneta. Una frenada consistente da margen para disfrutar una ruta y permite evaluar el resto de la moto con calma.",
         "category": CategorySlug.BUILDS,
         "published_at": "2026-02-10T12:00:00+00:00",
-        "image": "workshop-build.webp",
+        "image": "source/builds/build-02.webp",
         "alt": "Detalle de una café racer preparada en un banco de trabajo.",
     },
     {
@@ -38,7 +40,7 @@ PORTFOLIO_POSTS = (
         "content": "Etiquetamos circuitos, protegimos uniones y dejamos conectores accesibles. El objetivo es encontrar un fallo sin desmontar media moto ni depender de memoria.",
         "category": CategorySlug.BUILDS,
         "published_at": "2026-02-17T12:00:00+00:00",
-        "image": "workshop-build.webp",
+        "image": "source/builds/build-03.webp",
         "alt": "Motocicleta café racer y herramientas ordenadas en un taller.",
     },
     {
@@ -48,7 +50,7 @@ PORTFOLIO_POSTS = (
         "content": "Probamos altura de estriberas, alcance al manillar y densidad de espuma. Una postura equilibrada hace que una moto baja se sienta precisa también después de dos horas.",
         "category": CategorySlug.BUILDS,
         "published_at": "2026-02-24T12:00:00+00:00",
-        "image": "workshop-build.webp",
+        "image": "source/builds/build-04.webp",
         "alt": "Café racer de perfil en un taller de restauración.",
     },
     {
@@ -58,7 +60,7 @@ PORTFOLIO_POSTS = (
         "content": "Neumáticos, luces, combustible, documentación y pronóstico forman el mínimo. Sumamos agua, capas livianas y una herramienta que realmente sepas usar.",
         "category": CategorySlug.GUIDES,
         "published_at": "2026-03-03T12:00:00+00:00",
-        "image": "mountain-guide.webp",
+        "image": "source/guides/guide-01.webp",
         "alt": "Café racer preparada junto a una ruta de montaña al amanecer.",
     },
     {
@@ -68,7 +70,7 @@ PORTFOLIO_POSTS = (
         "content": "Las rutas secundarias exigen menos prisa y más atención. Marcamos paradas, estaciones de servicio y un plan alternativo antes de dejar la ciudad.",
         "category": CategorySlug.GUIDES,
         "published_at": "2026-03-10T12:00:00+00:00",
-        "image": "mountain-guide.webp",
+        "image": "source/guides/guide-02.webp",
         "alt": "Motocicleta junto a una carretera de montaña y un mapa de ruta.",
     },
     {
@@ -78,7 +80,7 @@ PORTFOLIO_POSTS = (
         "content": "Buscá las últimas horas de la tarde, limpiá el encuadre y evitá los fondos cargados. Una foto útil cuenta cómo se ve la moto y también dónde te llevó.",
         "category": CategorySlug.GUIDES,
         "published_at": "2026-03-17T12:00:00+00:00",
-        "image": "mountain-guide.webp",
+        "image": "source/guides/guide-03.webp",
         "alt": "Café racer estacionada frente a un paisaje de montaña sereno.",
     },
     {
@@ -88,7 +90,7 @@ PORTFOLIO_POSTS = (
         "content": "En ciudad importan el radio de giro, el calor y la respuesta a baja velocidad. Esta configuración prioriza control y una mecánica fácil de mantener.",
         "category": CategorySlug.REVIEWS,
         "published_at": "2026-03-24T12:00:00+00:00",
-        "image": "coastal-review.webp",
+        "image": "source/reviews/review-01.webp",
         "alt": "Café racer junto a un camino costero al atardecer azul.",
     },
     {
@@ -98,7 +100,7 @@ PORTFOLIO_POSTS = (
         "content": "Con una mochila compacta y herramientas básicas la moto conserva su manejo. La clave es decidir qué necesitás antes de salir, no comprar soluciones de último momento.",
         "category": CategorySlug.REVIEWS,
         "published_at": "2026-03-31T12:00:00+00:00",
-        "image": "coastal-review.webp",
+        "image": "source/reviews/review-02.webp",
         "alt": "Motocicleta café racer frente al horizonte del mar.",
     },
     {
@@ -108,7 +110,7 @@ PORTFOLIO_POSTS = (
         "content": "Probamos la moto en trayectos conocidos y anotamos solo lo que afecta seguridad, confort o confiabilidad. El resto puede evolucionar con el uso y las historias.",
         "category": CategorySlug.REVIEWS,
         "published_at": "2026-04-07T12:00:00+00:00",
-        "image": "coastal-review.webp",
+        "image": "source/reviews/review-03.webp",
         "alt": "Café racer estacionada en un mirador de costa al anochecer.",
     },
 )
