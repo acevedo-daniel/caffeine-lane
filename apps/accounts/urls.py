@@ -5,6 +5,7 @@ from . import views
 from .forms import EmailAuthenticationForm
 
 urlpatterns = [
+    path("register/", views.register_step1, name="register"),
     path("register/step1/", views.register_step1, name="register_step1"),
     path("register/step2/", views.register_step2, name="register_step2"),
     path(
@@ -18,7 +19,7 @@ urlpatterns = [
     path("logout/", views.custom_logout, name="logout"),
     path("profile/", views.profile, name="profile"),
     path(
-        "password_reset/",
+        "password-reset/",
         auth_views.PasswordResetView.as_view(
             template_name="accounts/password_reset.html",
             email_template_name="accounts/password_reset_email.txt",
@@ -26,6 +27,16 @@ urlpatterns = [
             subject_template_name="accounts/password_reset_subject.txt",
         ),
         name="password_reset",
+    ),
+    path(
+        "password_reset/",
+        auth_views.PasswordResetView.as_view(
+            template_name="accounts/password_reset.html",
+            email_template_name="accounts/password_reset_email.txt",
+            html_email_template_name="accounts/password_reset_email.html",
+            subject_template_name="accounts/password_reset_subject.txt",
+        ),
+        name="password_reset_legacy",
     ),
     path(
         "password_reset/done/",

@@ -30,4 +30,15 @@
   }
 
   textarea { min-height: 7rem; }
+
+  a {
+    text-underline-offset: 0.2em;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
 }

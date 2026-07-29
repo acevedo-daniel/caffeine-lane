@@ -156,11 +156,17 @@ uv run python manage.py migrate
 > above, and then apply all migrations from scratch. The check aborts if it
 > detects the legacy `accounts_profile` table; it never deletes data.
 
-Optionally create idempotent demo content:
+Create the idempotent public portfolio dataset after the first migration. It
+creates a non-privileged author with an unusable password, three structural
+categories, ten published posts, and uploads the bundled WebP cover images to
+the active media storage (Cloudinary in production):
 
 ```bash
-uv run python manage.py seed_demo
+uv run python manage.py seed_portfolio
 ```
+
+Run it manually once in production; it is safe to repeat but is never part of
+the image build or web-process startup.
 
 ### Run Locally
 
@@ -196,8 +202,8 @@ GET /healthz/ -> {"status": "ok"}
 | `uv run pytest` | Runs the automated test suite with coverage. |
 | `uv run ruff check .` | Checks linting rules. |
 | `uv run ruff format --check .` | Verifies formatting. |
-| `./scripts/build.sh` | Build command for a native Render service. |
-| `./scripts/start.sh` | Start command for a native Render service. |
+| `./scripts/release.sh` | Uses Neon direct connection for migrations and verifies the structural taxonomy. |
+| `uv run python manage.py seed_portfolio` | Manually creates or updates the public portfolio dataset. |
 
 ## Project Structure
 
@@ -210,7 +216,7 @@ caffeine-lane/
 ├── config/settings/       # Base, local, test, and production settings
 ├── docker/                # Container runtime entrypoint
 ├── docs/                  # Audit, deployment, and operational documentation
-├── scripts/               # Asset and Render helper scripts
+├── scripts/               # Explicit release helper scripts
 ├── static/                # Source and compiled frontend assets
 ├── templates/             # Shared and application templates
 ├── .env.example           # Safe local environment reference
@@ -258,6 +264,9 @@ editorial rules, search, comments, moderation, admin actions, CSP, and the
 health endpoint. It uses in-memory services by default and can target local
 PostgreSQL with `TEST_DATABASE_URL`.
 
+La revisión visual reproducible de las páginas, estados y viewports está en
+[docs/ui-visual-checklist.md](./docs/ui-visual-checklist.md).
+
 ## Deployment
 
 | Environment | URL | Provider |
@@ -278,10 +287,13 @@ Required production variables are `DJANGO_SETTINGS_MODULE`, `SECRET_KEY`,
 `USE_X_FORWARDED_PROTO=true`. Configure the HSTS and CSP variables according to
 the environment-variable table above.
 
-The Docker entrypoint never loads fixtures, creates superusers, or executes
-migrations. Run the fresh-baseline check and migrations once from a trusted
-release environment. The web service always requires a pooled
-`DATABASE_URL`; a direct URL is used only for that separate release task.
+The Docker entrypoint is the only web-process startup path. It never loads
+fixtures, creates superusers, or executes migrations. From a trusted release
+environment, run `./scripts/release.sh` once with both Neon URLs configured;
+it switches temporarily to `DIRECT_DATABASE_URL`, runs `migrate --noinput`,
+and verifies `posts.0007_create_structural_categories` plus `builds`,
+`guides`, and `reviews`. The web service always requires pooled
+`DATABASE_URL`.
 
 > [!NOTE]
 > `onboarding@resend.dev` can only send to the email address associated with the

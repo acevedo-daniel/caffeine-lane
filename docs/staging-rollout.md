@@ -7,7 +7,7 @@ como operaciones separadas.
 ## Auditoría disponible
 
 - El único remoto configurado es GitHub (`acevedo-daniel/caffeine-lane`).
-- El repositorio contiene un `Procfile` histórico y ahora un `Dockerfile`, pero
+- El repositorio usa el `Dockerfile` como única vía de arranque del web process;
   no contiene manifiestos ni configuración de Heroku, Render, Railway, Fly.io u
   otro proveedor.
 - La aplicación necesita PostgreSQL, Cloudinary, Resend mediante Anymail y Gunicorn; sus logs van

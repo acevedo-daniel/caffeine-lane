@@ -26,7 +26,7 @@
           <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit">Salir</button></form>
         {% else %}
           <a href="{% url 'login' %}">Ingresar</a>
-          <a href="{% url 'register_step1' %}">Registrarme</a>
+          <a href="{% url 'register' %}">Registrarme</a>
         {% endif %}
       </div>
     </div>

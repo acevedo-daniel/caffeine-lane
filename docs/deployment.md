@@ -27,23 +27,24 @@ detecta la tabla heredada `accounts_profile`. Esta comprobacion no borra datos.
 ## Migracion de release
 
 Las migraciones no se ejecutan durante el arranque del servidor. Ejecutalas una
-vez desde una maquina de confianza o un workflow manual de release, con las
-mismas variables de produccion y la conexion directa de Neon:
+vez desde una máquina de confianza o un workflow manual de release, con las
+mismas variables de producción y ambas conexiones de Neon:
 
 ```bash
-export DATABASE_URL="$DIRECT_DATABASE_URL"
-uv run python manage.py check_fresh_baseline
-uv run python manage.py migrate --noinput
+./scripts/release.sh
 ```
 
 En PowerShell:
 
 ```powershell
-$env:DATABASE_URL = $env:DIRECT_DATABASE_URL
-uv run python manage.py check_fresh_baseline
-uv run python manage.py migrate --noinput
-Remove-Item Env:DATABASE_URL
+bash ./scripts/release.sh
 ```
+
+El script usa temporalmente `DIRECT_DATABASE_URL`, ejecuta `migrate --noinput`
+y verifica que `posts.0007_create_structural_categories` y las categorías
+`builds`, `guides` y `reviews` estén presentes. Luego, si corresponde, ejecutá
+manualmente `uv run python manage.py seed_portfolio` una única vez para cargar
+el contenido público y sus imágenes en Cloudinary.
 
 El Web Service de Render siempre requiere la URL pooled en `DATABASE_URL`; no
 puede iniciar sin ella ni recurrir a SQLite. `DIRECT_DATABASE_URL` solo se usa

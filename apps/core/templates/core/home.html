@@ -30,7 +30,7 @@
                 <h2 class="font-bebas text-4xl md:text-6xl leading-tight mb-2">{{ post.title }}</h2>
                 <p class="font-mont text-lg md:text-xl font-light mb-4">{{ post.content|truncatewords:25 }}</p>
                 <a href="{% url "post_detail" post.slug %}"
-                   class="inline-block bg-white text-black font-bold font-mont py-3 px-8 rounded-full transition duration-300 ease-in-out transform hover:scale-105 hover:bg-red-600 hover:text-white">Read more</a>
+                   class="inline-block rounded-full bg-white px-6 py-3 font-mont font-bold text-black transition hover:bg-red-600 hover:text-white">Leer publicación</a>
               </div>
             </div>
           </div>
@@ -39,7 +39,7 @@
       {# Carousel navigation buttons #}
       <button id="prev-btn"
               class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white bg-opacity-30 hover:bg-opacity-50 text-white p-3 rounded-full z-20"
-              aria-label="Previous Slide">
+              aria-label="Publicación anterior">
         <svg xmlns="http://www.w3.org/2000/svg"
              width="24"
              height="24"
@@ -55,7 +55,7 @@
       </button>
       <button id="next-btn"
               class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white bg-opacity-30 hover:bg-opacity-50 text-white p-3 rounded-full z-20"
-              aria-label="Next Slide">
+              aria-label="Publicación siguiente">
         <svg xmlns="http://www.w3.org/2000/svg"
              width="24"
              height="24"
@@ -75,8 +75,8 @@
     {# Builds & Features Section #}
     <section class="mt-10">
       <div>
-        <h2 class="font-mont font-semibold text-3xl mt-0">Builds & Features</h2>
-        <h3 class="font-mont font-medium text-lg mt-2 mb-4">The Latest Builds to Inspire Your Next Project</h3>
+        <h2 class="font-bebas text-4xl tracking-wide">Builds</h2>
+        <p class="mb-5 text-gray-600">Proyectos de garaje para inspirar tu próxima salida.</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {% for post in new_builds %}
@@ -88,6 +88,8 @@
                      class="w-full h-64 object-cover"
                      width="400"
                      height="256" />
+              {% else %}
+                <div class="aspect-video bg-gray-100" aria-hidden="true"></div>
               {% endif %}
               <div class="p-4">
                 <div class="text-xs text-gray-600 mb-1">
@@ -98,7 +100,7 @@
                     </span>
                   {% endfor %}
                 </div>
-                <h3 class="text-lg font-bold text-gray-900">{{ post.title }}</h3>
+                <h3 class="min-h-14 text-lg font-bold text-gray-900">{{ post.title }}</h3>
               </div>
             </div>
           </a>
@@ -106,14 +108,14 @@
       </div>
       <div class="flex justify-center">
         <a href="{% url 'category_view' category_slug=builds_category_slug %}"
-           class="bg-white border-2 border-black shadow-sm text-black font-mont font-medium text-sm mt-8 py-3 px-48 rounded-full transition duration-300 hover:bg-black hover:text-white hover:border-black hover:scale-110">See more builds</a>
+           class="mt-8 rounded-full border-2 border-black bg-white px-8 py-3 text-sm font-medium text-black transition hover:bg-black hover:text-white">Ver todos los builds</a>
       </div>
     </section>
     {# How-To & Guides Section #}
     <section class="mt-12">
       <div>
-        <h2 class="font-mont font-semibold text-3xl mt-0">How-To & Guides</h2>
-        <h3 class="font-mont font-medium text-lg mt-2 mb-4">Master Your Next Project with Our Workshop Guides</h3>
+        <h2 class="font-bebas text-4xl tracking-wide">Guías</h2>
+        <p class="mb-5 text-gray-600">Consejos prácticos para rodar y mantener tu moto.</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {% for post in new_guides %}
@@ -125,6 +127,8 @@
                      class="w-full h-64 object-cover"
                      width="400"
                      height="256" />
+              {% else %}
+                <div class="aspect-video bg-gray-100" aria-hidden="true"></div>
               {% endif %}
               <div class="p-4">
                 <div class="text-xs text-gray-600 mb-1">
@@ -135,7 +139,7 @@
                     </span>
                   {% endfor %}
                 </div>
-                <h3 class="text-lg font-bold text-gray-900">{{ post.title }}</h3>
+                <h3 class="min-h-14 text-lg font-bold text-gray-900">{{ post.title }}</h3>
               </div>
             </div>
           </a>
@@ -143,14 +147,14 @@
       </div>
       <div class="flex justify-center">
         <a href="{% url 'category_view' category_slug=guides_category_slug %}"
-           class="bg-white border-2 border-black shadow-sm text-black font-mont font-medium text-sm mt-8 py-3 px-48 rounded-full transition duration-300 hover:bg-black hover:text-white hover:border-black hover:scale-110">See more guides</a>
+           class="mt-8 rounded-full border-2 border-black bg-white px-8 py-3 text-sm font-medium text-black transition hover:bg-black hover:text-white">Ver todas las guías</a>
       </div>
     </section>
     {# Gear & Product Reviews Section #}
     <section class="mt-12">
       <div>
-        <h2 class="font-mont font-semibold text-3xl mt-0">Gear & Product Reviews</h2>
-        <h3 class="font-mont font-medium text-lg mt-2 mb-4">The Gear That Gets Us on the Road</h3>
+        <h2 class="font-bebas text-4xl tracking-wide">Reviews</h2>
+        <p class="mb-5 text-gray-600">Pruebas sinceras para decidir qué te acompaña en la ruta.</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {% for post in new_reviews %}
@@ -162,6 +166,8 @@
                      class="w-full h-48 object-cover"
                      width="300"
                      height="192" />
+              {% else %}
+                <div class="aspect-video bg-gray-100" aria-hidden="true"></div>
               {% endif %}
               <div class="p-2">
                 <div class="text-xs text-gray-600 mb-1">
@@ -172,7 +178,7 @@
                     </span>
                   {% endfor %}
                 </div>
-                <h3 class="text-base font-bold text-gray-900 leading-tight">{{ post.title }}</h3>
+                <h3 class="min-h-12 text-base font-bold leading-tight text-gray-900">{{ post.title }}</h3>
               </div>
             </div>
           </a>

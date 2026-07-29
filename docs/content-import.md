@@ -5,7 +5,7 @@
 Para crear datos locales mínimos sin contraseñas utilizables ni permisos elevados:
 
 ```powershell
-uv run python manage.py seed_demo
+uv run python manage.py seed_portfolio
 ```
 
 El comando es idempotente y crea el autor no privilegiado `demo-author@example.invalid`, las categorías `builds` y `guides`, y dos publicaciones limpias.

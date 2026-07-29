@@ -1,15 +1,14 @@
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Error del servidor · The Caffeine Lane</title>
-  </head>
-  <body>
-    <main>
-      <h1>500 · Error del servidor</h1>
-      <p>Ocurrió un error inesperado. Inténtalo nuevamente más tarde.</p>
-      <a href="/">Volver al inicio</a>
-    </main>
-  </body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Error del servidor · The Caffeine Lane{% endblock %}
+
+{% block content %}
+  <section class="mx-auto flex min-h-[55vh] max-w-3xl items-center px-4 py-16 sm:px-6">
+    <div class="border-l-4 border-red-600 pl-6">
+      <p class="font-bebas text-2xl tracking-widest text-red-700">Error 500</p>
+      <h1 class="mt-2 font-bebas text-5xl tracking-wide sm:text-6xl">Algo salió mal</h1>
+      <p class="mt-4 max-w-xl text-gray-700">Ocurrió un error inesperado. Intentá nuevamente en unos minutos.</p>
+      <a class="mt-7 inline-flex rounded bg-black px-5 py-3 font-semibold text-white hover:bg-gray-800" href="{% url 'home' %}">Volver al inicio</a>
+    </div>
+  </section>
+{% endblock %}

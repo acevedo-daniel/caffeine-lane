@@ -44,6 +44,27 @@ class ContentImportTests(TestCase):
             3,
         )
 
+    def test_seed_portfolio_is_idempotent_and_uploads_webp_images(self):
+        call_command("seed_portfolio")
+        call_command("seed_portfolio")
+
+        author = User.objects.get(email="portfolio-author@example.invalid")
+        posts = Post.objects.filter(author=author)
+        self.assertFalse(author.is_staff)
+        self.assertFalse(author.is_superuser)
+        self.assertFalse(author.has_usable_password())
+        self.assertEqual(posts.count(), 10)
+        self.assertEqual(posts.filter(categories__slug="builds").count(), 4)
+        self.assertEqual(posts.filter(categories__slug="guides").count(), 3)
+        self.assertEqual(posts.filter(categories__slug="reviews").count(), 3)
+        self.assertTrue(
+            all(post.featured_image.name.endswith(".webp") for post in posts)
+        )
+        self.assertTrue(all(post.featured_image_alt for post in posts))
+
+    def test_verify_portfolio_baseline_confirms_migration_and_categories(self):
+        call_command("verify_portfolio_baseline")
+
     def test_selected_import_is_idempotent(self):
         import_selected_content(self.payload, author=self.author)
         import_selected_content(self.payload, author=self.author)

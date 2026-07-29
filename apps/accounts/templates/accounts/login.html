@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}
-  Log In - The Caffeine Lane
+  Ingresar - The Caffeine Lane
 {% endblock title %}
 {% block header %}
 {% endblock header %}
@@ -15,7 +15,7 @@
         <div class="container mx-auto px-4">
           <a href="{% url "home" %}"
              class="text-xl font-bebas text-black hover:text-stone-800 transition">THE CAFFEINE LANE</a>
-          <h2 class="text-4xl font-mont font-bold uppercase text-black pt-2 hover:text-stone-800 transition">Welcome Back</h2>
+          <h2 class="pt-2 text-4xl font-mont font-bold uppercase text-black">Bienvenido de nuevo</h2>
         </div>
         {# Error and Success Messages #}
         {% if form.non_field_errors %}
@@ -28,7 +28,7 @@
           {# Email Field #}
           <div class="text-left space-y-1">
             <label for="{{ form.username.id_for_label }}"
-                   class="text-xs font-mont font-basic tracking-wide text-black">Email address</label>
+                   class="text-xs font-mont font-basic tracking-wide text-black">Correo electrónico</label>
             <div class="relative">
               <i class="fas fa-envelope absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
               {{ form.username }}
@@ -40,7 +40,7 @@
           {# Password Field #}
           <div class="text-left space-y-1">
             <label for="{{ form.password.id_for_label }}"
-                   class="text-xs font-mont font-basic tracking-wide text-black">Password</label>
+                   class="text-xs font-mont font-basic tracking-wide text-black">Contraseña</label>
             <div class="relative">
               <i class="fas fa-lock absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
               {{ form.password }}
@@ -51,18 +51,18 @@
           </div>
           <div class="flex items-center justify-end text-sm">
             <a href="{% url 'password_reset' %}"
-               class="font-mont text-gray-600 hover:text-black transition">Forgot your password?</a>
+               class="font-mont text-gray-600 hover:text-black transition">¿Olvidaste tu contraseña?</a>
           </div>
           <button type="submit"
                   class="w-full py-3 px-8 bg-black text-white font-mont font-medium tracking-wider rounded-full hover:bg-stone-800 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center relative">
-            Log In
+            Ingresar
             <i class="fas fa-arrow-right absolute right-4 top-1/2 transform -translate-y-1/2"></i>
           </button>
         </form>
         <p class="mt-4 text-xs font-mont font-normal text-gray-600">
-          Don't have an account?
-          <a href="{% url "register_step1" %}"
-             class="font-semibold text-black hover:text-stone-800 transition">Register here</a>
+          ¿No tenés una cuenta?
+          <a href="{% url "register" %}"
+             class="font-semibold text-black hover:text-stone-800 transition">Registrate</a>
         </p>
       </div>
       {# Right Column: Logo + Welcome Message #}
@@ -76,8 +76,8 @@
                height="224" />
         </a>
         <div class="transition-transform duration-300 hover:scale-105">
-          <h2 class="text-3xl font-mont font-medium text-white">RIDE INTO THE BROTHERHOOD</h2>
-          <p class="text-base font-mont text-gray-300 mt-2">Build your legacy. Share your ride.</p>
+          <h2 class="text-3xl font-mont font-medium text-white">SALÍ A RODAR</h2>
+          <p class="mt-2 text-base font-mont text-gray-300">Construí tu historia. Compartí tu viaje.</p>
         </div>
       </div>
     </div>
