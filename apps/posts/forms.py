@@ -1,6 +1,7 @@
 from django import forms
+from django.utils.text import slugify
 
-from .models import Category, Comment, Post
+from .models import Category, Comment, Post, is_reserved_post_slug
 
 SORT_CHOICES = [
     ("relevance", "Relevance"),
@@ -91,6 +92,12 @@ class PostForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
+        generated_slug = slugify(cleaned_data.get("title", ""))
+        if generated_slug and is_reserved_post_slug(generated_slug):
+            self.add_error(
+                "title",
+                "This title would create a slug reserved for an application route.",
+            )
         if cleaned_data.get("status") == Post.Status.PUBLISHED and not cleaned_data.get(
             "published_at"
         ):

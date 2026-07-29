@@ -105,7 +105,7 @@
         {% endfor %}
       </div>
       <div class="flex justify-center">
-        <a href="#"
+        <a href="{% url 'category_view' category_slug=builds_category_slug %}"
            class="bg-white border-2 border-black shadow-sm text-black font-mont font-medium text-sm mt-8 py-3 px-48 rounded-full transition duration-300 hover:bg-black hover:text-white hover:border-black hover:scale-110">See more builds</a>
       </div>
     </section>
@@ -142,7 +142,7 @@
         {% endfor %}
       </div>
       <div class="flex justify-center">
-        <a href="#"
+        <a href="{% url 'category_view' category_slug=guides_category_slug %}"
            class="bg-white border-2 border-black shadow-sm text-black font-mont font-medium text-sm mt-8 py-3 px-48 rounded-full transition duration-300 hover:bg-black hover:text-white hover:border-black hover:scale-110">See more guides</a>
       </div>
     </section>

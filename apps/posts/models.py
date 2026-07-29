@@ -10,6 +10,12 @@ from django.utils.text import slugify
 
 from apps.core.image_validators import validate_uploaded_image
 
+RESERVED_POST_SLUGS = {"search", "new"}
+
+
+def is_reserved_post_slug(slug):
+    return slug.lower() in RESERVED_POST_SLUGS
+
 
 def post_image_path(instance, filename):
     extension = os.path.splitext(filename)[1]
@@ -79,6 +85,10 @@ class Post(models.Model):
     objects = PostQuerySet.as_manager()
 
     def clean(self):
+        if self.slug and is_reserved_post_slug(self.slug):
+            raise ValidationError(
+                {"slug": "This slug is reserved for an application route."}
+            )
         if self.status == self.Status.PUBLISHED and not self.published_at:
             raise ValidationError({"published_at": "Published posts require a date."})
         if self.featured_image and not self.featured_image_alt:
@@ -91,12 +101,16 @@ class Post(models.Model):
             base_slug = slugify(self.title) or "post"
             candidate = base_slug
             counter = 2
-            while (
+            while is_reserved_post_slug(candidate) or (
                 type(self).objects.exclude(pk=self.pk).filter(slug=candidate).exists()
             ):
                 candidate = f"{base_slug}-{counter}"
                 counter += 1
             self.slug = candidate
+        elif is_reserved_post_slug(self.slug):
+            raise ValidationError(
+                {"slug": "This slug is reserved for an application route."}
+            )
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):

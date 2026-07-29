@@ -5,8 +5,9 @@
   <nav class="mt-5 flex flex-wrap justify-center gap-4 text-sm" aria-label="Navegación secundaria">
     <a href="{% url 'about' %}">Acerca de</a>
     <a href="{% url 'contact' %}">Contacto</a>
-    <a href="{% url 'category_view' category_slug='builds' %}">Builds</a>
-    <a href="{% url 'category_view' category_slug='guides' %}">Guías</a>
+    {% for category in navigation_categories %}
+      <a href="{% url 'category_view' category_slug=category.slug %}">{{ category.name }}</a>
+    {% endfor %}
   </nav>
   <p class="mt-6 text-xs">© 2026 The Caffeine Lane. Todos los derechos reservados.</p>
 </footer>

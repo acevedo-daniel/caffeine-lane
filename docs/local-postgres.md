@@ -16,9 +16,18 @@ El desarrollo usa PostgreSQL 18 en Docker y Django se ejecuta en el host con `uv
 
    ```powershell
    uv sync
+   uv run python manage.py check_fresh_baseline
    uv run python manage.py migrate
    uv run python manage.py runserver
    ```
+
+> [!WARNING]
+> Esta rama es un **fresh baseline**: no es compatible con una base creada desde
+> `main`. La rama anterior usaba `auth.User` y `accounts.Profile`; esta usa un
+> modelo `accounts.User` personalizado bajo el mismo identificador de migraciÃ³n.
+> Crea una base nueva o elimina el volumen local anterior antes de migrar. El
+> comando `check_fresh_baseline` detecta `accounts_profile` y aborta sin borrar
+> datos.
 
 La aplicación estará disponible en `http://127.0.0.1:8000/`.
 
@@ -51,5 +60,6 @@ El siguiente comando elimina el contenedor y el volumen `postgres_data`, incluye
 ```powershell
 docker compose down --volumes
 docker compose up -d db
+uv run python manage.py check_fresh_baseline
 uv run python manage.py migrate
 ```

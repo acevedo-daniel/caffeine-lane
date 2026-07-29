@@ -1,3 +1,6 @@
+from unittest.mock import patch
+
+from anymail.exceptions import AnymailAPIError
 from django.core import mail
 from django.core.cache import cache
 from django.template.loader import get_template
@@ -70,6 +73,28 @@ class LegacyCoreCharacterizationTests(TestCase):
         self.assertEqual(limited_response.status_code, 200)
         self.assertContains(limited_response, "Too many messages")
         self.assertEqual(len(mail.outbox), 5)
+
+    def test_contact_handles_email_delivery_failures_without_reporting_success(self):
+        payload = {
+            "from_name": "Legacy tester",
+            "from_email": "legacy@example.com",
+            "subject": "Characterization",
+            "message": "Checking delivery failure handling.",
+        }
+
+        with (
+            patch(
+                "apps.core.views.EmailMultiAlternatives.send",
+                side_effect=AnymailAPIError("delivery failed"),
+            ),
+            self.assertLogs("apps.core.views", level="WARNING") as logs,
+        ):
+            response = self.client.post(reverse("contact"), payload)
+
+        self.assertEqual(response.status_code, 503)
+        self.assertContains(response, "We could not send your message", status_code=503)
+        self.assertNotContains(response, "Thank you for your message", status_code=503)
+        self.assertIn("error_type=AnymailAPIError", logs.output[0])
 
 
 class ErrorPageTests(TestCase):

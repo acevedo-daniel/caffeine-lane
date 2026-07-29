@@ -67,6 +67,20 @@ class SearchAndListingTests(TestCase):
         self.assertTrue(search_response.context["is_paginated"])
         self.assertEqual(search_response.context["page_obj"].number, 2)
 
+    def test_search_pagination_urlencodes_query_parameters(self):
+        for number in range(13):
+            PostFactory(
+                title=f"Build & + listing {number}",
+                author=self.author,
+                categories=self.builds,
+            )
+
+        response = self.client.get(reverse("search"), {"q": "Build & +"})
+
+        self.assertTrue(response.context["is_paginated"])
+        self.assertEqual(response.context["pagination_query"], "q=Build+%26+%2B")
+        self.assertContains(response, "?q=Build+%26+%2B&amp;page=2")
+
     def test_related_posts_share_categories(self):
         response = self.client.get(self.related.get_absolute_url())
 

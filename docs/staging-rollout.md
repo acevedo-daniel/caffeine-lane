@@ -10,7 +10,7 @@ como operaciones separadas.
 - El repositorio contiene un `Procfile` histórico y ahora un `Dockerfile`, pero
   no contiene manifiestos ni configuración de Heroku, Render, Railway, Fly.io u
   otro proveedor.
-- La aplicación necesita PostgreSQL, Cloudinary, SMTP y Gunicorn; sus logs van
+- La aplicación necesita PostgreSQL, Cloudinary, Resend mediante Anymail y Gunicorn; sus logs van
   a stdout. Cloudinary ya es el storage de media de producción.
 
 No es posible identificar ni cambiar el proveedor actual sin acceso a su panel,
@@ -28,7 +28,7 @@ y logs. No se debe introducir otro proveedor sólo para este rollout.
   servicio de staging.
 - [ ] Usar credenciales de Cloudinary distintas de producción, o confirmar con
   el equipo un aislamiento equivalente antes de subir media de prueba.
-- [ ] Configurar un buzón SMTP de staging y un destinatario controlado; nunca
+- [ ] Configurar una API key de Resend y un destinatario de staging controlado; nunca
   reutilizar listas reales de destinatarios para pruebas.
 - [ ] Configurar un healthcheck HTTP contra `GET /health/`.
 - [ ] Retener logs de aplicación, acceso y base durante un periodo acordado; al
@@ -47,12 +47,7 @@ CSRF_TRUSTED_ORIGINS=https://staging.example.com
 CLOUDINARY_URL=<credencial-aislada-de-staging>
 DEFAULT_FROM_EMAIL=noreply@staging.example.com
 CONTACT_RECIPIENT_EMAIL=<buzon-controlado>
-EMAIL_HOST=<smtp-host>
-EMAIL_PORT=587
-EMAIL_HOST_USER=<smtp-user>
-EMAIL_HOST_PASSWORD=<smtp-password>
-EMAIL_USE_TLS=true
-EMAIL_TIMEOUT=10
+RESEND_API_KEY=<api-key-de-resend>
 USE_X_FORWARDED_PROTO=true
 CSP_ENFORCE=false
 SECURE_HSTS_SECONDS=3600

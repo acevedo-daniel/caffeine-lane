@@ -1,6 +1,7 @@
 import json
 import logging
 
+from anymail.exceptions import AnymailAPIError
 from django.conf import settings
 from django.contrib import messages
 from django.core.cache import cache
@@ -10,6 +11,7 @@ from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 
 from apps.posts.models import Category, Post
+from apps.posts.taxonomy import CategorySlug
 
 from .forms import ContactForm
 
@@ -40,11 +42,11 @@ def home(request):
     posts = Post.objects.for_listing()
     banner_posts = posts[:5]
 
-    new_builds = posts.filter(categories__slug="builds")[:9]
+    new_builds = posts.filter(categories__slug=CategorySlug.BUILDS)[:9]
 
-    new_guides = posts.filter(categories__slug="guides")[:6]
+    new_guides = posts.filter(categories__slug=CategorySlug.GUIDES)[:6]
 
-    new_reviews = posts.filter(categories__slug="reviews")[:4]
+    new_reviews = posts.filter(categories__slug=CategorySlug.REVIEWS)[:4]
     total_posts = posts.count()
     categories = Category.objects.all()
 
@@ -53,6 +55,8 @@ def home(request):
         "new_builds": new_builds,
         "new_guides": new_guides,
         "new_reviews": new_reviews,
+        "builds_category_slug": CategorySlug.BUILDS,
+        "guides_category_slug": CategorySlug.GUIDES,
         "total_posts": total_posts,
         "categories": categories,
     }
@@ -101,7 +105,19 @@ def contact(request):
                 reply_to=[email],
             )
             message.attach_alternative(html_message, "text/html")
-            message.send()
+            try:
+                message.send()
+            except (AnymailAPIError, OSError) as error:
+                logger.warning(
+                    "Contact email delivery failed (backend=%s, error_type=%s)",
+                    settings.EMAIL_BACKEND,
+                    type(error).__name__,
+                )
+                messages.error(
+                    request,
+                    "We could not send your message right now. Please try again later.",
+                )
+                return render(request, "core/contact.html", {"form": form}, status=503)
 
             messages.success(
                 request, "Thank you for your message! We will get back to you soon."

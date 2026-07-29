@@ -12,7 +12,7 @@ GitHub Actions ──> Render Web Service (Django + Gunicorn)
                               │
                               ├──> Neon PostgreSQL
                               ├──> Cloudinary (media)
-                              └──> Resend SMTP (email transaccional)
+                              └──> Resend mediante Anymail (email transaccional)
 ```
 
 Render ejecuta el `Dockerfile` existente. Neon conserva los datos, Cloudinary
@@ -61,16 +61,11 @@ de Render no contiene información persistente.
 ## 3. Configurar Resend
 
 1. Crear una cuenta de Resend y verificar un dominio o remitente permitido.
-2. Crear una API key para SMTP. No la compartas en chat ni la subas a Git.
+2. Crear una API key de Resend. No la compartas en chat ni la subas a Git.
 3. Configurar estas variables en Render:
 
    ```dotenv
-   EMAIL_HOST=smtp.resend.com
-   EMAIL_PORT=587
-   EMAIL_HOST_USER=resend
-   EMAIL_HOST_PASSWORD=<RESEND_API_KEY>
-   EMAIL_USE_TLS=true
-   EMAIL_TIMEOUT=10
+   RESEND_API_KEY=<RESEND_API_KEY>
    DEFAULT_FROM_EMAIL=noreply@<tu-dominio-verificado>
    CONTACT_RECIPIENT_EMAIL=<tu-buzon-personal>
    ```
@@ -103,12 +98,7 @@ CSRF_TRUSTED_ORIGINS=https://[tu-servicio.onrender.com]
 CLOUDINARY_URL=[credencial de Cloudinary]
 DEFAULT_FROM_EMAIL=noreply@[dominio-verificado-en-resend]
 CONTACT_RECIPIENT_EMAIL=[tu-buzon]
-EMAIL_HOST=smtp.resend.com
-EMAIL_PORT=587
-EMAIL_HOST_USER=resend
-EMAIL_HOST_PASSWORD=[API key de Resend]
-EMAIL_USE_TLS=true
-EMAIL_TIMEOUT=10
+RESEND_API_KEY=[API key de Resend]
 USE_X_FORWARDED_PROTO=true
 CSP_ENFORCE=false
 SECURE_HSTS_SECONDS=3600

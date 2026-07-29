@@ -13,9 +13,9 @@
     <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
       <div class="flex flex-col gap-3 md:flex-row">
         <a href="{% url 'home' %}">Inicio</a>
-        <a href="{% url 'category_view' category_slug='builds' %}">Builds</a>
-        <a href="{% url 'category_view' category_slug='guides' %}">Guías</a>
-        <a href="{% url 'category_view' category_slug='reviews' %}">Reviews</a>
+        {% for category in navigation_categories %}
+          <a href="{% url 'category_view' category_slug=category.slug %}">{{ category.name }}</a>
+        {% endfor %}
         <a href="{% url 'about' %}">Acerca de</a>
         <a href="{% url 'contact' %}">Contacto</a>
       </div>

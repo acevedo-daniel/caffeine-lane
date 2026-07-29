@@ -29,6 +29,12 @@ class RegistrationStep2Form(UserCreationForm):
         model = User
         fields = ("username", "display_name", "has_motorcycle")
 
+    def validate_registration_email(self, email):
+        if User.objects.filter(email__iexact=email).exists():
+            self.add_error(None, "An account with this email already exists.")
+            return False
+        return True
+
     def save(self, commit=True, *, email):
         user = super().save(commit=False)
         user.email = email

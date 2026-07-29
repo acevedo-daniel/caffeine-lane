@@ -2,9 +2,9 @@ name: CI
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main, modernize/00-baseline]
   push:
-    branches: [main]
+    branches: [main, modernize/00-baseline]
 
 jobs:
   test:
@@ -60,6 +60,7 @@ jobs:
         env:
           DJANGO_SETTINGS_MODULE: config.settings.production
           SECRET_KEY: ci-production-secret-key-not-for-production-0123456789
+          DATABASE_URL: "sqlite:///:memory:"
           ALLOWED_HOSTS: example.test
           CSRF_TRUSTED_ORIGINS: https://example.test
           CLOUDINARY_URL: cloudinary://123456789012345:ci-secret@example

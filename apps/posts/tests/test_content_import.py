@@ -38,9 +38,10 @@ class ContentImportTests(TestCase):
         self.assertFalse(author.is_staff)
         self.assertFalse(author.is_superuser)
         self.assertFalse(author.has_usable_password())
-        self.assertEqual(Post.objects.filter(author=author).count(), 2)
+        self.assertEqual(Post.objects.filter(author=author).count(), 3)
         self.assertEqual(
-            Category.objects.filter(slug__in=["builds", "guides"]).count(), 2
+            Category.objects.filter(slug__in=["builds", "guides", "reviews"]).count(),
+            3,
         )
 
     def test_selected_import_is_idempotent(self):
@@ -62,6 +63,12 @@ class ContentImportTests(TestCase):
 
     def test_selected_import_rejects_image_fields(self):
         self.payload["posts"][0]["featured_image"] = "posts/media/unreviewed.jpg"
+
+        with self.assertRaises(ValidationError):
+            import_selected_content(self.payload, author=self.author)
+
+    def test_selected_import_rejects_reserved_post_slugs(self):
+        self.payload["posts"][0]["slug"] = "search"
 
         with self.assertRaises(ValidationError):
             import_selected_content(self.payload, author=self.author)

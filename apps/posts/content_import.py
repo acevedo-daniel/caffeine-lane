@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 
-from .models import Category, Post
+from .models import Category, Post, is_reserved_post_slug
 
 PROVISIONAL_TEXT_MARKERS = ("lorem ipsum", "todo", "tbd", "placeholder")
 
@@ -82,6 +82,10 @@ def import_selected_content(payload, *, author, dry_run=False):
         if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug) or slug in seen_slugs:
             raise ValidationError(
                 {"post.slug": "Each post needs a unique lowercase URL slug."}
+            )
+        if is_reserved_post_slug(slug):
+            raise ValidationError(
+                {"post.slug": "This slug is reserved for an application route."}
             )
         seen_slugs.add(slug)
         category_slugs = item.get("categories", [])

@@ -1,4 +1,7 @@
+from unittest.mock import patch
+
 from django.core import mail
+from django.db import IntegrityError
 from django.templatetags.static import static
 from django.test import TestCase
 from django.urls import reverse
@@ -30,6 +33,53 @@ class AccountFlowTests(TestCase):
         self.assertEqual(user.display_name, "New Rider")
         self.assertTrue(user.has_motorcycle)
         self.assertEqual(self.client.session["_auth_user_id"], str(user.pk))
+
+    def test_registration_step2_rechecks_an_email_taken_after_step1(self):
+        step1 = self.client.post(
+            reverse("register_step1"), {"email": "race@example.com"}
+        )
+        self.assertRedirects(step1, reverse("register_step2"))
+        User.objects.create_user(
+            email="race@example.com",
+            username="existing-rider",
+            password="safe-test-password-123",
+        )
+
+        response = self.client.post(
+            reverse("register_step2"),
+            {
+                "username": "new-rider",
+                "display_name": "New Rider",
+                "password1": "safe-test-password-123",
+                "password2": "safe-test-password-123",
+                "has_motorcycle": "true",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "An account with this email already exists.")
+        self.assertFalse(User.objects.filter(username="new-rider").exists())
+
+    def test_registration_step2_handles_an_integrity_error(self):
+        self.client.post(reverse("register_step1"), {"email": "race@example.com"})
+
+        with patch(
+            "apps.accounts.views.RegistrationStep2Form.save",
+            side_effect=IntegrityError,
+        ):
+            response = self.client.post(
+                reverse("register_step2"),
+                {
+                    "username": "new-rider",
+                    "display_name": "New Rider",
+                    "password1": "safe-test-password-123",
+                    "password2": "safe-test-password-123",
+                    "has_motorcycle": "true",
+                },
+            )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "An account with this email already exists.")
 
     def test_login_uses_email(self):
         user = User.objects.create_user(

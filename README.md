@@ -1,77 +1,87 @@
 # Caffeine Lane
 
-> Un blog editorial de motos café racer modernizado como proyecto de portfolio.
+<p align="center">
+  A portfolio Django application for publishing cafe racer builds, guides, and reviews.
+</p>
 
-**Estado del proyecto:** desarrollo activo. La modernización v2 ya incorpora
-configuración por entorno, contenido editorial, comentarios moderados, CI e
-imagen Docker; el despliegue público sigue pendiente de validar staging.
+<p align="center">
+  <a href="https://caffeinelane.onrender.com">Live Demo</a>
+  ·
+  <a href="./docs/deployment.md">Deployment guide</a>
+  ·
+  <a href="https://github.com/acevedo-daniel/caffeine-lane/issues">Report an Issue</a>
+</p>
+
+> [!NOTE]
+> **Project status: Active development.** The Render production service is provisioned and its deployment is being validated.
 
 ## Overview
 
-The Caffeine Lane es una aplicación Django para publicar builds, guías y reseñas
-de motocicletas café racer. Permite explorar contenido publicado, buscar por
-texto y categoría, comentar con moderación, y gestionar el blog desde Django
-Admin.
+The Caffeine Lane is an editorial application for cafe racer enthusiasts. It
+provides a public catalogue of builds, guides, and reviews, with search and
+categories to make content easy to explore.
 
-El proyecto partió de una aplicación académica y se está convirtiendo en una
-pieza de portfolio mantenible: separa entornos, usa PostgreSQL, compila sus
-assets, valida media, protege los flujos de autenticación y correo, y deja una
-base repetible para despliegue con Docker.
+The project modernizes an academic Django application into a maintainable
+portfolio piece. It separates local, test, and production settings; uses
+PostgreSQL for the editorial domain; and includes authentication, moderated
+comments, secure uploads, transactional email, and a repeatable Docker-based
+deployment.
 
 ## Project Context
 
-| Field               | Details                                                                    |
-| ------------------- | -------------------------------------------------------------------------- |
-| **Type**            | Personal portfolio project; modernization of an academic project           |
-| **Purpose**         | Demonstrate an end-to-end Django modernization and editorial domain design |
-| **Role**            | Solo developer                                                             |
-| **Started**         | 2025-07                                                                    |
-| **Current version** | v2 modernization in progress                                               |
+| Field | Details |
+| --- | --- |
+| **Type** | Personal portfolio; modernization of an academic project |
+| **Purpose** | Demonstrate an end-to-end Django modernization and editorial domain design |
+| **Role** | Solo developer |
+| **Started** | 2025-07 |
+| **Current version** | v2 modernization in progress |
 
 ## Key Features
 
-- **Editorial posts:** published/draft workflow, stable slugs, categories,
-  featured images, alt text, related posts, pagination and PostgreSQL search.
-- **Accounts:** custom user model, email login, registration, profile, avatar,
-  password change and password reset.
-- **Comments and moderation:** one-level replies, edit/withdraw actions, spam
-  honeypot, duplicate protection and moderator hiding without deleting context.
-- **Editorial admin:** filters, search, autocompletes, thumbnails and actions
-  that publish, unpublish and moderate through the domain services.
-- **Production foundations:** CSP report-only mode, secure settings, structured
-  logging to stdout, HTML/text emails, validated uploads and Cloudinary media.
+- **Editorial publishing:** drafts, published posts, stable slugs, categories,
+  featured images, alt text, related posts, pagination, and PostgreSQL search.
+- **Accounts:** custom users, email login, registration, public profiles,
+  avatars, password changes, and password reset flows.
+- **Comments and moderation:** one-level replies, edit and withdraw actions,
+  honeypot spam protection, duplicate prevention, and moderator controls.
+- **Editorial administration:** Django Admin filters, search, thumbnails, and
+  actions for publication and moderation.
+- **Production foundations:** Docker, Gunicorn, WhiteNoise, Cloudinary media,
+  Resend email through Anymail, CSP report-only mode, and structured logs.
 
 ## Tech Stack
 
-| Area                   | Technology                                                                  |
-| ---------------------- | --------------------------------------------------------------------------- |
-| **Language**           | Python 3.13–3.14                                                            |
-| **Framework**          | Django 6.0                                                                  |
-| **Database**           | PostgreSQL 18 locally; PostgreSQL-compatible managed database in deployment |
-| **Package management** | uv and `uv.lock`                                                            |
-| **Frontend assets**    | Tailwind CSS 4, pnpm and compiled static files                              |
-| **Testing**            | pytest, pytest-django, coverage and factory-boy                             |
-| **Quality**            | Ruff and pre-commit                                                         |
-| **Infrastructure**     | Docker multi-stage image, Gunicorn, WhiteNoise and Cloudinary               |
-| **CI**                 | GitHub Actions on Python 3.13 and 3.14                                      |
+| Area | Technology |
+| --- | --- |
+| **Language** | Python 3.13-3.14 |
+| **Framework** | Django 6.0 |
+| **Database** | PostgreSQL 18 locally; Neon PostgreSQL in production |
+| **Package management** | uv and `uv.lock` |
+| **Frontend assets** | Tailwind CSS 4, Node.js 22, and pnpm |
+| **Testing** | pytest, pytest-django, coverage, and factory-boy |
+| **Infrastructure** | Docker, Render, Gunicorn, WhiteNoise, Cloudinary, Resend, and Neon |
+| **CI** | GitHub Actions on Python 3.13 and 3.14 |
 
 ## Scope
 
 ### Included
 
-- Public editorial site, search, categories and published-post visibility.
-- User accounts, email flows, comments and moderation.
-- Local Docker Compose database, CI and deployment runbooks.
+- Public editorial content, search, categories, and published-post visibility.
+- Accounts, password flows, comments, and editorial moderation.
+- Docker deployment, PostgreSQL migrations, Cloudinary media, and Resend email.
 
 ### Not Included
 
-- A public production deployment or permanent staging environment.
-- Real user-data migration from the original academic database.
-- Newsletter, payments, social login or a mobile application.
+- Migration of real users or unreviewed legacy data.
+- Newsletters, payments, social login, or a mobile application.
+- A permanent staging environment.
 
 ## Getting Started
 
 ### Prerequisites
+
+Before installing the project, make sure you have:
 
 - Python 3.13 or 3.14.
 - [uv](https://docs.astral.sh/uv/).
@@ -81,65 +91,80 @@ base repetible para despliegue con Docker.
 
 ### Installation
 
+Clone the repository:
+
 ```bash
 git clone https://github.com/acevedo-daniel/caffeine-lane.git
 cd caffeine-lane
 ```
 
-Create a private local environment file:
+Create a private environment file, start PostgreSQL, and install dependencies:
 
 ```bash
 cp .env.example .env
-```
-
-In PowerShell, use:
-
-```powershell
-Copy-Item .env.example .env
-```
-
-Start PostgreSQL, install Python dependencies and compile the frontend assets:
-
-```bash
 docker compose up -d db
 uv sync
 pnpm install --frozen-lockfile
 pnpm run build
 ```
 
+In PowerShell, create the environment file with:
+
+```powershell
+Copy-Item .env.example .env
+```
+
 ### Environment Variables
 
-`.env.example` contains safe development values. Do not commit `.env` or real
-credentials.
+`.env.example` contains safe local values. Do not commit `.env` files, API keys,
+database URLs, or provider credentials.
 
-| Variable                                               | Required locally | Description                                              |
-| ------------------------------------------------------ | :--------------: | -------------------------------------------------------- |
-| `DJANGO_SETTINGS_MODULE`                               |       Yes        | `config.settings.local` for local work                   |
-| `SECRET_KEY`                                           |       Yes        | Local Django secret; production must use a unique secret |
-| `DATABASE_URL`                                         |       Yes        | PostgreSQL connection string                             |
-| `ALLOWED_HOSTS`                                        |       Yes        | Comma-separated allowed hosts                            |
-| `CSRF_TRUSTED_ORIGINS`                                 |       Yes        | Trusted form origins including scheme                    |
-| `CLOUDINARY_URL`                                       |        No        | Required only by production media storage                |
-| `DEFAULT_FROM_EMAIL`                                   |       Yes        | Sender address for application emails                    |
-| `CONTACT_RECIPIENT_EMAIL`                              |       Yes        | Recipient for contact messages                           |
-| `RESEND_API_KEY`                                        |        No        | Required by the Resend email backend in production       |
-| `CSP_ENFORCE`                                          |        No        | Enables enforcing CSP after report-only validation       |
+| Variable | Required | Description | Safe example |
+| --- | :---: | --- | --- |
+| `DJANGO_SETTINGS_MODULE` | Yes | Active settings module | `config.settings.local` |
+| `SECRET_KEY` | Yes | Django signing key | local value in `.env.example` |
+| `DATABASE_URL` | Yes | Local PostgreSQL or Neon pooled connection URL | `postgresql://...` |
+| `DIRECT_DATABASE_URL` | Release only | Direct Neon URL used only by the manual migration task | `postgresql://...` |
+| `ALLOWED_HOSTS` | Yes | Comma-separated allowed hosts | `localhost,127.0.0.1` |
+| `CSRF_TRUSTED_ORIGINS` | Yes | Trusted form origins with scheme | `http://localhost:8000` |
+| `CLOUDINARY_URL` | Production | Cloudinary media-storage credential | provider-issued secret |
+| `RESEND_API_KEY` | Production | Resend API key for Anymail | provider-issued secret |
+| `DEFAULT_FROM_EMAIL` | Yes | Sender used by application email | `noreply@example.com` |
+| `CONTACT_RECIPIENT_EMAIL` | Yes | Recipient for contact messages | `owner@example.com` |
+| `USE_X_FORWARDED_PROTO` | Production | Trust the Render HTTPS proxy header | `true` |
+| `CSP_ENFORCE` | No | Enable CSP enforcement after report validation | `false` |
+
+> [!IMPORTANT]
+> Keep production secrets only in Render. Do not add them to Git, the README,
+> `.env.example`, the Dockerfile, or a Render configuration file.
 
 ### Database Setup
 
 Apply migrations:
 
 ```bash
+uv run python manage.py check_fresh_baseline
 uv run python manage.py migrate
 ```
 
-Optional: create idempotent, non-privileged demo content:
+> [!WARNING]
+> This branch is a **fresh baseline** and is not compatible with a database
+> created from `main`. The original `accounts.0001_initial` used Django's
+> `auth.User` plus `accounts.Profile`; this branch uses a custom
+> `accounts.User` under the same migration identifier. Do not reuse an old
+> SQLite database or PostgreSQL volume. Create a new database, run the command
+> above, and then apply all migrations from scratch. The check aborts if it
+> detects the legacy `accounts_profile` table; it never deletes data.
+
+Optionally create idempotent demo content:
 
 ```bash
 uv run python manage.py seed_demo
 ```
 
 ### Run Locally
+
+Start the development server:
 
 ```bash
 uv run python manage.py runserver
@@ -149,119 +174,139 @@ The application is available at <http://localhost:8000>.
 
 ## Usage
 
-1. Visit `/home/` to browse published posts, categories and search results.
-2. Register with an email address, then update the public profile and avatar.
-3. Sign in with a staff account to use `/admin/` for editorial publication and
-   comment moderation.
+1. Visit `/home/` to browse published content, categories, and search results.
+2. Register or sign in to update a profile and participate in comments.
+3. Use `/admin/` with a staff account to publish content and moderate comments.
 
-The liveness endpoint is available at:
+The liveness endpoint is:
 
 ```text
-GET /healthz/ → {"status": "ok"}
+GET /healthz/ -> {"status": "ok"}
 ```
 
 ## Available Scripts
 
-| Command                                                       | Description                                      |
-| ------------------------------------------------------------- | ------------------------------------------------ |
-| `docker compose up -d db`                                     | Starts local PostgreSQL 18.                      |
-| `uv sync`                                                     | Creates or updates the local Python environment. |
-| `pnpm run build`                                              | Compiles Tailwind CSS and JavaScript assets.     |
-| `uv run python manage.py runserver`                           | Starts Django locally.                           |
-| `uv run python manage.py migrate`                             | Applies database migrations.                     |
-| `uv run pytest`                                               | Runs the automated test suite with coverage.     |
-| `uv run ruff check .`                                         | Runs lint checks.                                |
-| `uv run ruff format --check .`                                | Verifies formatting.                             |
-| `powershell -ExecutionPolicy Bypass -File scripts/check.ps1`  | Runs the standard local quality checks.          |
-| `powershell -ExecutionPolicy Bypass -File scripts/format.ps1` | Applies Ruff lint fixes and formatting.          |
+| Command | Description |
+| --- | --- |
+| `docker compose up -d db` | Starts local PostgreSQL. |
+| `uv sync` | Installs the locked Python dependencies. |
+| `pnpm run build` | Compiles Tailwind CSS and JavaScript assets. |
+| `uv run python manage.py runserver` | Starts the local development server. |
+| `uv run python manage.py migrate` | Applies database migrations. |
+| `uv run pytest` | Runs the automated test suite with coverage. |
+| `uv run ruff check .` | Checks linting rules. |
+| `uv run ruff format --check .` | Verifies formatting. |
+| `./scripts/build.sh` | Build command for a native Render service. |
+| `./scripts/start.sh` | Start command for a native Render service. |
 
 ## Project Structure
 
+<details>
+<summary><strong>View directory structure</strong></summary>
+
 ```text
 caffeine-lane/
-├── apps/
-│   ├── accounts/          # Custom user, authentication and profile flows
-│   ├── core/              # Landing, contact, health and shared utilities
-│   └── posts/             # Editorial domain, search, comments and admin
-├── config/settings/       # Base, local, test and production settings
-├── docker/                # Runtime entrypoint
-├── docs/                  # Audit, import, database and deployment runbooks
-├── scripts/               # Asset build and local quality scripts
-├── static/                # Design assets, Tailwind source and compiled output
-├── templates/             # Shared layouts and components
+├── apps/                 # Accounts, core pages, posts, and tests
+├── config/settings/       # Base, local, test, and production settings
+├── docker/                # Container runtime entrypoint
+├── docs/                  # Audit, deployment, and operational documentation
+├── scripts/               # Asset and Render helper scripts
+├── static/                # Source and compiled frontend assets
+├── templates/             # Shared and application templates
+├── .env.example           # Safe local environment reference
 ├── compose.yaml           # Local PostgreSQL service
-├── Dockerfile             # Production multi-stage image
-├── pyproject.toml         # Python dependencies and tool configuration
+├── Dockerfile             # Multi-stage production image
+├── pyproject.toml         # Python dependencies and tooling
 ├── uv.lock                # Locked Python dependencies
-├── package.json           # Frontend asset scripts
 └── README.md
 ```
 
+</details>
+
 ## Architecture
 
-Django applications are split by responsibility: `accounts` owns identity and
-profiles, `posts` owns editorial content and comments, and `core` owns shared
-site pages and operational endpoints. Settings are separated by local, test and
-production environments.
+`accounts` owns identity and profiles, `posts` owns editorial content and
+comments, and `core` owns shared pages, contact email, and health endpoints.
+Settings are isolated by environment.
 
-PostgreSQL is used for relational data and full-text search. Static files are
-compiled with Tailwind and served with WhiteNoise in production. Uploaded media
-uses the local filesystem in development and Cloudinary in production. The
-Docker entrypoint runs `collectstatic`; migrations are an explicit release task.
+In production, Render runs the Docker image. The container verifies the fresh
+baseline, collects static files, and starts Gunicorn on Render's assigned
+`PORT`. `DATABASE_URL` is mandatory and uses the pooled Neon connection.
+Database migrations are an explicit one-time release operation that can use
+`DIRECT_DATABASE_URL`.
+WhiteNoise serves static files, Cloudinary stores uploaded media, Neon stores
+relational data, and Anymail sends email through Resend.
 
 ## Testing
 
-Run all tests:
+Run the complete test suite:
 
 ```bash
 uv run pytest
 ```
 
-The current suite covers authentication, password reset email, contact email,
-uploads, editorial rules, search performance, comments, moderation, admin
-actions, CSP and the health endpoint. It runs with in-memory services by default
-and can target PostgreSQL by setting `TEST_DATABASE_URL`.
+Run the standard quality checks:
 
 ```bash
-TEST_DATABASE_URL=postgresql://caffeine-lane:caffeine-lane@localhost:5432/caffeine-lane uv run pytest
+uv run ruff check .
+uv run ruff format --check .
+uv run python manage.py check
 ```
 
-On PowerShell:
-
-```powershell
-$env:TEST_DATABASE_URL = "postgresql://caffeine-lane:caffeine-lane@localhost:5432/caffeine-lane"
-uv run pytest
-Remove-Item Env:TEST_DATABASE_URL
-```
+The suite covers authentication, password resets, contact email, uploads,
+editorial rules, search, comments, moderation, admin actions, CSP, and the
+health endpoint. It uses in-memory services by default and can target local
+PostgreSQL with `TEST_DATABASE_URL`.
 
 ## Deployment
 
-The project is not publicly deployed yet. The Docker image compiles assets,
-installs runtime-only Python dependencies, runs as a non-root user and starts
-Gunicorn. It does not load fixtures, create superusers or run migrations.
+| Environment | URL | Provider |
+| --- | --- | --- |
+| **Production (validation in progress)** | <https://caffeinelane.onrender.com> | Render |
 
-```bash
-docker build -t caffeine-lane .
-docker run --rm -p 8000:8000 --env-file .env caffeine-lane
-```
+Render uses the root `Dockerfile` with these settings:
 
-Before a release, run migrations once using the same image and production
-environment. See the deployment runbook for the complete process.
+- **Docker Build Context Directory:** `.`
+- **Dockerfile Path:** `./Dockerfile`
+- **Docker Command:** leave empty
+- **Health Check Path:** `/healthz/`
+
+Required production variables are `DJANGO_SETTINGS_MODULE`, `SECRET_KEY`,
+`DATABASE_URL`, `ALLOWED_HOSTS`,
+`CSRF_TRUSTED_ORIGINS`, `CLOUDINARY_URL`, `RESEND_API_KEY`,
+`DEFAULT_FROM_EMAIL`, `CONTACT_RECIPIENT_EMAIL`, and
+`USE_X_FORWARDED_PROTO=true`. Configure the HSTS and CSP variables according to
+the environment-variable table above.
+
+The Docker entrypoint never loads fixtures, creates superusers, or executes
+migrations. Run the fresh-baseline check and migrations once from a trusted
+release environment. The web service always requires a pooled
+`DATABASE_URL`; a direct URL is used only for that separate release task.
+
+> [!NOTE]
+> `onboarding@resend.dev` can only send to the email address associated with the
+> Resend account. Verify a domain in Resend before sending password-reset email
+> to arbitrary visitors.
 
 ## Known Limitations
 
-- A hosting provider and permanent staging environment have not been selected.
-- CSP defaults to report-only until violations are observed and reviewed.
-- The demo content is intentionally small; selected legacy content must be
-  reviewed and imported separately.
+- Production deployment validation is still in progress.
+- CSP stays in report-only mode until its reports are reviewed.
+- Demo content is intentionally small; legacy content must be reviewed before
+  importing it.
+- Resend's onboarding sender is limited until a custom domain is verified.
 
 ## Roadmap
 
-- [x] Modernize to Django 6, uv, pytest, Ruff and pre-commit.
-- [x] Add PostgreSQL, editorial domain, comments, Tailwind, security and CI.
-- [x] Add a Docker image, deployment runbook and health endpoint.
-- [ ] Select and provision a portfolio hosting environment.
-- [ ] Validate staging, CSP reports and a rollback before public release.
+- [x] Modernize the original application with Django 6, uv, pytest, and Ruff.
+- [x] Add editorial content, accounts, comments, security settings, and CI.
+- [x] Add Docker, Cloudinary media, Neon configuration, Resend email, and a
+  Render health check.
+- [ ] Complete production smoke testing and review deployment logs.
+- [ ] Validate CSP reports and establish a rollback procedure.
+
+See the [open issues](https://github.com/acevedo-daniel/caffeine-lane/issues)
+for planned improvements and known problems.
 
 ## Documentation
 
@@ -271,11 +316,10 @@ environment. See the deployment runbook for the complete process.
 - [Content import](./docs/content-import.md)
 - [Docker deployment](./docs/deployment.md)
 - [Staging rollout](./docs/staging-rollout.md)
-- [Render, Neon, Cloudinary and Resend](./docs/render-neon-cloudinary-resend.md)
 
 ## License
 
-No license file has been added yet. Reuse terms have not been declared.
+No license has been declared. Reuse terms have not been published.
 
 ## Author
 

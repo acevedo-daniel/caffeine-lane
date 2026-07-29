@@ -4,6 +4,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
+from apps.posts.forms import PostForm
 from apps.posts.models import Comment, Post
 from apps.posts.services import publish_post, unpublish_post
 from apps.tests.factories import CategoryFactory, PostFactory, UserFactory
@@ -48,6 +49,20 @@ class PostEditorialDomainTests(TestCase):
         )
         self.assertNotIn(draft, Post.objects.for_listing())
 
+    def test_structural_categories_are_available_but_unknown_categories_404(self):
+        self.assertEqual(
+            self.client.get(
+                reverse("category_view", kwargs={"category_slug": "reviews"})
+            ).status_code,
+            200,
+        )
+        self.assertEqual(
+            self.client.get(
+                reverse("category_view", kwargs={"category_slug": "unknown"})
+            ).status_code,
+            404,
+        )
+
     def test_publish_requires_date_and_services_manage_it(self):
         post = Post.objects.create(
             title="Ready to publish", content="Content", author=self.author
@@ -79,6 +94,24 @@ class PostEditorialDomainTests(TestCase):
 
         self.assertEqual(first.slug, "stable-slug")
         self.assertEqual(second.slug, "stable-slug-2")
+
+    def test_reserved_post_slugs_are_rejected_or_generated_safely(self):
+        generated = Post.objects.create(
+            title="Search", content="Content", author=self.author
+        )
+        self.assertEqual(generated.slug, "search-2")
+
+        reserved = Post(
+            title="Reserved", slug="new", content="Content", author=self.author
+        )
+        with self.assertRaises(ValidationError):
+            reserved.full_clean()
+        with self.assertRaises(ValidationError):
+            reserved.save()
+
+        form = PostForm(data={"title": "New", "content": "Content"})
+        self.assertFalse(form.is_valid())
+        self.assertIn("title", form.errors)
 
     def test_visible_image_requires_alt_text(self):
         post = Post(

@@ -1,5 +1,6 @@
 import factory
 from django.utils import timezone
+from django.utils.text import slugify
 
 from apps.accounts.models import User
 from apps.posts.models import Category, Post
@@ -24,8 +25,10 @@ class UserFactory(factory.django.DjangoModelFactory):
 class CategoryFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Category
+        django_get_or_create = ("slug",)
 
     name = factory.Sequence(lambda number: f"Category {number}")
+    slug = factory.LazyAttribute(lambda category: slugify(category.name))
 
 
 class PostFactory(factory.django.DjangoModelFactory):

@@ -81,7 +81,7 @@
                 <nav class="mt-12 pt-8 border-t border-gray-200 flex justify-between items-center text-sm">
                     <div>
                         {% if page_obj.has_previous %}
-                            <a href="?q={{ query }}&category={{ current_category }}&sort={{ current_sort }}&page={{ page_obj.previous_page_number }}"
+                            <a href="?{{ pagination_query }}{% if pagination_query %}&amp;{% endif %}page={{ page_obj.previous_page_number }}"
                                class="inline-block bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition">
                                 ← Previous
                             </a>
@@ -90,7 +90,7 @@
                     <div class="text-gray-600">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</div>
                     <div>
                         {% if page_obj.has_next %}
-                            <a href="?q={{ query }}&category={{ current_category }}&sort={{ current_sort }}&page={{ page_obj.next_page_number }}"
+                            <a href="?{{ pagination_query }}{% if pagination_query %}&amp;{% endif %}page={{ page_obj.next_page_number }}"
                                class="inline-block bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition">
                                 Next →
                             </a>

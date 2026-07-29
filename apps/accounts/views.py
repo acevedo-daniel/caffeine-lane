@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError, transaction
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
 
@@ -32,16 +33,21 @@ def register_step2(request):
 
     if request.method == "POST":
         form = RegistrationStep2Form(request.POST)
-        if form.is_valid():
-            user = form.save(email=email)
-            login(request, user)
-            del request.session["registration_email"]
-            messages.success(request, "Account successfully created!")
-            messages.info(
-                request,
-                "Welcome! Please visit your profile page to add your name and other details.",
-            )
-            return redirect("home")
+        if form.is_valid() and form.validate_registration_email(email):
+            try:
+                with transaction.atomic():
+                    user = form.save(email=email)
+            except IntegrityError:
+                form.add_error(None, "An account with this email already exists.")
+            else:
+                login(request, user)
+                del request.session["registration_email"]
+                messages.success(request, "Account successfully created!")
+                messages.info(
+                    request,
+                    "Welcome! Please visit your profile page to add your name and other details.",
+                )
+                return redirect("home")
     else:
         form = RegistrationStep2Form()
 

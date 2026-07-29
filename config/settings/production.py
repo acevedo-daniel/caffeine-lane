@@ -9,6 +9,8 @@ from .base import INSTALLED_APPS, MIDDLEWARE, env
 SECRET_KEY = env.str("SECRET_KEY")
 if SECRET_KEY == "change-me-locally" or SECRET_KEY.startswith("django-insecure-"):
     raise ImproperlyConfigured("SECRET_KEY must be set to a production value.")
+if not os.environ.get("DATABASE_URL"):
+    raise ImproperlyConfigured("DATABASE_URL is required in production.")
 
 DEBUG = False
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")

@@ -200,10 +200,13 @@ class PostSearchView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        pagination_query = self.request.GET.copy()
+        pagination_query.pop("page", None)
         context["form"] = self.search_form
         context["query"] = self.search_form.cleaned_data.get("q", "")
         context["current_category"] = self.request.GET.get("category", "")
         context["current_sort"] = self.search_form.cleaned_data.get("sort", "relevance")
+        context["pagination_query"] = pagination_query.urlencode()
         return context
 
 
