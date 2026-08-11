@@ -56,7 +56,7 @@
             <h2 id="builds-heading" class="mt-1 font-bebas text-5xl tracking-wide text-stone-950 sm:text-6xl">Builds</h2>
             <p class="mt-2 text-stone-600">Proyectos de garaje para inspirar tu próxima salida.</p>
           </div>
-          <a class="inline-flex items-center gap-2 border border-stone-950 px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-stone-950 no-underline transition hover:border-red-700 hover:bg-red-700 hover:text-white" href="{% url 'category_view' category_slug=builds_category_slug %}">Ver todos <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+          <a class="editorial-button" href="{% url 'category_view' category_slug=builds_category_slug %}">Ver todos <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
         </div>
         {% if new_builds %}
           <div class="mt-7 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -74,7 +74,7 @@
             <h2 id="guides-heading" class="mt-1 font-bebas text-5xl tracking-wide text-stone-950 sm:text-6xl">Guías</h2>
             <p class="mt-2 text-stone-600">Consejos prácticos para rodar y mantener tu moto.</p>
           </div>
-          <a class="inline-flex items-center gap-2 border border-stone-950 px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-stone-950 no-underline transition hover:border-red-700 hover:bg-red-700 hover:text-white" href="{% url 'category_view' category_slug=guides_category_slug %}">Ver todas <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+          <a class="editorial-button" href="{% url 'category_view' category_slug=guides_category_slug %}">Ver todas <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
         </div>
         {% if new_guides %}
           <div class="mt-7 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -92,7 +92,7 @@
             <h2 id="reviews-heading" class="mt-1 font-bebas text-5xl tracking-wide text-stone-950 sm:text-6xl">Reviews</h2>
             <p class="mt-2 text-stone-600">Pruebas sinceras para decidir qué te acompaña en la ruta.</p>
           </div>
-          <a class="inline-flex items-center gap-2 border border-stone-950 px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-stone-950 no-underline transition hover:border-red-700 hover:bg-red-700 hover:text-white" href="{% url 'category_view' category_slug=reviews_category_slug %}">Ver todas <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+          <a class="editorial-button" href="{% url 'category_view' category_slug=reviews_category_slug %}">Ver todas <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
         </div>
         {% if new_reviews %}
           <div class="mt-7 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
