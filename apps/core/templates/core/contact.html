@@ -19,7 +19,7 @@
         <form method="post" class="contact-form" novalidate>
           {% csrf_token %}
           {{ form.website }}
-          {% if form.non_field_errors %}<div class="auth-form__error">{{ form.non_field_errors }}</div>{% endif %}
+          {% if form.non_field_errors %}<div class="auth-form__error" role="alert">{{ form.non_field_errors }}</div>{% endif %}
           {% include "components/form_field.html" with field=form.from_name %}
           {% include "components/form_field.html" with field=form.from_email %}
           {% include "components/form_field.html" with field=form.subject %}

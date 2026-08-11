@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n post_i18n %}
+{% load i18n post_i18n static %}
 {% block title %}{% blocktranslate with post_title=post.title %}{{ post_title }} · The Caffeine Lane{% endblocktranslate %}{% endblock title %}
 {% block content %}
   <article class="post-detail editorial-page">
@@ -75,7 +75,7 @@
             {{ form.website }}
             <label class="comment-compose__label" for="{{ form.content.id_for_label }}">{% translate "Add to the conversation" %}</label>
             <div class="mt-2">{{ form.content }}</div>
-            {% for error in form.content.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+            {% for error in form.content.errors %}<p class="form-error" role="alert">{{ error }}</p>{% endfor %}
             <button class="button-primary mt-4" type="submit">{% translate "Post comment" %}</button>
           </form>
         {% else %}
@@ -103,10 +103,10 @@
                   </div>
                 </div>
                 {% if comment.visibility == "visible" %}
-                  <div class="comment-card__actions">
-                    {% if request.user == comment.author %}<a href="{% url 'comment_edit' comment.pk %}">{% translate "Edit" %}</a>{% endif %}
-                    {% if request.user == comment.author %}<form method="post" action="{% url 'comment_withdraw' comment.pk %}">{% csrf_token %}<button type="submit">{% translate "Withdraw" %}</button></form>{% endif %}
-                    {% if perms.posts.moderate_comment %}<form method="post" action="{% url 'comment_hide' comment.pk %}">{% csrf_token %}<button type="submit">{% translate "Hide" %}</button></form>{% endif %}
+                  <div class="comment-card__actions" role="group" aria-label="{% translate 'Comment actions' %}">
+                    {% if request.user == comment.author %}<a class="comment-card__action" href="{% url 'comment_edit' comment.pk %}">{% translate "Edit" %}</a>{% endif %}
+                    {% if request.user == comment.author %}<form method="post" action="{% url 'comment_withdraw' comment.pk %}">{% csrf_token %}<button class="comment-card__action comment-card__action--destructive" type="submit">{% translate "Withdraw" %}</button></form>{% endif %}
+                    {% if perms.posts.moderate_comment %}<form method="post" action="{% url 'comment_hide' comment.pk %}">{% csrf_token %}<button class="comment-card__action comment-card__action--destructive" type="submit">{% translate "Hide" %}</button></form>{% endif %}
                   </div>
                 {% endif %}
               </header>
@@ -120,13 +120,19 @@
               {% endif %}
 
               {% if comment.visibility == "visible" and user.is_authenticated %}
-                <form method="post" action="{% url 'comment_reply' comment.pk %}" class="comment-reply-form">
-                  {% csrf_token %}
-                  {{ form.website }}
-                  <label class="sr-only" for="reply-{{ comment.pk }}">{% blocktranslate with author_name=comment.author.username %}Reply to {{ author_name }}{% endblocktranslate %}</label>
-                  <textarea id="reply-{{ comment.pk }}" name="content" rows="3" placeholder="{% blocktranslate with author_name=comment.author.display_name|default:comment.author.username %}Reply to {{ author_name }}{% endblocktranslate %}"></textarea>
-                  <button type="submit">{% translate "Reply" %}</button>
-                </form>
+                <div class="comment-reply-composer" data-reply-composer>
+                  <button class="comment-reply-toggle" type="button" data-reply-open aria-controls="reply-form-{{ comment.pk }}" aria-expanded="false">{% translate "Reply" %}</button>
+                  <form id="reply-form-{{ comment.pk }}" method="post" action="{% url 'comment_reply' comment.pk %}" class="comment-reply-form" data-reply-form>
+                    {% csrf_token %}
+                    {{ form.website }}
+                    <label class="sr-only" for="reply-{{ comment.pk }}">{% blocktranslate with author_name=comment.author.username %}Reply to {{ author_name }}{% endblocktranslate %}</label>
+                    <textarea id="reply-{{ comment.pk }}" name="content" rows="3" placeholder="{% blocktranslate with author_name=comment.author.display_name|default:comment.author.username %}Reply to {{ author_name }}{% endblocktranslate %}"></textarea>
+                    <div class="comment-reply-form__actions">
+                      <button class="comment-reply-form__submit" type="submit">{% translate "Reply" %}</button>
+                      <button class="comment-reply-cancel" type="button" data-reply-cancel>{% translate "Cancel" %}</button>
+                    </div>
+                  </form>
+                </div>
               {% endif %}
 
               {% for reply in comment.replies.all %}
@@ -140,10 +146,10 @@
                       </div>
                     </div>
                     {% if reply.visibility == "visible" %}
-                      <div class="comment-card__actions">
-                        {% if request.user == reply.author %}<a href="{% url 'comment_edit' reply.pk %}">{% translate "Edit" %}</a>{% endif %}
-                        {% if request.user == reply.author %}<form method="post" action="{% url 'comment_withdraw' reply.pk %}">{% csrf_token %}<button type="submit">{% translate "Withdraw" %}</button></form>{% endif %}
-                        {% if perms.posts.moderate_comment %}<form method="post" action="{% url 'comment_hide' reply.pk %}">{% csrf_token %}<button type="submit">{% translate "Hide" %}</button></form>{% endif %}
+                      <div class="comment-card__actions" role="group" aria-label="{% translate 'Reply actions' %}">
+                        {% if request.user == reply.author %}<a class="comment-card__action" href="{% url 'comment_edit' reply.pk %}">{% translate "Edit" %}</a>{% endif %}
+                        {% if request.user == reply.author %}<form method="post" action="{% url 'comment_withdraw' reply.pk %}">{% csrf_token %}<button class="comment-card__action comment-card__action--destructive" type="submit">{% translate "Withdraw" %}</button></form>{% endif %}
+                        {% if perms.posts.moderate_comment %}<form method="post" action="{% url 'comment_hide' reply.pk %}">{% csrf_token %}<button class="comment-card__action comment-card__action--destructive" type="submit">{% translate "Hide" %}</button></form>{% endif %}
                       </div>
                     {% endif %}
                   </header>
@@ -177,3 +183,6 @@
     </div>
   </article>
 {% endblock content %}
+{% block scripts %}
+  <script type="module" src="{% static 'dist/js/comment-replies.js' %}"></script>
+{% endblock scripts %}

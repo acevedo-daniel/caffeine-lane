@@ -77,3 +77,91 @@ class ProductionSettingsTests(SimpleTestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("DATABASE_URL is required in production.", result.stderr)
+
+    def test_documented_production_backends_are_enabled_with_debug_disabled(self):
+        environment = os.environ.copy()
+        environment.update(
+            {
+                "DJANGO_SETTINGS_MODULE": "config.settings.production",
+                "SECRET_KEY": "test-production-secret-key-not-for-deployment-0123456789",
+                "DATABASE_URL": "sqlite:///:memory:",
+                "ALLOWED_HOSTS": "example.test",
+                "CLOUDINARY_URL": "cloudinary://123456789012345:test@example",
+                "RESEND_API_KEY": "re_test_not_a_real_key",
+                "CONTACT_RECIPIENT_EMAIL": "owner@example.test",
+            }
+        )
+        result = subprocess.run(
+            [
+                sys.executable,
+                "manage.py",
+                "shell",
+                "--settings=config.settings.production",
+                "-c",
+                (
+                    "from django.conf import settings; "
+                    "print(settings.DEBUG); "
+                    "print(settings.EMAIL_BACKEND); "
+                    "print(settings.STORAGES['default']['BACKEND']); "
+                    "print(settings.STORAGES['staticfiles']['BACKEND'])"
+                ),
+            ],
+            cwd=Path(__file__).resolve().parents[3],
+            env=environment,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(
+            [line for line in result.stdout.splitlines() if line][-4:],
+            [
+                "False",
+                "anymail.backends.resend.EmailBackend",
+                "cloudinary_storage.storage.MediaCloudinaryStorage",
+                "whitenoise.storage.CompressedManifestStaticFilesStorage",
+            ],
+        )
+
+
+class LocalSettingsTests(SimpleTestCase):
+    def test_local_settings_are_explicitly_development_oriented(self):
+        environment = os.environ.copy()
+        environment.update(
+            {
+                "DJANGO_SETTINGS_MODULE": "config.settings.local",
+                "DEBUG": "false",
+                "DATABASE_URL": "sqlite:///:memory:",
+            }
+        )
+        result = subprocess.run(
+            [
+                sys.executable,
+                "manage.py",
+                "shell",
+                "--settings=config.settings.local",
+                "-c",
+                (
+                    "from django.conf import settings; "
+                    "print(settings.DEBUG); "
+                    "print(settings.EMAIL_BACKEND); "
+                    "print(settings.STORAGES['default']['BACKEND'])"
+                ),
+            ],
+            cwd=Path(__file__).resolve().parents[3],
+            env=environment,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(
+            [line for line in result.stdout.splitlines() if line][-3:],
+            [
+                "True",
+                "django.core.mail.backends.console.EmailBackend",
+                "django.core.files.storage.FileSystemStorage",
+            ],
+        )

@@ -20,7 +20,7 @@
               <button class="editorial-button editorial-button--solid" type="submit"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> {% translate "Search" %}</button>
             </div>
           </div>
-          <div id="filter-section" class="search-panel__filters{% if not current_category and current_sort == 'relevance' %} hidden{% endif %}">
+          <div id="filter-section" class="search-panel__filters" data-search-filter-panel>
             <div class="grid gap-5 sm:grid-cols-2">
               <div>
                 <label class="search-panel__label" for="{{ form.category.id_for_label }}">{% translate "Category" %}</label>

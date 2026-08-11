@@ -1,25 +1,28 @@
 {% extends "layouts/account.html" %}
 {% load i18n %}
 {% block title %}{% translate "Your profile · The Caffeine Lane" %}{% endblock title %}
-{% block account_visual_title %}{% translate "Your place in the lane." %}{% endblock account_visual_title %}
-{% block account_visual_copy %}{% translate "Set the details that ride with your name, from the garage to every conversation ahead." %}{% endblock account_visual_copy %}
+{% block account_title %}{% translate "Your profile." %}{% endblock account_title %}
+{% block account_intro %}{% translate "Set the details that ride with your name, from the garage to every conversation ahead." %}{% endblock account_intro %}
 {% block account_panel %}
-  <div class="account-profile__heading">
-    <img src="{{ user.avatar_url }}" alt="{% blocktranslate with display_name=user.display_name|default:user.username %}Avatar for {{ display_name }}{% endblocktranslate %}" width="72" height="72">
-    <div>
-      <p class="auth-card__eyebrow">{% translate "Member profile" %}</p>
-      <h2 id="auth-form-heading" class="auth-card__title">{{ user.display_name|default:user.username }}</h2>
-      <p class="auth-card__intro">{{ user.email }}</p>
-    </div>
+  <div class="account-panel__heading">
+    <p class="account-panel__eyebrow">{% translate "Member profile" %}</p>
+    <h2 id="account-panel-heading" class="account-panel__title">{% translate "Profile details" %}</h2>
+    <p class="account-panel__intro">{% translate "Your avatar and details appear with the stories and conversations you share." %}</p>
   </div>
-  <form method="post" enctype="multipart/form-data" class="auth-form" novalidate>
+  <form method="post" enctype="multipart/form-data" class="account-form" novalidate>
     {% csrf_token %}
-    {% if form.non_field_errors %}<div class="auth-form__error">{{ form.non_field_errors }}</div>{% endif %}
+    {% if form.non_field_errors %}<div class="account-form__error" role="alert">{{ form.non_field_errors }}</div>{% endif %}
     {% for field in form %}{% include "components/form_field.html" with field=field %}{% endfor %}
     <button class="button-primary" type="submit">{% translate "Save changes" %}</button>
   </form>
-  <div class="account-actions">
-    <a href="{% url 'password_change' %}">{% translate "Change password" %}</a>
-    <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit">{% translate "Sign out" %}</button></form>
+  <div class="account-actions" aria-label="{% translate 'Account actions' %}">
+    <div class="account-actions__group">
+      <p class="account-actions__label">{% translate "Security" %}</p>
+      <a class="editorial-button" href="{% url 'password_change' %}">{% translate "Change password" %}</a>
+    </div>
+    <div class="account-actions__group account-actions__group--signout">
+      <p class="account-actions__label">{% translate "Session" %}</p>
+      <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="account-signout" type="submit">{% translate "Sign out" %}</button></form>
+    </div>
   </div>
 {% endblock account_panel %}

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { HomeCarouselController } from "../../static/src/js/home-carousel-controller.mjs";
+import { HomeCarouselController } from "../../static/src/js/home-carousel.js";
 
 const createElement = () => ({
   attributes: new Map(),

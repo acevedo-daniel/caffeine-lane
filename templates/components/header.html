@@ -44,7 +44,7 @@
         {% include "components/character_badge.html" with asset="character-signature-256.webp" size="xs" alt="" class_name="nav-rider" %}
       </a>
       <button type="button" data-mobile-menu-button aria-controls="primary-links" aria-expanded="false" class="site-menu-button md:hidden">{% translate "Menu" %}</button>
-      <div id="primary-links" data-mobile-menu-panel class="hidden w-full flex-col gap-3 border-t border-stone-800 pt-3 md:flex md:w-auto md:flex-row md:items-center md:gap-5 md:border-0 md:pt-0">
+      <div id="primary-links" data-mobile-menu-panel class="flex w-full flex-col gap-3 border-t border-stone-800 pt-3 md:w-auto md:flex-row md:items-center md:gap-5 md:border-0 md:pt-0">
         <div class="flex flex-col gap-3 md:flex-row md:items-center md:gap-5">
           <a class="nav-link" href="{% url 'home' %}">{% translate "Home" %}</a>
           <a class="nav-link md:hidden" href="{% url 'search' %}">{% translate "Search" %}</a>

@@ -23,14 +23,11 @@ RUN uv sync --frozen --no-dev
 
 FROM python:3.13.6-slim AS runtime
 
-# Bootstrap the next Render deployment with the portfolio dataset. Set an
-# explicit SEED_PORTFOLIO_ON_START=false variable in Render immediately after
-# that successful deploy so restarts preserve editorial changes.
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     DJANGO_SETTINGS_MODULE=config.settings.production \
     RUN_MIGRATIONS_ON_START=true \
-    SEED_PORTFOLIO_ON_START=true \
+    SEED_PORTFOLIO_ON_START=false \
     PATH="/app/.venv/bin:$PATH"
 
 WORKDIR /app
@@ -40,7 +37,8 @@ COPY --from=dependencies /app/.venv /app/.venv
 COPY --chown=app:app . .
 COPY --from=assets --chown=app:app /app/static/dist /app/static/dist
 COPY --chown=app:app docker/entrypoint.sh /entrypoint.sh
-RUN chmod 755 /entrypoint.sh && mkdir /app/staticfiles && chown app:app /app/staticfiles
+RUN sed -i 's/\r$//' /entrypoint.sh && chmod 755 /entrypoint.sh \
+    && mkdir /app/staticfiles && chown app:app /app/staticfiles
 
 USER app
 EXPOSE 8000

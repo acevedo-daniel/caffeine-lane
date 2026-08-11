@@ -20,6 +20,7 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 # Uploaded media remains on the local filesystem during development.
 STORAGES["default"] = {"BACKEND": "django.core.files.storage.FileSystemStorage"}
 
-INSTALLED_APPS += ["debug_toolbar"]
-MIDDLEWARE.insert(1, "debug_toolbar.middleware.DebugToolbarMiddleware")
-INTERNAL_IPS = ["127.0.0.1"]
+if env.bool("DEBUG_TOOLBAR_ENABLED", default=False):
+    INSTALLED_APPS += ["debug_toolbar"]
+    MIDDLEWARE.insert(1, "debug_toolbar.middleware.DebugToolbarMiddleware")
+    INTERNAL_IPS = ["127.0.0.1"]

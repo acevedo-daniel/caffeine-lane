@@ -3,10 +3,10 @@
 !.env.example
 .git
 .github
-.pytest_cache
-.ruff_cache
 .coverage
 .hypothesis
+.pytest_cache
+.ruff_cache
 .venv
 __pycache__
 *.py[cod]
@@ -15,6 +15,13 @@ coverage.xml
 htmlcov
 media
 node_modules
+playwright-report
 staticfiles
+static/dist
+test-results
+tests
 db.sqlite3
 docs
+AGENTS.md
+compose.yaml
+.pre-commit-config.yaml

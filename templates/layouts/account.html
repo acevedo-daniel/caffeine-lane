@@ -1,11 +1,32 @@
-{% extends "layouts/auth.html" %}
+{% extends "base.html" %}
 {% load i18n %}
-{% block auth_visual %}
-  <p class="auth-shell__eyebrow">{% translate "The Caffeine Lane account" %}</p>
-  <h1 class="auth-shell__title">{% block account_visual_title %}{% translate "Your place in the lane." %}{% endblock account_visual_title %}</h1>
-  <p class="auth-shell__copy">{% block account_visual_copy %}{% translate "Keep your profile and account details ready for the next ride." %}{% endblock account_visual_copy %}</p>
-  {% block account_visual_mark %}{% endblock account_visual_mark %}
-{% endblock auth_visual %}
-{% block auth_form %}
-  {% block account_panel %}{% endblock account_panel %}
-{% endblock auth_form %}
+{% block content %}
+  <section class="account-shell">
+    <div class="editorial-container account-shell__container">
+      <header class="account-shell__intro">
+        <p class="account-shell__eyebrow">{% translate "Account" %}</p>
+        <h1 class="account-shell__title">{% block account_title %}{% translate "Your place in the lane." %}{% endblock account_title %}</h1>
+        <p class="account-shell__copy">{% block account_intro %}{% translate "Keep your profile and account details ready for the next ride." %}{% endblock account_intro %}</p>
+      </header>
+
+      <div class="account-shell__layout">
+        <aside class="account-shell__identity" aria-label="{% translate 'Account overview' %}">
+          <img src="{{ user.avatar_url }}" alt="{% blocktranslate with display_name=user.display_name|default:user.username %}Avatar for {{ display_name }}{% endblocktranslate %}" width="112" height="112">
+          <div>
+            <p class="account-shell__identity-label">{% translate "Signed in as" %}</p>
+            <p class="account-shell__identity-name">{{ user.display_name|default:user.username }}</p>
+            <p class="account-shell__identity-email">{{ user.email }}</p>
+          </div>
+          <nav class="account-shell__nav" aria-label="{% translate 'Account navigation' %}">
+            <a href="{% url 'profile' %}"{% if request.resolver_match.url_name == "profile" %} aria-current="page"{% endif %}>{% translate "Profile" %}</a>
+            <a href="{% url 'password_change' %}"{% if request.resolver_match.url_name == "password_change" or request.resolver_match.url_name == "password_change_done" %} aria-current="page"{% endif %}>{% translate "Password and security" %}</a>
+          </nav>
+        </aside>
+
+        <section class="account-shell__panel" aria-labelledby="account-panel-heading">
+          {% block account_panel %}{% endblock account_panel %}
+        </section>
+      </div>
+    </div>
+  </section>
+{% endblock content %}

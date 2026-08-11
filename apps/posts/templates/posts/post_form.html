@@ -13,7 +13,7 @@
 
       <form method="post" enctype="multipart/form-data" class="post-editor__form" novalidate>
         {% csrf_token %}
-        {% if form.non_field_errors %}<div class="auth-form__error">{{ form.non_field_errors }}</div>{% endif %}
+        {% if form.non_field_errors %}<div class="auth-form__error" role="alert">{{ form.non_field_errors }}</div>{% endif %}
         <div class="post-editor__fields">
           {% for field in form %}{% include "components/form_field.html" with field=field %}{% endfor %}
         </div>

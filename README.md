@@ -1,363 +1,87 @@
 # Caffeine Lane
 
-<p align="center">
-  A portfolio Django application for publishing cafe racer builds, guides, and reviews.
-</p>
+**A personal Django editorial application for cafe racer builds, guides, and reviews.**
 
-<p align="center">
-  <a href="https://caffeinelane.onrender.com">Live Demo</a>
-  ·
-  <a href="./docs/deployment.md">Deployment guide</a>
-  ·
-  <a href="https://github.com/acevedo-daniel/caffeine-lane/issues">Report an Issue</a>
-</p>
+## Description
 
-> [!NOTE]
-> **Project status: Active development.** The Render production service is provisioned and its deployment is being validated.
+Caffeine Lane is a personal project for publishing practical motorcycle stories: build notes, riding guides, and reviews. It combines a public editorial site with accounts, comments, moderation, image uploads, search, and a responsive frontend.
 
-## Overview
+**Status:** active development. A live deployment is available at [caffeinelane.onrender.com](https://caffeinelane.onrender.com).
 
-The Caffeine Lane is an editorial application for cafe racer enthusiasts. It
-provides a public catalogue of builds, guides, and reviews, with search and
-categories to make content easy to explore.
+## Features
 
-The project modernizes an academic Django application into a maintainable
-portfolio piece. It separates local, test, and production settings; uses
-PostgreSQL for the editorial domain; and includes authentication, moderated
-comments, secure uploads, transactional email, and a repeatable Docker-based
-deployment.
+- Published and draft posts with categories, images, alternative text, search, pagination, and related content.
+- Email-based accounts, profiles, password changes, and a demo-safe password reset flow.
+- One-level comment replies with edit, withdrawal, and moderation controls.
+- Django Admin support for editorial publishing and moderation.
+- English as the default interface language, with Spanish as an alternative.
+- Docker deployment with Neon, Cloudinary, WhiteNoise, and Resend.
 
-## Project Context
-
-| Field | Details |
-| --- | --- |
-| **Type** | Personal portfolio; modernization of an academic project |
-| **Purpose** | Demonstrate an end-to-end Django modernization and editorial domain design |
-| **Role** | Solo developer |
-| **Started** | 2025-07 |
-| **Current version** | v2 modernization in progress |
-
-## Key Features
-
-- **Editorial publishing:** drafts, published posts, stable slugs, categories,
-  featured images, alt text, related posts, pagination, and PostgreSQL search.
-- **Accounts:** custom users, email login, registration, public profiles,
-  avatars, password changes, and password reset flows.
-- **Comments and moderation:** one-level replies, edit and withdraw actions,
-  honeypot spam protection, duplicate prevention, and moderator controls.
-- **Editorial administration:** Django Admin filters, search, thumbnails, and
-  actions for publication and moderation.
-- **Production foundations:** Docker, Gunicorn, WhiteNoise, Cloudinary media,
-  Resend email through Anymail, CSP report-only mode, and structured logs.
-
-## Tech Stack
+## Stack
 
 | Area | Technology |
-| --- | --- |
-| **Language** | Python 3.13-3.14 |
-| **Framework** | Django 6.0 |
-| **Database** | PostgreSQL 18 locally; Neon PostgreSQL in production |
-| **Package management** | uv and `uv.lock` |
-| **Frontend assets** | Tailwind CSS 4, Node.js 22, and pnpm |
-| **Testing** | pytest, pytest-django, coverage, and factory-boy |
-| **Infrastructure** | Docker, Render, Gunicorn, WhiteNoise, Cloudinary, Resend, and Neon |
-| **CI** | GitHub Actions on Python 3.13 and 3.14 |
+|---|---|
+| Application | Python 3.13, Django 6.0 |
+| Data | PostgreSQL 18; Neon in production |
+| Frontend | Tailwind CSS 4, Node.js 22, pnpm 10.18.3 |
+| Tooling | uv, pytest, Ruff, Playwright |
+| Delivery | Docker, Render, Gunicorn, GitHub Actions |
+| Media and email | Cloudinary, WhiteNoise, Resend through Anymail |
 
-## Scope
+## Quick start
 
-### Included
+### Requirements
 
-- Public editorial content, search, categories, and published-post visibility.
-- Accounts, password flows, comments, and editorial moderation.
-- Docker deployment, PostgreSQL migrations, Cloudinary media, and Resend email.
-
-### Not Included
-
-- Migration of real users or unreviewed legacy data.
-- Newsletters, payments, social login, or a mobile application.
-- A permanent staging environment.
-
-## Getting Started
-
-### Prerequisites
-
-Before installing the project, make sure you have:
-
-- Python 3.13 or 3.14.
-- [uv](https://docs.astral.sh/uv/).
-- Node.js 22 and pnpm 10.18.3.
-- Docker Desktop with Docker Compose for local PostgreSQL.
-- Git.
+- Python 3.13 or 3.14 and [uv](https://docs.astral.sh/uv/)
+- Node.js 22 and pnpm 10.18.3
+- Docker Compose for the normal local PostgreSQL workflow
 
 ### Installation
-
-Clone the repository:
 
 ```bash
 git clone https://github.com/acevedo-daniel/caffeine-lane.git
 cd caffeine-lane
-```
-
-Create a private environment file, start PostgreSQL, and install dependencies:
-
-```bash
 cp .env.example .env
 docker compose up -d db
-uv sync
+uv sync --locked
 pnpm install --frozen-lockfile
 pnpm run build
-```
-
-In PowerShell, create the environment file with:
-
-```powershell
-Copy-Item .env.example .env
-```
-
-### Environment Variables
-
-`.env.example` contains safe local values. Do not commit `.env` files, API keys,
-database URLs, or provider credentials.
-
-| Variable | Required | Description | Safe example |
-| --- | :---: | --- | --- |
-| `DJANGO_SETTINGS_MODULE` | Yes | Active settings module | `config.settings.local` |
-| `SECRET_KEY` | Yes | Django signing key | local value in `.env.example` |
-| `DATABASE_URL` | Yes | Local PostgreSQL or Neon pooled connection URL | `postgresql://...` |
-| `DIRECT_DATABASE_URL` | Production | Direct Neon URL used by startup migrations | `postgresql://...` |
-| `ALLOWED_HOSTS` | Yes | Comma-separated allowed hosts | `localhost,127.0.0.1` |
-| `CSRF_TRUSTED_ORIGINS` | Yes | Trusted form origins with scheme | `http://localhost:8000` |
-| `CLOUDINARY_URL` | Production | Cloudinary media-storage credential | provider-issued secret |
-| `RESEND_API_KEY` | Production | Resend API key for Anymail | provider-issued secret |
-| `PASSWORD_RESET_ENABLED` | No | Enables password-reset emails; keep `false` for the public Resend demo | `false` |
-| `RUN_MIGRATIONS_ON_START` | No | Runs migrations with the direct Neon URL before Gunicorn | `true` |
-| `SEED_PORTFOLIO_ON_START` | No | Loads portfolio content once; return to `false` after the first deploy | `false` |
-| `DEFAULT_FROM_EMAIL` | Yes | Sender used by application email | `noreply@example.com` |
-| `CONTACT_RECIPIENT_EMAIL` | Yes | Recipient for contact messages | `owner@example.com` |
-| `USE_X_FORWARDED_PROTO` | Production | Trust the Render HTTPS proxy header | `true` |
-| `CSP_ENFORCE` | No | Enable CSP enforcement after report validation | `false` |
-
-> [!IMPORTANT]
-> Keep production secrets only in Render. Do not add them to Git, the README,
-> `.env.example`, the Dockerfile, or a Render configuration file.
-
-### Database Setup
-
-Apply migrations:
-
-```bash
 uv run python manage.py check_fresh_baseline
 uv run python manage.py migrate
-```
-
-> [!WARNING]
-> This branch is a **fresh baseline** and is not compatible with a database
-> created from `main`. The original `accounts.0001_initial` used Django's
-> `auth.User` plus `accounts.Profile`; this branch uses a custom
-> `accounts.User` under the same migration identifier. Do not reuse an old
-> SQLite database or PostgreSQL volume. Create a new database, run the command
-> above, and then apply all migrations from scratch. The check aborts if it
-> detects the legacy `accounts_profile` table; it never deletes data.
-
-Create the idempotent public portfolio dataset after the first migration. It
-creates a non-privileged author with an unusable password, three structural
-categories, nineteen published posts, and uploads the bundled WebP cover images
-from `assets/portfolio/source/` to the active media storage (Cloudinary in
-production):
-
-```bash
 uv run python manage.py seed_portfolio
 ```
 
-Run it manually for local development. The current Docker image temporarily
-defaults `SEED_PORTFOLIO_ON_START=true` for the next Render content bootstrap.
-If Render defines the variable explicitly, set it to `true` for that deploy.
-Once the logs report `Portfolio ready`, set it to `false` immediately so later
-restarts preserve editorial changes; see the
-[deployment guide](./docs/deployment.md).
+On PowerShell, use `Copy-Item .env.example .env` instead of `cp`.
 
-To import reviewed editorial content without users, passwords, or unreviewed
-images, follow the [content import guide](./docs/content-import.md).
+### Run
 
-### Run Locally
+Start the asset watcher in one terminal:
 
-Start the development server:
+```bash
+pnpm run dev
+```
+
+Start Django in another terminal:
 
 ```bash
 uv run python manage.py runserver
 ```
 
-The application is available at <http://localhost:8000>.
+Open <http://localhost:8000>. `static/src` is authored source; `static/dist` is generated by the asset commands and is never edited manually.
 
-## Usage
+## Context
 
-1. Visit `/home/` to browse published content, categories, and search results.
-2. Register or sign in to update a profile and participate in comments.
-3. Use `/admin/` with a staff account to publish content and moderate comments.
-
-The liveness endpoint is:
-
-```text
-GET /healthz/ -> {"status": "ok"}
-```
-
-## Available Scripts
-
-| Command | Description |
-| --- | --- |
-| `docker compose up -d db` | Starts local PostgreSQL. |
-| `uv sync` | Installs the locked Python dependencies. |
-| `pnpm run build` | Compiles Tailwind CSS and JavaScript assets. |
-| `uv run python manage.py runserver` | Starts the local development server. |
-| `uv run python manage.py migrate` | Applies database migrations. |
-| `uv run pytest` | Runs the automated test suite with coverage. |
-| `uv run ruff check .` | Checks linting rules. |
-| `uv run ruff format --check .` | Verifies formatting. |
-| `./scripts/release.sh` | Uses Neon direct connection for migrations and verifies the structural taxonomy. |
-| `uv run python manage.py seed_portfolio` | Creates or updates the local public portfolio dataset. |
-
-## Project Structure
-
-<details>
-<summary><strong>View directory structure</strong></summary>
-
-```text
-caffeine-lane/
-├── apps/                 # Accounts, core pages, posts, and tests
-├── assets/               # Seed image sources and archived brand originals
-├── config/settings/       # Base, local, test, and production settings
-├── docker/                # Container runtime entrypoint
-├── docs/                  # Audit, deployment, and operational documentation
-├── scripts/               # Explicit release helper scripts
-├── static/                # Source and compiled frontend assets
-├── templates/             # Shared and application templates
-├── .env.example           # Safe local environment reference
-├── compose.yaml           # Local PostgreSQL service
-├── Dockerfile             # Multi-stage production image
-├── pyproject.toml         # Python dependencies and tooling
-├── uv.lock                # Locked Python dependencies
-└── README.md
-```
-
-</details>
-
-## Architecture
-
-`accounts` owns identity and profiles, `posts` owns editorial content and
-comments, and `core` owns shared pages, contact email, and health endpoints.
-Settings are isolated by environment.
-
-In production, Render runs the Docker image. Before Gunicorn starts on Render's
-assigned `PORT`, the container verifies the fresh baseline, applies migrations
-with `DIRECT_DATABASE_URL` when `RUN_MIGRATIONS_ON_START=true`, returns to the
-pooled `DATABASE_URL`, and collects static files. The portfolio seed then uses
-the pooled connection and the bundled files under `assets/portfolio/` to create
-or update database content and upload missing media to Cloudinary. It runs only
-when `SEED_PORTFOLIO_ON_START=true`.
-WhiteNoise serves static files, Cloudinary stores uploaded media, Neon stores
-relational data, and Anymail sends email through Resend.
-
-## Testing
-
-Run the complete test suite:
-
-```bash
-uv run pytest
-```
-
-Run the standard quality checks:
-
-```bash
-uv run ruff check .
-uv run ruff format --check .
-uv run python manage.py check
-```
-
-The suite covers authentication, password resets, contact email, uploads,
-editorial rules, search, comments, moderation, admin actions, CSP, and the
-health endpoint. It uses in-memory services by default and can target local
-PostgreSQL with `TEST_DATABASE_URL`.
-
-The reproducible visual review for pages, states, and viewports is in
-[docs/ui-visual-checklist.md](./docs/ui-visual-checklist.md).
-
-## Deployment
-
-| Environment | URL | Provider |
-| --- | --- | --- |
-| **Production (validation in progress)** | <https://caffeinelane.onrender.com> | Render |
-
-Render uses the root `Dockerfile` with these settings:
-
-- **Docker Build Context Directory:** `.`
-- **Dockerfile Path:** `./Dockerfile`
-- **Docker Command:** leave empty
-- **Health Check Path:** `/healthz/`
-
-Required production variables are `DJANGO_SETTINGS_MODULE`, `SECRET_KEY`,
-`DATABASE_URL`, `DIRECT_DATABASE_URL`, `ALLOWED_HOSTS`,
-`CSRF_TRUSTED_ORIGINS`, `CLOUDINARY_URL`, `RESEND_API_KEY`,
-`DEFAULT_FROM_EMAIL`, `CONTACT_RECIPIENT_EMAIL`, and
-`USE_X_FORWARDED_PROTO=true`. Set `RUN_MIGRATIONS_ON_START=true`. The current
-Docker image defaults `SEED_PORTFOLIO_ON_START=true` for its next content
-bootstrap; an explicit Render variable overrides that default. After the seed
-completes, set the Render variable to `false`. Keep `PASSWORD_RESET_ENABLED=false`
-while Resend uses its onboarding sender.
-
-The Docker entrypoint is the only web-process startup path. It never loads
-fixtures or creates superusers. Because Render Free does not offer an execution
-shell, it runs the idempotent migrations and `seed_portfolio` before each web
-process start only when their respective flags are enabled. Migrations use
-`DIRECT_DATABASE_URL` and the application returns to pooled `DATABASE_URL`.
-For the next deploy, allow the Docker default of `SEED_PORTFOLIO_ON_START=true`
-or set that Render variable explicitly to `true`. Once the logs report
-`Portfolio ready`, set it explicitly to `false` to preserve editorial changes.
-The service requires both URLs while startup migrations are enabled.
-
-The first administrator is created manually with Neon’s direct connection and
-`uv run python manage.py createsuperuser`; the full safe procedure is in the
-[deployment guide](./docs/deployment.md#first-administrator). No
-seed, Docker build, or entrypoint creates privileged users.
-
-> [!NOTE]
-> `onboarding@resend.dev` can only send to the email address associated with the
-> Resend account. Verify a domain in Resend before sending password-reset email
-> to arbitrary visitors.
-
-## Known Limitations
-
-- Production deployment validation is still in progress.
-- CSP stays in report-only mode until its reports are reviewed.
-- Demo content is intentionally small; legacy content must be reviewed before
-  importing it.
-- Password reset is intentionally disabled in the public demo until a Resend
-  domain is verified.
-
-## Roadmap
-
-- [x] Modernize the original application with Django 6, uv, pytest, and Ruff.
-- [x] Add editorial content, accounts, comments, security settings, and CI.
-- [x] Add Docker, Cloudinary media, Neon configuration, Resend email, and a
-  Render health check.
-- [ ] Complete production smoke testing and review deployment logs.
-- [ ] Validate CSP reports and establish a rollback procedure.
-
-See the [open issues](https://github.com/acevedo-daniel/caffeine-lane/issues)
-for planned improvements and known problems.
+**Category:** personal project. It is maintained as a solo editorial application and a practical place to develop Django, frontend, testing, and deployment decisions around a real content domain.
 
 ## Documentation
 
-- [Deployment and first administrator](./docs/deployment.md)
-- [Reviewed content import](./docs/content-import.md)
-- [Visual release checklist](./docs/ui-visual-checklist.md)
+- [Project](docs/PROJECT.md)
+- [Specification](docs/SPECIFICATION.md)
+- [Architecture](docs/ARCHITECTURE.md)
+- [Development](docs/DEVELOPMENT.md)
+- [Testing](docs/TESTING.md)
+- [Deployment](docs/DEPLOYMENT.md)
 
-## License
+## Authors
 
-No license has been declared. Reuse terms have not been published.
-
-## Author
-
-**Daniel Acevedo**
-
-- GitHub: [@acevedo-daniel](https://github.com/acevedo-daniel)
-- Repository: [caffeine-lane](https://github.com/acevedo-daniel/caffeine-lane)
+Daniel Acevedo - [@acevedo-daniel](https://github.com/acevedo-daniel)

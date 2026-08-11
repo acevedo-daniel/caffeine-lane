@@ -1,6 +1,23 @@
-import { cp, mkdir } from "node:fs/promises";
+import { cp, mkdir, rm } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
+import { dirname, resolve } from "node:path";
 
-await mkdir("static/dist/js", { recursive: true });
-for (const name of ["base.js", "custom-select.js", "home-carousel-controller.mjs", "home-carousel.js", "search-filters.js"]) {
-  await cp(`static/src/js/${name}`, `static/dist/js/${name}`);
+const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+
+export const javascriptSourceDirectory = resolve(repositoryRoot, "static/src/js");
+export const javascriptOutputDirectory = resolve(repositoryRoot, "static/dist/js");
+
+/** Build a clean JavaScript output tree from the authored source tree. */
+export async function buildJavaScriptAssets({
+  sourceDirectory = javascriptSourceDirectory,
+  outputDirectory = javascriptOutputDirectory,
+} = {}) {
+  await rm(outputDirectory, { recursive: true, force: true });
+  await mkdir(dirname(outputDirectory), { recursive: true });
+  await cp(sourceDirectory, outputDirectory, { recursive: true });
 }
+
+const invokedDirectly = process.argv[1]
+  && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+
+if (invokedDirectly) await buildJavaScriptAssets();

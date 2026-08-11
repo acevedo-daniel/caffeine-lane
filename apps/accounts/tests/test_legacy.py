@@ -140,6 +140,29 @@ class AccountFlowTests(TestCase):
 
         self.assertEqual(user.avatar_url, static("images/default-avatar.svg"))
 
+    def test_profile_uses_the_authenticated_account_shell(self):
+        user = User.objects.create_user(
+            email="rider@example.com",
+            username="rider",
+            password="safe-test-password-123",
+        )
+        self.client.force_login(user)
+
+        response = self.client.get(reverse("profile"))
+
+        self.assertContains(response, 'class="site-header"')
+        self.assertContains(response, 'class="editorial-footer"')
+        self.assertContains(response, 'class="account-shell"')
+        self.assertNotContains(response, 'class="auth-shell"')
+
+    @override_settings(PASSWORD_RESET_ENABLED=False)
+    def test_password_recovery_remains_in_the_access_shell(self):
+        response = self.client.get(reverse("password_reset"))
+
+        self.assertContains(response, 'class="auth-shell"')
+        self.assertNotContains(response, 'class="account-shell"')
+        self.assertNotContains(response, 'class="site-header"')
+
     def test_password_reset_sends_email(self):
         User.objects.create_user(
             email="rider@example.com",

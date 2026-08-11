@@ -83,9 +83,15 @@ USE_TZ = True
 LOCALE_PATHS = [BASE_DIR / "locale"]
 
 STATIC_URL = "static/"
-# A single root keeps URL paths portable between Windows development and Linux
-# deployments: {% static "dist/js/home-carousel.js" %} resolves consistently.
-STATICFILES_DIRS = [BASE_DIR / "static"]
+# Only publish runtime assets. Source CSS and JavaScript live in ``static/src``
+# and are compiled into ``static/dist``; including them in collectstatic would
+# make ManifestStaticFilesStorage try to resolve build-time imports such as
+# ``@import "tailwindcss"``.
+STATICFILES_DIRS = [
+    ("dist", BASE_DIR / "static" / "dist"),
+    ("images", BASE_DIR / "static" / "images"),
+    ("vendor", BASE_DIR / "static" / "vendor"),
+]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"

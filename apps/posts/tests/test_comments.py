@@ -60,6 +60,26 @@ class CommentModerationTests(TestCase):
         self.assertRedirects(response, root.post.get_absolute_url())
         self.assertEqual(Comment.objects.filter(parent=reply).count(), 0)
 
+    def test_reply_composer_preserves_a_no_javascript_form_fallback(self):
+        comment = self.create_comment()
+        self.client.force_login(self.other_user)
+
+        response = self.client.get(comment.post.get_absolute_url())
+
+        self.assertContains(response, "data-reply-open")
+        self.assertContains(response, "data-reply-form")
+        self.assertContains(response, "data-reply-cancel")
+        self.assertContains(response, reverse("comment_reply", args=[comment.pk]))
+        self.assertNotContains(response, f'id="reply-form-{comment.pk}" hidden')
+
+    def test_anonymous_visitors_do_not_receive_reply_composers(self):
+        self.create_comment()
+
+        response = self.client.get(self.post.get_absolute_url())
+
+        self.assertNotContains(response, "data-reply-open")
+        self.assertNotContains(response, "data-reply-form")
+
     def test_author_can_edit_and_withdraw_but_other_user_cannot(self):
         comment = self.create_comment()
         self.client.force_login(self.author)
@@ -101,6 +121,7 @@ class CommentModerationTests(TestCase):
         response = self.client.get(comment.post.get_absolute_url())
         self.assertContains(response, "hidden by moderation")
         self.assertContains(response, reply.content)
+        self.assertNotContains(response, "data-reply-open")
 
     def test_moderator_can_edit_and_hidden_comments_cannot_receive_replies(self):
         comment = self.create_comment()

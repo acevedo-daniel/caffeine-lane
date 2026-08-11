@@ -40,6 +40,14 @@ class SearchAndListingTests(TestCase):
         self.assertContains(response, self.match.title)
         self.assertNotContains(response, self.related.title)
 
+    def test_search_filters_are_available_without_javascript(self):
+        response = self.client.get(reverse("search"))
+
+        self.assertContains(
+            response, 'id="filter-section" class="search-panel__filters"'
+        )
+        self.assertNotContains(response, "search-panel__filters hidden")
+
     def test_search_matches_title_excerpt_and_content(self):
         for term in ("Brake", "riding", "complete"):
             with self.subTest(term=term):

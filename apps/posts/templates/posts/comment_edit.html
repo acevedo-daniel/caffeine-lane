@@ -12,7 +12,7 @@
       </header>
       <form method="post" class="comment-editor__form" novalidate>
         {% csrf_token %}
-        {% if form.non_field_errors %}<div class="auth-form__error">{{ form.non_field_errors }}</div>{% endif %}
+        {% if form.non_field_errors %}<div class="auth-form__error" role="alert">{{ form.non_field_errors }}</div>{% endif %}
         {% include "components/form_field.html" with field=form.content %}
         <div class="post-editor__actions"><button class="button-primary" type="submit">{% translate "Save changes" %}</button><a class="editorial-button" href="{{ comment.post.get_absolute_url }}">{% translate "Cancel" %}</a></div>
       </form>

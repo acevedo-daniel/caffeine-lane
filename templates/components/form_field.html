@@ -6,5 +6,5 @@
     {{ field }}
   {% endif %}
   {% if field.help_text %}<p class="text-sm leading-5 text-stone-600">{{ field.help_text }}</p>{% endif %}
-  {% for error in field.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+  {% for error in field.errors %}<p class="form-error" role="alert">{{ error }}</p>{% endfor %}
 </div>

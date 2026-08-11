@@ -19,7 +19,7 @@
   <p class="auth-card__intro">{% translate "First, tell us where to reach you." %}</p>
   <form method="post" class="auth-form" novalidate>
     {% csrf_token %}
-    {% if form.non_field_errors %}<div class="auth-form__error">{{ form.non_field_errors }}</div>{% endif %}
+    {% if form.non_field_errors %}<div class="auth-form__error" role="alert">{{ form.non_field_errors }}</div>{% endif %}
     {% include "components/form_field.html" with field=form.email %}
     <button class="button-primary w-full" type="submit">{% translate "Continue" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
   </form>

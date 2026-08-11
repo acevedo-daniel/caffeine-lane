@@ -15,6 +15,10 @@ fi
 
 if [ "${SEED_PORTFOLIO_ON_START:-false}" = "true" ]; then
     : "${DATABASE_URL:?DATABASE_URL must point to Neon pooled connection}"
+    # A seed may be requested independently after a database has already been
+    # migrated. Verify that prerequisite so an accidental flag has a clear
+    # failure instead of a database-table traceback.
+    python manage.py verify_portfolio_baseline
     python manage.py seed_portfolio
 fi
 

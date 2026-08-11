@@ -20,7 +20,7 @@
       {% block content %}{% endblock %}
     </main>
     {% block footer %}{% include "components/footer.html" %}{% endblock %}
-    <script defer src="{% static 'dist/js/base.js' %}"></script>
+    <script type="module" src="{% static 'dist/js/base.js' %}"></script>
     <script defer src="{% static 'dist/js/custom-select.js' %}"></script>
     {% block scripts %}{% endblock %}
   </body>
