@@ -129,6 +129,9 @@ database URLs, or provider credentials.
 | `CSRF_TRUSTED_ORIGINS` | Yes | Trusted form origins with scheme | `http://localhost:8000` |
 | `CLOUDINARY_URL` | Production | Cloudinary media-storage credential | provider-issued secret |
 | `RESEND_API_KEY` | Production | Resend API key for Anymail | provider-issued secret |
+| `PASSWORD_RESET_ENABLED` | No | Enables password-reset emails; keep `false` for the public Resend demo | `false` |
+| `RUN_MIGRATIONS_ON_START` | No | Runs migrations with the direct Neon URL before Gunicorn | `true` |
+| `SEED_PORTFOLIO_ON_START` | No | Loads portfolio content once; return to `false` after the first deploy | `false` |
 | `DEFAULT_FROM_EMAIL` | Yes | Sender used by application email | `noreply@example.com` |
 | `CONTACT_RECIPIENT_EMAIL` | Yes | Recipient for contact messages | `owner@example.com` |
 | `USE_X_FORWARDED_PROTO` | Production | Trust the Render HTTPS proxy header | `true` |
@@ -165,8 +168,12 @@ the active media storage (Cloudinary in production):
 uv run python manage.py seed_portfolio
 ```
 
-Run it manually once in production; it is safe to repeat but is never part of
-the image build or web-process startup.
+Run it manually for local development. In Render Free, set
+`SEED_PORTFOLIO_ON_START=true` only for the first content deploy, then return it
+to `false`; see the [deployment guide](./docs/deployment.md).
+
+To import reviewed editorial content without users, passwords, or unreviewed
+images, follow the [content import guide](./docs/content-import.md).
 
 ### Run Locally
 
@@ -203,7 +210,7 @@ GET /healthz/ -> {"status": "ok"}
 | `uv run ruff check .` | Checks linting rules. |
 | `uv run ruff format --check .` | Verifies formatting. |
 | `./scripts/release.sh` | Uses Neon direct connection for migrations and verifies the structural taxonomy. |
-| `uv run python manage.py seed_portfolio` | Manually creates or updates the public portfolio dataset. |
+| `uv run python manage.py seed_portfolio` | Creates or updates the local public portfolio dataset. |
 
 ## Project Structure
 
@@ -237,8 +244,9 @@ Settings are isolated by environment.
 
 In production, Render runs the Docker image. Before Gunicorn starts on Render's
 assigned `PORT`, the container verifies the fresh baseline, applies migrations
-with `DIRECT_DATABASE_URL`, returns to the pooled `DATABASE_URL`, seeds the
-idempotent public portfolio, and collects static files.
+with `DIRECT_DATABASE_URL` when `RUN_MIGRATIONS_ON_START=true`, returns to the
+pooled `DATABASE_URL`, and collects static files. The portfolio seed runs only
+when `SEED_PORTFOLIO_ON_START=true`.
 WhiteNoise serves static files, Cloudinary stores uploaded media, Neon stores
 relational data, and Anymail sends email through Resend.
 
@@ -263,7 +271,7 @@ editorial rules, search, comments, moderation, admin actions, CSP, and the
 health endpoint. It uses in-memory services by default and can target local
 PostgreSQL with `TEST_DATABASE_URL`.
 
-La revisión visual reproducible de las páginas, estados y viewports está en
+The reproducible visual review for pages, states, and viewports is in
 [docs/ui-visual-checklist.md](./docs/ui-visual-checklist.md).
 
 ## Deployment
@@ -280,17 +288,26 @@ Render uses the root `Dockerfile` with these settings:
 - **Health Check Path:** `/healthz/`
 
 Required production variables are `DJANGO_SETTINGS_MODULE`, `SECRET_KEY`,
-`DATABASE_URL`, `ALLOWED_HOSTS`,
+`DATABASE_URL`, `DIRECT_DATABASE_URL`, `ALLOWED_HOSTS`,
 `CSRF_TRUSTED_ORIGINS`, `CLOUDINARY_URL`, `RESEND_API_KEY`,
 `DEFAULT_FROM_EMAIL`, `CONTACT_RECIPIENT_EMAIL`, and
-`USE_X_FORWARDED_PROTO=true`. Configure the HSTS and CSP variables according to
-the environment-variable table above.
+`USE_X_FORWARDED_PROTO=true`. Set `RUN_MIGRATIONS_ON_START=true` and keep
+`SEED_PORTFOLIO_ON_START=false` except during the first content deploy. Keep
+`PASSWORD_RESET_ENABLED=false` while Resend uses its onboarding sender.
 
 The Docker entrypoint is the only web-process startup path. It never loads
 fixtures or creates superusers. Because Render Free does not offer an execution
 shell, it runs the idempotent migrations and `seed_portfolio` before each web
-process start; migrations use `DIRECT_DATABASE_URL` and the application returns
-to the pooled `DATABASE_URL`. The service therefore requires both URLs.
+process start only when their respective flags are enabled. Migrations use
+`DIRECT_DATABASE_URL` and the application returns to pooled `DATABASE_URL`.
+Set `SEED_PORTFOLIO_ON_START=true` only for the first content deploy, then
+return it to `false` to preserve editorial changes. The service requires both
+URLs while startup migrations are enabled.
+
+The first administrator is created manually with Neon’s direct connection and
+`uv run python manage.py createsuperuser`; the full safe procedure is in the
+[deployment guide](./docs/deployment.md#first-administrator). No
+seed, Docker build, or entrypoint creates privileged users.
 
 > [!NOTE]
 > `onboarding@resend.dev` can only send to the email address associated with the
@@ -303,7 +320,8 @@ to the pooled `DATABASE_URL`. The service therefore requires both URLs.
 - CSP stays in report-only mode until its reports are reviewed.
 - Demo content is intentionally small; legacy content must be reviewed before
   importing it.
-- Resend's onboarding sender is limited until a custom domain is verified.
+- Password reset is intentionally disabled in the public demo until a Resend
+  domain is verified.
 
 ## Roadmap
 
@@ -319,12 +337,9 @@ for planned improvements and known problems.
 
 ## Documentation
 
-- [Initial audit](./docs/audit-initial.md)
-- [Legacy reproduction](./docs/legacy-reproduction.md)
-- [Local PostgreSQL](./docs/local-postgres.md)
-- [Content import](./docs/content-import.md)
-- [Docker deployment](./docs/deployment.md)
-- [Staging rollout](./docs/staging-rollout.md)
+- [Deployment and first administrator](./docs/deployment.md)
+- [Reviewed content import](./docs/content-import.md)
+- [Visual release checklist](./docs/ui-visual-checklist.md)
 
 ## License
 

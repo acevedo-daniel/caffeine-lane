@@ -26,7 +26,8 @@ FROM python:3.13.6-slim AS runtime
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     DJANGO_SETTINGS_MODULE=config.settings.production \
-    RUN_RELEASE_TASKS_ON_START=1 \
+    RUN_MIGRATIONS_ON_START=true \
+    SEED_PORTFOLIO_ON_START=false \
     PATH="/app/.venv/bin:$PATH"
 
 WORKDIR /app
@@ -41,7 +42,7 @@ RUN chmod 755 /entrypoint.sh && mkdir /app/staticfiles && chown app:app /app/sta
 USER app
 EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz/', timeout=2)" || exit 1
+    CMD python -c "import os, urllib.request; urllib.request.urlopen('http://127.0.0.1:%s/healthz/' % os.environ.get('PORT', '8000'), timeout=2)" || exit 1
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:${PORT:-8000} --workers 3 --access-logfile=- --error-logfile=- config.wsgi:application"]
+CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:${PORT:-8000} --workers ${WEB_CONCURRENCY:-1} --threads 2 --timeout 120 --access-logfile=- --error-logfile=- config.wsgi:application"]

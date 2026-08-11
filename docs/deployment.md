@@ -1,56 +1,71 @@
-# Despliegue con Docker
+# Render Free deployment
 
-La imagen multi-stage compila los assets de Tailwind, instala las dependencias
-runtime de Python y ejecuta Gunicorn como el usuario no privilegiado `app`. No
-copia `.env`, `media/`, `node_modules` ni `staticfiles`.
+## Startup strategy
+
+Render Free has no dedicated release command. The [entrypoint](../docker/entrypoint.sh)
+is the only startup path: it checks the accounts fresh baseline, uses
+`DIRECT_DATABASE_URL` for migrations when `RUN_MIGRATIONS_ON_START=true`, returns
+to the pooled `DATABASE_URL`, optionally runs `seed_portfolio`, collects static
+files, and starts Gunicorn.
+
+Keep `SEED_PORTFOLIO_ON_START=false` after the first content deployment so
+editorial changes made in Django Admin are preserved.
+
+## Required variables
+
+```dotenv
+DJANGO_SETTINGS_MODULE=config.settings.production
+SECRET_KEY=<long-random-production-secret>
+DATABASE_URL=<neon-pooled-url>
+DIRECT_DATABASE_URL=<neon-direct-url>
+ALLOWED_HOSTS=caffeinelane.onrender.com
+CSRF_TRUSTED_ORIGINS=https://caffeinelane.onrender.com
+CLOUDINARY_URL=<cloudinary-credential>
+RESEND_API_KEY=<resend-api-key>
+DEFAULT_FROM_EMAIL=The Caffeine Lane <onboarding@resend.dev>
+CONTACT_RECIPIENT_EMAIL=<controlled-inbox>
+PASSWORD_RESET_ENABLED=false
+RUN_MIGRATIONS_ON_START=true
+SEED_PORTFOLIO_ON_START=false
+USE_X_FORWARDED_PROTO=true
+CSP_ENFORCE=false
+SECURE_HSTS_SECONDS=3600
+SECURE_HSTS_INCLUDE_SUBDOMAINS=false
+SECURE_HSTS_PRELOAD=false
+```
+
+Never commit secrets to Git, the README, `.env.example`, the Dockerfile, or a
+Render configuration file.
+
+## First content deployment
+
+1. Set `SEED_PORTFOLIO_ON_START=true` temporarily.
+2. Deploy and verify `Portfolio ready: 3 categories and 10 posts.` in the logs.
+3. Return the flag to `false` and redeploy.
+
+Use the root Dockerfile with build context `.`, Dockerfile path `./Dockerfile`,
+an empty Docker Command, and health check path `/healthz/`. Gunicorn defaults to
+one worker, uses two threads, and listens on Render's `PORT`.
+
+## Services and email
+
+- Neon: pooled connection for the application and direct connection for migrations.
+- Cloudinary: user media; never depend on Render disk for uploads.
+- WhiteNoise: static files.
+- Resend via Anymail: transactional email.
+
+Keep `PASSWORD_RESET_ENABLED=false` while using `onboarding@resend.dev`. It
+cannot deliver public password-reset email, and the UI displays the demo limit.
+
+## First administrator
+
+No seed, Docker build, or entrypoint creates privileged users. From a trusted
+machine, temporarily set `DATABASE_URL` to Neon's direct connection and run:
 
 ```bash
-docker build -t caffeine-lane .
-docker run --rm -p 8000:8000 --env-file .env caffeine-lane
+uv run python manage.py createsuperuser
 ```
 
-El contenedor usa `config.settings.production`, expone `GET /healthz/`, sirve
-estaticos con WhiteNoise y guarda la media en Cloudinary. Por eso no depende de
-un volumen local para archivos subidos.
-
-## Fresh baseline obligatorio
-
-Esta rama no es compatible con una base creada desde `main`. La migracion
-`accounts.0001_initial` evoluciono desde `auth.User` mas `accounts.Profile` a
-un modelo `accounts.User` personalizado con el mismo identificador de
-migracion. Crea una base de Neon nueva; no intentes reutilizar o convertir la
-anterior en caliente.
-
-El proceso web ejecuta `python manage.py check_fresh_baseline` y aborta si
-detecta la tabla heredada `accounts_profile`. Esta comprobacion no borra datos.
-
-## Migracion de release
-
-Render Free no ofrece una shell de ejecución. Por eso la imagen de producción
-ejecuta tareas idempotentes de release antes de iniciar Gunicorn: migra con
-`DIRECT_DATABASE_URL`, vuelve a la conexión pooled y ejecuta
-`seed_portfolio`. Esto ocurre en cada arranque; la semilla usa
-`update_or_create` y solo sube una imagen si el post todavía no la tiene.
-
-Para ejecutar la misma verificación desde una máquina de confianza, con ambas
-conexiones de Neon:
-
-```bash
-./scripts/release.sh
-```
-
-En PowerShell:
-
-```powershell
-bash ./scripts/release.sh
-```
-
-El script usa temporalmente `DIRECT_DATABASE_URL`, ejecuta `migrate --noinput`
-y verifica que `posts.0007_create_structural_categories` y las categorías
-`builds`, `guides` y `reviews` estén presentes. En Render, el entrypoint carga
-el portfolio público y sus imágenes en Cloudinary antes de iniciar Gunicorn.
-
-El Web Service de Render requiere la URL pooled en `DATABASE_URL` y la conexión
-directa en `DIRECT_DATABASE_URL`; no puede iniciar sin ambas ni recurrir a
-SQLite. No se cargan fixtures ni se crean superusuarios durante el build o el
-arranque.
+Enter credentials only at the interactive prompt, then restore the pooled URL
+before running the web application. Never store passwords in seeds, GitHub,
+the README, `.env.example`, Dockerfiles, or versioned variables.

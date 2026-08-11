@@ -1,11 +1,25 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, logout
+from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError, transaction
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
 
 from .forms import EmailRegistrationForm, ProfileForm, RegistrationStep2Form
+
+
+def password_reset(request):
+    if not settings.PASSWORD_RESET_ENABLED:
+        return render(request, "accounts/password_reset_unavailable.html")
+
+    return auth_views.PasswordResetView.as_view(
+        template_name="accounts/password_reset.html",
+        email_template_name="accounts/password_reset_email.txt",
+        html_email_template_name="accounts/password_reset_email.html",
+        subject_template_name="accounts/password_reset_subject.txt",
+    )(request)
 
 
 def register_step1(request):

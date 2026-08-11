@@ -3,7 +3,7 @@ from unittest.mock import patch
 from django.core import mail
 from django.db import IntegrityError
 from django.templatetags.static import static
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 
 from apps.accounts.models import User
@@ -155,6 +155,28 @@ class AccountFlowTests(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertIn("reset/", mail.outbox[0].body)
         self.assertEqual(mail.outbox[0].alternatives[0].mimetype, "text/html")
+
+    @override_settings(PASSWORD_RESET_ENABLED=False)
+    def test_password_reset_demo_does_not_send_email(self):
+        User.objects.create_user(
+            email="rider@example.com",
+            username="rider",
+            password="safe-test-password-123",
+        )
+
+        response = self.client.post(
+            reverse("password_reset"), {"email": "rider@example.com"}
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Recuperación no disponible")
+        self.assertEqual(len(mail.outbox), 0)
+
+    @override_settings(PASSWORD_RESET_ENABLED=False)
+    def test_login_explains_demo_password_reset_limit(self):
+        response = self.client.get(reverse("login"))
+
+        self.assertContains(response, "Recuperación no disponible en esta demo")
 
     def test_password_change_updates_credentials(self):
         user = User.objects.create_user(

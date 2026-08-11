@@ -69,3 +69,50 @@ jobs:
           SECURE_HSTS_INCLUDE_SUBDOMAINS: "true"
           SECURE_HSTS_PRELOAD: "true"
         run: uv run python manage.py check --deploy
+
+  docker-smoke:
+    name: Docker smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Docker image
+        run: docker build -t caffeine-lane-ci .
+      - name: Start container and verify health endpoint
+        env:
+          CONTAINER_NAME: caffeine-lane-ci
+          CONTAINER_PORT: "10000"
+        run: |
+          set -euo pipefail
+          docker run --detach --rm --name "$CONTAINER_NAME" --publish "$CONTAINER_PORT:$CONTAINER_PORT" \
+            --env PORT="$CONTAINER_PORT" \
+            --env DJANGO_SETTINGS_MODULE=config.settings.production \
+            --env SECRET_KEY=ci-docker-secret-key-not-for-production-0123456789 \
+            --env DATABASE_URL=sqlite:////tmp/caffeine-lane-ci.sqlite3 \
+            --env ALLOWED_HOSTS=localhost,127.0.0.1 \
+            --env CSRF_TRUSTED_ORIGINS=http://localhost \
+            --env CLOUDINARY_URL=cloudinary://123456789012345:ci-secret@example \
+            --env RESEND_API_KEY=re_ci_not_a_real_key \
+            --env DEFAULT_FROM_EMAIL=noreply@example.test \
+            --env CONTACT_RECIPIENT_EMAIL=owner@example.test \
+            --env USE_X_FORWARDED_PROTO=true \
+            --env CSP_ENFORCE=false \
+            --env RUN_MIGRATIONS_ON_START=false \
+            --env SEED_PORTFOLIO_ON_START=false \
+            caffeine-lane-ci
+
+          cleanup() {
+            docker logs "$CONTAINER_NAME" || true
+            docker rm --force "$CONTAINER_NAME" || true
+          }
+          trap cleanup EXIT
+
+          docker ps --filter "name=$CONTAINER_NAME" --filter "status=running"
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent --show-error "http://127.0.0.1:$CONTAINER_PORT/healthz/"; then
+              exit 0
+            fi
+            sleep 1
+          done
+
+          echo "The container did not expose a healthy HTTP endpoint."
+          exit 1

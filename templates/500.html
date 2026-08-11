@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% block title %}Error del servidor · The Caffeine Lane{% endblock %}
+{% block title %}Server error · The Caffeine Lane{% endblock %}
 {% block content %}
   <section class="error-page flex min-h-[58vh] items-center">
     <div class="relative mx-auto w-full max-w-6xl px-4 py-20 sm:px-6">
       <p class="error-kicker">Error 500</p>
-      <h1 class="error-title mt-3 max-w-3xl">Algo salió mal</h1>
-      <p class="mt-6 max-w-xl text-lg leading-8 text-stone-200">Ocurrió un error inesperado. Intentá nuevamente en unos minutos.</p>
-      <a class="mt-8 inline-flex rounded-full bg-white px-6 py-3 text-sm font-extrabold uppercase tracking-wider text-black no-underline transition hover:bg-red-700 hover:text-white" href="{% url 'home' %}">Volver al inicio</a>
+      <h1 class="error-title mt-3 max-w-3xl">Something went wrong</h1>
+      <p class="mt-6 max-w-xl text-lg leading-8 text-stone-200">An unexpected error occurred. Please try again in a few minutes.</p>
+      <a class="mt-8 inline-flex rounded-full bg-white px-6 py-3 text-sm font-extrabold uppercase tracking-wider text-black no-underline transition hover:bg-red-700 hover:text-white" href="{% url 'home' %}">Back to home</a>
     </div>
   </section>
 {% endblock %}

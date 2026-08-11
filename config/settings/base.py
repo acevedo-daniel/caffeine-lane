@@ -31,6 +31,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -46,8 +47,10 @@ TEMPLATES = [
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.request",
+                "django.template.context_processors.i18n",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "apps.accounts.context_processors.feature_flags",
                 "apps.posts.context_processors.navigation_categories",
             ],
         },
@@ -69,7 +72,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = "accounts.User"
 
-LANGUAGE_CODE = "es-ar"
+LANGUAGE_CODE = "en"
+LANGUAGES = [
+    ("en", "English"),
+    ("es", "Español"),
+]
 TIME_ZONE = "America/Argentina/Buenos_Aires"
 USE_I18N = True
 USE_TZ = True
@@ -96,3 +103,4 @@ DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL", default="noreply@example.com"
 CONTACT_RECIPIENT_EMAIL = env.str("CONTACT_RECIPIENT_EMAIL", default=DEFAULT_FROM_EMAIL)
 CONTACT_RATE_LIMIT = env.int("CONTACT_RATE_LIMIT", default=5)
 CONTACT_RATE_LIMIT_WINDOW = env.int("CONTACT_RATE_LIMIT_WINDOW", default=3600)
+PASSWORD_RESET_ENABLED = env.bool("PASSWORD_RESET_ENABLED", default=False)

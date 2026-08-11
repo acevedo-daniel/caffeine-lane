@@ -1,44 +1,33 @@
-# Lista de comprobación visual
+# Visual release checklist
 
-Ejecutar esta lista antes de un release visual. Usar una base recién migrada
-para los estados vacíos y `python manage.py seed_portfolio` para los estados
-con contenido.
+Use a freshly migrated database for empty states and run `python manage.py
+seed_portfolio` for populated states.
 
 ## Viewports
 
-- Móvil: 360 × 800 px.
-- Tablet: 768 × 1024 px.
-- Escritorio: 1440 × 900 px.
+- Mobile: 360 × 800 px
+- Tablet: 768 × 1024 px
+- Desktop: 1440 × 900 px
 
-## Páginas y estados
+## Pages and states
 
-- `/`, `/home/`, `/about/` y `/contact/`: contenido normal, formulario vacío y
-  formulario con errores.
-- `/posts/search/`: sin consulta, sin resultados, resultados y paginación.
-- `/posts/category/builds/`, `/guides/` y `/reviews/`: con contenido y vacías.
-- Detalle de una publicación: imagen, extracto largo, comentarios, usuario
-  anónimo y usuario autenticado.
-- `/accounts/login/`, `/accounts/register/`, recuperación de contraseña y
-  perfil: formularios válidos, errores de campo y error general.
-- Errores `/400`, `/403`, `/404` y `/500` con `DEBUG=False`.
+- `/`, `/home/`, `/about/`, and `/contact/`: normal content, empty form, and form errors.
+- `/posts/search/`: no query, no results, results, and pagination.
+- Build, guide, and review categories: populated and empty states.
+- Post detail: image, long excerpt, comments, anonymous and authenticated users.
+- Login, registration, password reset, and profile: valid forms, field errors, and general errors.
+- `400`, `403`, `404`, and `500` pages with `DEBUG=False`.
 
-## Criterios de aceptación
+## Acceptance criteria
 
-- Header, menú móvil y footer permiten navegar con teclado y tienen foco
-  visible; los enlaces internos no devuelven 404 ni 500.
-- Tipografía, escala, espaciado, botones, formularios, badges, mensajes y
-  paginación mantienen el mismo contraste y radio visual.
-- Las tarjetas conservan altura razonable con títulos y extractos largos; cada
-  imagen tiene proporción fija, `alt` útil o un placeholder decorativo.
-- El carrusel conserva controles con nombre accesible y no tapa texto en móvil.
-- No hay scroll horizontal a 360 px, textos cortados ni mezclas involuntarias
-  de español e inglés.
-- Tab, Shift+Tab y Enter alcanzan todos los controles; el foco tiene contraste
-  perceptible.
+- Header, mobile navigation, and footer are keyboard accessible with visible focus.
+- Internal links never return an unexpected 404 or 500.
+- Typography, spacing, buttons, forms, cards, badges, messages, and pagination are consistent.
+- Cards remain stable with long titles and excerpts; every image has useful alt text or a decorative placeholder.
+- The carousel has accessible controls and does not cover text on mobile.
+- No horizontal scrolling, clipped text, or mixed languages at 360 px.
 
-## Segunda pasada
+## Final pass
 
-1. Repetir los tres viewports después de corregir los hallazgos.
-2. Verificar saltos visuales al cargar imágenes y al abrir el menú móvil.
-3. Revisar únicamente detalles pequeños: alineación, espacios, sombras,
-   truncado de texto y estados hover/focus.
+Repeat the three viewports after fixes, then review alignment, spacing, shadows,
+truncation, hover states, focus states, and image-loading shifts.

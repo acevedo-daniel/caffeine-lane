@@ -4,11 +4,11 @@ from django.utils.text import slugify
 from .models import Category, Comment, Post, is_reserved_post_slug
 
 SORT_CHOICES = [
-    ("relevance", "Relevancia"),
-    ("newest", "Más recientes"),
-    ("oldest", "Más antiguas"),
-    ("title_asc", "Título (A-Z)"),
-    ("title_desc", "Título (Z-A)"),
+    ("relevance", "Relevance"),
+    ("newest", "Newest"),
+    ("oldest", "Oldest"),
+    ("title_asc", "Title (A-Z)"),
+    ("title_desc", "Title (Z-A)"),
 ]
 
 
@@ -43,20 +43,20 @@ class CommentForm(forms.ModelForm):
 
 class PostSearchForm(forms.Form):
     q = forms.CharField(
-        label="Buscar",
+        label="Search",
         required=False,
         widget=forms.TextInput(
             attrs={
                 "class": "w-full py-2 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black",
-                "placeholder": "Buscar publicaciones...",
+                "placeholder": "Search posts...",
             }
         ),
     )
     category = forms.ModelChoiceField(
-        label="Categoría",
+        label="Category",
         queryset=Category.objects.all(),
         required=False,
-        empty_label="Todas las categorías",
+        empty_label="All categories",
         widget=forms.Select(
             attrs={
                 "class": "w-full py-2 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black",
@@ -64,7 +64,7 @@ class PostSearchForm(forms.Form):
         ),
     )
     sort = forms.ChoiceField(
-        label="Ordenar por",
+        label="Sort by",
         choices=SORT_CHOICES,
         required=False,
         initial="relevance",

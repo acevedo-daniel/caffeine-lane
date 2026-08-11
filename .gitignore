@@ -125,5 +125,12 @@ venv.bak/
 .dmypy.json
 dmypy.json
 
+# Temporary documentation and PDF inspection artifacts
+/docs/temporal/
+/tmp/pdfs/
+
+# Legacy uploads were replaced by documented portfolio source assets.
+/static/Media/
+
 # Pyre type checker
 .pyre/

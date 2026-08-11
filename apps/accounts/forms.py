@@ -7,8 +7,8 @@ from .models import User
 class EmailRegistrationForm(forms.Form):
     email = forms.EmailField(
         required=True,
-        label="Correo electrónico",
-        widget=forms.EmailInput(attrs={"placeholder": "tu@correo.com"}),
+        label="Email address",
+        widget=forms.EmailInput(attrs={"placeholder": "you@example.com"}),
     )
 
     def clean_email(self):
@@ -20,10 +20,10 @@ class EmailRegistrationForm(forms.Form):
 
 class RegistrationStep2Form(UserCreationForm):
     has_motorcycle = forms.TypedChoiceField(
-        choices=[("true", "Sí"), ("false", "No")],
+        choices=[("true", "Yes"), ("false", "No")],
         coerce=lambda value: value == "true",
         widget=forms.RadioSelect,
-        label="¿Tenés moto?",
+        label="Do you ride a motorcycle?",
     )
 
     class Meta(UserCreationForm.Meta):
@@ -47,7 +47,7 @@ class RegistrationStep2Form(UserCreationForm):
 
 class EmailAuthenticationForm(AuthenticationForm):
     username = forms.EmailField(
-        label="Correo electrónico",
+        label="Email address",
         widget=forms.EmailInput(attrs={"autofocus": True, "autocomplete": "email"}),
     )
 

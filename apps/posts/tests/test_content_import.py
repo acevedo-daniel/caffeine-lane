@@ -8,10 +8,7 @@ from django.test import TestCase
 
 from apps.accounts.models import User
 from apps.posts.content_import import import_selected_content
-from apps.posts.management.commands.seed_portfolio import (
-    PORTFOLIO_POSTS,
-    RESERVED_SLIDER_ASSET,
-)
+from apps.posts.management.commands.seed_portfolio import PORTFOLIO_POSTS
 from apps.posts.models import Category, Post
 
 
@@ -57,16 +54,20 @@ class ContentImportTests(TestCase):
         self.assertFalse(author.is_staff)
         self.assertFalse(author.is_superuser)
         self.assertFalse(author.has_usable_password())
-        self.assertEqual(posts.count(), 10)
-        self.assertEqual(posts.filter(categories__slug="builds").count(), 4)
-        self.assertEqual(posts.filter(categories__slug="guides").count(), 3)
-        self.assertEqual(posts.filter(categories__slug="reviews").count(), 3)
+        self.assertEqual(posts.count(), 19)
+        self.assertEqual(posts.filter(categories__slug="builds").count(), 9)
+        self.assertEqual(posts.filter(categories__slug="guides").count(), 6)
+        self.assertEqual(posts.filter(categories__slug="reviews").count(), 4)
         self.assertTrue(
             all(post.featured_image.name.endswith(".webp") for post in posts)
         )
         self.assertTrue(all(post.featured_image_alt for post in posts))
-        self.assertNotIn(
-            RESERVED_SLIDER_ASSET, {item["image"] for item in PORTFOLIO_POSTS}
+        self.assertIn(
+            "source/reviews/review-04.webp", {item["image"] for item in PORTFOLIO_POSTS}
+        )
+        self.assertEqual(
+            posts.order_by("-published_at").first().slug,
+            "review-the-ride-that-starts-the-story",
         )
 
     def test_verify_portfolio_baseline_confirms_migration_and_categories(self):

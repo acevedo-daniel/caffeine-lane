@@ -1,20 +1,26 @@
-# Contenido demo e importación seleccionada
+# Demo content and selected imports
 
-`initial_data.json` fue retirado: contenía un superusuario y contenido repetido. No debe restaurarse ni usarse en despliegues.
+`initial_data.json` was removed because it contained a superuser and duplicate content.
+Do not restore it or use it in deployments.
 
-Para crear datos locales mínimos sin contraseñas utilizables ni permisos elevados:
+Create the safe, idempotent portfolio dataset:
 
 ```powershell
 uv run python manage.py seed_portfolio
 ```
 
-El comando es idempotente y crea el autor no privilegiado `demo-author@example.invalid`, las categorías `builds` y `guides`, y dos publicaciones limpias.
+It creates the non-privileged `demo-author@example.invalid` author, the `builds`,
+`guides`, and `reviews` categories, and ten posts with documented WebP covers.
 
-La importación de contenido real es deliberadamente separada y requiere que exista un autor no privilegiado:
+Import reviewed real content separately with an existing non-privileged author:
 
 ```powershell
 uv run python manage.py import_selected_content .\selected-content.json --author-email editor@example.com --dry-run
 uv run python manage.py import_selected_content .\selected-content.json --author-email editor@example.com
 ```
 
-El archivo JSON debe contener `categories` y `posts`. Cada post requiere `slug`, `title`, `excerpt`, `content`, `categories` y `published_at` en ISO 8601. El importador rechaza usuarios privilegiados, slugs duplicados, encoding inválido, texto provisional y campos de usuario, contraseñas o imágenes. Las imágenes se revisan y cargan aparte con texto alternativo antes de hacerse visibles.
+The JSON must contain `categories` and `posts`. Every post needs `slug`, `title`,
+`excerpt`, `content`, `categories`, and ISO 8601 `published_at`. The importer
+rejects privileged users, duplicate slugs, invalid encoding, placeholder text,
+and user, password, or image fields. Upload reviewed images separately with
+meaningful alternative text before publishing.

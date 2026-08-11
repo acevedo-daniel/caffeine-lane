@@ -23,6 +23,7 @@ from django.urls import include, path
 from apps.core import views as core_views
 
 urlpatterns = [
+    path("i18n/", include("django.conf.urls.i18n")),
     path("csp-report/", core_views.csp_report, name="csp_report"),
     path("admin/", admin.site.urls),
     path("", include("apps.core.urls")),
