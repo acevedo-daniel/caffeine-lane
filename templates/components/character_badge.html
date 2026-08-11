@@ -1,6 +1,8 @@
 {% load static %}
 {% with asset=asset|default:"character-welcome.webp" size=size|default:"md" alt=alt|default:"" %}
-  <div class="character-badge character-badge--{{ size }}{% if class_name %} {{ class_name }}{% endif %}">
-    <img class="character-badge__image" src="{% static 'images/brand/character/' %}{{ asset }}" alt="{{ alt }}" width="1024" height="1024">
-  </div>
+  {% with pose=pose|default:asset|cut:"character-"|cut:"-256"|cut:"-512"|cut:".webp" %}
+    <div class="character-badge character-badge--{{ size }} character-badge--pose-{{ pose }}{% if class_name %} {{ class_name }}{% endif %}">
+      <img class="character-badge__image" src="{% static 'images/brand/character/' %}{{ asset }}" alt="{{ alt }}" width="1024" height="1024">
+    </div>
+  {% endwith %}
 {% endwith %}

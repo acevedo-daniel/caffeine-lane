@@ -1,19 +1,20 @@
-{% load i18n static %}
+{% load i18n static post_i18n %}
 <footer class="editorial-footer">
   <div class="editorial-container footer-grid">
-    <nav aria-label="{% translate 'Explore posts' %}" class="footer-column">
+    <nav aria-label="{% translate 'Explore posts' %}" class="footer-column footer-column--explore">
       <p class="footer-label">{% translate "Explore" %}</p>
       <ul class="footer-links">
         <li><a class="footer-link" href="{% url 'home' %}">{% translate "Latest posts" %}</a></li>
         {% for category in navigation_categories %}
-          <li><a class="footer-link" href="{% url 'category_view' category_slug=category.slug %}">{{ category.name }}</a></li>
+          <li><a class="footer-link" href="{% url 'category_view' category_slug=category.slug %}">{{ category|localized_category }}</a></li>
         {% endfor %}
       </ul>
     </nav>
 
     <div class="footer-rider-column">
-      {% include "components/character_badge.html" with asset="character-signature.webp" size="lg" alt="The Rider" class_name="footer-rider" %}
-      <a href="{% url 'home' %}" class="footer-wordmark">THE CAFFEINE LANE</a>
+      {% translate "The Rider" as rider_alt %}
+      {% include "components/character_badge.html" with asset="character-signature.webp" size="lg" alt=rider_alt class_name="footer-rider" %}
+      <a href="{% url 'home' %}" class="footer-wordmark motion-wordmark">{% translate "THE CAFFEINE LANE" %}</a>
       <p class="footer-manifesto">{% translate "Welcome, rider. The road is ours." %}</p>
     </div>
 
@@ -26,5 +27,5 @@
       </ul>
     </nav>
   </div>
-  <div class="footer-bottom">© 2026 The Caffeine Lane. Built for the long way home.</div>
+  <div class="footer-bottom">© 2026 {% translate "The Caffeine Lane" %}. {% translate "Built for the long way home." %}</div>
 </footer>

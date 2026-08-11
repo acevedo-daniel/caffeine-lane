@@ -1,26 +1,27 @@
 {% extends "layouts/auth.html" %}
 {% load i18n %}
-{% block title %}Finish your profile · The Caffeine Lane{% endblock title %}
+{% block title %}{% translate "Finish your profile · The Caffeine Lane" %}{% endblock title %}
 {% block auth_visual %}
-  <p class="auth-shell__eyebrow">The Caffeine Lane community</p>
+  <p class="auth-shell__eyebrow">{% translate "The Caffeine Lane community" %}</p>
   <h1 class="auth-shell__title">{% translate "Build your story. Share your ride." %}</h1>
-  <p class="auth-shell__copy">A few details are all it takes to make your place in the lane your own.</p>
-  {% include "components/character_badge.html" with asset="character-welcome-winking.webp" size="lg" alt="The Rider welcoming you to complete your profile" class_name="auth-shell__rider" %}
+  <p class="auth-shell__copy">{% translate "A few details are all it takes to make your place in the lane your own." %}</p>
+  {% translate "The Rider welcoming you to complete your profile" as rider_alt %}
+  {% include "components/character_badge.html" with asset="character-welcome-winking.webp" size="lg" alt=rider_alt class_name="auth-shell__rider" %}
 {% endblock auth_visual %}
 {% block auth_form %}
-  <div class="auth-progress" aria-label="Registration progress: step 2 of 2">
-    <span class="auth-progress__step auth-progress__step--complete"><i class="fa-solid fa-check" aria-hidden="true"></i><span class="sr-only">Step 1 complete</span></span>
+  <div class="auth-progress" aria-label="{% translate 'Registration progress: step 2 of 2' %}">
+    <span class="auth-progress__step auth-progress__step--complete"><i class="fa-solid fa-check" aria-hidden="true"></i><span class="sr-only">{% translate "Step 1 complete" %}</span></span>
     <span class="auth-progress__line auth-progress__line--complete" aria-hidden="true"></span>
     <span class="auth-progress__step auth-progress__step--active">02</span>
   </div>
   <p class="auth-card__eyebrow">{% translate "Step 2 of 2" %}</p>
-  <h2 id="auth-form-heading" class="auth-card__title">Finish your profile</h2>
-  <p class="auth-card__intro">Choose the details that will travel with your name.</p>
+  <h2 id="auth-form-heading" class="auth-card__title">{% translate "Finish your profile" %}</h2>
+  <p class="auth-card__intro">{% translate "Choose the details that will travel with your name." %}</p>
   <form method="post" class="auth-form" novalidate>
     {% csrf_token %}
     {% if form.non_field_errors %}<div class="auth-form__error">{{ form.non_field_errors }}</div>{% endif %}
     {% for field in form %}{% include "components/form_field.html" with field=field %}{% endfor %}
     <button class="button-primary w-full" type="submit">{% translate "Create account" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
   </form>
-  <p class="auth-card__footer">Need a different email? <a href="{% url 'register' %}">Start again</a>.</p>
+  <p class="auth-card__footer">{% translate "Need a different email?" %} <a href="{% url 'register' %}">{% translate "Start again" %}</a>.</p>
 {% endblock auth_form %}

@@ -1,13 +1,14 @@
 {% extends "base.html" %}
-{% block title %}{% if object %}Edit post{% else %}New post{% endif %} · The Caffeine Lane{% endblock title %}
+{% load i18n %}
+{% block title %}{% if object %}{% translate "Edit post · The Caffeine Lane" %}{% else %}{% translate "New post · The Caffeine Lane" %}{% endif %}{% endblock title %}
 {% block content %}
   <div class="editor-workspace editorial-page">
     <div class="editor-workspace__container">
-      <a class="post-editor__back" href="{% if object %}{{ object.get_absolute_url }}{% else %}{% url 'home' %}{% endif %}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back to {% if object %}post{% else %}stories{% endif %}</a>
+      <a class="post-editor__back" href="{% if object %}{{ object.get_absolute_url }}{% else %}{% url 'home' %}{% endif %}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> {% if object %}{% translate "Back to post" %}{% else %}{% translate "Back to stories" %}{% endif %}</a>
       <header class="post-editor__header">
-        <p class="editorial-kicker">Editorial desk</p>
-        <h1>{% if object %}Edit post{% else %}New post{% endif %}</h1>
-        <p>{% if object %}Refine the details, keep the image accessible, and save when the story is ready.{% else %}Build a clear story for the garage, the road, and everyone following along.{% endif %}</p>
+        <p class="editorial-kicker">{% translate "Editorial desk" %}</p>
+        <h1>{% if object %}{% translate "Edit post" %}{% else %}{% translate "New post" %}{% endif %}</h1>
+        <p>{% if object %}{% translate "Refine the details, keep the image accessible, and save when the story is ready." %}{% else %}{% translate "Build a clear story for the garage, the road, and everyone following along." %}{% endif %}</p>
       </header>
 
       <form method="post" enctype="multipart/form-data" class="post-editor__form" novalidate>
@@ -17,8 +18,8 @@
           {% for field in form %}{% include "components/form_field.html" with field=field %}{% endfor %}
         </div>
         <div class="post-editor__actions">
-          <button class="button-primary" type="submit">Save post</button>
-          <a class="editorial-button" href="{% if object %}{{ object.get_absolute_url }}{% else %}{% url 'home' %}{% endif %}">Cancel</a>
+          <button class="button-primary" type="submit">{% translate "Save post" %}</button>
+          <a class="editorial-button" href="{% if object %}{{ object.get_absolute_url }}{% else %}{% url 'home' %}{% endif %}">{% translate "Cancel" %}</a>
         </div>
       </form>
     </div>

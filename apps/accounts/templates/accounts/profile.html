@@ -1,12 +1,13 @@
 {% extends "layouts/account.html" %}
-{% block title %}Your profile · The Caffeine Lane{% endblock title %}
-{% block account_visual_title %}Your place in the lane.{% endblock account_visual_title %}
-{% block account_visual_copy %}Set the details that ride with your name, from the garage to every conversation ahead.{% endblock account_visual_copy %}
+{% load i18n %}
+{% block title %}{% translate "Your profile · The Caffeine Lane" %}{% endblock title %}
+{% block account_visual_title %}{% translate "Your place in the lane." %}{% endblock account_visual_title %}
+{% block account_visual_copy %}{% translate "Set the details that ride with your name, from the garage to every conversation ahead." %}{% endblock account_visual_copy %}
 {% block account_panel %}
   <div class="account-profile__heading">
-    <img src="{{ user.avatar_url }}" alt="Avatar for {{ user.display_name|default:user.username }}" width="72" height="72">
+    <img src="{{ user.avatar_url }}" alt="{% blocktranslate with display_name=user.display_name|default:user.username %}Avatar for {{ display_name }}{% endblocktranslate %}" width="72" height="72">
     <div>
-      <p class="auth-card__eyebrow">Member profile</p>
+      <p class="auth-card__eyebrow">{% translate "Member profile" %}</p>
       <h2 id="auth-form-heading" class="auth-card__title">{{ user.display_name|default:user.username }}</h2>
       <p class="auth-card__intro">{{ user.email }}</p>
     </div>
@@ -15,10 +16,10 @@
     {% csrf_token %}
     {% if form.non_field_errors %}<div class="auth-form__error">{{ form.non_field_errors }}</div>{% endif %}
     {% for field in form %}{% include "components/form_field.html" with field=field %}{% endfor %}
-    <button class="button-primary" type="submit">Save changes</button>
+    <button class="button-primary" type="submit">{% translate "Save changes" %}</button>
   </form>
   <div class="account-actions">
-    <a href="{% url 'password_change' %}">Change password</a>
-    <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit">Sign out</button></form>
+    <a href="{% url 'password_change' %}">{% translate "Change password" %}</a>
+    <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit">{% translate "Sign out" %}</button></form>
   </div>
 {% endblock account_panel %}

@@ -1,17 +1,18 @@
 {% extends "base.html" %}
-{% block title %}{{ post.title }} · The Caffeine Lane{% endblock title %}
+{% load i18n post_i18n %}
+{% block title %}{% blocktranslate with post_title=post.title %}{{ post_title }} · The Caffeine Lane{% endblocktranslate %}{% endblock title %}
 {% block content %}
   <article class="post-detail editorial-page">
     <div class="post-detail__container">
       <a class="post-detail__back" href="{% url 'home' %}">
         <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
-        Back to stories
+        {% translate "Back to stories" %}
       </a>
 
       <header class="post-detail__header">
         <div class="post-detail__categories">
           {% for category in post.categories.all %}
-            <a class="post-detail__category" href="{% url 'category_view' category.slug %}">{{ category.name }}</a>
+            <a class="post-detail__category" href="{% url 'category_view' category.slug %}">{{ category|localized_category }}</a>
           {% endfor %}
         </div>
         <h1 class="post-detail__title">{{ post.title }}</h1>
@@ -25,14 +26,14 @@
             <img class="post-detail__avatar" src="{{ post.author.avatar_url }}" alt="" width="48" height="48">
             <p>
               <span class="post-detail__author-name">{{ post.author.display_name|default:post.author.username }}</span>
-              <time datetime="{{ post.published_at|date:'c' }}">{{ post.published_at|date:"F j, Y" }}</time>
+              <time datetime="{{ post.published_at|date:'c' }}">{{ post.published_at|date:"DATE_FORMAT" }}</time>
             </p>
           </div>
 
           {% if perms.posts.change_post or perms.posts.delete_post %}
             <div class="post-detail__management">
-              {% if perms.posts.change_post %}<a href="{% url 'post_update' post.slug %}">Edit</a>{% endif %}
-              {% if perms.posts.delete_post %}<a href="{% url 'post_delete' post.slug %}">Delete</a>{% endif %}
+              {% if perms.posts.change_post %}<a href="{% url 'post_update' post.slug %}">{% translate "Edit" %}</a>{% endif %}
+              {% if perms.posts.delete_post %}<a href="{% url 'post_delete' post.slug %}">{% translate "Delete" %}</a>{% endif %}
             </div>
           {% endif %}
         </div>
@@ -43,7 +44,7 @@
           <img src="{{ post.featured_image.url }}" alt="{{ post.featured_image_alt }}" width="1440" height="810">
         </figure>
       {% else %}
-        <div class="post-detail__image-fallback" aria-hidden="true"><span>The Caffeine Lane</span></div>
+        <div class="post-detail__image-fallback" aria-hidden="true"><span>{% translate "The Caffeine Lane" %}</span></div>
       {% endif %}
 
       <div class="post-detail__body prose prose-stone prose-headings:font-bebas prose-headings:tracking-wide">{{ post.content|linebreaks }}</div>
@@ -51,8 +52,8 @@
       {% if related_posts %}
         <section class="post-detail__section" aria-labelledby="related-posts-heading">
           <div class="editorial-rule">
-            <p class="editorial-kicker">Keep exploring</p>
-            <h2 id="related-posts-heading" class="editorial-heading mt-1">More from this lane</h2>
+            <p class="editorial-kicker">{% translate "Keep exploring" %}</p>
+            <h2 id="related-posts-heading" class="editorial-heading mt-1">{% translate "More from this lane" %}</h2>
           </div>
           <div class="category-post-grid mt-7">
             {% for related_post in related_posts %}
@@ -64,28 +65,29 @@
 
       <section class="post-detail__section" aria-labelledby="comments-heading">
         <div class="editorial-rule">
-          <p class="editorial-kicker">The conversation</p>
-          <h2 id="comments-heading" class="editorial-heading mt-1">Comments</h2>
+          <p class="editorial-kicker">{% translate "The conversation" %}</p>
+          <h2 id="comments-heading" class="editorial-heading mt-1">{% translate "Comments" %}</h2>
         </div>
 
         {% if user.is_authenticated %}
           <form method="post" class="comment-compose">
             {% csrf_token %}
             {{ form.website }}
-            <label class="comment-compose__label" for="{{ form.content.id_for_label }}">Add to the conversation</label>
+            <label class="comment-compose__label" for="{{ form.content.id_for_label }}">{% translate "Add to the conversation" %}</label>
             <div class="mt-2">{{ form.content }}</div>
             {% for error in form.content.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
-            <button class="button-primary mt-4" type="submit">Post comment</button>
+            <button class="button-primary mt-4" type="submit">{% translate "Post comment" %}</button>
           </form>
         {% else %}
           <aside class="comment-participation">
             <div>
-              <p class="editorial-kicker">Your turn</p>
-              <h3 class="mt-2 font-bebas text-4xl leading-[0.9] tracking-wide text-stone-950">Have a road-tested take?</h3>
-              <p class="mt-3 max-w-xl text-stone-600">Sign in to share a question, a fix, or a perspective from your own ride.</p>
-              <a class="editorial-button mt-5" href="{% url 'login' %}?next={{ request.path|urlencode }}">Sign in to comment <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+              <p class="editorial-kicker">{% translate "Your turn" %}</p>
+              <h3 class="mt-2 font-bebas text-4xl leading-[0.9] tracking-wide text-stone-950">{% translate "Have a road-tested take?" %}</h3>
+              <p class="mt-3 max-w-xl text-stone-600">{% translate "Sign in to share a question, a fix, or a perspective from your own ride." %}</p>
+              <a class="editorial-button mt-5" href="{% url 'login' %}?next={{ request.path|urlencode }}">{% translate "Sign in to comment" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
             </div>
-            {% include "components/character_badge.html" with asset="character-talking.webp" size="lg" alt="The Rider ready to talk about the road" class_name="comment-participation__rider" %}
+            {% translate "The Rider ready to talk about the road" as talking_alt %}
+            {% include "components/character_badge.html" with asset="character-talking.webp" size="lg" alt=talking_alt class_name="comment-participation__rider" %}
           </aside>
         {% endif %}
 
@@ -97,14 +99,14 @@
                   <img src="{{ comment.author.avatar_url }}" alt="" width="40" height="40">
                   <div>
                     <h3>{{ comment.author.display_name|default:comment.author.username }}</h3>
-                    <p><time datetime="{{ comment.created_at|date:'c' }}">{{ comment.created_at|date:"M j, Y · H:i" }}</time>{% if comment.is_edited %} · edited{% endif %}</p>
+                    <p><time datetime="{{ comment.created_at|date:'c' }}">{{ comment.created_at|date:"SHORT_DATETIME_FORMAT" }}</time>{% if comment.is_edited %} · {% translate "edited" %}{% endif %}</p>
                   </div>
                 </div>
                 {% if comment.visibility == "visible" %}
                   <div class="comment-card__actions">
-                    {% if request.user == comment.author %}<a href="{% url 'comment_edit' comment.pk %}">Edit</a>{% endif %}
-                    {% if request.user == comment.author %}<form method="post" action="{% url 'comment_withdraw' comment.pk %}">{% csrf_token %}<button type="submit">Withdraw</button></form>{% endif %}
-                    {% if perms.posts.moderate_comment %}<form method="post" action="{% url 'comment_hide' comment.pk %}">{% csrf_token %}<button type="submit">Hide</button></form>{% endif %}
+                    {% if request.user == comment.author %}<a href="{% url 'comment_edit' comment.pk %}">{% translate "Edit" %}</a>{% endif %}
+                    {% if request.user == comment.author %}<form method="post" action="{% url 'comment_withdraw' comment.pk %}">{% csrf_token %}<button type="submit">{% translate "Withdraw" %}</button></form>{% endif %}
+                    {% if perms.posts.moderate_comment %}<form method="post" action="{% url 'comment_hide' comment.pk %}">{% csrf_token %}<button type="submit">{% translate "Hide" %}</button></form>{% endif %}
                   </div>
                 {% endif %}
               </header>
@@ -112,18 +114,18 @@
               {% if comment.visibility == "visible" %}
                 <div class="comment-card__content">{{ comment.content|linebreaks }}</div>
               {% elif comment.visibility == "withdrawn" %}
-                <p class="comment-card__status">This comment was withdrawn by its author.</p>
+                <p class="comment-card__status">{% translate "This comment was withdrawn by its author." %}</p>
               {% else %}
-                <p class="comment-card__status">This comment was hidden by moderation.<span class="sr-only"> Hidden by moderation.</span></p>
+                <p class="comment-card__status">{% translate "This comment was hidden by moderation." %}<span class="sr-only"> {% translate "Hidden by moderation." %}</span></p>
               {% endif %}
 
               {% if comment.visibility == "visible" and user.is_authenticated %}
                 <form method="post" action="{% url 'comment_reply' comment.pk %}" class="comment-reply-form">
                   {% csrf_token %}
                   {{ form.website }}
-                  <label class="sr-only" for="reply-{{ comment.pk }}">Reply to {{ comment.author.username }}</label>
-                  <textarea id="reply-{{ comment.pk }}" name="content" rows="3" placeholder="Reply to {{ comment.author.display_name|default:comment.author.username }}"></textarea>
-                  <button type="submit">Reply</button>
+                  <label class="sr-only" for="reply-{{ comment.pk }}">{% blocktranslate with author_name=comment.author.username %}Reply to {{ author_name }}{% endblocktranslate %}</label>
+                  <textarea id="reply-{{ comment.pk }}" name="content" rows="3" placeholder="{% blocktranslate with author_name=comment.author.display_name|default:comment.author.username %}Reply to {{ author_name }}{% endblocktranslate %}"></textarea>
+                  <button type="submit">{% translate "Reply" %}</button>
                 </form>
               {% endif %}
 
@@ -134,23 +136,23 @@
                       <img src="{{ reply.author.avatar_url }}" alt="" width="32" height="32">
                       <div>
                         <h4>{{ reply.author.display_name|default:reply.author.username }}</h4>
-                        <p><time datetime="{{ reply.created_at|date:'c' }}">{{ reply.created_at|date:"M j, Y · H:i" }}</time>{% if reply.is_edited %} · edited{% endif %}</p>
+                        <p><time datetime="{{ reply.created_at|date:'c' }}">{{ reply.created_at|date:"SHORT_DATETIME_FORMAT" }}</time>{% if reply.is_edited %} · {% translate "edited" %}{% endif %}</p>
                       </div>
                     </div>
                     {% if reply.visibility == "visible" %}
                       <div class="comment-card__actions">
-                        {% if request.user == reply.author %}<a href="{% url 'comment_edit' reply.pk %}">Edit</a>{% endif %}
-                        {% if request.user == reply.author %}<form method="post" action="{% url 'comment_withdraw' reply.pk %}">{% csrf_token %}<button type="submit">Withdraw</button></form>{% endif %}
-                        {% if perms.posts.moderate_comment %}<form method="post" action="{% url 'comment_hide' reply.pk %}">{% csrf_token %}<button type="submit">Hide</button></form>{% endif %}
+                        {% if request.user == reply.author %}<a href="{% url 'comment_edit' reply.pk %}">{% translate "Edit" %}</a>{% endif %}
+                        {% if request.user == reply.author %}<form method="post" action="{% url 'comment_withdraw' reply.pk %}">{% csrf_token %}<button type="submit">{% translate "Withdraw" %}</button></form>{% endif %}
+                        {% if perms.posts.moderate_comment %}<form method="post" action="{% url 'comment_hide' reply.pk %}">{% csrf_token %}<button type="submit">{% translate "Hide" %}</button></form>{% endif %}
                       </div>
                     {% endif %}
                   </header>
                   {% if reply.visibility == "visible" %}
                     <div class="comment-card__content comment-card__content--reply">{{ reply.content|linebreaks }}</div>
                   {% elif reply.visibility == "withdrawn" %}
-                    <p class="comment-card__status">This reply was withdrawn by its author.</p>
+                    <p class="comment-card__status">{% translate "This reply was withdrawn by its author." %}</p>
                   {% else %}
-                    <p class="comment-card__status">This reply was hidden by moderation.</p>
+                    <p class="comment-card__status">{% translate "This reply was hidden by moderation." %}</p>
                   {% endif %}
                 </article>
               {% endfor %}
@@ -159,14 +161,15 @@
             {% if user.is_authenticated %}
               <aside class="comment-empty">
                 <div>
-                  <p class="editorial-kicker">Open road</p>
-                  <h3 class="mt-2 font-bebas text-4xl leading-[0.9] tracking-wide text-stone-950">Start the conversation.</h3>
-                  <p class="mt-3 text-stone-600">The first note from the garage is often the one that helps the next rider most.</p>
+                  <p class="editorial-kicker">{% translate "Open road" %}</p>
+                  <h3 class="mt-2 font-bebas text-4xl leading-[0.9] tracking-wide text-stone-950">{% translate "Start the conversation." %}</h3>
+                  <p class="mt-3 text-stone-600">{% translate "The first note from the garage is often the one that helps the next rider most." %}</p>
                 </div>
-                {% include "components/character_badge.html" with asset="character-talking.webp" size="lg" alt="The Rider ready to start a conversation" class_name="comment-empty__rider" %}
+                {% translate "The Rider ready to start a conversation" as talking_alt %}
+                {% include "components/character_badge.html" with asset="character-talking.webp" size="lg" alt=talking_alt class_name="comment-empty__rider" %}
               </aside>
             {% else %}
-              <p class="comment-thread__empty">No comments yet. Be the first to join the conversation.</p>
+              <p class="comment-thread__empty">{% translate "No comments yet. Be the first to join the conversation." %}</p>
             {% endif %}
           {% endfor %}
         </div>

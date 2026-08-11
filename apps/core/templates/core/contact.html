@@ -1,14 +1,15 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block title %}Contact · The Caffeine Lane{% endblock title %}
+{% block title %}{% translate "Contact · The Caffeine Lane" %}{% endblock title %}
 {% block content %}
   <div class="contact-page editorial-page">
     <div class="contact-page__container editorial-container editorial-section">
       <header class="contact-page__intro">
-        <p class="editorial-kicker">The Caffeine Lane</p>
+        <p class="editorial-kicker">{% translate "The Caffeine Lane" %}</p>
         <h1>{% translate "Talk shop. Share the road." %}</h1>
         <p>{% translate "Have a question, a useful fix, or a story from your own garage? Send it our way. Every good conversation starts somewhere." %}</p>
-        {% include "components/character_badge.html" with asset="character-talking.webp" size="lg" alt="The Rider ready to talk shop" class_name="contact-page__rider" %}
+        {% translate "The Rider ready to talk shop" as talking_alt %}
+        {% include "components/character_badge.html" with asset="character-talking.webp" size="lg" alt=talking_alt class_name="contact-page__rider" %}
       </header>
 
       <section class="contact-panel" aria-labelledby="contact-form-heading">

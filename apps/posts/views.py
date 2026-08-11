@@ -8,6 +8,7 @@ from django.db import connection
 from django.db.models import Prefetch, Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
+from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
@@ -28,7 +29,7 @@ def post_detail(request, slug):
     form = CommentForm(request.POST or None)
     if request.method == "POST":
         if not request.user.is_authenticated:
-            messages.error(request, "You must be logged in to comment.")
+            messages.error(request, _("You must be logged in to comment."))
             return redirect("login")
 
         if form.is_valid():
@@ -40,15 +41,15 @@ def post_detail(request, slug):
                 )
             except ValidationError as error:
                 form.add_error("content", error)
-                messages.error(request, "Please correct the errors below.")
+                messages.error(request, _("Please correct the errors below."))
             else:
-                messages.success(request, "Comment added successfully.")
+                messages.success(request, _("Comment added successfully."))
                 return redirect("post_detail", slug=post.slug)
 
         else:
             messages.error(
                 request,
-                "There was an error with your comment. Please try again.",
+                _("There was an error with your comment. Please try again."),
             )
     context = {
         "post": post,
@@ -81,9 +82,9 @@ def comment_reply(request, comment_id):
         except ValidationError as error:
             messages.error(request, "; ".join(error.messages))
         else:
-            messages.success(request, "Reply added successfully.")
+            messages.success(request, _("Reply added successfully."))
     else:
-        messages.error(request, "Please correct the reply before submitting.")
+        messages.error(request, _("Please correct the reply before submitting."))
     return redirect("post_detail", slug=post.slug)
 
 
@@ -107,7 +108,7 @@ def comment_edit(request, comment_id):
         request.user == comment.author
         or request.user.has_perm("posts.moderate_comment")
     ):
-        messages.error(request, "You do not have permission to edit this comment.")
+        messages.error(request, _("You do not have permission to edit this comment."))
         return redirect("post_detail", slug=comment.post.slug)
 
     if not comment.is_visible:
@@ -118,7 +119,7 @@ def comment_edit(request, comment_id):
         edited_comment = form.save(commit=False)
         edited_comment.is_edited = True
         edited_comment.save(update_fields=["content", "is_edited", "updated_at"])
-        messages.success(request, "Comment edited successfully.")
+        messages.success(request, _("Comment edited successfully."))
         return redirect("post_detail", slug=comment.post.slug)
 
     context = {"form": form, "comment": comment}
@@ -133,7 +134,7 @@ def comment_withdraw(request, comment_id):
         withdraw_comment(comment=comment, actor=request.user)
     except PermissionDenied:
         raise PermissionDenied from None
-    messages.success(request, "Comment withdrawn.")
+    messages.success(request, _("Comment withdrawn."))
     return redirect("post_detail", slug=comment.post.slug)
 
 
@@ -145,7 +146,7 @@ def comment_hide(request, comment_id):
         hide_comment(comment=comment, actor=request.user)
     except PermissionDenied:
         raise PermissionDenied from None
-    messages.success(request, "Comment hidden by moderation.")
+    messages.success(request, _("Comment hidden by moderation."))
     return redirect("post_detail", slug=comment.post.slug)
 
 

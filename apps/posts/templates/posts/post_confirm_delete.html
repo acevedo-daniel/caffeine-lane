@@ -1,24 +1,25 @@
 {% extends "base.html" %}
-{% block title %}Delete post · The Caffeine Lane{% endblock title %}
+{% load i18n %}
+{% block title %}{% translate "Delete post · The Caffeine Lane" %}{% endblock title %}
 {% block content %}
   <div class="editor-workspace editorial-page">
     <section class="destructive-panel" aria-labelledby="delete-post-heading">
-      <p class="destructive-panel__eyebrow"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Irreversible action</p>
-      <h1 id="delete-post-heading">Delete post</h1>
-      <p class="destructive-panel__intro">This permanently removes the post and its discussion from the lane.</p>
+      <p class="destructive-panel__eyebrow"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> {% translate "Irreversible action" %}</p>
+      <h1 id="delete-post-heading">{% translate "Delete post" %}</h1>
+      <p class="destructive-panel__intro">{% translate "This permanently removes the post and its discussion from the lane." %}</p>
       <article class="destructive-panel__preview">
         {% if object.featured_image %}
           <img src="{{ object.featured_image.url }}" alt="{{ object.featured_image_alt }}" width="640" height="360">
         {% endif %}
         <div>
-          <p class="editorial-kicker">Selected post</p>
+          <p class="editorial-kicker">{% translate "Selected post" %}</p>
           <h2>{{ object.title }}</h2>
         </div>
       </article>
       <form method="post" class="destructive-panel__actions">
         {% csrf_token %}
-        <button class="destructive-button" type="submit">Delete permanently</button>
-        <a class="editorial-button" href="{{ object.get_absolute_url }}">Keep post</a>
+        <button class="destructive-button" type="submit">{% translate "Delete permanently" %}</button>
+        <a class="editorial-button" href="{{ object.get_absolute_url }}">{% translate "Keep post" %}</a>
       </form>
     </section>
   </div>

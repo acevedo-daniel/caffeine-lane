@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("carousel-container");
-  const previous = document.getElementById("prev-btn");
-  const next = document.getElementById("next-btn");
-  if (!container || !previous || !next) return;
+  const previous = document.querySelectorAll("[data-carousel-previous]");
+  const next = document.querySelectorAll("[data-carousel-next]");
+  if (!container || !previous.length || !next.length) return;
 
   const slides = container.querySelectorAll(".carousel-slide");
   let current = 0;
@@ -16,6 +16,10 @@ document.addEventListener("DOMContentLoaded", () => {
     container.style.transform = `translateX(-${current * 100}%)`;
   };
   show(current);
-  previous.addEventListener("click", () => show(current - 1));
-  next.addEventListener("click", () => show(current + 1));
+  previous.forEach((button) => {
+    button.addEventListener("click", () => show(current - 1));
+  });
+  next.forEach((button) => {
+    button.addEventListener("click", () => show(current + 1));
+  });
 });

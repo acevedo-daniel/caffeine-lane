@@ -7,9 +7,9 @@
 {% block content %}
   <div class="auth-shell">
     <div class="auth-shell__container">
-      <a class="auth-wordmark" href="{% url 'home' %}" aria-label="The Caffeine Lane home">
-        <span class="auth-wordmark__title">The Caffeine Lane</span>
-        <span class="auth-wordmark__tagline">Ride · Build · Repeat</span>
+      <a class="auth-wordmark" href="{% url 'home' %}" aria-label="{% translate 'The Caffeine Lane home' %}">
+        <span class="auth-wordmark__title">{% translate "The Caffeine Lane" %}</span>
+        <span class="auth-wordmark__tagline">{% translate "Ride · Build · Repeat" %}</span>
       </a>
       <div class="auth-shell__layout">
         <section class="auth-shell__visual">

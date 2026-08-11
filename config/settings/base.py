@@ -83,11 +83,9 @@ USE_TZ = True
 LOCALE_PATHS = [BASE_DIR / "locale"]
 
 STATIC_URL = "static/"
-STATICFILES_DIRS = [
-    ("dist", BASE_DIR / "static" / "dist"),
-    ("images", BASE_DIR / "static" / "images"),
-    ("vendor", BASE_DIR / "static" / "vendor"),
-]
+# A single root keeps URL paths portable between Windows development and Linux
+# deployments: {% static "dist/js/home-carousel.js" %} resolves consistently.
+STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"

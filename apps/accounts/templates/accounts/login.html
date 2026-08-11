@@ -1,11 +1,12 @@
 {% extends "layouts/auth.html" %}
 {% load i18n %}
-{% block title %}Sign in · The Caffeine Lane{% endblock title %}
+{% block title %}{% translate "Sign in · The Caffeine Lane" %}{% endblock title %}
 {% block auth_visual %}
   <p class="auth-shell__eyebrow">{% translate "The Caffeine Lane community" %}</p>
   <h1 class="auth-shell__title">{% translate "Back on the road." %}</h1>
   <p class="auth-shell__copy">{% translate "Sign in to save stories, share what you have learned, and keep the conversation moving." %}</p>
-  {% include "components/character_badge.html" with asset="character-signature.webp" size="lg" alt="The Rider signature" class_name="auth-shell__rider" %}
+  {% translate "The Rider signature" as rider_alt %}
+  {% include "components/character_badge.html" with asset="character-signature.webp" size="lg" alt=rider_alt class_name="auth-shell__rider" %}
 {% endblock auth_visual %}
 {% block auth_form %}
   <p class="auth-card__eyebrow">{% translate "Member access" %}</p>

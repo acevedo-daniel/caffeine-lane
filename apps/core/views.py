@@ -8,6 +8,7 @@ from django.core.cache import cache
 from django.core.mail import EmailMultiAlternatives
 from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse
 from django.shortcuts import redirect, render
+from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_exempt
 
 from apps.posts.models import Category, Post
@@ -83,7 +84,7 @@ def contact(request):
             ):
                 cache.incr(rate_limit_key)
             if cache.get(rate_limit_key, 0) > settings.CONTACT_RATE_LIMIT:
-                form.add_error(None, "Too many messages. Please try again later.")
+                form.add_error(None, _("Too many messages. Please try again later."))
                 return render(request, "core/contact.html", {"form": form})
 
             name = form.cleaned_data["from_name"]
@@ -103,7 +104,7 @@ def contact(request):
                 },
             ).content.decode()
             message = EmailMultiAlternatives(
-                subject=f"Contact from Blog: {subject}",
+                subject=_("Contact from Blog: %(subject)s") % {"subject": subject},
                 body=full_message,
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 to=[settings.CONTACT_RECIPIENT_EMAIL],
@@ -120,12 +121,14 @@ def contact(request):
                 )
                 messages.error(
                     request,
-                    "We could not send your message right now. Please try again later.",
+                    _(
+                        "We could not send your message right now. Please try again later."
+                    ),
                 )
                 return render(request, "core/contact.html", {"form": form}, status=503)
 
             messages.success(
-                request, "Thank you for your message! We will get back to you soon."
+                request, _("Thank you for your message! We will get back to you soon.")
             )
             return redirect("contact")
     else:

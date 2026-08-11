@@ -1,16 +1,17 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block title %}Server error · The Caffeine Lane{% endblock title %}
+{% block title %}{% translate "Server error · The Caffeine Lane" %}{% endblock title %}
 {% block content %}
   <section class="error-page">
     <div class="error-page__container editorial-container">
       <div class="error-page__copy">
-        <p class="error-kicker">500 · Server error</p>
+        <p class="error-kicker">{% translate "500 · Server error" %}</p>
         <h1 class="error-title">{% translate "Engine trouble." %}</h1>
         <p class="error-page__intro">{% translate "Something under the tank needs attention. Give us a moment, then head back to the lane and try again." %}</p>
         <a class="error-page__action" href="{% url 'home' %}">{% translate "Back to the lane" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
       </div>
-      {% include "components/character_badge.html" with asset="character-oops.webp" size="lg" alt="The Rider noticing engine trouble" class_name="error-page__rider" %}
+      {% translate "The Rider noticing engine trouble" as rider_alt %}
+      {% include "components/character_badge.html" with asset="character-oops.webp" size="lg" alt=rider_alt class_name="error-page__rider" %}
     </div>
   </section>
 {% endblock content %}

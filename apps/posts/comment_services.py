@@ -2,13 +2,14 @@ from datetime import timedelta
 
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.utils import timezone
+from django.utils.translation import gettext as _
 
 from .models import Comment, Post
 
 
 def create_comment(*, post: Post, author, content: str, parent=None) -> Comment:
     if parent and not parent.is_visible:
-        raise ValidationError("Replies are only allowed on visible comments.")
+        raise ValidationError(_("Replies are only allowed on visible comments."))
     recent_duplicate = Comment.objects.filter(
         post=post,
         author=author,
@@ -16,7 +17,9 @@ def create_comment(*, post: Post, author, content: str, parent=None) -> Comment:
         created_at__gte=timezone.now() - timedelta(minutes=1),
     ).exists()
     if recent_duplicate:
-        raise ValidationError("Please wait before submitting the same comment again.")
+        raise ValidationError(
+            _("Please wait before submitting the same comment again.")
+        )
 
     comment = Comment(post=post, author=author, content=content, parent=parent)
     comment.full_clean()

@@ -1,9 +1,11 @@
+{% load i18n %}
+{% get_current_language as CURRENT_LANGUAGE %}
 <!doctype html>
-<html lang="en">
+<html lang="{{ CURRENT_LANGUAGE }}">
   <body>
-    <h1>New contact message</h1>
-    <p><strong>From:</strong> {{ name }} &lt;{{ email }}&gt;</p>
-    <p><strong>Subject:</strong> {{ subject }}</p>
+    <h1>{% translate "New contact message" %}</h1>
+    <p><strong>{% translate "From:" %}</strong> {{ name }} &lt;{{ email }}&gt;</p>
+    <p><strong>{% translate "Subject:" %}</strong> {{ subject }}</p>
     <p>{{ message|linebreaksbr }}</p>
   </body>
 </html>

@@ -1,4 +1,4 @@
-{% load i18n static %}
+{% load i18n static post_i18n %}
 <a class="sr-only focus:not-sr-only" href="#main-content">{% translate "Skip to content" %}</a>
 <header class="site-header">
   <div class="brand-masthead">
@@ -12,12 +12,12 @@
           {% get_current_language as CURRENT_LANGUAGE %}
           {% get_available_languages as LANGUAGES %}
           <i class="fa-solid fa-globe" aria-hidden="true"></i>
-          <select id="language-switcher" name="language">
+          <select id="language-switcher" name="language" data-submit-on-change="true">
             {% for language_code, language_name in LANGUAGES %}
               <option value="{{ language_code }}" {% if language_code == CURRENT_LANGUAGE %}selected{% endif %}>{{ language_code }}</option>
             {% endfor %}
           </select>
-          <button type="submit" aria-label="{% translate 'Change language' %}">{% translate "Apply" %}</button>
+          <noscript><button type="submit">{% translate "Change language" %}</button></noscript>
         </form>
         <form method="get" action="{% url 'search' %}" class="masthead-search-form hidden sm:block">
           <label class="sr-only" for="site-search">{% translate "Search posts" %}</label>
@@ -29,10 +29,9 @@
       </div>
     </div>
     <div class="brand-lockup">
-      <a href="{% url 'home' %}" class="brand-lockup-link">
-        {% include "components/character_badge.html" with asset="character-signature-256.webp" size="sm" alt="The Rider" class_name="brand-lockup-rider" %}
+      <a href="{% url 'home' %}" class="brand-lockup-link motion-wordmark">
         <span>
-          <span class="brand-title">THE CAFFEINE LANE</span>
+          <span class="brand-title">{% translate "THE CAFFEINE LANE" %}</span>
           <span class="brand-tagline">{% translate "Ride · Build · Repeat" %}</span>
         </span>
       </a>
@@ -50,7 +49,7 @@
           <a class="nav-link" href="{% url 'home' %}">{% translate "Home" %}</a>
           <a class="nav-link md:hidden" href="{% url 'search' %}">{% translate "Search" %}</a>
           {% for category in navigation_categories %}
-            <a class="nav-link" href="{% url 'category_view' category_slug=category.slug %}">{{ category.name }}</a>
+            <a class="nav-link" href="{% url 'category_view' category_slug=category.slug %}">{{ category|localized_category }}</a>
           {% endfor %}
           <a class="nav-link" href="{% url 'about' %}">{% translate "About" %}</a>
         </div>
@@ -61,7 +60,7 @@
             <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit" class="nav-link">{% translate "Sign out" %}</button></form>
           {% else %}
             <a class="nav-link" href="{% url 'login' %}">{% translate "Sign in" %}</a>
-            <a class="nav-join" href="{% url 'register' %}">{% translate "Join" %}</a>
+            <a class="nav-join motion-cta" href="{% url 'register' %}">{% translate "Join" %}</a>
           {% endif %}
         </div>
       </div>

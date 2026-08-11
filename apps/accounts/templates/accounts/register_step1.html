@@ -1,26 +1,27 @@
 {% extends "layouts/auth.html" %}
 {% load i18n %}
-{% block title %}Create an account · The Caffeine Lane{% endblock title %}
+{% block title %}{% translate "Create an account · The Caffeine Lane" %}{% endblock title %}
 {% block auth_visual %}
-  <p class="auth-shell__eyebrow">The Caffeine Lane community</p>
+  <p class="auth-shell__eyebrow">{% translate "The Caffeine Lane community" %}</p>
   <h1 class="auth-shell__title">{% translate "Join the ride." %}</h1>
-  <p class="auth-shell__copy">A profile gives your voice a place in the garage, on the road, and throughout the lane.</p>
-  {% include "components/character_badge.html" with asset="character-welcome.webp" size="lg" alt="The Rider welcoming new members" class_name="auth-shell__rider" %}
+  <p class="auth-shell__copy">{% translate "A profile gives your voice a place in the garage, on the road, and throughout the lane." %}</p>
+  {% translate "The Rider welcoming new members" as rider_alt %}
+  {% include "components/character_badge.html" with asset="character-welcome.webp" size="lg" alt=rider_alt class_name="auth-shell__rider" %}
 {% endblock auth_visual %}
 {% block auth_form %}
-  <div class="auth-progress" aria-label="Registration progress: step 1 of 2">
+  <div class="auth-progress" aria-label="{% translate 'Registration progress: step 1 of 2' %}">
     <span class="auth-progress__step auth-progress__step--active">01</span>
     <span class="auth-progress__line" aria-hidden="true"></span>
     <span class="auth-progress__step">02</span>
   </div>
   <p class="auth-card__eyebrow">{% translate "Step 1 of 2" %}</p>
-  <h2 id="auth-form-heading" class="auth-card__title">Start your profile</h2>
-  <p class="auth-card__intro">First, tell us where to reach you.</p>
+  <h2 id="auth-form-heading" class="auth-card__title">{% translate "Start your profile" %}</h2>
+  <p class="auth-card__intro">{% translate "First, tell us where to reach you." %}</p>
   <form method="post" class="auth-form" novalidate>
     {% csrf_token %}
     {% if form.non_field_errors %}<div class="auth-form__error">{{ form.non_field_errors }}</div>{% endif %}
     {% include "components/form_field.html" with field=form.email %}
     <button class="button-primary w-full" type="submit">{% translate "Continue" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
   </form>
-  <p class="auth-card__footer">Already riding with us? <a href="{% url 'login' %}">Sign in</a>.</p>
+  <p class="auth-card__footer">{% translate "Already riding with us?" %} <a href="{% url 'login' %}">{% translate "Sign in" %}</a>.</p>
 {% endblock auth_form %}

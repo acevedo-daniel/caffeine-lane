@@ -1,19 +1,20 @@
 {% extends "base.html" %}
-{% block title %}Edit comment · The Caffeine Lane{% endblock title %}
+{% load i18n %}
+{% block title %}{% translate "Edit comment · The Caffeine Lane" %}{% endblock title %}
 {% block content %}
   <div class="editor-workspace editorial-page">
     <section class="comment-editor" aria-labelledby="comment-edit-heading">
-      <a class="post-editor__back" href="{{ comment.post.get_absolute_url }}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back to post</a>
+      <a class="post-editor__back" href="{{ comment.post.get_absolute_url }}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> {% translate "Back to post" %}</a>
       <header class="comment-editor__header">
-        <p class="editorial-kicker">Conversation</p>
-        <h1 id="comment-edit-heading">Edit comment</h1>
-        <p>Make your correction, then save it back into the discussion.</p>
+        <p class="editorial-kicker">{% translate "Conversation" %}</p>
+        <h1 id="comment-edit-heading">{% translate "Edit comment" %}</h1>
+        <p>{% translate "Make your correction, then save it back into the discussion." %}</p>
       </header>
       <form method="post" class="comment-editor__form" novalidate>
         {% csrf_token %}
         {% if form.non_field_errors %}<div class="auth-form__error">{{ form.non_field_errors }}</div>{% endif %}
         {% include "components/form_field.html" with field=form.content %}
-        <div class="post-editor__actions"><button class="button-primary" type="submit">Save changes</button><a class="editorial-button" href="{{ comment.post.get_absolute_url }}">Cancel</a></div>
+        <div class="post-editor__actions"><button class="button-primary" type="submit">{% translate "Save changes" %}</button><a class="editorial-button" href="{{ comment.post.get_absolute_url }}">{% translate "Cancel" %}</a></div>
       </form>
     </section>
   </div>

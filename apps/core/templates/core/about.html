@@ -1,16 +1,17 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block title %}About · The Caffeine Lane{% endblock title %}
+{% block title %}{% translate "About · The Caffeine Lane" %}{% endblock title %}
 {% block content %}
   <div class="about-page editorial-page">
     <section class="about-hero">
       <div class="about-hero__container editorial-container">
         <div class="about-hero__copy">
-          <p class="editorial-kicker text-red-300">The Caffeine Lane</p>
+          <p class="editorial-kicker text-stone-300">{% translate "The Caffeine Lane" %}</p>
           <h1 class="about-hero__title">{% translate "Built for the ride between the garage and the road." %}</h1>
           <p class="about-hero__intro">{% translate "The Caffeine Lane is an editorial home for the people who keep a machine close, a tool roll nearby, and a better route in mind." %}</p>
         </div>
-        {% include "components/character_badge.html" with asset="character-signature.webp" size="lg" alt="The Rider signature" class_name="about-hero__rider" %}
+        {% translate "The Rider signature" as signature_alt %}
+        {% include "components/character_badge.html" with asset="character-signature.webp" size="lg" alt=signature_alt class_name="about-hero__rider" %}
       </div>
     </section>
 
@@ -27,9 +28,10 @@
 
     <section class="about-garage">
       <div class="about-garage__container editorial-container">
-        {% include "components/character_badge.html" with asset="character-mechanic.webp" size="lg" alt="The Rider working in the garage" class_name="about-garage__rider" %}
+        {% translate "The Rider working in the garage" as mechanic_alt %}
+        {% include "components/character_badge.html" with asset="character-mechanic.webp" size="lg" alt=mechanic_alt class_name="about-garage__rider" %}
         <div>
-          <p class="editorial-kicker text-red-300">{% translate "The garage" %}</p>
+          <p class="editorial-kicker text-stone-300">{% translate "The garage" %}</p>
           <h2 class="mt-2 font-bebas text-5xl leading-[0.85] tracking-wide text-white sm:text-6xl">{% translate "Learn it. Tune it. Ride it." %}</h2>
           <p class="mt-5 max-w-xl leading-7 text-stone-300">{% translate "The garage is where curiosity becomes confidence. We share the thinking behind maintenance and modification, so every rider can understand the machine beneath them." %}</p>
           <a class="about-inline-link" href="{% url 'category_view' category_slug=guides_category_slug %}">{% translate "Explore the guides" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
@@ -44,17 +46,17 @@
       </div>
       <div class="about-pillars__grid">
         <article>
-          <p class="editorial-kicker">01 · Garage</p>
+          <p class="editorial-kicker">{% translate "01 · Garage" %}</p>
           <h3>{% translate "Make it yours." %}</h3>
           <p>{% translate "Practical knowledge for hands-on riders, from first checks to long-term builds." %}</p>
         </article>
         <article>
-          <p class="editorial-kicker">02 · Road</p>
+          <p class="editorial-kicker">{% translate "02 · Road" %}</p>
           <h3>{% translate "Put it to work." %}</h3>
           <p>{% translate "Real-world notes on gear, machines, and the rides that connect them." %}</p>
         </article>
         <article>
-          <p class="editorial-kicker">03 · Community</p>
+          <p class="editorial-kicker">{% translate "03 · Community" %}</p>
           <h3>{% translate "Pass it on." %}</h3>
           <p>{% translate "A lane for sharing solutions, perspectives, and the stories behind the miles." %}</p>
         </article>
@@ -62,10 +64,10 @@
     </section>
 
     <section class="about-cta editorial-container" aria-labelledby="about-cta-heading">
-      <p class="editorial-kicker text-red-300">{% translate "Your place in the lane" %}</p>
+      <p class="editorial-kicker text-stone-300">{% translate "Your place in the lane" %}</p>
       <h2 id="about-cta-heading">{% translate "Build your story. Share your ride." %}</h2>
       <p>{% translate "Create a profile and add your voice to the conversations that move the culture forward." %}</p>
-      <a class="landing-cta" href="{% url 'register' %}">{% translate "Join the ride" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+      <a class="landing-cta motion-cta" href="{% url 'register' %}">{% translate "Join the ride" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
     </section>
   </div>
 {% endblock content %}

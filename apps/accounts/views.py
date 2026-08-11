@@ -5,6 +5,7 @@ from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError, transaction
 from django.shortcuts import redirect, render
+from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 
 from .forms import EmailRegistrationForm, ProfileForm, RegistrationStep2Form
@@ -52,14 +53,16 @@ def register_step2(request):
                 with transaction.atomic():
                     user = form.save(email=email)
             except IntegrityError:
-                form.add_error(None, "An account with this email already exists.")
+                form.add_error(None, _("An account with this email already exists."))
             else:
                 login(request, user)
                 del request.session["registration_email"]
-                messages.success(request, "Account successfully created!")
+                messages.success(request, _("Account successfully created!"))
                 messages.info(
                     request,
-                    "Welcome! Please visit your profile page to add your name and other details.",
+                    _(
+                        "Welcome! Please visit your profile page to add your name and other details."
+                    ),
                 )
                 return redirect("home")
     else:
@@ -74,10 +77,10 @@ def profile(request):
         form = ProfileForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
-            messages.success(request, "Profile successfully updated!")
+            messages.success(request, _("Profile successfully updated!"))
             return redirect("profile")
         else:
-            messages.error(request, "Please correct the errors below.")
+            messages.error(request, _("Please correct the errors below."))
     else:
         form = ProfileForm(instance=request.user)
 
@@ -87,5 +90,5 @@ def profile(request):
 @require_POST
 def custom_logout(request):
     logout(request)
-    messages.success(request, "You have successfully logged out!")
+    messages.success(request, _("You have successfully logged out!"))
     return redirect("home")

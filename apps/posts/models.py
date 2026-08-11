@@ -7,6 +7,7 @@ from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
+from django.utils.translation import gettext_lazy as _
 
 from apps.core.image_validators import validate_uploaded_image
 
@@ -60,8 +61,8 @@ class PostQuerySet(models.QuerySet):
 
 class Post(models.Model):
     class Status(models.TextChoices):
-        DRAFT = "draft", "Draft"
-        PUBLISHED = "published", "Published"
+        DRAFT = "draft", _("Draft")
+        PUBLISHED = "published", _("Published")
 
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=250, unique=True, blank=True)
@@ -87,13 +88,15 @@ class Post(models.Model):
     def clean(self):
         if self.slug and is_reserved_post_slug(self.slug):
             raise ValidationError(
-                {"slug": "This slug is reserved for an application route."}
+                {"slug": _("This slug is reserved for an application route.")}
             )
         if self.status == self.Status.PUBLISHED and not self.published_at:
-            raise ValidationError({"published_at": "Published posts require a date."})
+            raise ValidationError(
+                {"published_at": _("Published posts require a date.")}
+            )
         if self.featured_image and not self.featured_image_alt:
             raise ValidationError(
-                {"featured_image_alt": "Visible images require alternative text."}
+                {"featured_image_alt": _("Visible images require alternative text.")}
             )
 
     def save(self, *args, **kwargs):
@@ -109,7 +112,7 @@ class Post(models.Model):
             self.slug = candidate
         elif is_reserved_post_slug(self.slug):
             raise ValidationError(
-                {"slug": "This slug is reserved for an application route."}
+                {"slug": _("This slug is reserved for an application route.")}
             )
         super().save(*args, **kwargs)
 
@@ -128,9 +131,9 @@ class Post(models.Model):
 
 class Comment(models.Model):
     class Visibility(models.TextChoices):
-        VISIBLE = "visible", "Visible"
-        WITHDRAWN = "withdrawn", "Withdrawn by author"
-        HIDDEN = "hidden", "Hidden by moderator"
+        VISIBLE = "visible", _("Visible")
+        WITHDRAWN = "withdrawn", _("Withdrawn by author")
+        HIDDEN = "hidden", _("Hidden by moderator")
 
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
     author = models.ForeignKey(
@@ -162,10 +165,12 @@ class Comment(models.Model):
         if self.parent:
             if self.parent.post_id != self.post_id:
                 raise ValidationError(
-                    {"parent": "Replies must belong to the same post."}
+                    {"parent": _("Replies must belong to the same post.")}
                 )
             if self.parent.parent_id:
-                raise ValidationError({"parent": "Replies can only be one level deep."})
+                raise ValidationError(
+                    {"parent": _("Replies can only be one level deep.")}
+                )
 
     @property
     def is_visible(self):

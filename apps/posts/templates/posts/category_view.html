@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-{% block title %}{{ category.name }} · The Caffeine Lane{% endblock title %}
+{% load i18n post_i18n %}
+{% block title %}{% blocktranslate with category_name=category|localized_category %}{{ category_name }} · The Caffeine Lane{% endblocktranslate %}{% endblock title %}
 {% block content %}
   <section class="category-hero">
     {% if category.image %}
@@ -9,12 +10,12 @@
     <div class="category-hero__content editorial-container">
       <a class="category-hero__back" href="{% url 'home' %}">
         <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
-        Back to home
+        {% translate "Back to home" %}
       </a>
       <div>
-        <p class="editorial-kicker text-red-300">The Caffeine Lane · Archive</p>
-        <h1 class="category-hero__title">{{ category.name }}</h1>
-        <p class="category-hero__count">{{ page_obj.paginator.count }} stor{{ page_obj.paginator.count|pluralize:"y,ies" }} from the road.</p>
+        <p class="editorial-kicker text-stone-300">{% translate "The Caffeine Lane · Archive" %}</p>
+        <h1 class="category-hero__title">{{ category|localized_category }}</h1>
+        <p class="category-hero__count">{% blocktranslate count counter=page_obj.paginator.count %}{{ counter }} story from the road.{% plural %}{{ counter }} stories from the road.{% endblocktranslate %}</p>
       </div>
     </div>
   </section>
@@ -23,32 +24,32 @@
     <div class="editorial-container editorial-section">
       <section aria-labelledby="category-posts-heading">
         <div class="editorial-rule">
-          <p class="editorial-kicker">Latest dispatches</p>
-          <h2 id="category-posts-heading" class="editorial-heading mt-1">All {{ category.name }}</h2>
+          <p class="editorial-kicker">{% translate "Latest dispatches" %}</p>
+          <h2 id="category-posts-heading" class="editorial-heading mt-1">{% blocktranslate with category_name=category|localized_category %}All {{ category_name }}{% endblocktranslate %}</h2>
         </div>
         <div class="category-post-grid mt-7">
           {% for post in posts %}
             {% include "components/post_card.html" with post=post %}
           {% empty %}
             <div class="editorial-empty category-post-grid__empty">
-              <h3 class="font-bebas text-4xl tracking-wide text-stone-950">The shelf is clear.</h3>
-              <p class="mt-2">There are no stories in this category yet. Check the other lanes while the next one is being prepared.</p>
-              <a class="mt-5 inline-flex text-sm font-bold text-red-700" href="{% url 'home' %}">Browse the latest stories <i class="fa-solid fa-arrow-right ml-2 self-center" aria-hidden="true"></i></a>
+              <h3 class="font-bebas text-4xl tracking-wide text-stone-950">{% translate "The shelf is clear." %}</h3>
+              <p class="mt-2">{% translate "There are no stories in this category yet. Check the other lanes while the next one is being prepared." %}</p>
+              <a class="mt-5 inline-flex text-sm font-bold text-stone-950" href="{% url 'home' %}">{% translate "Browse the latest stories" %} <i class="fa-solid fa-arrow-right ml-2 self-center" aria-hidden="true"></i></a>
             </div>
           {% endfor %}
         </div>
 
         {% if is_paginated %}
-          <nav class="editorial-pagination" aria-label="Pages in {{ category.name }}">
+          <nav class="editorial-pagination" aria-label="{% blocktranslate with category_name=category|localized_category %}Pages in {{ category_name }}{% endblocktranslate %}">
             <div>
               {% if page_obj.has_previous %}
-                <a class="editorial-button" href="?page={{ page_obj.previous_page_number }}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Previous</a>
+                <a class="editorial-button" href="?page={{ page_obj.previous_page_number }}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> {% translate "Previous" %}</a>
               {% endif %}
             </div>
-            <p class="editorial-pagination__status">Page {{ page_obj.number }} <span aria-hidden="true">/</span> <span class="sr-only">of</span> {{ page_obj.paginator.num_pages }}</p>
+            <p class="editorial-pagination__status">{% translate "Page" %} {{ page_obj.number }} <span aria-hidden="true">/</span> <span class="sr-only">{% translate "of" %}</span> {{ page_obj.paginator.num_pages }}</p>
             <div>
               {% if page_obj.has_next %}
-                <a class="editorial-button" href="?page={{ page_obj.next_page_number }}">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                <a class="editorial-button" href="?page={{ page_obj.next_page_number }}">{% translate "Next" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
               {% endif %}
             </div>
           </nav>

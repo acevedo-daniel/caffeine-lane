@@ -1,47 +1,49 @@
 {% extends "base.html" %}
-{% load i18n %}
-{% block title %}Home · The Caffeine Lane{% endblock title %}
+{% load i18n post_i18n %}
+{% block title %}{% translate "Home · The Caffeine Lane" %}{% endblock title %}
 {% block content %}
   {% if banner_posts %}
-    <section class="home-hero" aria-roledescription="carousel" aria-label="Featured posts">
-      <div id="carousel-container" class="absolute inset-0 flex transition-transform duration-500 ease-in-out">
+    <section class="home-hero" aria-roledescription="carousel" aria-label="{% translate 'Featured posts' %}">
+      <div id="carousel-container" class="home-hero__track" aria-live="polite" aria-atomic="true">
         {% for post in banner_posts %}
-          <article class="carousel-slide relative h-full w-full flex-none overflow-hidden bg-stone-950" aria-roledescription="slide" aria-label="Featured post {{ forloop.counter }}">
+          <article class="carousel-slide home-hero__slide" aria-roledescription="{% translate 'slide' %}" aria-label="{% blocktranslate with counter=forloop.counter %}Featured post {{ counter }}{% endblocktranslate %}"{% if not forloop.first %} aria-hidden="true" inert{% endif %}>
             {% if post.featured_image %}
-              <img class="absolute inset-0 h-full w-full object-cover" src="{{ post.featured_image.url }}" alt="" aria-hidden="true" width="1920" height="650"{% if forloop.first %} fetchpriority="high"{% else %} loading="lazy" decoding="async"{% endif %}>
+              <div class="home-hero__media">
+                <img class="home-hero__image motion-media" src="{{ post.featured_image.url }}" alt="" aria-hidden="true" width="1920" height="650"{% if forloop.first %} fetchpriority="high"{% else %} loading="lazy" decoding="async"{% endif %}>
+              </div>
             {% else %}
-              <div class="absolute inset-0 bg-gradient-to-br from-red-800 via-stone-950 to-black"></div>
+              <div class="home-hero__media home-hero__media--fallback" aria-hidden="true"></div>
             {% endif %}
-            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-black/10"></div>
-            <div class="relative mx-auto flex h-full max-w-7xl items-end px-5 py-10 sm:px-8 sm:py-14 lg:px-10">
-              <div class="max-w-3xl text-white">
-                <p class="editorial-kicker text-red-300">
-                  {% for category in post.categories.all %}{{ category.name }}{% if not forloop.last %} · {% endif %}{% endfor %}
+            <div class="home-hero__panel">
+              <div class="home-hero__panel-copy">
+                <p class="editorial-kicker text-stone-300">
+                  {% for category in post.categories.all %}{{ category|localized_category }}{% if not forloop.last %} · {% endif %}{% endfor %}
                 </p>
-                <h1 class="mt-3 font-bebas text-5xl leading-[0.88] tracking-wide sm:text-7xl lg:text-8xl">{{ post.title }}</h1>
-                <p class="mt-5 max-w-2xl text-base leading-7 text-stone-100 sm:text-lg">{{ post.excerpt|default:post.content|striptags|truncatewords:28 }}</p>
-                <div class="mt-7 flex flex-wrap items-center gap-4">
-                  <a class="inline-flex items-center gap-2 bg-white px-5 py-3 text-sm font-bold uppercase tracking-[0.1em] text-stone-950 no-underline transition hover:bg-red-700 hover:text-white" href="{{ post.get_absolute_url }}">
+                <h1 class="home-hero__title"><a class="home-hero__title-link motion-title" href="{{ post.get_absolute_url }}">{{ post.title }}</a></h1>
+                <p class="home-hero__excerpt">{{ post.excerpt|default:post.content|striptags|truncatewords:28 }}</p>
+                <p class="home-hero__author">{% translate "By" %} {{ post.author.display_name|default:post.author.username }}</p>
+                <div class="home-hero__actions">
+                  <a class="home-hero__cta motion-cta" href="{{ post.get_absolute_url }}">
                     {% translate "Read story" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
                   </a>
-                  <p class="text-sm text-stone-300">By {{ post.author.display_name|default:post.author.username }}</p>
+                </div>
+              </div>
+              <div class="home-hero__panel-footer">
+                <p class="home-hero__index"><span>{{ forloop.counter|stringformat:"02d" }}</span><span aria-hidden="true"> / {{ banner_posts|length|stringformat:"02d" }}</span></p>
+                <div class="home-hero__controls" role="group" aria-label="{% translate 'Carousel controls' %}">
+                  <button data-carousel-previous class="home-hero-control" type="button" aria-label="{% translate 'Previous post' %}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></button>
+                  <button data-carousel-next class="home-hero-control" type="button" aria-label="{% translate 'Next post' %}"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
                 </div>
               </div>
             </div>
           </article>
         {% endfor %}
       </div>
-      <button id="prev-btn" class="home-hero-control left-3 sm:left-6" type="button" aria-label="Previous post">
-        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
-      </button>
-      <button id="next-btn" class="home-hero-control right-3 sm:right-6" type="button" aria-label="Next post">
-        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
-      </button>
     </section>
   {% else %}
     <section class="bg-stone-950 px-5 py-20 text-white sm:px-8 sm:py-28">
       <div class="mx-auto max-w-7xl">
-        <p class="text-xs font-bold uppercase tracking-[0.2em] text-red-400">The Caffeine Lane</p>
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-stone-400">{% translate "The Caffeine Lane" %}</p>
         <h1 class="mt-3 font-bebas text-6xl leading-[0.88] tracking-wide sm:text-8xl">{% translate "Stories for the road." %}</h1>
         <p class="mt-6 max-w-2xl text-lg text-stone-300">{% translate "New dispatches are being prepared." %}</p>
       </div>
@@ -49,12 +51,12 @@
   {% endif %}
 
   <div class="editorial-page">
-    <div class="editorial-container editorial-section">
-      <section class="home-section" aria-labelledby="builds-heading">
-        <div class="editorial-rule flex flex-wrap items-end justify-between gap-5">
+    <div class="home-index editorial-container editorial-section">
+      <section class="home-section home-section--builds" aria-labelledby="builds-heading">
+        <div class="home-section__header home-section__header--builds">
           <div>
             <p class="editorial-kicker">{% translate "Builds & features" %}</p>
-            <h2 id="builds-heading" class="editorial-heading mt-1">Builds</h2>
+            <h2 id="builds-heading" class="editorial-heading mt-1">{% translate "Builds" %}</h2>
             <p class="mt-3 text-stone-600">{% translate "Built in garages. Made for the road." %}</p>
           </div>
           <a class="editorial-button" href="{% url 'category_view' category_slug=builds_category_slug %}">{% translate "View all" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
@@ -68,17 +70,17 @@
         {% endif %}
       </section>
 
-      <section class="home-section" aria-labelledby="guides-heading">
-        <div class="editorial-rule flex flex-wrap items-end justify-between gap-5">
+      <section class="home-section home-section--guides" aria-labelledby="guides-heading">
+        <div class="home-section__header home-section__header--guides">
           <div>
             <p class="editorial-kicker">{% translate "How-to & guides" %}</p>
-            <h2 id="guides-heading" class="editorial-heading mt-1">Guides</h2>
+            <h2 id="guides-heading" class="editorial-heading mt-1">{% translate "Guides" %}</h2>
             <p class="mt-3 text-stone-600">{% translate "Wrench smarter. Ride farther." %}</p>
           </div>
           <a class="editorial-button" href="{% url 'category_view' category_slug=guides_category_slug %}">{% translate "View all" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
         </div>
         {% if new_guides %}
-          <div class="mt-7 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="mt-7 grid gap-6 sm:grid-cols-2">
             {% for post in new_guides %}{% include "components/post_card.html" with post=post %}{% endfor %}
           </div>
         {% else %}
@@ -90,17 +92,18 @@
         <div class="home-garage-note__copy">
           <p class="editorial-kicker">{% translate "Notes from the garage" %}</p>
           <h2 id="garage-note-heading" class="mt-2 font-bebas text-4xl leading-[0.9] tracking-wide text-stone-950 sm:text-5xl">{% translate "Garage to road" %}</h2>
-          <p class="mt-3 max-w-2xl text-stone-600">The best miles begin at the bench: a careful check, a cleaner adjustment, and a machine you know well enough to trust when the road opens up.</p>
+          <p class="mt-3 max-w-2xl text-stone-600">{% translate "The best miles begin at the bench: a careful check, a cleaner adjustment, and a machine you know well enough to trust when the road opens up." %}</p>
           <a class="home-garage-note__link" href="{% url 'category_view' category_slug=guides_category_slug %}">{% translate "Explore workshop guides" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
         </div>
-        {% include "components/character_badge.html" with asset="character-mechanic.webp" size="md" alt="The Rider working on a motorcycle" class_name="home-garage-note__rider" %}
+        {% translate "The Rider working on a motorcycle" as mechanic_alt %}
+        {% include "components/character_badge.html" with asset="character-mechanic.webp" size="md" alt=mechanic_alt class_name="home-garage-note__rider" %}
       </aside>
 
-      <section class="home-section" aria-labelledby="reviews-heading">
-        <div class="editorial-rule flex flex-wrap items-end justify-between gap-5">
+      <section class="home-section home-section--reviews" aria-labelledby="reviews-heading">
+        <div class="home-section__header home-section__header--reviews">
           <div>
             <p class="editorial-kicker">{% translate "Gear & product reviews" %}</p>
-            <h2 id="reviews-heading" class="editorial-heading mt-1">Reviews</h2>
+            <h2 id="reviews-heading" class="editorial-heading mt-1">{% translate "Reviews" %}</h2>
             <p class="mt-3 text-stone-600">{% translate "Gear worth taking on the road." %}</p>
           </div>
           <a class="editorial-button" href="{% url 'category_view' category_slug=reviews_category_slug %}">{% translate "View all" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
@@ -116,12 +119,13 @@
 
       <section class="home-community" aria-labelledby="join-the-ride-heading">
         <div class="home-community-copy">
-          <p class="editorial-kicker text-red-300">{% translate "The Caffeine Lane community" %}</p>
+          <p class="editorial-kicker text-stone-300">{% translate "The Caffeine Lane community" %}</p>
           <h2 id="join-the-ride-heading" class="mt-2 font-bebas text-5xl leading-[0.9] tracking-wide text-white sm:text-6xl">{% translate "Join the ride" %}</h2>
           <p class="mt-4 max-w-xl text-stone-300">{% translate "Create a profile to join the conversation, follow the builds, and share the road ahead." %}</p>
-          <a class="home-community-cta" href="{% url 'register' %}">{% translate "Create an account" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+          <a class="home-community-cta motion-cta" href="{% url 'register' %}">{% translate "Create an account" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
         </div>
-        {% include "components/character_badge.html" with asset="character-pointing.webp" size="lg" alt="The Rider pointing toward the join button" class_name="home-community-rider" %}
+        {% translate "The Rider pointing toward the join button" as pointing_alt %}
+        {% include "components/character_badge.html" with asset="character-pointing.webp" size="lg" alt=pointing_alt class_name="home-community-rider character-badge--mirrored" %}
       </section>
     </div>
   </div>

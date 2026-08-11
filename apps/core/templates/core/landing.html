@@ -1,17 +1,18 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block title %}The Caffeine Lane · Ride, Build, Repeat{% endblock title %}
+{% block title %}{% translate "The Caffeine Lane · Ride, Build, Repeat" %}{% endblock title %}
 {% block header %}{% endblock header %}
 {% block footer %}{% endblock footer %}
 {% block content %}
   <section class="landing-cover" aria-labelledby="landing-title">
     <div class="landing-content">
-      {% include "components/character_badge.html" with asset="character-welcome.webp" size="lg" alt="The Rider welcomes you to The Caffeine Lane" class_name="landing-rider" %}
+      {% translate "The Rider welcomes you to The Caffeine Lane" as rider_alt %}
+      {% include "components/character_badge.html" with asset="character-welcome.webp" size="lg" alt=rider_alt class_name="landing-rider" %}
       <p class="landing-kicker">{% translate "Independent motorcycle culture" %}</p>
-      <h1 id="landing-title" class="landing-wordmark">THE CAFFEINE LANE</h1>
-      <p class="landing-tagline">Ride · Build · Repeat</p>
+      <h1 id="landing-title" class="landing-wordmark motion-wordmark">{% translate "THE CAFFEINE LANE" %}</h1>
+      <p class="landing-tagline">{% translate "Ride · Build · Repeat" %}</p>
       <p class="landing-manifesto">{% translate "For the bikes we make our own, the roads worth taking twice, and the stories that follow." %}</p>
-      <a class="landing-cta" href="{% url 'home' %}">{% translate "Enter the lane" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+      <a class="landing-cta motion-cta" href="{% url 'home' %}">{% translate "Enter the lane" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
     </div>
   </section>
 {% endblock content %}
