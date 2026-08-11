@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% translate "Bad request · The Caffeine Lane" %}{% endblock title %}
+{% block content %}
+  <section class="error-page">
+    <div class="error-page__container editorial-container">
+      <div class="error-page__copy">
+        <p class="error-kicker">{% translate "400 · Request misfire" %}</p>
+        <h1 class="error-title">{% translate "Loose bolt." %}</h1>
+        <p class="error-page__intro">{% translate "That request didn't come through. Check what you entered and try again." %}</p>
+        <a class="error-page__action" href="{% url 'home' %}">{% translate "Back to the lane" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+      </div>
+      {% translate "The Rider noticing a request that did not fit" as rider_alt %}
+      {% include "components/character_badge.html" with asset="character-oops.webp" size="lg" alt=rider_alt class_name="error-page__rider" %}
+    </div>
+  </section>
+{% endblock content %}

@@ -1,110 +1,27 @@
-{% extends "base.html" %}
-{% load static %}
-{% block title %}
-  Registration - The Caffeine Lane
-{% endblock title %}
-{% block header %}
-{% endblock header %}
-{% block footer %}
-{% endblock footer %}
-{% block content %}
-  <div class="min-h-screen bg-black flex items-center justify-center py-12 px-4 relative overflow-hidden">
-    <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-5xl w-full">
-      {# Left Column: Form Card #}
-      <div class="bg-white rounded-2xl p-10 text-center w-full max-w-md mx-auto">
-        <div class="container mx-auto px-4">
-          <a href="{% url "home" %}"
-             class="text-xl font-bebas text-black hover:text-stone-800 transition">THE CAFFEINE LANE</a>
-          <h2 class="text-4xl font-mont font-bold uppercase text-black pt-2 hover:text-stone-800 transition">
-            Create your account
-          </h2>
-        </div>
-        {% if messages %}
-          {% for message in messages %}
-            <div class="bg-green-600 text-white px-5 py-3 rounded-lg text-sm font-mont mt-4 shadow-lg">{{ message }}</div>
-          {% endfor %}
-        {% endif %}
-        <form class="block space-y-6" method="post" novalidate>
-          {% csrf_token %}
-          <div class="text-left space-y-1">
-            <label for="{{ form.email.id_for_label }}"
-                   class="text-xs font-mont font-basic tracking-wide text-black">Email Address</label>
-            <div class="relative">
-              <i class="fas fa-envelope absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-              {{ form.email }}
-            </div>
-            {% if form.email.errors %}<p class="font-mont text-red-600 text-xs mt-1">{{ form.email.errors.0 }}</p>{% endif %}
-          </div>
-          <button type="submit"
-                  class="w-full py-3 px-8 bg-black text-white font-mont font-medium tracking-wider rounded-full hover:bg-stone-800 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center relative">
-            Next
-            <i class="fas fa-arrow-right absolute right-4 top-1/2 transform -translate-y-1/2"></i>
-          </button>
-        </form>
-        <p class="mt-4 text-xs font-mont font-normal text-gray-600">
-          Already have an account?
-          <a href="{% url "login" %}"
-             class="font-semibold text-black hover:text-stone-800 transition">Log in</a>
-        </p>
-        <div class="flex items-center my-6">
-          <div class="flex-grow border-t border-gray-300"></div>
-          <span class="flex-shrink mx-4 text-black font-mont font-normal text-sm">Or login</span>
-          <div class="flex-grow border-t border-gray-300"></div>
-        </div>
-        <div class="flex justify-center gap-4">
-          <button class="bg-white text-black font-mont rounded-full h-12 px-6 shadow-md hover:scale-105 transition-all border flex items-center justify-center space-x-2">
-            <i class="fab fa-google"></i>
-            <span class="text-sm font-semibold hidden sm:inline">Google</span>
-          </button>
-          <button class="bg-white text-black font-mont rounded-full h-12 px-6 shadow-md hover:scale-105 transition-all border flex items-center justify-center space-x-2">
-            <i class="fab fa-github"></i>
-            <span class="text-sm font-semibold hidden sm:inline">GitHub</span>
-          </button>
-        </div>
-        <p class="mt-6 text-xs text-black font-mont font-basic leading-tight">
-          By registering, you agree to our
-          <a href="#" class="font-mont font-basic text-black underline">Terms of Service</a> and
-          <a href="#" class="font-mont font-basic text-black underline">Privacy Policy</a>.
-        </p>
-      </div>
-      {# Right Column: Logo + Welcome Message #}
-      <div class="hidden lg:flex flex-col items-center justify-center text-center">
-        <a href="{% url "home" %}"
-           class="transition-transform duration-300 hover:scale-105">
-          <img src="{% static 'images/caffeinelane-logo-alternative-full.png' %}"
-               alt="The Caffeine Lane Logo"
-               class="h-56 w-auto mb-4 rounded-full"
-               width="224"
-               height="224" />
-        </a>
-        <div class="transition-transform duration-300 hover:scale-105">
-          <h2 class="text-3xl font-mont font-medium text-white">RIDE INTO THE BROTHERHOOD</h2>
-          <p class="text-base font-mont text-gray-300 mt-2">Build your legacy. Share your ride.</p>
-        </div>
-      </div>
-    </div>
+{% extends "layouts/auth.html" %}
+{% load i18n %}
+{% block title %}{% translate "Create an account · The Caffeine Lane" %}{% endblock title %}
+{% block auth_visual %}
+  <p class="auth-shell__eyebrow">{% translate "The Caffeine Lane community" %}</p>
+  <h1 class="auth-shell__title">{% translate "Join the ride." %}</h1>
+  <p class="auth-shell__copy">{% translate "A profile gives your voice a place in the garage, on the road, and throughout the lane." %}</p>
+  {% translate "The Rider welcoming new members" as rider_alt %}
+  {% include "components/character_badge.html" with asset="character-welcome.webp" size="lg" alt=rider_alt class_name="auth-shell__rider" %}
+{% endblock auth_visual %}
+{% block auth_form %}
+  <div class="auth-progress" aria-label="{% translate 'Registration progress: step 1 of 2' %}">
+    <span class="auth-progress__step auth-progress__step--active">01</span>
+    <span class="auth-progress__line" aria-hidden="true"></span>
+    <span class="auth-progress__step">02</span>
   </div>
-  {# Input Styles #}
-  <style>
-    input[type="email"] {
-      appearance: none;
-      background-color: white;
-      border: 1px solid rgba(156, 163, 175, 0.8);
-      color: black;
-      padding: 12px 12px 12px 40px; 
-      border-radius: 12px;
-      width: 100%;
-      font-family: 'Montserrat', sans-serif;
-    }
-    
-    input[type="email"]:focus {
-      outline: none;
-      border-color: #000;
-      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
-    }
-    
-    input[type="email"]::placeholder {
-      color: rgba(107, 114, 128, 0.8);
-    }
-  </style>
-{% endblock content %}
+  <p class="auth-card__eyebrow">{% translate "Step 1 of 2" %}</p>
+  <h2 id="auth-form-heading" class="auth-card__title">{% translate "Start your profile" %}</h2>
+  <p class="auth-card__intro">{% translate "First, tell us where to reach you." %}</p>
+  <form method="post" class="auth-form" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="auth-form__error" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+    {% include "components/form_field.html" with field=form.email %}
+    <button class="button-primary w-full" type="submit">{% translate "Continue" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+  </form>
+  <p class="auth-card__footer">{% translate "Already riding with us?" %} <a href="{% url 'login' %}">{% translate "Sign in" %}</a>.</p>
+{% endblock auth_form %}

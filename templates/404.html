@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% translate "Page not found · The Caffeine Lane" %}{% endblock title %}
+{% block content %}
+  <section class="error-page">
+    <div class="error-page__container editorial-container">
+      <div class="error-page__copy">
+        <p class="error-kicker">{% translate "404 · Page not found" %}</p>
+        <h1 class="error-title">{% translate "Wrong turn." %}</h1>
+        <p class="error-page__intro">{% translate "Nothing here. Search the lane or head back to the latest stories." %}</p>
+        <a class="error-page__action" href="{% url 'search' %}">{% translate "Search the lane" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+      </div>
+      {% translate "The Rider taking a wrong turn" as rider_alt %}
+      {% include "components/character_badge.html" with asset="character-oops.webp" size="lg" alt=rider_alt class_name="error-page__rider" %}
+    </div>
+  </section>
+{% endblock content %}

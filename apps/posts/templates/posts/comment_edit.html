@@ -1,69 +1,21 @@
 {% extends "base.html" %}
-{% load static %}
-{% block title %}
-    Edit Comment - The Caffeine Lane
-{% endblock title %}
+{% load i18n %}
+{% block title %}{% translate "Edit comment · The Caffeine Lane" %}{% endblock title %}
 {% block content %}
-    <div class="bg-gray-100 py-12 font-mont">
-        <div class="max-w-xl mx-auto px-4">
-            <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
-                {# Header Section #}
-                <header class="text-center mb-8">
-                    <h1 class="text-5xl font-bebas text-black">Edit Your Comment</h1>
-                    <p class="mt-2 text-gray-600">Make your changes below and save.</p>
-                </header>
-                {# Original Comment Preview #}
-                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 text-left mb-6">
-                    <p class="text-xs text-gray-500">Original comment on {{ comment.created_at|date:"F j, Y" }}:</p>
-                    <p class="text-gray-700 italic mt-1">"{{ comment.content|truncatewords:30 }}"</p>
-                </div>
-                {# Edit Form #}
-                <form method="post">
-                    {% csrf_token %}
-                    {# Display form errors if any #}
-                    {% if form.errors %}
-                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 text-sm"
-                             role="alert">
-                            <strong class="font-bold">Oops!</strong>
-                            <span class="block sm:inline">Please correct the error below.</span>
-                        </div>
-                    {% endif %}
-                    <div class="mb-4">
-                        <label for="{{ form.content.id_for_label }}"
-                               class="block text-sm font-medium text-gray-700 sr-only">Your Comment</label>
-                        {{ form.content }}
-                    </div>
-                    <div class="flex items-center justify-end space-x-4 mt-6">
-                        <a href="{{ comment.post.get_absolute_url }}"
-                           class="text-gray-600 hover:text-black transition font-medium">Cancel</a>
-                        <button type="submit"
-                                class="bg-black text-white font-mont font-medium tracking-wider py-2 px-6 rounded-full hover:bg-stone-800 transition-all duration-300 transform hover:scale-105">
-                            Save Changes
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <style>
-    /* Styles for the textarea to match other forms */
-    textarea {
-      appearance: none;
-      background-color: #f9fafb; /* gray-50 */
-      border: 1px solid #d1d5db; /* gray-300 */
-      color: black;
-      padding: 12px;
-      border-radius: 8px;
-      width: 100%;
-      min-height: 150px;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.9rem;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    textarea:focus {
-      outline: none;
-      border-color: #000;
-      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
-    }
-    </style>
+  <div class="editor-workspace editorial-page">
+    <section class="comment-editor" aria-labelledby="comment-edit-heading">
+      <a class="post-editor__back" href="{{ comment.post.get_absolute_url }}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> {% translate "Back to post" %}</a>
+      <header class="comment-editor__header">
+        <p class="editorial-kicker">{% translate "Conversation" %}</p>
+        <h1 id="comment-edit-heading">{% translate "Edit comment" %}</h1>
+        <p>{% translate "Make your correction, then save it back into the discussion." %}</p>
+      </header>
+      <form method="post" class="comment-editor__form" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}<div class="auth-form__error" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+        {% include "components/form_field.html" with field=form.content %}
+        <div class="post-editor__actions"><button class="button-primary" type="submit">{% translate "Save changes" %}</button><a class="editorial-button" href="{{ comment.post.get_absolute_url }}">{% translate "Cancel" %}</a></div>
+      </form>
+    </section>
+  </div>
 {% endblock content %}

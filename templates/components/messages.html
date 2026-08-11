@@ -1,0 +1,16 @@
+{% if messages %}
+  <div class="flash-messages editorial-container" aria-live="polite">
+    {% for message in messages %}
+      <div class="flash-message{% if 'error' in message.tags %} flash-message--error{% elif 'success' in message.tags %} flash-message--success{% else %} flash-message--info{% endif %}"{% if 'error' in message.tags %} role="alert"{% endif %}>
+        {% if 'error' in message.tags %}
+          <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+        {% elif 'success' in message.tags %}
+          <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+        {% else %}
+          <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+        {% endif %}
+        <p>{{ message }}</p>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}

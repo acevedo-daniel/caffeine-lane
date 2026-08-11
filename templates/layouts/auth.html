@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block header %}
+  <a class="sr-only focus:not-sr-only" href="#main-content">{% translate "Skip to content" %}</a>
+{% endblock header %}
+{% block footer %}{% endblock footer %}
+{% block content %}
+  <div class="auth-shell">
+    <div class="auth-shell__container">
+      <a class="auth-wordmark" href="{% url 'home' %}" aria-label="{% translate 'The Caffeine Lane home' %}">
+        <span class="auth-wordmark__title">{% translate "The Caffeine Lane" %}</span>
+        <span class="auth-wordmark__tagline">{% translate "Ride · Build · Repeat" %}</span>
+      </a>
+      <div class="auth-shell__layout">
+        <section class="auth-shell__visual">
+          {% block auth_visual %}{% endblock auth_visual %}
+        </section>
+        <section class="auth-shell__card" aria-labelledby="auth-form-heading">
+          {% block auth_form %}{% endblock auth_form %}
+        </section>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

@@ -1,159 +1,27 @@
-{% extends "base.html" %}
-{% load static %}
-{% block title %}
-  Registration - The Caffeine Lane
-{% endblock title %}
-{% block header %}
-{% endblock header %}
-{% block footer %}
-{% endblock footer %}
-{% block content %}
-  <div class="min-h-screen bg-black flex items-center justify-center py-6 relative overflow-hidden">
-    <div class="bg-white rounded-2xl py-6 px-8 w-full max-w-md mx-auto">
-      <div class="container mx-auto text-center">
-        <a href="{% url "home" %}"
-           class="text-xl font-bebas text-black hover:text-stone-800 transition">THE CAFFEINE LANE</a>
-        <h2 class="text-4xl font-mont font-bold uppercase text-black pt-2 hover:text-stone-800 transition">
-          Finish creating your account
-        </h2>
-      </div>
-      {# General Messages & Errors #}
-      {% if messages %}
-        <div class="mb-4">
-          {% for message in messages %}<div class="px-5 py-3 text-sm font-mont mt-4 shadow-lg">{{ message }}</div>{% endfor %}
-        </div>
-      {% endif %}
-      {% if form.non_field_errors %}
-        <div class="font-mont text-red-600 text-xs mt-1">
-          {% for error in form.non_field_errors %}<div>{{ error }}</div>{% endfor %}
-        </div>
-      {% endif %}
-      <form method="post" class="block space-y-6 mt-6" novalidate>
-        {% csrf_token %}
-        {# Account Credentials Section #}
-        <div class="space-y-4">
-          <div class="text-left space-y-1">
-            <label for="{{ form.username.id_for_label }}"
-                   class="text-xs font-mont font-medium tracking-wide text-black">{{ form.username.label }}</label>
-            <div class="relative">{{ form.username }}</div>
-            {% if form.username.errors %}
-              <p class="font-mont text-red-600 text-xs mt-1">{{ form.username.errors.0 }}</p>
-            {% endif %}
-          </div>
-          <div class="text-left space-y-1">
-            <label for="{{ form.password1.id_for_label }}"
-                   class="text-xs font-mont font-medium tracking-wide text-black">{{ form.password1.label }}</label>
-            <div class="relative">{{ form.password1 }}</div>
-            {% if form.password1.errors %}
-              {% for error in form.password1.errors %}<div class="font-mont text-red-600 text-xs mt-1">{{ error }}</div>{% endfor %}
-            {% endif %}
-          </div>
-          <div class="text-left space-y-1">
-            <label for="{{ form.password2.id_for_label }}"
-                   class="text-xs font-mont font-medium tracking-wide text-black">{{ form.password2.label }}</label>
-            <div class="relative">{{ form.password2 }}</div>
-            {% if form.password2.errors %}
-              {% for error in form.password2.errors %}<div class="font-mont text-red-600 text-xs mt-1">{{ error }}</div>{% endfor %}
-            {% endif %}
-          </div>
-        </div>
-        {# Personal Information Section #}
-        <div class="border-t border-gray-200 mt-6 pt-5">
-          <h3 class="text-lg font-mont font-bold text-center uppercase text-black mb-4">What about you?</h3>
-          <div class="grid grid-cols-2 gap-4 mb-4">
-            <div class="text-left space-y-1">
-              <label for="{{ form.first_name.id_for_label }}"
-                     class="text-xs font-mont font-medium tracking-wide text-black">{{ form.first_name.label }}</label>
-              <div class="relative">{{ form.first_name }}</div>
-              {% if form.first_name.errors %}
-                <p class="font-mont text-red-600 text-xs mt-1">{{ form.first_name.errors.0 }}</p>
-              {% endif %}
-            </div>
-            <div class="text-left space-y-1">
-              <label for="{{ form.last_name.id_for_label }}"
-                     class="text-xs font-mont font-medium tracking-wide text-black">{{ form.last_name.label }}</label>
-              <div class="relative">{{ form.last_name }}</div>
-              {% if form.last_name.errors %}
-                <p class="font-mont text-red-600 text-xs mt-1">{{ form.last_name.errors.0 }}</p>
-              {% endif %}
-            </div>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-            <div class="flex flex-col justify-center items-center gap-2">
-              <label class="text-xs font-mont tracking-wide text-black uppercase font-bold mb-2 block">
-                {{ form.gender.label }}
-              </label>
-              <div class="flex gap-2 justify-center w-full">
-                {% for radio in form.gender %}
-                  <label class="flex-1 cursor-pointer select-none rounded-full py-2 px-3 text-xs font-mont border border-black text-center min-w-[80px] whitespace-nowrap flex items-center justify-center bg-white text-black gender-radio-btn transition-all duration-300">
-                    {{ radio.tag }}
-                    <span class="block w-full text-center">{{ radio.choice_label }}</span>
-                  </label>
-                {% endfor %}
-              </div>
-              {% if form.gender.errors %}<p class="font-mont text-red-600 text-xs mt-1">{{ form.gender.errors.0 }}</p>{% endif %}
-            </div>
-            <div class="flex flex-col justify-center items-center gap-2">
-              <label class="text-xs font-mont tracking-wide text-black uppercase font-bold mb-2 block">
-                {{ form.has_moto.label }}
-              </label>
-              <div class="flex gap-2 justify-center w-full">
-                {% for radio in form.has_moto %}
-                  <label class="flex-1 cursor-pointer select-none rounded-full py-2 px-3 text-xs font-mont border border-black text-center min-w-[80px] whitespace-nowrap flex items-center justify-center bg-white text-black moto-radio-btn transition-all duration-300">
-                    {{ radio.tag }}
-                    <span class="block w-full text-center">{{ radio.choice_label }}</span>
-                  </label>
-                {% endfor %}
-              </div>
-              {% if form.has_moto.errors %}
-                <p class="font-mont text-red-600 text-xs mt-1">{{ form.has_moto.errors.0 }}</p>
-              {% endif %}
-            </div>
-          </div>
-        </div>
-        <button type="submit"
-                class="w-full py-3 px-8 bg-black text-white font-mont font-medium tracking-wider rounded-full hover:bg-stone-800 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center relative mt-4">
-          Create Account
-          <i class="fas fa-arrow-right absolute right-4 top-1/2 transform -translate-y-1/2"></i>
-        </button>
-      </form>
-      {# Form Styles #}
-      <style>
-        input[type='text'],
-        input[type='password'] {
-          appearance: none;
-          background-color: white;
-          border: 1px solid rgba(156, 163, 175, 0.8);
-          color: black;
-          padding: 12px;
-          border-radius: 12px;
-          width: 100%;
-          font-family: 'Montserrat', sans-serif;
-          font-size: 0.9rem;
-          transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        input[type='text']:focus,
-        input[type='password']:focus {
-          outline: none;
-          border-color: #000;
-          box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
-        }
-        input::placeholder {
-          font-size: 0.75rem;
-          color: rgba(107, 114, 128, 0.8);
-        }
-        input[type='radio'] {
-          position: absolute;
-          opacity: 0;
-          width: 0;
-          height: 0;
-        }
-        .gender-radio-btn:has(input:checked),
-        .moto-radio-btn:has(input:checked) {
-          background-color: #000;
-          color: #fff;
-        }
-      </style>
-    </div>
+{% extends "layouts/auth.html" %}
+{% load i18n %}
+{% block title %}{% translate "Finish your profile · The Caffeine Lane" %}{% endblock title %}
+{% block auth_visual %}
+  <p class="auth-shell__eyebrow">{% translate "The Caffeine Lane community" %}</p>
+  <h1 class="auth-shell__title">{% translate "Build your story. Share your ride." %}</h1>
+  <p class="auth-shell__copy">{% translate "A few details are all it takes to make your place in the lane your own." %}</p>
+  {% translate "The Rider" as rider_alt %}
+  {% include "components/character_badge.html" with asset="character-welcome-winking.webp" size="lg" alt=rider_alt class_name="auth-shell__rider" %}
+{% endblock auth_visual %}
+{% block auth_form %}
+  <div class="auth-progress" aria-label="{% translate 'Registration progress: step 2 of 2' %}">
+    <span class="auth-progress__step auth-progress__step--complete"><i class="fa-solid fa-check" aria-hidden="true"></i><span class="sr-only">{% translate "Step 1 complete" %}</span></span>
+    <span class="auth-progress__line auth-progress__line--complete" aria-hidden="true"></span>
+    <span class="auth-progress__step auth-progress__step--active">02</span>
   </div>
-{% endblock content %}
+  <p class="auth-card__eyebrow">{% translate "Step 2 of 2" %}</p>
+  <h2 id="auth-form-heading" class="auth-card__title">{% translate "Finish your profile" %}</h2>
+  <p class="auth-card__intro">{% translate "Choose the details that will travel with your name." %}</p>
+  <form method="post" class="auth-form" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="auth-form__error" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+    {% for field in form %}{% include "components/form_field.html" with field=field %}{% endfor %}
+    <button class="button-primary w-full" type="submit">{% translate "Create account" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+  </form>
+  <p class="auth-card__footer">{% translate "Need a different email?" %} <a href="{% url 'register' %}">{% translate "Start again" %}</a>.</p>
+{% endblock auth_form %}

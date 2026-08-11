@@ -1,218 +1,138 @@
 {% extends "base.html" %}
-{% block title %}
-  Home - TheCaffeineLane
-{% endblock title %}
+{% load i18n post_i18n %}
+{% block title %}{% translate "Home · The Caffeine Lane" %}{% endblock title %}
 {% block content %}
-  {# Main Carousel Section #}
   {% if banner_posts %}
-    <section class="relative w-full h-[420px] md:h-[650px] overflow-hidden shadow-xl">
-      <div id="carousel-container"
-           class="absolute inset-0 flex transition-transform duration-500 ease-in-out">
+    <section class="home-hero" aria-roledescription="carousel" aria-label="{% translate 'Featured posts' %}">
+      <div id="carousel-container" class="home-hero__track" aria-live="polite" aria-atomic="true">
         {% for post in banner_posts %}
-          <div class="carousel-slide relative flex-none w-full h-full bg-cover bg-center"
-               style="background-image: url('{{ post.image.url }}')">
-            <div class="absolute inset-0 bg-black bg-opacity-40"></div>
-            <div class="relative z-10 flex flex-col justify-end px-12 py-6 md:px-20 md:py-12 w-full h-full text-white">
-              <div class="max-w-3xl">
-                <div class="text-sm font-light mb-2">
-                  <span class="font-bold">{{ post.author.username }}</span> -
-                  {% for category in post.category.all %}
-                    <span>{{ category.name }}
-                      {% if not forloop.last %},{% endif %}
-                    </span>
-                  {% endfor %}
+          <article class="carousel-slide home-hero__slide" aria-roledescription="{% translate 'slide' %}" aria-label="{% blocktranslate with counter=forloop.counter %}Featured post {{ counter }}{% endblocktranslate %}"{% if not forloop.first %} aria-hidden="true" inert{% endif %}>
+            {% if post.featured_image %}
+              <div class="home-hero__media">
+                <img class="home-hero__image motion-media" src="{{ post.featured_image.url }}" alt="" aria-hidden="true" width="1920" height="650"{% if forloop.first %} fetchpriority="high"{% else %} loading="lazy" decoding="async"{% endif %}>
+              </div>
+            {% else %}
+              <div class="home-hero__media home-hero__media--fallback" aria-hidden="true"></div>
+            {% endif %}
+            <div class="home-hero__panel">
+              <div class="home-hero__panel-copy">
+                <p class="editorial-kicker text-stone-300">
+                  {% for category in post.categories.all %}{{ category|localized_category }}{% if not forloop.last %} · {% endif %}{% endfor %}
+                </p>
+                <h1 class="home-hero__title"><a class="home-hero__title-link motion-title" href="{{ post.get_absolute_url }}">{{ post.title }}</a></h1>
+                <p class="home-hero__excerpt">{{ post.excerpt|default:post.content|striptags|truncatewords:28 }}</p>
+                <p class="home-hero__author">{% translate "By" %} {{ post.author.display_name|default:post.author.username }}</p>
+                <div class="home-hero__actions">
+                  <a class="home-hero__cta motion-cta" href="{{ post.get_absolute_url }}">
+                    {% translate "Read story" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                  </a>
                 </div>
-                <h2 class="font-bebas text-4xl md:text-6xl leading-tight mb-2">{{ post.title }}</h2>
-                <p class="font-mont text-lg md:text-xl font-light mb-4">{{ post.content|truncatewords:25 }}</p>
-                <a href="{% url "post_detail" post.slug %}"
-                   class="inline-block bg-white text-black font-bold font-mont py-3 px-8 rounded-full transition duration-300 ease-in-out transform hover:scale-105 hover:bg-red-600 hover:text-white">Read more</a>
               </div>
             </div>
-          </div>
+          </article>
         {% endfor %}
       </div>
-      {# Carousel navigation buttons #}
-      <button id="prev-btn"
-              class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white bg-opacity-30 hover:bg-opacity-50 text-white p-3 rounded-full z-20"
-              aria-label="Previous Slide">
-        <svg xmlns="http://www.w3.org/2000/svg"
-             width="24"
-             height="24"
-             viewBox="0 0 24 24"
-             fill="none"
-             stroke="currentColor"
-             stroke-width="2"
-             stroke-linecap="round"
-             stroke-linejoin="round"
-             class="lucide lucide-chevron-left">
-          <path d="m15 18-6-6 6-6" />
-        </svg>
-      </button>
-      <button id="next-btn"
-              class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white bg-opacity-30 hover:bg-opacity-50 text-white p-3 rounded-full z-20"
-              aria-label="Next Slide">
-        <svg xmlns="http://www.w3.org/2000/svg"
-             width="24"
-             height="24"
-             viewBox="0 0 24 24"
-             fill="none"
-             stroke="currentColor"
-             stroke-width="2"
-             stroke-linecap="round"
-             stroke-linejoin="round"
-             class="lucide lucide-chevron-right">
-          <path d="m9 18 6-6-6-6" />
-        </svg>
-      </button>
+      {% if banner_posts|length > 1 %}
+        <div class="home-hero__global-controls" data-carousel-controls role="group" aria-label="{% translate 'Carousel controls' %}">
+          <p class="home-hero__index"><span data-carousel-index>01</span><span aria-hidden="true"> / {{ banner_posts|length|stringformat:"02d" }}</span></p>
+          <div class="home-hero__controls">
+            <button data-carousel-previous class="home-hero-control" type="button" aria-label="{% translate 'Previous post' %}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></button>
+            <button data-carousel-next class="home-hero-control" type="button" aria-label="{% translate 'Next post' %}"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+          </div>
+        </div>
+      {% endif %}
+    </section>
+  {% else %}
+    <section class="bg-stone-950 px-5 py-20 text-white sm:px-8 sm:py-28">
+      <div class="mx-auto max-w-7xl">
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-stone-400">{% translate "The Caffeine Lane" %}</p>
+        <h1 class="mt-3 font-bebas text-6xl leading-[0.88] tracking-wide sm:text-8xl">{% translate "Stories for the road." %}</h1>
+        <p class="mt-6 max-w-2xl text-lg text-stone-300">{% translate "New dispatches are being prepared." %}</p>
+      </div>
     </section>
   {% endif %}
-  <div class="container mx-auto px-4">
-    {# Builds & Features Section #}
-    <section class="mt-10">
-      <div>
-        <h2 class="font-mont font-semibold text-3xl mt-0">Builds & Features</h2>
-        <h3 class="font-mont font-medium text-lg mt-2 mb-4">The Latest Builds to Inspire Your Next Project</h3>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {% for post in new_builds %}
-          <a href="{% url "post_detail" post.slug %}" class="block group">
-            <div class="bg-white rounded-lg overflow-hidden transition-transform duration-300 group-hover:scale-105">
-              {% if post.image %}
-                <img src="{{ post.image.url }}"
-                     alt="{{ post.title }}"
-                     class="w-full h-64 object-cover"
-                     width="400"
-                     height="256" />
-              {% endif %}
-              <div class="p-4">
-                <div class="text-xs text-gray-600 mb-1">
-                  <span class="font-bold text-gray-800">{{ post.author.username }}</span> -
-                  {% for category in post.category.all %}
-                    <span>{{ category.name }}
-                      {% if not forloop.last %},{% endif %}
-                    </span>
-                  {% endfor %}
-                </div>
-                <h3 class="text-lg font-bold text-gray-900">{{ post.title }}</h3>
-              </div>
-            </div>
-          </a>
-        {% endfor %}
-      </div>
-      <div class="flex justify-center">
-        <a href="#"
-           class="bg-white border-2 border-black shadow-sm text-black font-mont font-medium text-sm mt-8 py-3 px-48 rounded-full transition duration-300 hover:bg-black hover:text-white hover:border-black hover:scale-110">See more builds</a>
-      </div>
-    </section>
-    {# How-To & Guides Section #}
-    <section class="mt-12">
-      <div>
-        <h2 class="font-mont font-semibold text-3xl mt-0">How-To & Guides</h2>
-        <h3 class="font-mont font-medium text-lg mt-2 mb-4">Master Your Next Project with Our Workshop Guides</h3>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {% for post in new_guides %}
-          <a href="{% url "post_detail" post.slug %}" class="block group">
-            <div class="bg-white rounded-lg overflow-hidden transition-transform duration-300 group-hover:scale-105">
-              {% if post.image %}
-                <img src="{{ post.image.url }}"
-                     alt="{{ post.title }}"
-                     class="w-full h-64 object-cover"
-                     width="400"
-                     height="256" />
-              {% endif %}
-              <div class="p-4">
-                <div class="text-xs text-gray-600 mb-1">
-                  <span class="font-bold text-gray-800">{{ post.author.username }}</span> -
-                  {% for category in post.category.all %}
-                    <span>{{ category.name }}
-                      {% if not forloop.last %},{% endif %}
-                    </span>
-                  {% endfor %}
-                </div>
-                <h3 class="text-lg font-bold text-gray-900">{{ post.title }}</h3>
-              </div>
-            </div>
-          </a>
-        {% endfor %}
-      </div>
-      <div class="flex justify-center">
-        <a href="#"
-           class="bg-white border-2 border-black shadow-sm text-black font-mont font-medium text-sm mt-8 py-3 px-48 rounded-full transition duration-300 hover:bg-black hover:text-white hover:border-black hover:scale-110">See more guides</a>
-      </div>
-    </section>
-    {# Gear & Product Reviews Section #}
-    <section class="mt-12">
-      <div>
-        <h2 class="font-mont font-semibold text-3xl mt-0">Gear & Product Reviews</h2>
-        <h3 class="font-mont font-medium text-lg mt-2 mb-4">The Gear That Gets Us on the Road</h3>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        {% for post in new_reviews %}
-          <a href="{% url "post_detail" post.slug %}" class="block group">
-            <div class="overflow-hidden transition-transform duration-300 group-hover:scale-105">
-              {% if post.image %}
-                <img src="{{ post.image.url }}"
-                     alt="{{ post.title }}"
-                     class="w-full h-48 object-cover"
-                     width="300"
-                     height="192" />
-              {% endif %}
-              <div class="p-2">
-                <div class="text-xs text-gray-600 mb-1">
-                  <span class="font-bold text-gray-800">{{ post.author.username }}</span> -
-                  {% for category in post.category.all %}
-                    <span>{{ category.name }}
-                      {% if not forloop.last %},{% endif %}
-                    </span>
-                  {% endfor %}
-                </div>
-                <h3 class="text-base font-bold text-gray-900 leading-tight">{{ post.title }}</h3>
-              </div>
-            </div>
-          </a>
-        {% endfor %}
-      </div>
-    </section>
+
+  <div class="editorial-page">
+    <div class="home-index editorial-container editorial-section">
+      <section class="home-section home-section--builds" aria-labelledby="builds-heading">
+        <div class="home-section__header home-section__header--builds">
+          <div>
+            <p class="editorial-kicker">{% translate "Builds & features" %}</p>
+            <h2 id="builds-heading" class="editorial-heading mt-1">{% translate "Builds" %}</h2>
+            <p class="mt-3 text-stone-600">{% translate "Built in garages. Made for the road." %}</p>
+          </div>
+          <a class="editorial-button" href="{% url 'category_view' category_slug=builds_category_slug %}">{% translate "View all" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+        {% if new_builds %}
+          <div class="mt-7 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {% for post in new_builds %}{% include "components/post_card.html" with post=post %}{% endfor %}
+          </div>
+        {% else %}
+          <p class="editorial-empty mt-7">{% translate "No builds yet. New stories are on the way." %}</p>
+        {% endif %}
+      </section>
+
+      <section class="home-section home-section--guides" aria-labelledby="guides-heading">
+        <div class="home-section__header home-section__header--guides">
+          <div>
+            <p class="editorial-kicker">{% translate "How-to & guides" %}</p>
+            <h2 id="guides-heading" class="editorial-heading mt-1">{% translate "Guides" %}</h2>
+            <p class="mt-3 text-stone-600">{% translate "Wrench smarter. Ride farther." %}</p>
+          </div>
+          <a class="editorial-button" href="{% url 'category_view' category_slug=guides_category_slug %}">{% translate "View all" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+        {% if new_guides %}
+          <div class="mt-7 grid gap-6 sm:grid-cols-2">
+            {% for post in new_guides %}{% include "components/post_card.html" with post=post %}{% endfor %}
+          </div>
+        {% else %}
+          <p class="editorial-empty mt-7">{% translate "No guides yet. New workshop notes are on the way." %}</p>
+        {% endif %}
+      </section>
+
+      <aside class="home-garage-note" aria-labelledby="garage-note-heading">
+        <div class="home-garage-note__copy">
+          <p class="editorial-kicker">{% translate "Notes from the garage" %}</p>
+          <h2 id="garage-note-heading" class="mt-2 font-bebas text-4xl leading-[0.9] tracking-wide text-stone-950 sm:text-5xl">{% translate "Garage to road" %}</h2>
+          <p class="mt-3 max-w-2xl text-stone-600">{% translate "The best miles begin at the bench: a careful check, a cleaner adjustment, and a machine you know well enough to trust when the road opens up." %}</p>
+          <a class="home-garage-note__link" href="{% url 'category_view' category_slug=guides_category_slug %}">{% translate "Explore workshop guides" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+        {% translate "The Rider working on a motorcycle" as mechanic_alt %}
+        {% include "components/character_badge.html" with asset="character-mechanic.webp" size="md" alt=mechanic_alt class_name="home-garage-note__rider" %}
+      </aside>
+
+      <section class="home-section home-section--reviews" aria-labelledby="reviews-heading">
+        <div class="home-section__header home-section__header--reviews">
+          <div>
+            <p class="editorial-kicker">{% translate "Gear & product reviews" %}</p>
+            <h2 id="reviews-heading" class="editorial-heading mt-1">{% translate "Reviews" %}</h2>
+            <p class="mt-3 text-stone-600">{% translate "Gear worth taking on the road." %}</p>
+          </div>
+          <a class="editorial-button" href="{% url 'category_view' category_slug=reviews_category_slug %}">{% translate "View all" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+        {% if new_reviews %}
+          <div class="mt-7 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {% for post in new_reviews %}{% include "components/post_card.html" with post=post card_variant="compact" %}{% endfor %}
+          </div>
+        {% else %}
+          <p class="editorial-empty mt-7">{% translate "No reviews yet. New road tests are on the way." %}</p>
+        {% endif %}
+      </section>
+
+      <section class="home-community" aria-labelledby="join-the-ride-heading">
+        <div class="home-community-copy">
+          <p class="editorial-kicker text-stone-300">{% translate "The Caffeine Lane community" %}</p>
+          <h2 id="join-the-ride-heading" class="mt-2 font-bebas text-5xl leading-[0.9] tracking-wide text-white sm:text-6xl">{% translate "Join the ride" %}</h2>
+          <p class="mt-4 max-w-xl text-stone-300">{% translate "Create a profile to join the conversation, follow the builds, and be part of the community." %}</p>
+          <a class="home-community-cta motion-cta" href="{% url 'register' %}">{% translate "Create an account" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+        {% translate "The Rider" as pointing_alt %}
+        {% include "components/character_badge.html" with asset="character-pointing.webp" size="lg" alt=pointing_alt class_name="home-community-rider character-badge--mirrored" %}
+      </section>
+    </div>
   </div>
 {% endblock content %}
 {% block scripts %}
-  {{ block.super }}
-  {# Scripts #}
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const carouselContainer = document.getElementById('carousel-container');
-      if (carouselContainer) {
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-        const slides = document.querySelectorAll('.carousel-slide');
-        const totalSlides = slides.length;
-        let currentSlide = 0;
-  
-        function showSlide(index) {
-          if (index >= totalSlides) {
-            currentSlide = 0;
-          } else if (index < 0) {
-            currentSlide = totalSlides - 1;
-          } else {
-            currentSlide = index;
-          }
-          const offset = -currentSlide * 100;
-          carouselContainer.style.transform = `translateX(${offset}%)`;
-        }
-  
-        nextBtn.addEventListener('click', () => {
-          showSlide(currentSlide + 1);
-        });
-  
-        prevBtn.addEventListener('click', () => {
-          showSlide(currentSlide - 1);
-        });
-  
-        setInterval(() => {
-          showSlide(currentSlide + 1);
-        }, 5000);
-      }
-    });
-  </script>
+  {% load static %}
+  <script type="module" src="{% static 'dist/js/home-carousel.js' %}"></script>
 {% endblock scripts %}

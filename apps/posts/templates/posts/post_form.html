@@ -1,119 +1,27 @@
 {% extends "base.html" %}
-{% load static %}
-{% block title %}
-    {% if object %}
-        Edit Post - The Caffeine Lane
-    {% else %}
-        Create Post - The Caffeine Lane
-    {% endif %}
-{% endblock title %}
+{% load i18n %}
+{% block title %}{% if object %}{% translate "Edit post · The Caffeine Lane" %}{% else %}{% translate "New post · The Caffeine Lane" %}{% endif %}{% endblock title %}
 {% block content %}
-    <div class="bg-gray-100 py-12 font-mont">
-        <div class="max-w-3xl mx-auto px-4">
-            <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
-                {# Form Header #}
-                <header class="text-center mb-8">
-                    <h1 class="text-5xl font-bebas text-black">
-                        {% if object %}
-                            Edit Post
-                        {% else %}
-                            Create a New Post
-                        {% endif %}
-                    </h1>
-                    <p class="mt-2 text-gray-600">Share your latest build, guide, or review with the community.</p>
-                </header>
-                {# Display form errors if any #}
-                {% if form.errors %}
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6 text-sm">
-                        <p class="font-bold">Please correct the errors below:</p>
-                        <ul class="list-disc list-inside mt-2">
-                            {% for field, errors in form.errors.items %}
-                                {% for error in errors %}<li>{{ field|title }}: {{ error }}</li>{% endfor %}
-                            {% endfor %}
-                        </ul>
-                    </div>
-                {% endif %}
-                {# The Form #}
-                <form method="post" enctype="multipart/form-data" class="space-y-6">
-                    {% csrf_token %}
-                    <div>
-                        <label for="{{ form.title.id_for_label }}"
-                               class="block text-sm font-bold text-gray-700 mb-1">Title</label>
-                        {{ form.title }}
-                    </div>
-                    <div>
-                        <label for="{{ form.content.id_for_label }}"
-                               class="block text-sm font-bold text-gray-700 mb-1">Content</label>
-                        {{ form.content }}
-                    </div>
-                    <div>
-                        <label for="{{ form.image.id_for_label }}"
-                               class="block text-sm font-bold text-gray-700 mb-1">Featured Image</label>
-                        {{ form.image }}
-                        {% if object.image %}
-                            <p class="text-xs text-gray-500 mt-1">
-                                Currently: <a href="{{ object.image.url }}"
-    target="_blank"
-    class="text-blue-600 hover:underline">{{ object.image.name }}</a>
-                            </p>
-                        {% endif %}
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="{{ form.category.id_for_label }}"
-                                   class="block text-sm font-bold text-gray-700 mb-1">Categories</label>
-                            {{ form.category }}
-                        </div>
-                        <div>
-                            <label for="{{ form.status.id_for_label }}"
-                                   class="block text-sm font-bold text-gray-700 mb-1">Status</label>
-                            {{ form.status }}
-                        </div>
-                    </div>
-                    {# Action Buttons #}
-                    <div class="flex items-center justify-end space-x-4 pt-4">
-                        <a href="{{ object.get_absolute_url|default:request.META.HTTP_REFERER|default:'/' }}"
-                           class="text-gray-600 hover:text-black transition">Cancel</a>
-                        <button type="submit"
-                                class="bg-black text-white font-mont font-medium tracking-wider py-2 px-6 rounded-full hover:bg-stone-800 transition-all duration-300 transform hover:scale-105">
-                            Save Post
-                        </button>
-                    </div>
-                </form>
-            </div>
+  <div class="editor-workspace editorial-page">
+    <div class="editor-workspace__container">
+      <a class="post-editor__back" href="{% if object %}{{ object.get_absolute_url }}{% else %}{% url 'home' %}{% endif %}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> {% if object %}{% translate "Back to post" %}{% else %}{% translate "Back to stories" %}{% endif %}</a>
+      <header class="post-editor__header">
+        <p class="editorial-kicker">{% translate "Editorial desk" %}</p>
+        <h1>{% if object %}{% translate "Edit post" %}{% else %}{% translate "New post" %}{% endif %}</h1>
+        <p>{% if object %}{% translate "Refine the details, keep the image accessible, and save when the story is ready." %}{% else %}{% translate "Build a clear story for the garage, the road, and everyone following along." %}{% endif %}</p>
+      </header>
+
+      <form method="post" enctype="multipart/form-data" class="post-editor__form" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}<div class="auth-form__error" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+        <div class="post-editor__fields">
+          {% for field in form %}{% include "components/form_field.html" with field=field %}{% endfor %}
         </div>
+        <div class="post-editor__actions">
+          <button class="button-primary" type="submit">{% translate "Save post" %}</button>
+          <a class="editorial-button" href="{% if object %}{{ object.get_absolute_url }}{% else %}{% url 'home' %}{% endif %}">{% translate "Cancel" %}</a>
+        </div>
+      </form>
     </div>
-    {# Styles for form elements #}
-    <style>
-    input[type='text'],
-    textarea,
-    select {
-      appearance: none;
-      background-color: #f9fafb; /* gray-50 */
-      border: 1px solid #d1d5db; /* gray-300 */
-      color: black;
-      padding: 10px 12px;
-      border-radius: 8px;
-      width: 100%;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.9rem;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    input[type='text']:focus,
-    textarea:focus,
-    select:focus {
-      outline: none;
-      border-color: #000;
-      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
-    }
-    
-    textarea {
-        min-height: 200px;
-    }
-
-    input[type='file'] {
-        font-size: 0.9rem;
-    }
-    </style>
+  </div>
 {% endblock content %}

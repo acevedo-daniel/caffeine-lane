@@ -1,130 +1,30 @@
-{% extends "base.html" %}
-{% load static %}
-{% block title %}
-  Log In - The Caffeine Lane
-{% endblock title %}
-{% block header %}
-{% endblock header %}
-{% block footer %}
-{% endblock footer %}
-{% block content %}
-  <div class="min-h-screen bg-black flex items-center justify-center py-12 px-4 relative overflow-hidden">
-    <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-5xl w-full">
-      {# Left Column: Form Card #}
-      <div class="bg-white rounded-2xl p-10 text-center w-full max-w-md mx-auto">
-        <div class="container mx-auto px-4">
-          <a href="{% url "home" %}"
-             class="text-xl font-bebas text-black hover:text-stone-800 transition">THE CAFFEINE LANE</a>
-          <h2 class="text-4xl font-mont font-bold uppercase text-black pt-2 hover:text-stone-800 transition">Welcome Back</h2>
-        </div>
-        {# Error and Success Messages #}
-        {% if form.non_field_errors %}
-          <div class="bg-red-600 text-white px-5 py-3 rounded-lg text-sm font-mont mt-4 shadow-lg">
-            {% for error in form.non_field_errors %}{{ error }}{% endfor %}
-          </div>
-        {% endif %}
-        {% if messages %}
-          {% for message in messages %}
-            <div class="bg-green-600 text-white px-5 py-3 rounded-lg text-sm font-mont mt-4 shadow-lg">{{ message }}</div>
-          {% endfor %}
-        {% endif %}
-        <form class="block space-y-6 mt-6" method="post" novalidate>
-          {% csrf_token %}
-          {# Username Field #}
-          <div class="text-left space-y-1">
-            <label for="{{ form.username.id_for_label }}"
-                   class="text-xs font-mont font-basic tracking-wide text-black">Username</label>
-            <div class="relative">
-              <i class="fas fa-user absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-              {{ form.username }}
-            </div>
-            {% if form.username.errors %}
-              <p class="font-mont text-red-600 text-xs mt-1">{{ form.username.errors.0 }}</p>
-            {% endif %}
-          </div>
-          {# Password Field #}
-          <div class="text-left space-y-1">
-            <label for="{{ form.password.id_for_label }}"
-                   class="text-xs font-mont font-basic tracking-wide text-black">Password</label>
-            <div class="relative">
-              <i class="fas fa-lock absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-              {{ form.password }}
-            </div>
-            {% if form.password.errors %}
-              <p class="font-mont text-red-600 text-xs mt-1">{{ form.password.errors.0 }}</p>
-            {% endif %}
-          </div>
-          <div class="flex items-center justify-end text-sm">
-            <a href="{% url 'password_reset' %}"
-               class="font-mont text-gray-600 hover:text-black transition">Forgot your password?</a>
-          </div>
-          <button type="submit"
-                  class="w-full py-3 px-8 bg-black text-white font-mont font-medium tracking-wider rounded-full hover:bg-stone-800 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center relative">
-            Log In
-            <i class="fas fa-arrow-right absolute right-4 top-1/2 transform -translate-y-1/2"></i>
-          </button>
-        </form>
-        <p class="mt-4 text-xs font-mont font-normal text-gray-600">
-          Don't have an account?
-          <a href="{% url "register_step1" %}"
-             class="font-semibold text-black hover:text-stone-800 transition">Register here</a>
-        </p>
-        <div class="flex items-center my-6">
-          <div class="flex-grow border-t border-gray-300"></div>
-          <span class="flex-shrink mx-4 text-black font-mont font-normal text-sm">Or login with</span>
-          <div class="flex-grow border-t border-gray-300"></div>
-        </div>
-        <div class="flex justify-center gap-4">
-          <button class="bg-white text-black font-mont rounded-full h-12 px-6 shadow-md hover:scale-105 transition-all border flex items-center justify-center space-x-2">
-            <i class="fab fa-google"></i>
-            <span class="text-sm font-semibold hidden sm:inline">Google</span>
-          </button>
-          <button class="bg-white text-black font-mont rounded-full h-12 px-6 shadow-md hover:scale-105 transition-all border flex items-center justify-center space-x-2">
-            <i class="fab fa-github"></i>
-            <span class="text-sm font-semibold hidden sm:inline">GitHub</span>
-          </button>
-        </div>
-      </div>
-      {# Right Column: Logo + Welcome Message #}
-      <div class="hidden lg:flex flex-col items-center justify-center text-center">
-        <a href="{% url "home" %}"
-           class="transition-transform duration-300 hover:scale-105">
-          <img src="{% static 'images/caffeinelane-logo-alternative-full.png' %}"
-               alt="The Caffeine Lane Logo"
-               class="h-56 w-auto mb-4 rounded-full"
-               width="224"
-               height="224" />
-        </a>
-        <div class="transition-transform duration-300 hover:scale-105">
-          <h2 class="text-3xl font-mont font-medium text-white">RIDE INTO THE BROTHERHOOD</h2>
-          <p class="text-base font-mont text-gray-300 mt-2">Build your legacy. Share your ride.</p>
-        </div>
-      </div>
+{% extends "layouts/auth.html" %}
+{% load i18n %}
+{% block title %}{% translate "Sign in · The Caffeine Lane" %}{% endblock title %}
+{% block auth_visual %}
+  <p class="auth-shell__eyebrow">{% translate "The Caffeine Lane community" %}</p>
+  <h1 class="auth-shell__title">{% translate "Back on the road." %}</h1>
+  <p class="auth-shell__copy">{% translate "Sign in to save stories, share what you have learned, and keep the conversation moving." %}</p>
+  {% translate "The Rider signature" as rider_alt %}
+  {% include "components/character_badge.html" with asset="character-signature.webp" size="lg" alt=rider_alt class_name="auth-shell__rider" %}
+{% endblock auth_visual %}
+{% block auth_form %}
+  <p class="auth-card__eyebrow">{% translate "Member access" %}</p>
+  <h2 id="auth-form-heading" class="auth-card__title">{% translate "Sign in" %}</h2>
+  <p class="auth-card__intro">{% translate "Use the email address connected to your account." %}</p>
+  <form method="post" class="auth-form" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="auth-form__error" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+    {% include "components/form_field.html" with field=form.username %}
+    {% include "components/form_field.html" with field=form.password %}
+    <div class="auth-form__utility">
+      {% if password_reset_enabled %}
+        <a href="{% url 'password_reset' %}">{% translate "Forgot your password?" %}</a>
+      {% else %}
+        <a href="{% url 'password_reset' %}">{% translate "Password recovery is unavailable in this demo" %}</a>
+      {% endif %}
     </div>
-  </div>
-  {# Input Styles #}
-  <style>
-    input[type="text"],
-    input[type="password"] {
-      appearance: none;
-      background-color: white;
-      border: 1px solid rgba(156, 163, 175, 0.8);
-      color: black;
-      padding: 12px 12px 12px 40px; 
-      border-radius: 12px;
-      width: 100%;
-      font-family: 'Montserrat', sans-serif;
-    }
-    
-    input[type="text"]:focus,
-    input[type="password"]:focus {
-      outline: none;
-      border-color: #000;
-      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
-    }
-    
-    input::placeholder {
-      color: rgba(107, 114, 128, 0.8);
-    }
-  </style>
-{% endblock content %}
+    <button class="button-primary w-full" type="submit">{% translate "Sign in" %}</button>
+  </form>
+  <p class="auth-card__footer">{% translate "New to the lane?" %} <a href="{% url 'register' %}">{% translate "Create an account" %}</a>.</p>
+{% endblock auth_form %}

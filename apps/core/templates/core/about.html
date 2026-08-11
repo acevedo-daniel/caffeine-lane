@@ -1,43 +1,73 @@
 {% extends "base.html" %}
-{% load static %}
-{% block title %}
-    About Us - The Caffeine Lane
-{% endblock title %}
+{% load i18n %}
+{% block title %}{% translate "About · The Caffeine Lane" %}{% endblock title %}
 {% block content %}
-    <div class="bg-white py-12 font-mont">
-        <div class="max-w-4xl mx-auto px-4">
-            {# Header Section #}
-            <header class="text-center mb-12">
-                <h1 class="text-6xl font-bebas text-black">About The Caffeine Lane</h1>
-                <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-                    We believe a motorcycle is more than just a machine; it's a canvas for self-expression, a testament to craftsmanship, and a ticket to freedom.
-                </p>
-            </header>
-            {# Logo Section #}
-            <section class="flex justify-center mb-12">
-                <img src="{% static 'images/caffeinelane-logo-alternative-full.png' %}"
-                     alt="The Caffeine Lane Logo"
-                     class="h-48 w-auto rounded-full shadow-lg"
-                     width="192"
-                     height="192" />
-            </section>
-            {# Main Content Section #}
-            <section class="prose prose-lg max-w-none text-gray-800 leading-relaxed">
-                <h2 class="font-bebas text-4xl text-black text-center">Our Mission</h2>
-                <p>
-                    The Caffeine Lane was born from a shared passion for the roar of an engine, the glint of polished chrome, and the timeless aesthetic of the Cafe Racer. Our mission is to build a community for builders, riders, and dreamers.
-                </p>
-                <p>
-                    Whether you're a seasoned mechanic with grease under your fingernails or just starting to fall in love with the culture, this is your space. We provide high-quality guides, honest reviews, and inspiring features on custom builds from around the world to fuel your passion. This blog is a tribute to the late nights in the garage, the smell of gasoline, and the satisfaction of creating something truly unique with your own two hands.
-                </p>
-            </section>
-            {# Call to Action Section #}
-            <section class="text-center mt-16">
-                <a href="{% url 'contact' %}"
-                   class="inline-block bg-black text-white font-mont font-medium tracking-wider py-3 px-8 rounded-full hover:bg-stone-800 transition-all duration-300 transform hover:scale-105">
-                    Get in Touch
-                </a>
-            </section>
+  <div class="about-page editorial-page">
+    <section class="about-hero">
+      <div class="about-hero__container editorial-container">
+        <div class="about-hero__copy">
+          <p class="editorial-kicker text-stone-300">{% translate "The Caffeine Lane" %}</p>
+          <h1 class="about-hero__title">{% translate "Built for the ride between the garage and the road." %}</h1>
+          <p class="about-hero__intro">{% translate "The Caffeine Lane is an editorial home for the people who keep a machine close, a tool roll nearby, and a better route in mind." %}</p>
         </div>
-    </div>
+        {% translate "The Rider signature" as signature_alt %}
+        {% include "components/character_badge.html" with asset="character-signature.webp" size="lg" alt=signature_alt class_name="about-hero__rider" %}
+      </div>
+    </section>
+
+    <section class="about-manifesto editorial-container editorial-section" aria-labelledby="about-mission-heading">
+      <div class="editorial-rule">
+        <p class="editorial-kicker">{% translate "The mission" %}</p>
+        <h2 id="about-mission-heading" class="editorial-heading mt-1">{% translate "Machines carry stories." %}</h2>
+      </div>
+      <div class="about-manifesto__body">
+        <p>{% translate "We believe a motorcycle is more than transportation. It is a record of choices, hands-on work, wrong turns, and the miles that prove what matters." %}</p>
+        <p>{% translate "That is why we make room for practical guides, honest reviews, and builds with a point of view — work worth taking from the bench to the open road." %}</p>
+      </div>
+    </section>
+
+    <section class="about-garage">
+      <div class="about-garage__container editorial-container">
+        {% translate "The Rider working in the garage" as mechanic_alt %}
+        {% include "components/character_badge.html" with asset="character-mechanic.webp" size="lg" alt=mechanic_alt class_name="about-garage__rider" %}
+        <div>
+          <p class="editorial-kicker text-stone-300">{% translate "The garage" %}</p>
+          <h2 class="mt-2 font-bebas text-5xl leading-[0.85] tracking-wide text-white sm:text-6xl">{% translate "Learn it. Tune it. Ride it." %}</h2>
+          <p class="mt-5 max-w-xl leading-7 text-stone-300">{% translate "The garage is where curiosity becomes confidence. We share the thinking behind maintenance and modification, so every rider can understand the machine beneath them." %}</p>
+          <a class="about-inline-link" href="{% url 'category_view' category_slug=guides_category_slug %}">{% translate "Explore the guides" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="about-pillars editorial-container editorial-section" aria-labelledby="about-pillars-heading">
+      <div class="editorial-rule">
+        <p class="editorial-kicker">{% translate "Why we are here" %}</p>
+        <h2 id="about-pillars-heading" class="editorial-heading mt-1">{% translate "Garage. Road. Community." %}</h2>
+      </div>
+      <div class="about-pillars__grid">
+        <article>
+          <p class="editorial-kicker">{% translate "01 · Garage" %}</p>
+          <h3>{% translate "Make it yours." %}</h3>
+          <p>{% translate "Practical knowledge for hands-on riders, from first checks to long-term builds." %}</p>
+        </article>
+        <article>
+          <p class="editorial-kicker">{% translate "02 · Road" %}</p>
+          <h3>{% translate "Put it to work." %}</h3>
+          <p>{% translate "Real-world notes on gear, machines, and the rides that connect them." %}</p>
+        </article>
+        <article>
+          <p class="editorial-kicker">{% translate "03 · Community" %}</p>
+          <h3>{% translate "Pass it on." %}</h3>
+          <p>{% translate "A lane for sharing solutions, perspectives, and the stories behind the miles." %}</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="about-cta editorial-container" aria-labelledby="about-cta-heading">
+      <p class="editorial-kicker text-stone-300">{% translate "Your place in the lane" %}</p>
+      <h2 id="about-cta-heading">{% translate "Build your story. Share your ride." %}</h2>
+      <p>{% translate "Create a profile and add your voice to the conversations that move the culture forward." %}</p>
+      <a class="landing-cta motion-cta" href="{% url 'register' %}">{% translate "Join the ride" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+    </section>
+  </div>
 {% endblock content %}

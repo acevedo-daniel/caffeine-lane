@@ -1,11 +1,26 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, logout
+from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError, transaction
 from django.shortcuts import redirect, render
-from django.views.decorators.csrf import csrf_protect
+from django.utils.translation import gettext as _
+from django.views.decorators.http import require_POST
 
 from .forms import EmailRegistrationForm, ProfileForm, RegistrationStep2Form
-from .models import Profile
+
+
+def password_reset(request):
+    if not settings.PASSWORD_RESET_ENABLED:
+        return render(request, "accounts/password_reset_unavailable.html")
+
+    return auth_views.PasswordResetView.as_view(
+        template_name="accounts/password_reset.html",
+        email_template_name="accounts/password_reset_email.txt",
+        html_email_template_name="accounts/password_reset_email.html",
+        subject_template_name="accounts/password_reset_subject.txt",
+    )(request)
 
 
 def register_step1(request):
@@ -33,16 +48,21 @@ def register_step2(request):
 
     if request.method == "POST":
         form = RegistrationStep2Form(request.POST)
-        if form.is_valid():
-            user = form.save(email=email)
-            login(request, user)
-            del request.session["registration_email"]
-            messages.success(request, "Account successfully created!")
-            messages.info(
-                request,
-                "Welcome! Please visit your profile page to add your name and other details.",
-            )
-            return redirect("home")
+        if form.is_valid() and form.validate_registration_email(email):
+            try:
+                with transaction.atomic():
+                    user = form.save(email=email)
+            except IntegrityError:
+                form.add_error(None, _("An account with this email already exists."))
+            else:
+                login(request, user)
+                del request.session["registration_email"]
+                messages.success(request, _("Account created."))
+                messages.info(
+                    request,
+                    _("Welcome — head to your profile to add your details."),
+                )
+                return redirect("home")
     else:
         form = RegistrationStep2Form()
 
@@ -51,27 +71,22 @@ def register_step2(request):
 
 @login_required
 def profile(request):
-    profile, created = Profile.objects.get_or_create(user=request.user)
-
     if request.method == "POST":
-        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        form = ProfileForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
-            messages.success(request, "Profile successfully updated!")
+            messages.success(request, _("Profile updated."))
             return redirect("profile")
         else:
-            messages.error(request, "Please correct the errors below.")
+            messages.error(request, _("Please correct the errors below."))
     else:
-        form = ProfileForm(instance=profile)
+        form = ProfileForm(instance=request.user)
 
     return render(request, "accounts/profile.html", {"form": form})
 
 
-@csrf_protect
+@require_POST
 def custom_logout(request):
-    if request.method == "POST":
-        logout(request)
-        messages.success(request, "You have successfully logged out!")
-        return redirect("home")
-
-    return render(request, "accounts/logout.html")
+    logout(request)
+    messages.success(request, _("You've been signed out."))
+    return redirect("home")

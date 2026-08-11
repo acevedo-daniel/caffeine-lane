@@ -1,53 +1,102 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.db.models import Q
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
+from django.core.exceptions import PermissionDenied, ValidationError
+from django.core.paginator import Paginator
+from django.db import connection
+from django.db.models import Prefetch, Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
+from django.utils.translation import gettext as _
+from django.views.decorators.http import require_POST
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
+from .comment_services import create_comment, hide_comment, withdraw_comment
 from .forms import CommentForm, PostForm, PostSearchForm
 from .models import Category, Comment, Post
 
 
 def post_detail(request, slug):
-    post = get_object_or_404(Post, slug=slug, status="published")
-    comments = post.comments.filter(is_active=True, parent=None)
+    post = get_object_or_404(Post.objects.published().with_categories(), slug=slug)
+    comments = (
+        post.comments.filter(parent=None)
+        .select_related("author")
+        .prefetch_related(
+            Prefetch("replies", queryset=Comment.objects.select_related("author"))
+        )
+    )
     form = CommentForm(request.POST or None)
     if request.method == "POST":
         if not request.user.is_authenticated:
-            messages.error(request, "You must be logged in to comment.")
+            messages.error(request, _("You must be logged in to comment."))
             return redirect("login")
 
         if form.is_valid():
-            new_comment = form.save(commit=False)
-            new_comment.post = post
-            new_comment.author = request.user
-            new_comment.save()
+            try:
+                create_comment(
+                    post=post,
+                    author=request.user,
+                    content=form.cleaned_data["content"],
+                )
+            except ValidationError as error:
+                form.add_error("content", error)
+                messages.error(request, _("Please correct the errors below."))
+            else:
+                messages.success(request, _("Comment posted."))
+                return redirect("post_detail", slug=post.slug)
 
-            messages.success(request, "Comment added successfully!")
-            return redirect("post_detail", slug=post.slug)
         else:
             messages.error(
                 request,
-                "There was an error with your comment. Please try again.",
+                _("There was an error with your comment. Please try again."),
             )
     context = {
         "post": post,
         "comments": comments,
         "form": form,
+        "related_posts": (
+            Post.objects.for_listing()
+            .filter(categories__in=post.categories.all())
+            .exclude(pk=post.pk)
+            .distinct()[:3]
+        ),
     }
     return render(request, "posts/post_detail.html", context)
 
 
+@login_required
+@require_POST
+def comment_reply(request, comment_id):
+    parent = get_object_or_404(Comment.objects.select_related("post"), pk=comment_id)
+    post = get_object_or_404(Post.objects.published(), pk=parent.post_id)
+    form = CommentForm(request.POST)
+    if form.is_valid():
+        try:
+            create_comment(
+                post=post,
+                author=request.user,
+                content=form.cleaned_data["content"],
+                parent=parent,
+            )
+        except ValidationError as error:
+            messages.error(request, "; ".join(error.messages))
+        else:
+            messages.success(request, _("Reply posted."))
+    else:
+        messages.error(request, _("Please correct the reply before submitting."))
+    return redirect("post_detail", slug=post.slug)
+
+
 def category_view(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug)
-    posts = Post.objects.filter(category=category, status="published").order_by(
-        "-created_at"
-    )
+    paginator = Paginator(Post.objects.for_listing().filter(categories=category), 12)
+    page_obj = paginator.get_page(request.GET.get("page"))
     context = {
         "category": category,
-        "posts": posts,
+        "posts": page_obj.object_list,
+        "page_obj": page_obj,
+        "is_paginated": page_obj.has_other_pages(),
     }
     return render(request, "posts/category_view.html", context)
 
@@ -55,14 +104,22 @@ def category_view(request, category_slug):
 @login_required
 def comment_edit(request, comment_id):
     comment = get_object_or_404(Comment, pk=comment_id)
-    if not (request.user == comment.author or request.user.has_perm('posts.change_comment')):
-        messages.error(request, "You do not have permission to edit this comment.")
+    if not (
+        request.user == comment.author
+        or request.user.has_perm("posts.moderate_comment")
+    ):
+        messages.error(request, _("You do not have permission to edit this comment."))
         return redirect("post_detail", slug=comment.post.slug)
 
+    if not comment.is_visible:
+        raise PermissionDenied
+
     form = CommentForm(request.POST or None, instance=comment)
-    if form.is_valid():
-        form.save()
-        messages.success(request, "Comment edited successfully.")
+    if request.method == "POST" and form.is_valid():
+        edited_comment = form.save(commit=False)
+        edited_comment.is_edited = True
+        edited_comment.save(update_fields=["content", "is_edited", "updated_at"])
+        messages.success(request, _("Comment updated."))
         return redirect("post_detail", slug=comment.post.slug)
 
     context = {"form": form, "comment": comment}
@@ -70,82 +127,110 @@ def comment_edit(request, comment_id):
 
 
 @login_required
-def comment_delete(request, comment_id):
+@require_POST
+def comment_withdraw(request, comment_id):
     comment = get_object_or_404(Comment, pk=comment_id)
-    if not (request.user == comment.author or request.user.has_perm('posts.delete_comment')):
-        messages.error(request, "You do not have permission to delete this comment.")
-        return redirect("post_detail", slug=comment.post.slug)
+    try:
+        withdraw_comment(comment=comment, actor=request.user)
+    except PermissionDenied:
+        raise PermissionDenied from None
+    messages.success(request, _("Comment withdrawn."))
+    return redirect("post_detail", slug=comment.post.slug)
 
-    if request.method == "POST":
-        comment.delete()
-        messages.success(request, "Comment deleted successfully.")
-        return redirect("post_detail", slug=comment.post.slug)
 
-    context = {"comment": comment}
-    return render(request, "posts/comment_delete_confirm.html", context)
+@login_required
+@require_POST
+def comment_hide(request, comment_id):
+    comment = get_object_or_404(Comment, pk=comment_id)
+    try:
+        hide_comment(comment=comment, actor=request.user)
+    except PermissionDenied:
+        raise PermissionDenied from None
+    messages.success(request, _("Comment hidden by moderation."))
+    return redirect("post_detail", slug=comment.post.slug)
 
 
 class PostSearchView(ListView):
     model = Post
-    template_name = 'posts/search_results.html'
-    context_object_name = 'results'
+    template_name = "posts/search_results.html"
+    context_object_name = "results"
     paginate_by = 12
 
     def get_queryset(self):
-        queryset = Post.objects.filter(status='published')
-        
-        query = self.request.GET.get('q', '')
-        category_id = self.request.GET.get('category', '')
-        sort_by = self.request.GET.get('sort', 'newest')
+        queryset = Post.objects.for_listing()
+
+        self.search_form = PostSearchForm(self.request.GET)
+        self.search_form.is_valid()
+        query = self.search_form.cleaned_data.get("q", "").strip()
+        category = self.search_form.cleaned_data.get("category")
+        sort_by = self.search_form.cleaned_data.get("sort") or "relevance"
 
         if query:
-            queryset = queryset.filter(
-                Q(title__icontains=query) | Q(content__icontains=query)
-            ).distinct()
+            if connection.vendor == "postgresql":
+                vector = (
+                    SearchVector("title", weight="A")
+                    + SearchVector("excerpt", weight="B")
+                    + SearchVector("content", weight="C")
+                )
+                search_query = SearchQuery(query, search_type="websearch")
+                queryset = queryset.annotate(
+                    rank=SearchRank(vector, search_query)
+                ).filter(rank__gt=0)
+            else:
+                queryset = queryset.filter(
+                    Q(title__icontains=query)
+                    | Q(excerpt__icontains=query)
+                    | Q(content__icontains=query)
+                )
 
-        if category_id:
-            queryset = queryset.filter(category__id=category_id)
+        if category:
+            queryset = queryset.filter(categories=category)
 
         sort_mapping = {
-            'newest': '-created_at',
-            'oldest': 'created_at',
-            'title_asc': 'title',
-            'title_desc': '-title',
+            "newest": "-created_at",
+            "oldest": "created_at",
+            "title_asc": "title",
+            "title_desc": "-title",
         }
-        order_by_field = sort_mapping.get(sort_by, '-created_at')
-        queryset = queryset.order_by(order_by_field)
-        
-        return queryset
+        if sort_by == "relevance" and query and connection.vendor == "postgresql":
+            queryset = queryset.order_by("-rank", "-published_at")
+        else:
+            queryset = queryset.order_by(sort_mapping.get(sort_by, "-published_at"))
+
+        return queryset.distinct()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = PostSearchForm(self.request.GET or None)
-        context['query'] = self.request.GET.get('q', '')
-        context['current_category'] = self.request.GET.get('category', '')
-        context['current_sort'] = self.request.GET.get('sort', 'newest')
+        pagination_query = self.request.GET.copy()
+        pagination_query.pop("page", None)
+        context["form"] = self.search_form
+        context["query"] = self.search_form.cleaned_data.get("q", "")
+        context["current_category"] = self.request.GET.get("category", "")
+        context["current_sort"] = self.search_form.cleaned_data.get("sort", "relevance")
+        context["pagination_query"] = pagination_query.urlencode()
         return context
 
 
 class PostCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Post
     form_class = PostForm
-    template_name = 'posts/post_form.html'
-    permission_required = 'posts.add_post'
+    template_name = "posts/post_form.html"
+    permission_required = "posts.add_post"
 
     def form_valid(self, form):
-        form.instance.author = self.request.user 
+        form.instance.author = self.request.user
         return super().form_valid(form)
 
 
 class PostUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Post
     form_class = PostForm
-    template_name = 'posts/post_form.html'
-    permission_required = 'posts.change_post'
+    template_name = "posts/post_form.html"
+    permission_required = "posts.change_post"
 
 
 class PostDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Post
-    template_name = 'posts/post_confirm_delete.html'
-    success_url = reverse_lazy('home') 
-    permission_required = 'posts.delete_post'
+    template_name = "posts/post_confirm_delete.html"
+    success_url = reverse_lazy("home")
+    permission_required = "posts.delete_post"

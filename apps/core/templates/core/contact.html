@@ -1,65 +1,32 @@
 {% extends "base.html" %}
-{% load static %}
-{% block title %}
-    Contact Us - The Caffeine Lane
-{% endblock title %}
+{% load i18n %}
+{% block title %}{% translate "Contact · The Caffeine Lane" %}{% endblock title %}
 {% block content %}
-    <div class="bg-white py-12 font-mont">
-        <div class="max-w-4xl mx-auto px-4">
-            {# Header Section #}
-            <header class="text-center mb-12">
-                <h1 class="text-6xl font-bebas text-black">Get in Touch</h1>
-                <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-                    Have a question, a suggestion, or a build you want to share? We'd love to hear from you.
-                </p>
-            </header>
-            {# Contact Form Section #}
-            <div class="max-w-2xl mx-auto bg-gray-50 p-8 rounded-lg border border-gray-200">
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="bg-green-600 text-white px-5 py-3 rounded-lg text-sm font-mont mb-6 shadow-lg text-center">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
-                <form method="post" class="space-y-6">
-                    {% csrf_token %}
-                    {# From Name Field #}
-                    <div>
-                        <label for="{{ form.from_name.id_for_label }}"
-                               class="block text-sm font-bold text-gray-700 mb-1">{{ form.from_name.label }}</label>
-                        {{ form.from_name }}
-                        {% if form.from_name.errors %}<p class="text-red-600 text-xs mt-1">{{ form.from_name.errors.0 }}</p>{% endif %}
-                    </div>
-                    {# From Email Field #}
-                    <div>
-                        <label for="{{ form.from_email.id_for_label }}"
-                               class="block text-sm font-bold text-gray-700 mb-1">{{ form.from_email.label }}</label>
-                        {{ form.from_email }}
-                        {% if form.from_email.errors %}<p class="text-red-600 text-xs mt-1">{{ form.from_email.errors.0 }}</p>{% endif %}
-                    </div>
-                    {# Subject Field #}
-                    <div>
-                        <label for="{{ form.subject.id_for_label }}"
-                               class="block text-sm font-bold text-gray-700 mb-1">{{ form.subject.label }}</label>
-                        {{ form.subject }}
-                        {% if form.subject.errors %}<p class="text-red-600 text-xs mt-1">{{ form.subject.errors.0 }}</p>{% endif %}
-                    </div>
-                    {# Message Field #}
-                    <div>
-                        <label for="{{ form.message.id_for_label }}"
-                               class="block text-sm font-bold text-gray-700 mb-1">{{ form.message.label }}</label>
-                        {{ form.message }}
-                        {% if form.message.errors %}<p class="text-red-600 text-xs mt-1">{{ form.message.errors.0 }}</p>{% endif %}
-                    </div>
-                    <div>
-                        <button type="submit"
-                                class="w-full py-3 px-8 bg-black text-white font-mont font-medium tracking-wider rounded-full hover:bg-stone-800 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center relative">
-                            Send Message
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+  <div class="contact-page editorial-page">
+    <div class="contact-page__container editorial-container editorial-section">
+      <header class="contact-page__intro">
+        <p class="editorial-kicker">{% translate "The Caffeine Lane" %}</p>
+        <h1>{% translate "Talk shop. Share the road." %}</h1>
+        <p>{% translate "Have a question, a useful fix, or a story from your own garage? Send it our way. Every good conversation starts somewhere." %}</p>
+        {% translate "The Rider ready to talk shop" as talking_alt %}
+        {% include "components/character_badge.html" with asset="character-talking.webp" size="lg" alt=talking_alt class_name="contact-page__rider" %}
+      </header>
+
+      <section class="contact-panel" aria-labelledby="contact-form-heading">
+        <p class="auth-card__eyebrow">{% translate "Send a message" %}</p>
+        <h2 id="contact-form-heading" class="auth-card__title">{% translate "Let’s talk." %}</h2>
+        <p class="auth-card__intro">{% translate "We read every note and reply as soon as we can." %}</p>
+        <form method="post" class="contact-form" novalidate>
+          {% csrf_token %}
+          {{ form.website }}
+          {% if form.non_field_errors %}<div class="auth-form__error" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+          {% include "components/form_field.html" with field=form.from_name %}
+          {% include "components/form_field.html" with field=form.from_email %}
+          {% include "components/form_field.html" with field=form.subject %}
+          {% include "components/form_field.html" with field=form.message %}
+          <button class="button-primary w-full" type="submit">{% translate "Send message" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+        </form>
+      </section>
     </div>
+  </div>
 {% endblock content %}

@@ -1,0 +1,174 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, modernize/00-baseline]
+  push:
+    branches: [main, modernize/00-baseline]
+
+jobs:
+  test:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.13", "3.14"]
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_DB: caffeine-lane
+          POSTGRES_USER: caffeine-lane
+          POSTGRES_PASSWORD: caffeine-lane
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U caffeine-lane -d caffeine-lane"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run python manage.py makemigrations --check --dry-run
+      - name: Run Python tests against PostgreSQL 18
+        env:
+          DJANGO_SETTINGS_MODULE: config.settings.test
+          TEST_DATABASE_URL: postgresql://caffeine-lane:caffeine-lane@localhost:5432/caffeine-lane
+          SECRET_KEY: ci-only-secret-key-not-for-production-0123456789
+          DEFAULT_FROM_EMAIL: noreply@example.test
+          CONTACT_RECIPIENT_EMAIL: owner@example.test
+        run: uv run pytest
+      - name: Check production deployment settings in isolation
+        env:
+          DJANGO_SETTINGS_MODULE: config.settings.production
+          SECRET_KEY: ci-production-secret-key-not-for-production-0123456789
+          DATABASE_URL: "sqlite:///:memory:"
+          ALLOWED_HOSTS: example.test
+          CSRF_TRUSTED_ORIGINS: https://example.test
+          CLOUDINARY_URL: cloudinary://123456789012345:ci-secret@example
+          RESEND_API_KEY: re_ci_not_a_real_key
+          DEFAULT_FROM_EMAIL: noreply@example.test
+          CONTACT_RECIPIENT_EMAIL: owner@example.test
+          USE_X_FORWARDED_PROTO: "true"
+          CSP_ENFORCE: "false"
+          SECURE_HSTS_SECONDS: "31536000"
+          SECURE_HSTS_INCLUDE_SUBDOMAINS: "true"
+          SECURE_HSTS_PRELOAD: "true"
+        run: uv run python manage.py check --deploy
+      - uses: pnpm/action-setup@v4
+        if: matrix.python-version == '3.13'
+        with:
+          version: 10.18.3
+      - uses: actions/setup-node@v4
+        if: matrix.python-version == '3.13'
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install frontend dependencies
+        if: matrix.python-version == '3.13'
+        run: pnpm install --frozen-lockfile
+      - name: Build and verify generated frontend assets
+        if: matrix.python-version == '3.13'
+        run: |
+          pnpm run build
+          pnpm test
+      - name: Prepare isolated local browser data
+        if: matrix.python-version == '3.13'
+        env:
+          DJANGO_SETTINGS_MODULE: config.settings.local
+          DATABASE_URL: sqlite:////tmp/caffeine-lane-e2e.sqlite3
+          DEBUG_TOOLBAR_ENABLED: "false"
+        run: |
+          rm -f /tmp/caffeine-lane-e2e.sqlite3
+          uv run python manage.py check_fresh_baseline
+          uv run python manage.py migrate --noinput
+          uv run python manage.py seed_portfolio
+          uv run python manage.py shell -c "from apps.accounts.models import User; from apps.posts.models import Comment, Post; user, _ = User.objects.get_or_create(email='e2e-rider@example.test', defaults={'username': 'e2e-rider', 'display_name': 'E2E Rider'}); user.set_password('e2e-rider-password'); user.save(); post = Post.objects.get(slug='cafe-racer-de-garaje'); Comment.objects.get_or_create(post=post, author=user, content='E2E smoke comment')"
+      - name: Install Chromium for browser smoke tests
+        if: matrix.python-version == '3.13'
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Run browser smoke tests against compiled assets
+        if: matrix.python-version == '3.13'
+        env:
+          E2E_DATABASE_URL: sqlite:////tmp/caffeine-lane-e2e.sqlite3
+        run: pnpm run test:e2e
+      - name: Upload browser traces on failure
+        if: failure() && matrix.python-version == '3.13'
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+
+  docker-smoke:
+    name: Docker smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the production image
+        run: docker build -t caffeine-lane-ci .
+      - name: Verify the image contains the generated carousel asset
+        run: |
+          set -euo pipefail
+          source_hash=$(sha256sum static/src/js/home-carousel.js | awk '{print $1}')
+          image_hash=$(docker run --rm --entrypoint sha256sum caffeine-lane-ci /app/static/dist/js/home-carousel.js | awk '{print $1}')
+          test "$source_hash" = "$image_hash"
+      - name: Start the production image and verify public endpoints
+        env:
+          CONTAINER_NAME: caffeine-lane-ci
+          CONTAINER_PORT: "10000"
+        run: |
+          set -euo pipefail
+          docker image inspect caffeine-lane-ci --format '{{range .Config.Env}}{{println .}}{{end}}' | grep -qx 'SEED_PORTFOLIO_ON_START=false'
+
+          docker run --detach --name "$CONTAINER_NAME" --publish "$CONTAINER_PORT:$CONTAINER_PORT" \
+            --env PORT="$CONTAINER_PORT" \
+            --env DJANGO_SETTINGS_MODULE=config.settings.production \
+            --env SECRET_KEY=ci-docker-secret-key-not-for-production-0123456789 \
+            --env DATABASE_URL=sqlite:////tmp/caffeine-lane-ci.sqlite3 \
+            --env DIRECT_DATABASE_URL=sqlite:////tmp/caffeine-lane-ci.sqlite3 \
+            --env ALLOWED_HOSTS=localhost,127.0.0.1 \
+            --env CSRF_TRUSTED_ORIGINS=https://localhost \
+            --env CLOUDINARY_URL=cloudinary://123456789012345:ci-secret@example \
+            --env RESEND_API_KEY=re_ci_not_a_real_key \
+            --env DEFAULT_FROM_EMAIL=noreply@example.test \
+            --env CONTACT_RECIPIENT_EMAIL=owner@example.test \
+            --env USE_X_FORWARDED_PROTO=true \
+            --env CSP_ENFORCE=false \
+            --env RUN_MIGRATIONS_ON_START=true \
+            --env SEED_PORTFOLIO_ON_START=false \
+            caffeine-lane-ci
+
+          cleanup() {
+            docker logs "$CONTAINER_NAME" || true
+            docker rm --force "$CONTAINER_NAME" || true
+          }
+          trap cleanup EXIT
+
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent --show-error "http://127.0.0.1:$CONTAINER_PORT/healthz/"; then
+              break
+            fi
+            sleep 1
+            if [ "$attempt" = 30 ]; then
+              echo "The container did not expose a healthy HTTP endpoint."
+              exit 1
+            fi
+          done
+
+          secure_header='X-Forwarded-Proto: https'
+          curl --fail --silent --show-error -H "$secure_header" "http://127.0.0.1:$CONTAINER_PORT/home/" >/dev/null
+          curl --fail --silent --show-error -H "$secure_header" "http://127.0.0.1:$CONTAINER_PORT/static/dist/css/app.css" >/dev/null
+          curl --fail --silent --show-error -H "$secure_header" "http://127.0.0.1:$CONTAINER_PORT/static/dist/js/home-carousel.js" >/dev/null

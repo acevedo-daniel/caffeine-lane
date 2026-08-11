@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% translate "Access denied · The Caffeine Lane" %}{% endblock title %}
+{% block content %}
+  <section class="error-page">
+    <div class="error-page__container editorial-container">
+      <div class="error-page__copy">
+        <p class="error-kicker">{% translate "403 · Access restricted" %}</p>
+        <h1 class="error-title">{% translate "Road closed." %}</h1>
+        <p class="error-page__intro">{% translate "You don't have access to this page. Head back to the lane or try a different route." %}</p>
+        <a class="error-page__action" href="{% url 'home' %}">{% translate "Back to the lane" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+      </div>
+      {% translate "The Rider at a closed road" as rider_alt %}
+      {% include "components/character_badge.html" with asset="character-oops.webp" size="lg" alt=rider_alt class_name="error-page__rider" %}
+    </div>
+  </section>
+{% endblock content %}

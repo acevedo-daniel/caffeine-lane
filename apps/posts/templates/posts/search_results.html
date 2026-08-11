@@ -1,132 +1,98 @@
 {% extends "base.html" %}
-{% block title %}
-    Search Results - The Caffeine Lane
-{% endblock title %}
+{% load i18n %}
+{% block title %}{% translate "Search posts · The Caffeine Lane" %}{% endblock title %}
 {% block content %}
-    <div class="bg-white py-12 font-mont">
-        <div class="max-w-4xl mx-auto px-4">
-            {# Search Header and Form #}
-            <header class="mb-12">
-                <h1 class="text-5xl font-bebas text-black text-center">Search Articles</h1>
-                <form method="get"
-                      action="{% url 'search' %}"
-                      id="search-form"
-                      class="mt-6 p-6 bg-gray-50 border border-gray-200 rounded-lg">
-                    {# Main Search Bar #}
-                    <div class="flex items-center gap-4">
-                        <div class="relative flex-grow">{{ form.q }}</div>
-                        <button type="button"
-                                id="filter-toggle-btn"
-                                class="flex-shrink-0 bg-gray-200 text-gray-800 rounded-full py-2 px-4 text-sm font-semibold hover:bg-gray-300 transition">
-                            Add Filter
-                        </button>
-                        <button type="submit"
-                                class="flex-shrink-0 bg-black text-white rounded-lg px-6 py-2 text-sm font-semibold hover:bg-gray-800 transition">
-                            Search
-                        </button>
-                    </div>
-                    {# Hidden Filters Section #}
-                    <div id="filter-section" class="hidden mt-4 pt-4 border-t border-gray-200">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label for="{{ form.category.id_for_label }}"
-                                       class="block text-sm font-bold text-gray-700 mb-1">Category</label>
-                                {{ form.category }}
-                            </div>
-                            <div>
-                                <label for="{{ form.sort.id_for_label }}"
-                                       class="block text-sm font-bold text-gray-700 mb-1">Sort By</label>
-                                {{ form.sort }}
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </header>
-            {# Results List #}
-            <div class="space-y-8">
-                {% for post in results %}
-                    <article class="flex flex-col md:flex-row items-center gap-6">
-                        {% if post.image %}
-                            <a href="{{ post.get_absolute_url }}"
-                               class="block md:w-1/3 flex-shrink-0">
-                                <img src="{{ post.image.url }}"
-                                     alt="{{ post.title }}"
-                                     class="w-full h-48 object-cover rounded-lg shadow-md hover:opacity-90 transition"
-                                     width="300"
-                                     height="192" />
-                            </a>
-                        {% endif %}
-                        <div class="md:w-2/3">
-                            <div class="text-xs text-gray-500 mb-1">
-                                <span>{{ post.created_at|date:"F j, Y" }}</span>
-                                <span class="mx-1">•</span>
-                                <span>By {{ post.author.username }}</span>
-                            </div>
-                            <h2 class="text-2xl font-bold font-mont text-black mb-2">
-                                <a href="{{ post.get_absolute_url }}"
-                                   class="hover:text-red-600 transition">{{ post.title }}</a>
-                            </h2>
-                            <p class="text-gray-700 leading-relaxed">{{ post.content|striptags|truncatewords:30 }}</p>
-                        </div>
-                    </article>
-                {% empty %}
-                    <div class="text-center py-16">
-                        <h2 class="text-2xl font-bold text-black">No Results Found</h2>
-                        <p class="text-gray-600 mt-2">We couldn't find any articles matching your search. Try different filters.</p>
-                    </div>
-                {% endfor %}
+  <div class="editorial-page search-page">
+    <header class="search-page__hero">
+      <div class="editorial-container">
+        <p class="editorial-kicker text-stone-300">{% translate "The Caffeine Lane · Archive" %}</p>
+        <h1 class="search-page__title">{% translate "Search the lane" %}</h1>
+        <p class="search-page__intro">{% translate "Find builds, guides, and reviews across the lane." %}</p>
+
+        <form method="get" action="{% url 'search' %}" id="search-form" class="search-panel">
+          <label class="sr-only" for="{{ form.q.id_for_label }}">{% translate "Search posts" %}</label>
+          <div class="search-panel__query-row">
+            <div class="search-panel__query">{{ form.q }}</div>
+            <div class="search-panel__actions">
+              <button id="filter-toggle-btn" class="search-filter-toggle" type="button" aria-controls="filter-section" aria-expanded="{% if current_category or current_sort != 'relevance' %}true{% else %}false{% endif %}">
+                <i class="fa-solid fa-sliders" aria-hidden="true"></i> {% translate "Filters" %}
+              </button>
+              <button class="editorial-button editorial-button--solid" type="submit"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> {% translate "Search" %}</button>
             </div>
-            {# Pagination #}
-            {% if is_paginated %}
-                <nav class="mt-12 pt-8 border-t border-gray-200 flex justify-between items-center text-sm">
-                    <div>
-                        {% if page_obj.has_previous %}
-                            <a href="?q={{ query }}&category={{ current_category }}&sort={{ current_sort }}&page={{ page_obj.previous_page_number }}"
-                               class="inline-block bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition">
-                                ← Previous
-                            </a>
-                        {% endif %}
-                    </div>
-                    <div class="text-gray-600">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</div>
-                    <div>
-                        {% if page_obj.has_next %}
-                            <a href="?q={{ query }}&category={{ current_category }}&sort={{ current_sort }}&page={{ page_obj.next_page_number }}"
-                               class="inline-block bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition">
-                                Next →
-                            </a>
-                        {% endif %}
-                    </div>
-                </nav>
-            {% endif %}
+          </div>
+          <div id="filter-section" class="search-panel__filters" data-search-filter-panel>
+            <div class="grid gap-5 sm:grid-cols-2">
+              <div>
+                <label class="search-panel__label" for="{{ form.category.id_for_label }}">{% translate "Category" %}</label>
+                {{ form.category }}
+              </div>
+              <div>
+                <label class="search-panel__label" for="{{ form.sort.id_for_label }}">{% translate "Sort by" %}</label>
+                {{ form.sort }}
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </header>
+
+    <section class="editorial-container editorial-section" aria-labelledby="results-heading">
+      <div class="editorial-rule flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="editorial-kicker">{% translate "Search results" %}</p>
+          {% if query %}
+            <h2 id="results-heading" class="editorial-heading mt-1">{% blocktranslate with search_query=query %}Results for “{{ search_query }}”{% endblocktranslate %}</h2>
+          {% else %}
+            <h2 id="results-heading" class="editorial-heading mt-1">{% translate "All stories" %}</h2>
+          {% endif %}
         </div>
-    </div>
+        {% if is_paginated or results %}<p class="text-sm text-stone-600">{% blocktranslate count counter=page_obj.paginator.count %}{{ counter }} result{% plural %}{{ counter }} results{% endblocktranslate %}</p>{% endif %}
+      </div>
+
+      {% if current_category or current_sort != "relevance" %}
+        <div class="search-active-filters" aria-label="{% translate 'Active search filters' %}">
+          {% if current_category %}<span class="search-active-filter"><i class="fa-solid fa-filter" aria-hidden="true"></i> {% translate "Category filter" %}</span>{% endif %}
+          {% if current_sort != "relevance" %}<span class="search-active-filter"><i class="fa-solid fa-arrow-down-wide-short" aria-hidden="true"></i> {% translate "Custom sort" %}</span>{% endif %}
+          <a class="search-clear-filters" href="{% url 'search' %}{% if query %}?q={{ query|urlencode }}{% endif %}">{% translate "Clear filters" %}</a>
+        </div>
+      {% endif %}
+
+      <div class="category-post-grid mt-7" aria-live="polite">
+        {% for post in results %}
+          {% include "components/post_card.html" with post=post %}
+        {% empty %}
+          <div class="search-empty">
+            <div>
+              <p class="editorial-kicker">{% translate "No match yet" %}</p>
+              <h3 class="mt-2 font-bebas text-5xl leading-[0.9] tracking-wide text-stone-950">{% translate "No stories found" %}</h3>
+              <p class="mt-3 max-w-xl text-stone-600">{% translate "Try a broader search, clear a filter, or return to the latest work from the lane." %}</p>
+              <a class="editorial-button mt-6" href="{% url 'search' %}">{% translate "Browse all stories" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+            </div>
+            {% translate "The Rider searching through the archive" as searching_alt %}
+            {% include "components/character_badge.html" with asset="character-searching.webp" size="lg" alt=searching_alt class_name="search-empty__rider" %}
+          </div>
+        {% endfor %}
+      </div>
+
+      {% if is_paginated %}
+        <nav class="editorial-pagination" aria-label="{% translate 'Search result pages' %}">
+          <div>
+            {% if page_obj.has_previous %}
+              <a class="editorial-button" href="?{{ pagination_query }}{% if pagination_query %}&amp;{% endif %}page={{ page_obj.previous_page_number }}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> {% translate "Previous" %}</a>
+            {% endif %}
+          </div>
+          <p class="editorial-pagination__status">{% translate "Page" %} {{ page_obj.number }} <span aria-hidden="true">/</span> <span class="sr-only">{% translate "of" %}</span> {{ page_obj.paginator.num_pages }}</p>
+          <div>
+            {% if page_obj.has_next %}
+              <a class="editorial-button" href="?{{ pagination_query }}{% if pagination_query %}&amp;{% endif %}page={{ page_obj.next_page_number }}">{% translate "Next" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+            {% endif %}
+          </div>
+        </nav>
+      {% endif %}
+    </section>
+  </div>
 {% endblock content %}
 {% block scripts %}
-    {{ block.super }}
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const toggleBtn = document.getElementById('filter-toggle-btn');
-      const filterSection = document.getElementById('filter-section');
-      const form = document.getElementById('search-form');
-      const categorySelect = document.querySelector('select[name="category"]');
-      const sortSelect = document.querySelector('select[name="sort"]');
-  
-      if (toggleBtn && filterSection) {
-        toggleBtn.addEventListener('click', function() {
-          filterSection.classList.toggle('hidden');
-        });
-      }
-  
-      function submitForm() {
-        form.submit();
-      }
-  
-      if (categorySelect) {
-        categorySelect.addEventListener('change', submitForm);
-      }
-      if (sortSelect) {
-        sortSelect.addEventListener('change', submitForm);
-      }
-    });
-    </script>
+  {% load static %}
+  <script defer src="{% static 'dist/js/search-filters.js' %}"></script>
 {% endblock scripts %}
