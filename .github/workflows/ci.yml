@@ -83,7 +83,7 @@ jobs:
           CONTAINER_PORT: "10000"
         run: |
           set -euo pipefail
-          docker run --detach --rm --name "$CONTAINER_NAME" --publish "$CONTAINER_PORT:$CONTAINER_PORT" \
+          docker run --detach --name "$CONTAINER_NAME" --publish "$CONTAINER_PORT:$CONTAINER_PORT" \
             --env PORT="$CONTAINER_PORT" \
             --env DJANGO_SETTINGS_MODULE=config.settings.production \
             --env SECRET_KEY=ci-docker-secret-key-not-for-production-0123456789 \
