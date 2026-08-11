@@ -28,17 +28,19 @@
                   </a>
                 </div>
               </div>
-              <div class="home-hero__panel-footer">
-                <p class="home-hero__index"><span>{{ forloop.counter|stringformat:"02d" }}</span><span aria-hidden="true"> / {{ banner_posts|length|stringformat:"02d" }}</span></p>
-                <div class="home-hero__controls" role="group" aria-label="{% translate 'Carousel controls' %}">
-                  <button data-carousel-previous class="home-hero-control" type="button" aria-label="{% translate 'Previous post' %}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></button>
-                  <button data-carousel-next class="home-hero-control" type="button" aria-label="{% translate 'Next post' %}"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
-                </div>
-              </div>
             </div>
           </article>
         {% endfor %}
       </div>
+      {% if banner_posts|length > 1 %}
+        <div class="home-hero__global-controls" data-carousel-controls role="group" aria-label="{% translate 'Carousel controls' %}">
+          <p class="home-hero__index"><span data-carousel-index>01</span><span aria-hidden="true"> / {{ banner_posts|length|stringformat:"02d" }}</span></p>
+          <div class="home-hero__controls">
+            <button data-carousel-previous class="home-hero-control" type="button" aria-label="{% translate 'Previous post' %}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></button>
+            <button data-carousel-next class="home-hero-control" type="button" aria-label="{% translate 'Next post' %}"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+          </div>
+        </div>
+      {% endif %}
     </section>
   {% else %}
     <section class="bg-stone-950 px-5 py-20 text-white sm:px-8 sm:py-28">
@@ -132,5 +134,5 @@
 {% endblock content %}
 {% block scripts %}
   {% load static %}
-  <script defer src="{% static 'dist/js/home-carousel.js' %}"></script>
+  <script type="module" src="{% static 'dist/js/home-carousel.js' %}"></script>
 {% endblock scripts %}

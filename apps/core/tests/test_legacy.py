@@ -9,6 +9,8 @@ from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils.csp import CSP
 
+from apps.tests.factories import PostFactory
+
 
 class LegacyCoreCharacterizationTests(TestCase):
     def setUp(self):
@@ -32,6 +34,26 @@ class LegacyCoreCharacterizationTests(TestCase):
         self.assertContains(response, "dist/css/app.css")
         self.assertContains(response, "dist/js/base.js")
         self.assertNotContains(response, "cdn.tailwindcss.com")
+
+    def test_home_carousel_renders_one_global_control_pair_for_multiple_posts(self):
+        PostFactory.create_batch(3)
+
+        response = self.client.get(reverse("home"))
+
+        self.assertContains(
+            response, 'class="carousel-slide home-hero__slide"', count=3
+        )
+        self.assertContains(response, "data-carousel-previous", count=1)
+        self.assertContains(response, "data-carousel-next", count=1)
+        self.assertContains(response, "data-carousel-index", count=1)
+
+    def test_home_carousel_hides_controls_for_a_single_post(self):
+        PostFactory()
+
+        response = self.client.get(reverse("home"))
+
+        self.assertNotContains(response, "data-carousel-previous")
+        self.assertNotContains(response, "data-carousel-next")
 
     def test_contact_sends_text_and_html_email_with_reply_to(self):
         response = self.client.post(

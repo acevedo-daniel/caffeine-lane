@@ -5,7 +5,8 @@
     "dev:css": "pnpm exec tailwindcss -i ./static/src/css/app.css -o ./static/dist/css/app.css --watch",
     "build:css": "pnpm exec tailwindcss -i ./static/src/css/app.css -o ./static/dist/css/app.css --minify",
     "build:js": "node scripts/build-assets.mjs",
-    "build": "pnpm run build:css && pnpm run build:js"
+    "build": "pnpm run build:css && pnpm run build:js",
+    "test": "node --test tests/frontend/home-carousel-controller.test.mjs"
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.3.3",
