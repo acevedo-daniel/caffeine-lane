@@ -66,7 +66,11 @@ def home(request):
 
 
 def about(request):
-    return render(request, "core/about.html")
+    return render(
+        request,
+        "core/about.html",
+        {"guides_category_slug": CategorySlug.GUIDES},
+    )
 
 
 def contact(request):

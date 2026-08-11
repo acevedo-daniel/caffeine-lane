@@ -1,12 +1,16 @@
 {% extends "base.html" %}
-{% block title %}Solicitud inválida · The Caffeine Lane{% endblock %}
+{% load i18n %}
+{% block title %}Bad request · The Caffeine Lane{% endblock title %}
 {% block content %}
-  <section class="error-page flex min-h-[58vh] items-center">
-    <div class="relative mx-auto w-full max-w-6xl px-4 py-20 sm:px-6">
-      <p class="error-kicker">Error 400</p>
-      <h1 class="error-title mt-3 max-w-3xl">Invalid request</h1>
-      <p class="mt-6 max-w-xl text-lg leading-8 text-stone-200">We could not process this request. Check the submitted information and try again.</p>
-      <a class="mt-8 inline-flex rounded-full bg-white px-6 py-3 text-sm font-extrabold uppercase tracking-wider text-black no-underline transition hover:bg-red-700 hover:text-white" href="{% url 'home' %}">Back to home</a>
+  <section class="error-page">
+    <div class="error-page__container editorial-container">
+      <div class="error-page__copy">
+        <p class="error-kicker">400 · Request misfire</p>
+        <h1 class="error-title">{% translate "Loose bolt." %}</h1>
+        <p class="error-page__intro">{% translate "That request did not fit together. Check the information and try the next move from a clean line." %}</p>
+        <a class="error-page__action" href="{% url 'home' %}">{% translate "Back to the lane" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+      </div>
+      {% include "components/character_badge.html" with asset="character-oops.webp" size="lg" alt="The Rider noticing a request that did not fit" class_name="error-page__rider" %}
     </div>
   </section>
-{% endblock %}
+{% endblock content %}

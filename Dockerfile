@@ -23,11 +23,14 @@ RUN uv sync --frozen --no-dev
 
 FROM python:3.13.6-slim AS runtime
 
+# Bootstrap the next Render deployment with the portfolio dataset. Set an
+# explicit SEED_PORTFOLIO_ON_START=false variable in Render immediately after
+# that successful deploy so restarts preserve editorial changes.
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     DJANGO_SETTINGS_MODULE=config.settings.production \
     RUN_MIGRATIONS_ON_START=true \
-    SEED_PORTFOLIO_ON_START=false \
+    SEED_PORTFOLIO_ON_START=true \
     PATH="/app/.venv/bin:$PATH"
 
 WORKDIR /app

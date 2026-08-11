@@ -1,53 +1,59 @@
 {% extends "base.html" %}
 {% block title %}{{ category.name }} · The Caffeine Lane{% endblock title %}
 {% block content %}
-  <section class="relative isolate overflow-hidden bg-stone-950 text-white">
+  <section class="category-hero">
     {% if category.image %}
-      <img class="absolute inset-0 -z-20 h-full w-full object-cover opacity-45" src="{{ category.image.url }}" alt="" aria-hidden="true" width="1920" height="520">
+      <img class="category-hero__image" src="{{ category.image.url }}" alt="" aria-hidden="true" width="1920" height="680">
     {% endif %}
-    <div class="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/75 to-stone-950/45"></div>
-    <div class="mx-auto flex min-h-[360px] max-w-7xl flex-col justify-end px-5 py-10 sm:min-h-[460px] sm:px-8 sm:py-14 lg:px-10">
-      <a class="inline-flex w-fit items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-stone-200 no-underline transition hover:text-red-300" href="{% url 'home' %}">
+    <div class="category-hero__overlay"></div>
+    <div class="category-hero__content editorial-container">
+      <a class="category-hero__back" href="{% url 'home' %}">
         <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
-        Volver al inicio
+        Back to home
       </a>
-      <p class="mt-10 text-xs font-bold uppercase tracking-[0.22em] text-red-300">The Caffeine Lane · Archivo</p>
-      <h1 class="mt-2 max-w-full break-words font-bebas text-5xl leading-[0.85] tracking-wide sm:text-8xl lg:text-9xl">{{ category.name }}</h1>
-      <p class="mt-5 max-w-2xl text-base leading-7 text-stone-200 sm:text-lg">{{ page_obj.paginator.count }} entrada{{ page_obj.paginator.count|pluralize:"s" }} para seguir explorando la ruta.</p>
+      <div>
+        <p class="editorial-kicker text-red-300">The Caffeine Lane · Archive</p>
+        <h1 class="category-hero__title">{{ category.name }}</h1>
+        <p class="category-hero__count">{{ page_obj.paginator.count }} stor{{ page_obj.paginator.count|pluralize:"y,ies" }} from the road.</p>
+      </div>
     </div>
   </section>
 
-  <main class="editorial-page">
+  <div class="editorial-page">
     <div class="editorial-container editorial-section">
       <section aria-labelledby="category-posts-heading">
         <div class="editorial-rule">
-          <p class="editorial-kicker">Últimas publicaciones</p>
-          <h2 id="category-posts-heading" class="editorial-heading mt-1">Todo en {{ category.name }}</h2>
+          <p class="editorial-kicker">Latest dispatches</p>
+          <h2 id="category-posts-heading" class="editorial-heading mt-1">All {{ category.name }}</h2>
         </div>
-        <div class="mt-7 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="category-post-grid mt-7">
           {% for post in posts %}
             {% include "components/post_card.html" with post=post %}
           {% empty %}
-            <p class="editorial-empty sm:col-span-2 lg:col-span-3">Todavía no hay publicaciones en esta categoría.</p>
+            <div class="editorial-empty category-post-grid__empty">
+              <h3 class="font-bebas text-4xl tracking-wide text-stone-950">The shelf is clear.</h3>
+              <p class="mt-2">There are no stories in this category yet. Check the other lanes while the next one is being prepared.</p>
+              <a class="mt-5 inline-flex text-sm font-bold text-red-700" href="{% url 'home' %}">Browse the latest stories <i class="fa-solid fa-arrow-right ml-2 self-center" aria-hidden="true"></i></a>
+            </div>
           {% endfor %}
         </div>
 
         {% if is_paginated %}
-          <nav class="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-stone-300 pt-6" aria-label="Páginas de {{ category.name }}">
+          <nav class="editorial-pagination" aria-label="Pages in {{ category.name }}">
             <div>
               {% if page_obj.has_previous %}
-                <a class="editorial-button" href="?page={{ page_obj.previous_page_number }}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Anterior</a>
+                <a class="editorial-button" href="?page={{ page_obj.previous_page_number }}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Previous</a>
               {% endif %}
             </div>
-            <p class="text-sm text-stone-600">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</p>
+            <p class="editorial-pagination__status">Page {{ page_obj.number }} <span aria-hidden="true">/</span> <span class="sr-only">of</span> {{ page_obj.paginator.num_pages }}</p>
             <div>
               {% if page_obj.has_next %}
-                <a class="editorial-button" href="?page={{ page_obj.next_page_number }}">Siguiente <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                <a class="editorial-button" href="?page={{ page_obj.next_page_number }}">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
               {% endif %}
             </div>
           </nav>
         {% endif %}
       </section>
     </div>
-  </main>
+  </div>
 {% endblock content %}

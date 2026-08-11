@@ -1,24 +1,26 @@
-{% extends "base.html" %}
-{% block title %}Crear cuenta · The Caffeine Lane{% endblock title %}
-{% block content %}
-  <main class="bg-stone-950 px-5 py-14 sm:px-8 sm:py-20">
-    <div class="mx-auto grid max-w-5xl gap-10 lg:grid-cols-[1fr_0.8fr] lg:items-center">
-      <section class="border-t-4 border-red-700 pt-5 text-white">
-        <p class="text-xs font-bold uppercase tracking-[0.2em] text-red-300">The Caffeine Lane · Comunidad</p>
-        <h1 class="mt-2 font-bebas text-6xl leading-[0.88] tracking-wide sm:text-8xl">Tu historia empieza acá.</h1>
-        <p class="mt-5 max-w-lg text-lg leading-8 text-stone-300">Creá una cuenta para sumarte a la conversación y construir tu perfil.</p>
-      </section>
-      <section class="bg-white p-6 sm:p-8" aria-labelledby="register-heading">
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-red-700">Paso 1 de 2</p>
-        <h2 id="register-heading" class="mt-1 font-bebas text-5xl tracking-wide text-stone-950">Crear cuenta</h2>
-        <form method="post" class="mt-7 space-y-5" novalidate>
-          {% csrf_token %}
-          {% if form.non_field_errors %}<div class="border-l-4 border-red-700 bg-red-50 p-4 text-sm text-red-900">{{ form.non_field_errors }}</div>{% endif %}
-          {% include "components/form_field.html" with field=form.email %}
-          <button class="button-primary w-full" type="submit">Continuar</button>
-        </form>
-        <p class="mt-6 border-t border-stone-200 pt-5 text-sm text-stone-600">¿Ya tenés una cuenta? <a class="font-bold text-red-700 hover:text-stone-950" href="{% url 'login' %}">Ingresar</a>.</p>
-      </section>
-    </div>
-  </main>
-{% endblock content %}
+{% extends "layouts/auth.html" %}
+{% load i18n %}
+{% block title %}Create an account · The Caffeine Lane{% endblock title %}
+{% block auth_visual %}
+  <p class="auth-shell__eyebrow">The Caffeine Lane community</p>
+  <h1 class="auth-shell__title">{% translate "Join the ride." %}</h1>
+  <p class="auth-shell__copy">A profile gives your voice a place in the garage, on the road, and throughout the lane.</p>
+  {% include "components/character_badge.html" with asset="character-welcome.webp" size="lg" alt="The Rider welcoming new members" class_name="auth-shell__rider" %}
+{% endblock auth_visual %}
+{% block auth_form %}
+  <div class="auth-progress" aria-label="Registration progress: step 1 of 2">
+    <span class="auth-progress__step auth-progress__step--active">01</span>
+    <span class="auth-progress__line" aria-hidden="true"></span>
+    <span class="auth-progress__step">02</span>
+  </div>
+  <p class="auth-card__eyebrow">{% translate "Step 1 of 2" %}</p>
+  <h2 id="auth-form-heading" class="auth-card__title">Start your profile</h2>
+  <p class="auth-card__intro">First, tell us where to reach you.</p>
+  <form method="post" class="auth-form" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="auth-form__error">{{ form.non_field_errors }}</div>{% endif %}
+    {% include "components/form_field.html" with field=form.email %}
+    <button class="button-primary w-full" type="submit">{% translate "Continue" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+  </form>
+  <p class="auth-card__footer">Already riding with us? <a href="{% url 'login' %}">Sign in</a>.</p>
+{% endblock auth_form %}

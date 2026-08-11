@@ -5,9 +5,12 @@
 .github
 .pytest_cache
 .ruff_cache
+.coverage
+.hypothesis
 .venv
 __pycache__
 *.py[cod]
+*.log
 coverage.xml
 htmlcov
 media

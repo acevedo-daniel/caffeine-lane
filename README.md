@@ -124,7 +124,7 @@ database URLs, or provider credentials.
 | `DJANGO_SETTINGS_MODULE` | Yes | Active settings module | `config.settings.local` |
 | `SECRET_KEY` | Yes | Django signing key | local value in `.env.example` |
 | `DATABASE_URL` | Yes | Local PostgreSQL or Neon pooled connection URL | `postgresql://...` |
-| `DIRECT_DATABASE_URL` | Yes | Direct Neon URL used by startup migrations | `postgresql://...` |
+| `DIRECT_DATABASE_URL` | Production | Direct Neon URL used by startup migrations | `postgresql://...` |
 | `ALLOWED_HOSTS` | Yes | Comma-separated allowed hosts | `localhost,127.0.0.1` |
 | `CSRF_TRUSTED_ORIGINS` | Yes | Trusted form origins with scheme | `http://localhost:8000` |
 | `CLOUDINARY_URL` | Production | Cloudinary media-storage credential | provider-issued secret |
@@ -161,16 +161,20 @@ uv run python manage.py migrate
 
 Create the idempotent public portfolio dataset after the first migration. It
 creates a non-privileged author with an unusable password, three structural
-categories, ten published posts, and uploads the bundled WebP cover images to
-the active media storage (Cloudinary in production):
+categories, nineteen published posts, and uploads the bundled WebP cover images
+from `assets/portfolio/source/` to the active media storage (Cloudinary in
+production):
 
 ```bash
 uv run python manage.py seed_portfolio
 ```
 
-Run it manually for local development. In Render Free, set
-`SEED_PORTFOLIO_ON_START=true` only for the first content deploy, then return it
-to `false`; see the [deployment guide](./docs/deployment.md).
+Run it manually for local development. The current Docker image temporarily
+defaults `SEED_PORTFOLIO_ON_START=true` for the next Render content bootstrap.
+If Render defines the variable explicitly, set it to `true` for that deploy.
+Once the logs report `Portfolio ready`, set it to `false` immediately so later
+restarts preserve editorial changes; see the
+[deployment guide](./docs/deployment.md).
 
 To import reviewed editorial content without users, passwords, or unreviewed
 images, follow the [content import guide](./docs/content-import.md).
@@ -220,6 +224,7 @@ GET /healthz/ -> {"status": "ok"}
 ```text
 caffeine-lane/
 ├── apps/                 # Accounts, core pages, posts, and tests
+├── assets/               # Seed image sources and archived brand originals
 ├── config/settings/       # Base, local, test, and production settings
 ├── docker/                # Container runtime entrypoint
 ├── docs/                  # Audit, deployment, and operational documentation
@@ -245,7 +250,9 @@ Settings are isolated by environment.
 In production, Render runs the Docker image. Before Gunicorn starts on Render's
 assigned `PORT`, the container verifies the fresh baseline, applies migrations
 with `DIRECT_DATABASE_URL` when `RUN_MIGRATIONS_ON_START=true`, returns to the
-pooled `DATABASE_URL`, and collects static files. The portfolio seed runs only
+pooled `DATABASE_URL`, and collects static files. The portfolio seed then uses
+the pooled connection and the bundled files under `assets/portfolio/` to create
+or update database content and upload missing media to Cloudinary. It runs only
 when `SEED_PORTFOLIO_ON_START=true`.
 WhiteNoise serves static files, Cloudinary stores uploaded media, Neon stores
 relational data, and Anymail sends email through Resend.
@@ -291,18 +298,21 @@ Required production variables are `DJANGO_SETTINGS_MODULE`, `SECRET_KEY`,
 `DATABASE_URL`, `DIRECT_DATABASE_URL`, `ALLOWED_HOSTS`,
 `CSRF_TRUSTED_ORIGINS`, `CLOUDINARY_URL`, `RESEND_API_KEY`,
 `DEFAULT_FROM_EMAIL`, `CONTACT_RECIPIENT_EMAIL`, and
-`USE_X_FORWARDED_PROTO=true`. Set `RUN_MIGRATIONS_ON_START=true` and keep
-`SEED_PORTFOLIO_ON_START=false` except during the first content deploy. Keep
-`PASSWORD_RESET_ENABLED=false` while Resend uses its onboarding sender.
+`USE_X_FORWARDED_PROTO=true`. Set `RUN_MIGRATIONS_ON_START=true`. The current
+Docker image defaults `SEED_PORTFOLIO_ON_START=true` for its next content
+bootstrap; an explicit Render variable overrides that default. After the seed
+completes, set the Render variable to `false`. Keep `PASSWORD_RESET_ENABLED=false`
+while Resend uses its onboarding sender.
 
 The Docker entrypoint is the only web-process startup path. It never loads
 fixtures or creates superusers. Because Render Free does not offer an execution
 shell, it runs the idempotent migrations and `seed_portfolio` before each web
 process start only when their respective flags are enabled. Migrations use
 `DIRECT_DATABASE_URL` and the application returns to pooled `DATABASE_URL`.
-Set `SEED_PORTFOLIO_ON_START=true` only for the first content deploy, then
-return it to `false` to preserve editorial changes. The service requires both
-URLs while startup migrations are enabled.
+For the next deploy, allow the Docker default of `SEED_PORTFOLIO_ON_START=true`
+or set that Render variable explicitly to `true`. Once the logs report
+`Portfolio ready`, set it explicitly to `false` to preserve editorial changes.
+The service requires both URLs while startup migrations are enabled.
 
 The first administrator is created manually with Neon’s direct connection and
 `uv run python manage.py createsuperuser`; the full safe procedure is in the

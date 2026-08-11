@@ -1,5 +1,25 @@
 {% extends "base.html" %}
-{% block title %}Eliminar publicación · The Caffeine Lane{% endblock title %}
+{% block title %}Delete post · The Caffeine Lane{% endblock title %}
 {% block content %}
-  <main class="bg-stone-50 px-5 py-14 sm:px-8 sm:py-20"><section class="mx-auto max-w-xl border-t-4 border-red-700 bg-white p-6 shadow-sm sm:p-8"><p class="text-xs font-bold uppercase tracking-[0.2em] text-red-700">Acción irreversible</p><h1 class="mt-1 font-bebas text-5xl tracking-wide text-stone-950">Eliminar publicación</h1><p class="mt-3 text-stone-600">Esta acción eliminará permanentemente “{{ object.title }}”.</p>{% if object.featured_image %}<img class="mt-6 aspect-video w-full object-cover" src="{{ object.featured_image.url }}" alt="{{ object.featured_image_alt }}" width="640" height="360">{% endif %}<form method="post" class="mt-7 flex flex-wrap gap-3">{% csrf_token %}<button class="bg-red-700 px-5 py-3 font-bold text-white transition hover:bg-stone-950" type="submit">Sí, eliminar</button><a class="border border-stone-300 px-5 py-3 font-bold text-stone-800 no-underline hover:border-red-700 hover:text-red-700" href="{{ object.get_absolute_url }}">Cancelar</a></form></section></main>
+  <div class="editor-workspace editorial-page">
+    <section class="destructive-panel" aria-labelledby="delete-post-heading">
+      <p class="destructive-panel__eyebrow"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Irreversible action</p>
+      <h1 id="delete-post-heading">Delete post</h1>
+      <p class="destructive-panel__intro">This permanently removes the post and its discussion from the lane.</p>
+      <article class="destructive-panel__preview">
+        {% if object.featured_image %}
+          <img src="{{ object.featured_image.url }}" alt="{{ object.featured_image_alt }}" width="640" height="360">
+        {% endif %}
+        <div>
+          <p class="editorial-kicker">Selected post</p>
+          <h2>{{ object.title }}</h2>
+        </div>
+      </article>
+      <form method="post" class="destructive-panel__actions">
+        {% csrf_token %}
+        <button class="destructive-button" type="submit">Delete permanently</button>
+        <a class="editorial-button" href="{{ object.get_absolute_url }}">Keep post</a>
+      </form>
+    </section>
+  </div>
 {% endblock content %}

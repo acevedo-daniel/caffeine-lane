@@ -1,12 +1,16 @@
 {% extends "base.html" %}
-{% block title %}Página no encontrada · The Caffeine Lane{% endblock %}
+{% load i18n %}
+{% block title %}Page not found · The Caffeine Lane{% endblock title %}
 {% block content %}
-  <section class="error-page flex min-h-[58vh] items-center">
-    <div class="relative mx-auto w-full max-w-6xl px-4 py-20 sm:px-6">
-      <p class="error-kicker">Error 404</p>
-      <h1 class="error-title mt-3 max-w-3xl">Page not found</h1>
-      <p class="mt-6 max-w-xl text-lg leading-8 text-stone-200">The page you are looking for does not exist or has moved.</p>
-      <a class="mt-8 inline-flex rounded-full bg-white px-6 py-3 text-sm font-extrabold uppercase tracking-wider text-black no-underline transition hover:bg-red-700 hover:text-white" href="{% url 'home' %}">Back to home</a>
+  <section class="error-page">
+    <div class="error-page__container editorial-container">
+      <div class="error-page__copy">
+        <p class="error-kicker">404 · Page not found</p>
+        <h1 class="error-title">{% translate "Wrong turn." %}</h1>
+        <p class="error-page__intro">{% translate "There is no story at this mile marker. Search the lane or return to the latest work from the road." %}</p>
+        <a class="error-page__action" href="{% url 'search' %}">{% translate "Search the lane" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+      </div>
+      {% include "components/character_badge.html" with asset="character-oops.webp" size="lg" alt="The Rider taking a wrong turn" class_name="error-page__rider" %}
     </div>
   </section>
-{% endblock %}
+{% endblock content %}

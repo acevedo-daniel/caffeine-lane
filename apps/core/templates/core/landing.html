@@ -1,17 +1,17 @@
 {% extends "base.html" %}
-{% block title %}
-  Welcome to The Caffeine Lane
-{% endblock title %}
-{% block header %}
-{% endblock header %}
-{% block footer %}
-{% endblock footer %}
+{% load i18n %}
+{% block title %}The Caffeine Lane · Ride, Build, Repeat{% endblock title %}
+{% block header %}{% endblock header %}
+{% block footer %}{% endblock footer %}
 {% block content %}
-  <div class="bg-black flex flex-col items-center justify-center min-h-screen">
-    <h1 class="mb-8 max-w-full px-4 text-center font-bebas text-[clamp(2rem,10vw,4.5rem)] tracking-wide text-white transition duration-300 hover:scale-105">
-      THE CAFFEINE LANE
-    </h1>
-    <a href="{% url "home" %}"
-       class="bg-white text-black hover:bg-red-600 hover:text-white font-mont font-bold py-2 px-6 rounded-full text-lg transition duration-300 ease-in-out transform hover:scale-105">ENTER</a>
-  </div>
+  <section class="landing-cover" aria-labelledby="landing-title">
+    <div class="landing-content">
+      {% include "components/character_badge.html" with asset="character-welcome.webp" size="lg" alt="The Rider welcomes you to The Caffeine Lane" class_name="landing-rider" %}
+      <p class="landing-kicker">{% translate "Independent motorcycle culture" %}</p>
+      <h1 id="landing-title" class="landing-wordmark">THE CAFFEINE LANE</h1>
+      <p class="landing-tagline">Ride · Build · Repeat</p>
+      <p class="landing-manifesto">{% translate "For the bikes we make our own, the roads worth taking twice, and the stories that follow." %}</p>
+      <a class="landing-cta" href="{% url 'home' %}">{% translate "Enter the lane" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+    </div>
+  </section>
 {% endblock content %}

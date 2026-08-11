@@ -1,32 +1,29 @@
-{% extends "base.html" %}
-{% block title %}Ingresar · The Caffeine Lane{% endblock title %}
-{% block content %}
-  <main class="bg-stone-950 px-5 py-14 sm:px-8 sm:py-20">
-    <div class="mx-auto grid max-w-5xl gap-10 lg:grid-cols-[1fr_0.8fr] lg:items-center">
-      <section class="border-t-4 border-red-700 pt-5 text-white">
-        <p class="text-xs font-bold uppercase tracking-[0.2em] text-red-300">The Caffeine Lane · Comunidad</p>
-        <h1 class="mt-2 font-bebas text-6xl leading-[0.88] tracking-wide sm:text-8xl">Back on the road.</h1>
-        <p class="mt-5 max-w-lg text-lg leading-8 text-stone-300">Sign in to share, comment, and save your next story.</p>
-      </section>
-      <section class="bg-white p-6 sm:p-8" aria-labelledby="login-heading">
-        <h2 id="login-heading" class="font-bebas text-5xl tracking-wide text-stone-950">Ingresar</h2>
-        <p class="mt-2 text-sm text-stone-600">Use the email address linked to your account.</p>
-        <form method="post" class="mt-7 space-y-5" novalidate>
-          {% csrf_token %}
-          {% if form.non_field_errors %}<div class="border-l-4 border-red-700 bg-red-50 p-4 text-sm text-red-900">{{ form.non_field_errors }}</div>{% endif %}
-          {% include "components/form_field.html" with field=form.username %}
-          {% include "components/form_field.html" with field=form.password %}
-          <div class="flex justify-end">
-            {% if password_reset_enabled %}
-              <a class="text-sm font-bold text-red-700 hover:text-stone-950" href="{% url 'password_reset' %}">Forgot your password?</a>
-            {% else %}
-              <a class="text-sm font-bold text-stone-600 hover:text-red-700" href="{% url 'password_reset' %}">Recuperación no disponible en esta demo</a>
-            {% endif %}
-          </div>
-          <button class="button-primary w-full" type="submit">Ingresar</button>
-        </form>
-        <p class="mt-6 border-t border-stone-200 pt-5 text-sm text-stone-600">Do not have an account? <a class="font-bold text-red-700 hover:text-stone-950" href="{% url 'register' %}">Join now</a>.</p>
-      </section>
+{% extends "layouts/auth.html" %}
+{% load i18n %}
+{% block title %}Sign in · The Caffeine Lane{% endblock title %}
+{% block auth_visual %}
+  <p class="auth-shell__eyebrow">{% translate "The Caffeine Lane community" %}</p>
+  <h1 class="auth-shell__title">{% translate "Back on the road." %}</h1>
+  <p class="auth-shell__copy">{% translate "Sign in to save stories, share what you have learned, and keep the conversation moving." %}</p>
+  {% include "components/character_badge.html" with asset="character-signature.webp" size="lg" alt="The Rider signature" class_name="auth-shell__rider" %}
+{% endblock auth_visual %}
+{% block auth_form %}
+  <p class="auth-card__eyebrow">{% translate "Member access" %}</p>
+  <h2 id="auth-form-heading" class="auth-card__title">{% translate "Sign in" %}</h2>
+  <p class="auth-card__intro">{% translate "Use the email address connected to your account." %}</p>
+  <form method="post" class="auth-form" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="auth-form__error">{{ form.non_field_errors }}</div>{% endif %}
+    {% include "components/form_field.html" with field=form.username %}
+    {% include "components/form_field.html" with field=form.password %}
+    <div class="auth-form__utility">
+      {% if password_reset_enabled %}
+        <a href="{% url 'password_reset' %}">{% translate "Forgot your password?" %}</a>
+      {% else %}
+        <a href="{% url 'password_reset' %}">{% translate "Password recovery is unavailable in this demo" %}</a>
+      {% endif %}
     </div>
-  </main>
-{% endblock content %}
+    <button class="button-primary w-full" type="submit">{% translate "Sign in" %}</button>
+  </form>
+  <p class="auth-card__footer">{% translate "New to the lane?" %} <a href="{% url 'register' %}">{% translate "Create an account" %}</a>.</p>
+{% endblock auth_form %}

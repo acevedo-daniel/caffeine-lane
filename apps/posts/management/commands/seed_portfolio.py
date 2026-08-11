@@ -208,7 +208,7 @@ class Command(BaseCommand):
     help = "Create the idempotent public portfolio dataset and upload its images."
 
     def handle(self, *args, **options):
-        assets_dir = Path(settings.BASE_DIR) / "static" / "images" / "portfolio"
+        assets_dir = Path(settings.BASE_DIR) / "assets" / "portfolio"
         missing_assets = sorted(
             {
                 item["image"]

@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.utils.translation import gettext_lazy as _
 
 from .models import User
 
@@ -7,23 +8,23 @@ from .models import User
 class EmailRegistrationForm(forms.Form):
     email = forms.EmailField(
         required=True,
-        label="Email address",
-        widget=forms.EmailInput(attrs={"placeholder": "you@example.com"}),
+        label=_("Email address"),
+        widget=forms.EmailInput(attrs={"placeholder": _("you@example.com")}),
     )
 
     def clean_email(self):
         email = self.cleaned_data["email"].lower()
         if User.objects.filter(email__iexact=email).exists():
-            raise forms.ValidationError("An account with this email already exists.")
+            raise forms.ValidationError(_("An account with this email already exists."))
         return email
 
 
 class RegistrationStep2Form(UserCreationForm):
     has_motorcycle = forms.TypedChoiceField(
-        choices=[("true", "Yes"), ("false", "No")],
+        choices=[("true", _("Yes")), ("false", _("No"))],
         coerce=lambda value: value == "true",
         widget=forms.RadioSelect,
-        label="Do you ride a motorcycle?",
+        label=_("Do you ride a motorcycle?"),
     )
 
     class Meta(UserCreationForm.Meta):
@@ -32,7 +33,7 @@ class RegistrationStep2Form(UserCreationForm):
 
     def validate_registration_email(self, email):
         if User.objects.filter(email__iexact=email).exists():
-            self.add_error(None, "An account with this email already exists.")
+            self.add_error(None, _("An account with this email already exists."))
             return False
         return True
 
@@ -47,7 +48,7 @@ class RegistrationStep2Form(UserCreationForm):
 
 class EmailAuthenticationForm(AuthenticationForm):
     username = forms.EmailField(
-        label="Email address",
+        label=_("Email address"),
         widget=forms.EmailInput(attrs={"autofocus": True, "autocomplete": "email"}),
     )
 

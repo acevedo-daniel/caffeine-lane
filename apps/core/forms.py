@@ -1,51 +1,52 @@
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 
 class ContactForm(forms.Form):
     from_name = forms.CharField(
-        label="Your name",
+        label=_("Your name"),
         required=True,
         max_length=100,
         widget=forms.TextInput(
             attrs={
                 "class": "w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent",
-                "placeholder": "What should we call you?",
+                "placeholder": _("What should we call you?"),
             }
         ),
     )
 
     from_email = forms.EmailField(
-        label="Your email address",
+        label=_("Your email address"),
         required=True,
         max_length=254,
         widget=forms.EmailInput(
             attrs={
                 "class": "w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent",
-                "placeholder": "So we can reply",
+                "placeholder": _("So we can reply"),
             }
         ),
     )
 
     subject = forms.CharField(
-        label="Subject",
+        label=_("Subject"),
         required=True,
         max_length=150,
         widget=forms.TextInput(
             attrs={
                 "class": "w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent",
-                "placeholder": "What is your message about?",
+                "placeholder": _("What is your message about?"),
             }
         ),
     )
 
     message = forms.CharField(
-        label="Your message",
+        label=_("Your message"),
         required=True,
         max_length=5000,
         widget=forms.Textarea(
             attrs={
                 "class": "w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent",
-                "placeholder": "Write your message...",
+                "placeholder": _("Write your message..."),
                 "rows": 5,
             }
         ),
@@ -54,5 +55,5 @@ class ContactForm(forms.Form):
 
     def clean_website(self):
         if self.cleaned_data["website"]:
-            raise forms.ValidationError("Spam detected.")
+            raise forms.ValidationError(_("Spam detected."))
         return ""

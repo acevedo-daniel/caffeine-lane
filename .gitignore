@@ -49,19 +49,21 @@ coverage.xml
 *.cover
 .hypothesis/
 .pytest_cache/
+.ruff_cache/
 
 # Translations
 *.mo
 *.pot
+!locale/**/LC_MESSAGES/django.mo
 
 # Django specific
 *.log
 local_settings.py
 
-# Subir migraciones (solo ignorar cache interno)
+# Keep migrations; ignore only their Python cache.
 migrations/**/__pycache__/
 
-# Ignorar base de datos local
+# Local database files.
 db.sqlite3
 db.sqlite3-journal
 
@@ -69,16 +71,9 @@ db.sqlite3-journal
 # Static & Media
 # =========================
 
-# Subir static propios (CSS, JS, imágenes como logos/)
-# Ignorar solo archivos generados por collectstatic
+# Keep authored static assets; ignore collectstatic output and local uploads.
 staticfiles/
 media/
-
-# Subir media en desarrollo (archivos subidos por usuarios)
-# En producción normalmente se usa almacenamiento externo
-# pero en este proyecto sí se suben
-# (no ignoramos la carpeta media/)
-# media/
 
 # =========================
 # Otros entornos / configs
@@ -125,7 +120,7 @@ venv.bak/
 .dmypy.json
 dmypy.json
 
-# Temporary documentation and PDF inspection artifacts
+# Temporary documentation and PDF inspection artifacts.
 /docs/temporal/
 /tmp/pdfs/
 

@@ -1,61 +1,67 @@
 {% load i18n static %}
-<a class="sr-only focus:not-sr-only" href="#main-content">Skip to content</a>
-<header class="bg-black text-white">
+<a class="sr-only focus:not-sr-only" href="#main-content">{% translate "Skip to content" %}</a>
+<header class="site-header">
   <div class="brand-masthead">
-    <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-      <div class="flex items-center gap-3">
-        <a class="masthead-utility" href="{% url 'contact' %}">Contact</a>
-        <form action="{% url 'set_language' %}" method="post" class="flex items-center">
+    <div class="brand-utility editorial-container">
+      <a class="masthead-utility" href="{% url 'contact' %}">{% translate "Contact" %}</a>
+      <div class="flex items-center gap-4">
+        <form action="{% url 'set_language' %}" method="post" class="language-switcher">
           {% csrf_token %}
           <input name="next" type="hidden" value="{{ request.get_full_path }}">
-          <label class="sr-only" for="language-switcher">Language</label>
-          <select id="language-switcher" name="language" class="bg-transparent text-[10px] font-bold uppercase tracking-[0.14em] text-stone-300 outline-none transition hover:text-white">
-            {% get_current_language as CURRENT_LANGUAGE %}
-            {% get_available_languages as LANGUAGES %}
+          <label class="sr-only" for="language-switcher">{% translate "Language" %}</label>
+          {% get_current_language as CURRENT_LANGUAGE %}
+          {% get_available_languages as LANGUAGES %}
+          <i class="fa-solid fa-globe" aria-hidden="true"></i>
+          <select id="language-switcher" name="language">
             {% for language_code, language_name in LANGUAGES %}
               <option value="{{ language_code }}" {% if language_code == CURRENT_LANGUAGE %}selected{% endif %}>{{ language_code }}</option>
             {% endfor %}
           </select>
-          <button class="ml-1 text-stone-400 transition hover:text-white" type="submit" aria-label="Change language"><i class="fa-solid fa-globe" aria-hidden="true"></i></button>
+          <button type="submit" aria-label="{% translate 'Change language' %}">{% translate "Apply" %}</button>
+        </form>
+        <form method="get" action="{% url 'search' %}" class="masthead-search-form hidden sm:block">
+          <label class="sr-only" for="site-search">{% translate "Search posts" %}</label>
+          <div class="relative">
+            <input id="site-search" name="q" type="search" placeholder="{% translate 'Search the lane' %}" class="masthead-search">
+            <button class="masthead-search-button" type="submit" aria-label="{% translate 'Search posts' %}"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></button>
+          </div>
         </form>
       </div>
-      <form method="get" action="{% url 'search' %}" class="hidden w-full max-w-xs sm:block">
-        <label class="sr-only" for="site-search">Search posts</label>
-        <div class="relative">
-          <input id="site-search" name="q" type="search" placeholder="Search posts" class="masthead-search">
-          <button class="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 hover:text-red-700" type="submit" aria-label="Search posts"><i class="fas fa-search" aria-hidden="true"></i></button>
-        </div>
-      </form>
     </div>
-    <div class="px-4 pb-6 text-center sm:pb-8">
-      <a href="{% url 'home' %}" class="brand-title">THE CAFFEINE LANE</a>
-      <p class="mt-1 text-xs font-semibold uppercase tracking-[0.3em] text-stone-400">Ride · Build · Repeat</p>
+    <div class="brand-lockup">
+      <a href="{% url 'home' %}" class="brand-lockup-link">
+        {% include "components/character_badge.html" with asset="character-signature-256.webp" size="sm" alt="The Rider" class_name="brand-lockup-rider" %}
+        <span>
+          <span class="brand-title">THE CAFFEINE LANE</span>
+          <span class="brand-tagline">{% translate "Ride · Build · Repeat" %}</span>
+        </span>
+      </a>
     </div>
   </div>
 
-  <nav class="site-nav" data-mobile-menu id="mobile-menu" aria-label="Primary navigation">
-    <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-2 sm:px-6">
-      <a href="{% url 'home' %}" class="flex shrink-0 items-center" aria-label="Go to home">
-        <img src="{% static 'images/old-logo/helmet-wink-icon.png' %}" alt="The Caffeine Lane logo" class="h-9 w-9 rounded-full border border-stone-600 object-cover" width="36" height="36">
+  <nav class="site-nav" data-mobile-menu id="mobile-menu" aria-label="{% translate 'Primary navigation' %}">
+    <div class="editorial-container flex flex-wrap items-center justify-between gap-3 py-2">
+      <a href="{% url 'home' %}" class="nav-rider-link" aria-label="{% translate 'Go to home' %}">
+        {% include "components/character_badge.html" with asset="character-signature-256.webp" size="xs" alt="" class_name="nav-rider" %}
       </a>
-      <button type="button" data-mobile-menu-button aria-controls="primary-links" aria-expanded="false" class="site-menu-button md:hidden">Menu</button>
+      <button type="button" data-mobile-menu-button aria-controls="primary-links" aria-expanded="false" class="site-menu-button md:hidden">{% translate "Menu" %}</button>
       <div id="primary-links" data-mobile-menu-panel class="hidden w-full flex-col gap-3 border-t border-stone-800 pt-3 md:flex md:w-auto md:flex-row md:items-center md:gap-5 md:border-0 md:pt-0">
         <div class="flex flex-col gap-3 md:flex-row md:items-center md:gap-5">
-          <a class="nav-link" href="{% url 'home' %}">Home</a>
-          <a class="nav-link md:hidden" href="{% url 'search' %}">Search</a>
+          <a class="nav-link" href="{% url 'home' %}">{% translate "Home" %}</a>
+          <a class="nav-link md:hidden" href="{% url 'search' %}">{% translate "Search" %}</a>
           {% for category in navigation_categories %}
             <a class="nav-link" href="{% url 'category_view' category_slug=category.slug %}">{{ category.name }}</a>
           {% endfor %}
-          <a class="nav-link" href="{% url 'about' %}">About</a>
+          <a class="nav-link" href="{% url 'about' %}">{% translate "About" %}</a>
         </div>
         <div class="flex flex-wrap items-center gap-3 border-t border-stone-800 pt-3 md:ml-3 md:border-l md:border-t-0 md:pl-5 md:pt-0">
           {% if user.is_authenticated %}
-            {% if perms.posts.add_post %}<a class="nav-link" href="{% url 'post_create' %}">New post</a>{% endif %}
+            {% if perms.posts.add_post %}<a class="nav-link" href="{% url 'post_create' %}">{% translate "New post" %}</a>{% endif %}
             <a class="nav-link" href="{% url 'profile' %}">{{ user.username }}</a>
-            <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit" class="nav-link">Sign out</button></form>
+            <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit" class="nav-link">{% translate "Sign out" %}</button></form>
           {% else %}
-            <a class="nav-link" href="{% url 'login' %}">Sign in</a>
-            <a class="nav-join" href="{% url 'register' %}">Join</a>
+            <a class="nav-link" href="{% url 'login' %}">{% translate "Sign in" %}</a>
+            <a class="nav-join" href="{% url 'register' %}">{% translate "Join" %}</a>
           {% endif %}
         </div>
       </div>

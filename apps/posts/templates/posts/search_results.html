@@ -1,32 +1,32 @@
 {% extends "base.html" %}
-{% block title %}Buscar publicaciones · The Caffeine Lane{% endblock title %}
+{% block title %}Search posts · The Caffeine Lane{% endblock title %}
 {% block content %}
-  <main class="editorial-page">
-    <header class="bg-stone-950 px-5 py-14 text-white sm:px-8 sm:py-20">
-      <div class="mx-auto max-w-5xl">
-        <p class="text-xs font-bold uppercase tracking-[0.2em] text-red-300">The Caffeine Lane · Archivo</p>
-        <h1 class="mt-2 font-bebas text-6xl leading-[0.88] tracking-wide sm:text-8xl">Buscar publicaciones</h1>
-        <p class="mt-4 max-w-2xl text-stone-300">Encontrá builds, guías y reviews para acompañar tu próxima salida.</p>
+  <div class="editorial-page search-page">
+    <header class="search-page__hero">
+      <div class="editorial-container">
+        <p class="editorial-kicker text-red-300">The Caffeine Lane · Archive</p>
+        <h1 class="search-page__title">Search the lane</h1>
+        <p class="search-page__intro">Find builds, guides, and reviews worth carrying into your next ride.</p>
 
-        <form method="get" action="{% url 'search' %}" id="search-form" class="editorial-panel mt-8 p-4 text-stone-950 sm:p-6">
-          <label class="sr-only" for="{{ form.q.id_for_label }}">Buscar publicaciones</label>
-          <div class="flex flex-col gap-3 sm:flex-row">
-            <div class="flex-1">{{ form.q }}</div>
-            <div class="flex flex-wrap gap-3">
-              <button id="filter-toggle-btn" class="border border-stone-400 px-4 py-3 text-sm font-bold text-stone-800 transition hover:border-red-700 hover:text-red-700" type="button" aria-controls="filter-section" aria-expanded="{% if current_category or current_sort != 'relevance' %}true{% else %}false{% endif %}">
-                <i class="fa-solid fa-sliders" aria-hidden="true"></i> Filtros
+        <form method="get" action="{% url 'search' %}" id="search-form" class="search-panel">
+          <label class="sr-only" for="{{ form.q.id_for_label }}">Search posts</label>
+          <div class="search-panel__query-row">
+            <div class="search-panel__query">{{ form.q }}</div>
+            <div class="search-panel__actions">
+              <button id="filter-toggle-btn" class="search-filter-toggle" type="button" aria-controls="filter-section" aria-expanded="{% if current_category or current_sort != 'relevance' %}true{% else %}false{% endif %}">
+                <i class="fa-solid fa-sliders" aria-hidden="true"></i> Filters
               </button>
-              <button class="editorial-button editorial-button--solid" type="submit"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Buscar</button>
+              <button class="editorial-button editorial-button--solid" type="submit"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Search</button>
             </div>
           </div>
-          <div id="filter-section" class="mt-5 border-t border-stone-200 pt-5{% if not current_category and current_sort == 'relevance' %} hidden{% endif %}">
+          <div id="filter-section" class="search-panel__filters{% if not current_category and current_sort == 'relevance' %} hidden{% endif %}">
             <div class="grid gap-5 sm:grid-cols-2">
               <div>
-                <label class="mb-2 block text-sm font-bold text-stone-800" for="{{ form.category.id_for_label }}">Categoría</label>
+                <label class="search-panel__label" for="{{ form.category.id_for_label }}">Category</label>
                 {{ form.category }}
               </div>
               <div>
-                <label class="mb-2 block text-sm font-bold text-stone-800" for="{{ form.sort.id_for_label }}">Ordenar por</label>
+                <label class="search-panel__label" for="{{ form.sort.id_for_label }}">Sort by</label>
                 {{ form.sort }}
               </div>
             </div>
@@ -38,44 +38,57 @@
     <section class="editorial-container editorial-section" aria-labelledby="results-heading">
       <div class="editorial-rule flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p class="editorial-kicker">Resultados</p>
+          <p class="editorial-kicker">Search results</p>
           {% if query %}
-            <h2 id="results-heading" class="editorial-heading mt-1">Resultados para “{{ query }}”</h2>
+            <h2 id="results-heading" class="editorial-heading mt-1">Results for “{{ query }}”</h2>
           {% else %}
-            <h2 id="results-heading" class="editorial-heading mt-1">Todas las publicaciones</h2>
+            <h2 id="results-heading" class="editorial-heading mt-1">All stories</h2>
           {% endif %}
         </div>
-        {% if is_paginated or results %}<p class="text-sm text-stone-600">{{ page_obj.paginator.count }} resultado{{ page_obj.paginator.count|pluralize:"s" }}</p>{% endif %}
+        {% if is_paginated or results %}<p class="text-sm text-stone-600">{{ page_obj.paginator.count }} result{{ page_obj.paginator.count|pluralize }}</p>{% endif %}
       </div>
 
-      <div class="mt-7 grid gap-6 sm:grid-cols-2 lg:grid-cols-3" aria-live="polite">
+      {% if current_category or current_sort != "relevance" %}
+        <div class="search-active-filters" aria-label="Active search filters">
+          {% if current_category %}<span class="search-active-filter"><i class="fa-solid fa-filter" aria-hidden="true"></i> Category filter</span>{% endif %}
+          {% if current_sort != "relevance" %}<span class="search-active-filter"><i class="fa-solid fa-arrow-down-wide-short" aria-hidden="true"></i> Custom sort</span>{% endif %}
+          <a class="search-clear-filters" href="{% url 'search' %}{% if query %}?q={{ query|urlencode }}{% endif %}">Clear filters</a>
+        </div>
+      {% endif %}
+
+      <div class="category-post-grid mt-7" aria-live="polite">
         {% for post in results %}
           {% include "components/post_card.html" with post=post %}
         {% empty %}
-          <div class="editorial-empty sm:col-span-2 lg:col-span-3">
-            <h3 class="font-bebas text-4xl tracking-wide text-stone-950">No encontramos resultados</h3>
-            <p class="mt-2">Probá con otras palabras o cambiá los filtros.</p>
+          <div class="search-empty">
+            <div>
+              <p class="editorial-kicker">No match yet</p>
+              <h3 class="mt-2 font-bebas text-5xl leading-[0.9] tracking-wide text-stone-950">No stories found</h3>
+              <p class="mt-3 max-w-xl text-stone-600">Try a broader search, clear a filter, or return to the latest work from the lane.</p>
+              <a class="editorial-button mt-6" href="{% url 'search' %}">Browse all stories <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+            </div>
+            {% include "components/character_badge.html" with asset="character-searching.webp" size="lg" alt="The Rider searching through the archive" class_name="search-empty__rider" %}
           </div>
         {% endfor %}
       </div>
 
       {% if is_paginated %}
-        <nav class="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-stone-300 pt-6" aria-label="Páginas de resultados">
+        <nav class="editorial-pagination" aria-label="Search result pages">
           <div>
             {% if page_obj.has_previous %}
-              <a class="editorial-button" href="?{{ pagination_query }}{% if pagination_query %}&amp;{% endif %}page={{ page_obj.previous_page_number }}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Anterior</a>
+              <a class="editorial-button" href="?{{ pagination_query }}{% if pagination_query %}&amp;{% endif %}page={{ page_obj.previous_page_number }}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Previous</a>
             {% endif %}
           </div>
-          <p class="text-sm text-stone-600">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</p>
+          <p class="editorial-pagination__status">Page {{ page_obj.number }} <span aria-hidden="true">/</span> <span class="sr-only">of</span> {{ page_obj.paginator.num_pages }}</p>
           <div>
             {% if page_obj.has_next %}
-              <a class="editorial-button" href="?{{ pagination_query }}{% if pagination_query %}&amp;{% endif %}page={{ page_obj.next_page_number }}">Siguiente <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+              <a class="editorial-button" href="?{{ pagination_query }}{% if pagination_query %}&amp;{% endif %}page={{ page_obj.next_page_number }}">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
             {% endif %}
           </div>
         </nav>
       {% endif %}
     </section>
-  </main>
+  </div>
 {% endblock content %}
 {% block scripts %}
   {% load static %}

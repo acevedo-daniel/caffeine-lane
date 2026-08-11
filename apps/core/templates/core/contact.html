@@ -1,10 +1,31 @@
 {% extends "base.html" %}
-{% block title %}Contacto · The Caffeine Lane{% endblock title %}
+{% load i18n %}
+{% block title %}Contact · The Caffeine Lane{% endblock title %}
 {% block content %}
-  <main class="bg-stone-50 px-5 py-14 sm:px-8 sm:py-20">
-    <div class="mx-auto grid max-w-5xl gap-10 lg:grid-cols-[0.8fr_1fr] lg:items-start">
-      <header class="border-t-4 border-stone-950 pt-5"><p class="text-xs font-bold uppercase tracking-[0.2em] text-red-700">The Caffeine Lane</p><h1 class="mt-1 font-bebas text-6xl leading-[0.88] tracking-wide text-stone-950 sm:text-7xl">Hablemos de ruta.</h1><p class="mt-5 max-w-md text-lg leading-8 text-stone-600">¿Tenés una pregunta, sugerencia o proyecto para compartir? Queremos leerte.</p></header>
-      <section class="bg-white p-6 shadow-sm sm:p-8" aria-labelledby="contact-form-heading"><h2 id="contact-form-heading" class="font-bebas text-4xl tracking-wide text-stone-950">Enviar mensaje</h2><form method="post" class="mt-6 space-y-5" novalidate>{% csrf_token %}{{ form.website }}{% if form.non_field_errors %}<div class="border-l-4 border-red-700 bg-red-50 p-4 text-sm text-red-900">{{ form.non_field_errors }}</div>{% endif %}{% include "components/form_field.html" with field=form.from_name %}{% include "components/form_field.html" with field=form.from_email %}{% include "components/form_field.html" with field=form.subject %}{% include "components/form_field.html" with field=form.message %}<button class="button-primary w-full" type="submit">Enviar mensaje</button></form></section>
+  <div class="contact-page editorial-page">
+    <div class="contact-page__container editorial-container editorial-section">
+      <header class="contact-page__intro">
+        <p class="editorial-kicker">The Caffeine Lane</p>
+        <h1>{% translate "Talk shop. Share the road." %}</h1>
+        <p>{% translate "Have a question, a useful fix, or a story from your own garage? Send it our way. Every good conversation starts somewhere." %}</p>
+        {% include "components/character_badge.html" with asset="character-talking.webp" size="lg" alt="The Rider ready to talk shop" class_name="contact-page__rider" %}
+      </header>
+
+      <section class="contact-panel" aria-labelledby="contact-form-heading">
+        <p class="auth-card__eyebrow">{% translate "Send a message" %}</p>
+        <h2 id="contact-form-heading" class="auth-card__title">{% translate "Let’s talk." %}</h2>
+        <p class="auth-card__intro">{% translate "We read every note and reply as soon as we can." %}</p>
+        <form method="post" class="contact-form" novalidate>
+          {% csrf_token %}
+          {{ form.website }}
+          {% if form.non_field_errors %}<div class="auth-form__error">{{ form.non_field_errors }}</div>{% endif %}
+          {% include "components/form_field.html" with field=form.from_name %}
+          {% include "components/form_field.html" with field=form.from_email %}
+          {% include "components/form_field.html" with field=form.subject %}
+          {% include "components/form_field.html" with field=form.message %}
+          <button class="button-primary w-full" type="submit">{% translate "Send message" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+        </form>
+      </section>
     </div>
-  </main>
+  </div>
 {% endblock content %}

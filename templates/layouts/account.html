@@ -1,0 +1,11 @@
+{% extends "layouts/auth.html" %}
+{% load i18n %}
+{% block auth_visual %}
+  <p class="auth-shell__eyebrow">{% translate "The Caffeine Lane account" %}</p>
+  <h1 class="auth-shell__title">{% block account_visual_title %}{% translate "Your place in the lane." %}{% endblock account_visual_title %}</h1>
+  <p class="auth-shell__copy">{% block account_visual_copy %}{% translate "Keep your profile and account details ready for the next ride." %}{% endblock account_visual_copy %}</p>
+  {% block account_visual_mark %}{% endblock account_visual_mark %}
+{% endblock auth_visual %}
+{% block auth_form %}
+  {% block account_panel %}{% endblock account_panel %}
+{% endblock auth_form %}

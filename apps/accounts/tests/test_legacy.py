@@ -169,14 +169,14 @@ class AccountFlowTests(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Recuperación no disponible")
+        self.assertContains(response, "Password recovery is unavailable")
         self.assertEqual(len(mail.outbox), 0)
 
     @override_settings(PASSWORD_RESET_ENABLED=False)
     def test_login_explains_demo_password_reset_limit(self):
         response = self.client.get(reverse("login"))
 
-        self.assertContains(response, "Recuperación no disponible en esta demo")
+        self.assertContains(response, "Password recovery is unavailable in this demo")
 
     def test_password_change_updates_credentials(self):
         user = User.objects.create_user(

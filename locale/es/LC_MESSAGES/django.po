@@ -1,0 +1,305 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: caffeine-lane\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Skip to content"
+msgstr "Saltar al contenido"
+
+msgid "Contact"
+msgstr "Contacto"
+
+msgid "Language"
+msgstr "Idioma"
+
+msgid "Change language"
+msgstr "Cambiar idioma"
+
+msgid "Apply"
+msgstr "Aplicar"
+
+msgid "Search posts"
+msgstr "Buscar publicaciones"
+
+msgid "Search the lane"
+msgstr "Buscar en la ruta"
+
+msgid "Primary navigation"
+msgstr "Navegación principal"
+
+msgid "Go to home"
+msgstr "Ir al inicio"
+
+msgid "Menu"
+msgstr "Menú"
+
+msgid "Home"
+msgstr "Inicio"
+
+msgid "Search"
+msgstr "Buscar"
+
+msgid "About"
+msgstr "Acerca de"
+
+msgid "New post"
+msgstr "Nueva publicación"
+
+msgid "Sign out"
+msgstr "Cerrar sesión"
+
+msgid "Sign in"
+msgstr "Iniciar sesión"
+
+msgid "Join"
+msgstr "Unirse"
+
+msgid "Ride · Build · Repeat"
+msgstr "Ride · Build · Repeat"
+
+msgid "Explore posts"
+msgstr "Explorar publicaciones"
+
+msgid "Explore"
+msgstr "Explorar"
+
+msgid "Latest posts"
+msgstr "Últimas publicaciones"
+
+msgid "Welcome, rider. The road is ours."
+msgstr "Bienvenido, rider. La ruta es nuestra."
+
+msgid "Contact and information"
+msgstr "Contacto e información"
+
+msgid "Stay on the lane"
+msgstr "Sigue en la ruta"
+
+msgid "Built for the long way home."
+msgstr "Hecho para el camino largo a casa."
+
+msgid "Independent motorcycle culture"
+msgstr "Cultura motociclista independiente"
+
+msgid "For the bikes we make our own, the roads worth taking twice, and the stories that follow."
+msgstr "Para las motos que hacemos nuestras, las rutas que vale la pena recorrer dos veces y las historias que siguen."
+
+msgid "Enter the lane"
+msgstr "Entrar a la ruta"
+
+msgid "The Caffeine Lane account"
+msgstr "Cuenta de The Caffeine Lane"
+
+msgid "Your place in the lane."
+msgstr "Tu lugar en la ruta."
+
+msgid "Keep your profile and account details ready for the next ride."
+msgstr "Mantén tu perfil y los datos de tu cuenta listos para la próxima salida."
+
+msgid "Back on the road."
+msgstr "De vuelta en la ruta."
+
+msgid "Join the ride."
+msgstr "Únete al viaje."
+
+msgid "Step 1 of 2"
+msgstr "Paso 1 de 2"
+
+msgid "Continue"
+msgstr "Continuar"
+
+msgid "Build your story. Share your ride."
+msgstr "Construye tu historia. Comparte tu viaje."
+
+msgid "Step 2 of 2"
+msgstr "Paso 2 de 2"
+
+msgid "Create account"
+msgstr "Crear cuenta"
+
+msgid "Read story"
+msgstr "Leer historia"
+
+msgid "View all"
+msgstr "Ver todo"
+
+msgid "Join the ride"
+msgstr "Únete al viaje"
+
+msgid "Built for the ride between the garage and the road."
+msgstr "Hecho para el viaje entre el garaje y la ruta."
+
+msgid "The Caffeine Lane is an editorial home for the people who keep a machine close, a tool roll nearby, and a better route in mind."
+msgstr "The Caffeine Lane es un hogar editorial para quienes mantienen una máquina cerca, un juego de herramientas a mano y una mejor ruta en mente."
+
+msgid "The mission"
+msgstr "La misión"
+
+msgid "Machines carry stories."
+msgstr "Las máquinas llevan historias."
+
+msgid "We believe a motorcycle is more than transportation. It is a record of choices, hands-on work, wrong turns, and the miles that prove what matters."
+msgstr "Creemos que una motocicleta es más que transporte. Es un registro de decisiones, trabajo manual, desvíos y los kilómetros que demuestran lo que importa."
+
+msgid "That is why we make room for practical guides, honest reviews, and builds with a point of view — work worth taking from the bench to the open road."
+msgstr "Por eso damos lugar a guías prácticas, reseñas honestas y proyectos con punto de vista: trabajo que vale la pena llevar del banco a la ruta abierta."
+
+msgid "The garage"
+msgstr "El garaje"
+
+msgid "Learn it. Tune it. Ride it."
+msgstr "Conócela. Ajústala. Rodala."
+
+msgid "The garage is where curiosity becomes confidence. We share the thinking behind maintenance and modification, so every rider can understand the machine beneath them."
+msgstr "El garaje es donde la curiosidad se vuelve confianza. Compartimos el criterio detrás del mantenimiento y la modificación para que cada rider entienda la máquina que tiene debajo."
+
+msgid "Explore the guides"
+msgstr "Explora las guías"
+
+msgid "Why we are here"
+msgstr "Por qué estamos aquí"
+
+msgid "Garage. Road. Community."
+msgstr "Garaje. Ruta. Comunidad."
+
+msgid "Make it yours."
+msgstr "Hazla tuya."
+
+msgid "Practical knowledge for hands-on riders, from first checks to long-term builds."
+msgstr "Conocimiento práctico para riders que meten mano, desde las primeras revisiones hasta proyectos de largo plazo."
+
+msgid "Put it to work."
+msgstr "Ponla a trabajar."
+
+msgid "Real-world notes on gear, machines, and the rides that connect them."
+msgstr "Notas del mundo real sobre equipamiento, máquinas y los viajes que las conectan."
+
+msgid "Pass it on."
+msgstr "Compártelo."
+
+msgid "A lane for sharing solutions, perspectives, and the stories behind the miles."
+msgstr "Una ruta para compartir soluciones, perspectivas y las historias detrás de los kilómetros."
+
+msgid "Your place in the lane"
+msgstr "Tu lugar en la ruta"
+
+msgid "Create a profile and add your voice to the conversations that move the culture forward."
+msgstr "Crea un perfil y suma tu voz a las conversaciones que hacen avanzar la cultura."
+
+msgid "Talk shop. Share the road."
+msgstr "Hablemos de taller. Compartamos la ruta."
+
+msgid "Have a question, a useful fix, or a story from your own garage? Send it our way. Every good conversation starts somewhere."
+msgstr "¿Tienes una pregunta, una solución útil o una historia de tu propio garaje? Envíanosla. Toda buena conversación empieza en algún lugar."
+
+msgid "Send a message"
+msgstr "Envía un mensaje"
+
+msgid "Let’s talk."
+msgstr "Hablemos."
+
+msgid "We read every note and reply as soon as we can."
+msgstr "Leemos cada nota y respondemos tan pronto como podemos."
+
+msgid "Send message"
+msgstr "Enviar mensaje"
+
+msgid "Loose bolt."
+msgstr "Tornillo flojo."
+
+msgid "That request did not fit together. Check the information and try the next move from a clean line."
+msgstr "Esa solicitud no encajó. Revisa la información e inténtalo de nuevo desde una línea limpia."
+
+msgid "Back to the lane"
+msgstr "Volver a la ruta"
+
+msgid "Road closed."
+msgstr "Ruta cerrada."
+
+msgid "This stretch is reserved for a different rider. Head back to the lane and choose another route."
+msgstr "Este tramo está reservado para otro rider. Vuelve a la ruta y elige otro camino."
+
+msgid "Wrong turn."
+msgstr "Desvío equivocado."
+
+msgid "There is no story at this mile marker. Search the lane or return to the latest work from the road."
+msgstr "No hay una historia en este punto del camino. Busca en la ruta o vuelve a lo último de la carretera."
+
+msgid "Engine trouble."
+msgstr "Problemas de motor."
+
+msgid "The Caffeine Lane community"
+msgstr "La comunidad de The Caffeine Lane"
+
+msgid "Sign in to save stories, share what you have learned, and keep the conversation moving."
+msgstr "Inicia sesión para guardar historias, compartir lo que aprendiste y mantener la conversación en marcha."
+
+msgid "Member access"
+msgstr "Acceso de miembros"
+
+msgid "Use the email address connected to your account."
+msgstr "Usa el correo electrónico asociado a tu cuenta."
+
+msgid "Forgot your password?"
+msgstr "¿Olvidaste tu contraseña?"
+
+msgid "Password recovery is unavailable in this demo"
+msgstr "La recuperación de contraseña no está disponible en esta demo"
+
+msgid "New to the lane?"
+msgstr "¿Recién llegas a la ruta?"
+
+msgid "Create an account"
+msgstr "Crear una cuenta"
+
+msgid "Stories for the road."
+msgstr "Historias para la ruta."
+
+msgid "New dispatches are being prepared."
+msgstr "Estamos preparando nuevas historias."
+
+msgid "Builds & features"
+msgstr "Proyectos y destacados"
+
+msgid "Built in garages. Made for the road."
+msgstr "Hecho en garajes. Pensado para la ruta."
+
+msgid "No builds in the lane yet. The next garage story is on its way."
+msgstr "Todavía no hay proyectos en la ruta. La próxima historia de garaje ya viene en camino."
+
+msgid "How-to & guides"
+msgstr "Tutoriales y guías"
+
+msgid "Wrench smarter. Ride farther."
+msgstr "Ajusta mejor. Llega más lejos."
+
+msgid "No guides in the lane yet. The next workshop note is on its way."
+msgstr "Todavía no hay guías en la ruta. La próxima nota de taller ya viene en camino."
+
+msgid "Notes from the garage"
+msgstr "Notas desde el garaje"
+
+msgid "Garage to road"
+msgstr "Del garaje a la ruta"
+
+msgid "Explore workshop guides"
+msgstr "Explora las guías de taller"
+
+msgid "Gear & product reviews"
+msgstr "Reseñas de equipamiento y productos"
+
+msgid "Gear worth taking on the road."
+msgstr "Equipamiento que vale la pena llevar a la ruta."
+
+msgid "No reviews in the lane yet. The next road test is on its way."
+msgstr "Todavía no hay reseñas en la ruta. La próxima prueba de carretera ya viene en camino."
+
+msgid "Create a profile to join the conversation, follow the builds, and share the road ahead."
+msgstr "Crea un perfil para sumarte a la conversación, seguir los proyectos y compartir la ruta que viene."
+
+msgid "Something under the tank needs attention. Give us a moment, then head back to the lane and try again."
+msgstr "Algo bajo el tanque necesita atención. Danos un momento, luego vuelve a la ruta e inténtalo otra vez."
