@@ -60,6 +60,10 @@ Motorcycle build notes, practical riding advice, and gear opinions are often sca
 - Production media is stored by Cloudinary and static files are served by WhiteNoise.
 - The current Resend onboarding sender limits password-reset delivery; the public reset flow is disabled by default.
 
+## Background
+
+Caffeine Lane started as a final project for the Informatorio program in Resistencia, Chaco. It was later rebuilt and modernized as a personal project, adopting current Django practices, a custom frontend pipeline, managed cloud providers, and structured testing.
+
 ## Category context
 
 Personal project. Caffeine Lane is maintained by a single developer and documented for reproducible development, operation, and future personal work without introducing unnecessary organizational process.

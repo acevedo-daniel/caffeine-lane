@@ -24,6 +24,16 @@ test.describe("compiled frontend smoke checks", () => {
     await expect(index).not.toHaveText("02", { timeout: 9_000 });
   });
 
+  test("Hero disables autoplay when reduced motion is requested", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/home/");
+
+    const index = page.locator("[aria-roledescription='carousel'] [data-carousel-index]");
+    await expect(index).toHaveText("01");
+    await page.waitForTimeout(7_500);
+    await expect(index).toHaveText("01");
+  });
+
   test("language and custom selects synchronize with their native controls", async ({ page }) => {
     await page.goto("/home/");
 

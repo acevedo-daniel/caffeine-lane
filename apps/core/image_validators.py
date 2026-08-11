@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 from PIL import Image, UnidentifiedImageError
 
 ALLOWED_IMAGE_FORMATS = {"JPEG", "PNG", "WEBP"}
@@ -13,14 +14,16 @@ def validate_uploaded_image(upload):
         return
 
     if upload.size > MAX_IMAGE_BYTES:
-        raise ValidationError("Images must be 5 MB or smaller.", code="image_too_large")
+        raise ValidationError(
+            _("Images must be 5 MB or smaller."), code="image_too_large"
+        )
 
     try:
         image = Image.open(upload)
         image.verify()
     except (UnidentifiedImageError, OSError, ValueError) as error:
         raise ValidationError(
-            "Upload a valid image file.", code="invalid_image"
+            _("Upload a valid image file."), code="invalid_image"
         ) from error
     finally:
         upload.seek(0)
@@ -28,12 +31,12 @@ def validate_uploaded_image(upload):
     if image.format not in ALLOWED_IMAGE_FORMATS:
         allowed_formats = ", ".join(sorted(ALLOWED_IMAGE_FORMATS))
         raise ValidationError(
-            f"Images must use one of these formats: {allowed_formats}.",
+            _(f"Images must use one of these formats: {allowed_formats}."),
             code="unsupported_image_format",
         )
 
     if max(image.size) > MAX_IMAGE_DIMENSION:
         raise ValidationError(
-            f"Images must be at most {MAX_IMAGE_DIMENSION} pixels on either side.",
+            _(f"Images must be at most {MAX_IMAGE_DIMENSION} pixels on either side."),
             code="image_dimensions_too_large",
         )

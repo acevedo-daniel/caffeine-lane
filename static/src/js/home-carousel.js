@@ -57,12 +57,16 @@ if (typeof document !== "undefined") document.addEventListener("DOMContentLoaded
   let touchStartX = null;
 
   const hasMultipleSlides = slides.length > 1;
+  const prefersReducedMotion = window.matchMedia?.(
+    "(prefers-reduced-motion: reduce)",
+  ).matches ?? false;
   const pauseAutoplay = () => {
     window.clearTimeout(autoplayTimer);
     autoplayTimer = undefined;
   };
   const canAutoplay = () => (
     hasMultipleSlides
+    && !prefersReducedMotion
     && !hovering
     && !focusWithin
     && !document.hidden

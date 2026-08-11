@@ -57,12 +57,10 @@ def register_step2(request):
             else:
                 login(request, user)
                 del request.session["registration_email"]
-                messages.success(request, _("Account successfully created!"))
+                messages.success(request, _("Account created."))
                 messages.info(
                     request,
-                    _(
-                        "Welcome! Please visit your profile page to add your name and other details."
-                    ),
+                    _("Welcome — head to your profile to add your details."),
                 )
                 return redirect("home")
     else:
@@ -77,7 +75,7 @@ def profile(request):
         form = ProfileForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
-            messages.success(request, _("Profile successfully updated!"))
+            messages.success(request, _("Profile updated."))
             return redirect("profile")
         else:
             messages.error(request, _("Please correct the errors below."))
@@ -90,5 +88,5 @@ def profile(request):
 @require_POST
 def custom_logout(request):
     logout(request)
-    messages.success(request, _("You have successfully logged out!"))
+    messages.success(request, _("You've been signed out."))
     return redirect("home")

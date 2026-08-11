@@ -47,7 +47,7 @@ msgstr "La comunidad de The Caffeine Lane"
 
 #: .\apps\accounts\templates\accounts\login.html:6
 msgid "Back on the road."
-msgstr "De vuelta a la ruta."
+msgstr "De vuelta en la ruta."
 
 #: .\apps\accounts\templates\accounts\login.html:7
 msgid ""
@@ -104,9 +104,8 @@ msgid "Keep your keys close."
 msgstr "Tené tus llaves cerca."
 
 #: .\apps\accounts\templates\accounts\password_change.html:5
-msgid "A strong password keeps your account ready for the road ahead."
-msgstr ""
-"Una contraseña sólida deja tu cuenta lista para lo que viene en la ruta."
+msgid "A strong password keeps your account secure."
+msgstr "Una contraseña sólida mantiene tu cuenta protegida."
 
 #: .\apps\accounts\templates\accounts\password_change.html:7
 msgid "Account security"
@@ -139,8 +138,8 @@ msgid "Password updated · The Caffeine Lane"
 msgstr "Contraseña actualizada · The Caffeine Lane"
 
 #: .\apps\accounts\templates\accounts\password_change_done.html:4
-msgid "Ready for the next mile."
-msgstr "Lista para el próximo kilómetro."
+msgid "Password updated."
+msgstr "Contraseña actualizada."
 
 #: .\apps\accounts\templates\accounts\password_change_done.html:5
 msgid "Your account security is up to date and your profile is ready to go."
@@ -237,8 +236,8 @@ msgid "Choose a new password · The Caffeine Lane"
 msgstr "Elegí una nueva contraseña · The Caffeine Lane"
 
 #: .\apps\accounts\templates\accounts\password_reset_confirm.html:6
-msgid "Set up the next ride."
-msgstr "Prepará la próxima salida."
+msgid "Almost there."
+msgstr "Ya casi."
 
 #: .\apps\accounts\templates\accounts\password_reset_confirm.html:6
 msgid "That road has closed."
@@ -263,8 +262,8 @@ msgid "Choose a new password"
 msgstr "Elegí una nueva contraseña"
 
 #: .\apps\accounts\templates\accounts\password_reset_confirm.html:14
-msgid "Make it unique, long, and ready for the miles ahead."
-msgstr "Que sea única, larga y esté lista para los kilómetros que vienen."
+msgid "Make it unique and hard to guess."
+msgstr "Que sea única y difícil de adivinar."
 
 #: .\apps\accounts\templates\accounts\password_reset_confirm.html:24
 msgid "Reset link expired"
@@ -296,11 +295,11 @@ msgstr "Revisá tu bandeja de entrada."
 
 #: .\apps\accounts\templates\accounts\password_reset_done.html:7
 msgid ""
-"The next turn is waiting in your email, if that address belongs to an "
-"account in the lane."
+"The next step is in your email, if that address belongs to an account in "
+"the lane."
 msgstr ""
-"El próximo paso está en tu correo, si esa dirección pertenece a una cuenta "
-"de la ruta."
+"El siguiente paso está en tu correo, si esa dirección pertenece a una "
+"cuenta en la ruta."
 
 #: .\apps\accounts\templates\accounts\password_reset_done.html:13
 msgid "Check your email."
@@ -486,8 +485,8 @@ msgid "A few details are all it takes to make your place in the lane your own."
 msgstr "Unos pocos datos alcanzan para hacer tuyo tu lugar en la ruta."
 
 #: .\apps\accounts\templates\accounts\register_step2.html:8
-msgid "The Rider welcoming you to complete your profile"
-msgstr "The Rider invitándote a completar tu perfil"
+msgid "The Rider"
+msgstr "The Rider"
 
 #: .\apps\accounts\templates\accounts\register_step2.html:12
 msgid "Registration progress: step 2 of 2"
@@ -523,25 +522,24 @@ msgstr "Empezar de nuevo"
 
 # Python forms, models, views, and services
 #: .\apps\accounts\views.py:60
-msgid "Account successfully created!"
-msgstr "¡Cuenta creada correctamente!"
+msgid "Account created."
+msgstr "Cuenta creada."
 
 #: .\apps\accounts\views.py:64
-msgid ""
-"Welcome! Please visit your profile page to add your name and other details."
-msgstr "¡Bienvenido! Visitá tu perfil para agregar tu nombre y otros datos."
+msgid "Welcome \u2014 head to your profile to add your details."
+msgstr "Bienvenido — visitá tu perfil para agregar tus datos."
 
 #: .\apps\accounts\views.py:80
-msgid "Profile successfully updated!"
-msgstr "¡Perfil actualizado correctamente!"
+msgid "Profile updated."
+msgstr "Perfil actualizado."
 
 #: .\apps\accounts\views.py:83 .\apps\posts\views.py:44
 msgid "Please correct the errors below."
 msgstr "Corregí los errores que aparecen abajo."
 
 #: .\apps\accounts\views.py:93
-msgid "You have successfully logged out!"
-msgstr "¡Cerraste sesión correctamente!"
+msgid "You've been signed out."
+msgstr "Cerraste sesión."
 
 #: .\apps\core\forms.py:7
 msgid "Your name"
@@ -653,7 +651,7 @@ msgstr ""
 
 #: .\apps\core\templates\core\about.html:37
 msgid "Explore the guides"
-msgstr "Explora las guías"
+msgstr "Explorá las guías"
 
 #: .\apps\core\templates\core\about.html:44
 msgid "Why we are here"
@@ -669,7 +667,7 @@ msgstr "01 · Taller"
 
 #: .\apps\core\templates\core\about.html:50
 msgid "Make it yours."
-msgstr "Hazla tuya."
+msgstr "Hacela tuya."
 
 #: .\apps\core\templates\core\about.html:51
 msgid ""
@@ -685,7 +683,7 @@ msgstr "02 · Ruta"
 
 #: .\apps\core\templates\core\about.html:55
 msgid "Put it to work."
-msgstr "Ponla a trabajar."
+msgstr "Ponela a trabajar."
 
 #: .\apps\core\templates\core\about.html:56
 msgid "Real-world notes on gear, machines, and the rides that connect them."
@@ -699,7 +697,7 @@ msgstr "03 · Comunidad"
 
 #: .\apps\core\templates\core\about.html:60
 msgid "Pass it on."
-msgstr "Compártelo."
+msgstr "Compartilo."
 
 #: .\apps\core\templates\core\about.html:61
 msgid ""
@@ -717,7 +715,7 @@ msgid ""
 "Create a profile and add your voice to the conversations that move the "
 "culture forward."
 msgstr ""
-"Crea un perfil y suma tu voz a las conversaciones que hacen avanzar la "
+"Creá un perfil y sumá tu voz a las conversaciones que hacen avanzar la "
 "cultura."
 
 #: .\apps\core\templates\core\about.html:70
@@ -738,8 +736,8 @@ msgid ""
 "Have a question, a useful fix, or a story from your own garage? Send it our "
 "way. Every good conversation starts somewhere."
 msgstr ""
-"¿Tienes una pregunta, una solución útil o una historia de tu propio garaje? "
-"Envíanosla. Toda buena conversación empieza en algún lugar."
+"¿Tenés una pregunta, una solución útil o una historia de tu propio taller? "
+"Mandánosla. Toda buena conversación empieza en algún lugar."
 
 #: .\apps\core\templates\core\contact.html:11
 msgid "The Rider ready to talk shop"
@@ -747,7 +745,7 @@ msgstr "The Rider lista para hablar de taller"
 
 #: .\apps\core\templates\core\contact.html:16
 msgid "Send a message"
-msgstr "Envía un mensaje"
+msgstr "Enviá un mensaje"
 
 #: .\apps\core\templates\core\contact.html:17
 msgid "Let’s talk."
@@ -838,10 +836,8 @@ msgid "View all"
 msgstr "Ver todo"
 
 #: .\apps\core\templates\core\home.html:71
-msgid "No builds in the lane yet. The next garage story is on its way."
-msgstr ""
-"Todavía no hay proyectos en la ruta. La próxima historia de garaje ya viene "
-"en camino."
+msgid "No builds yet. New stories are on the way."
+msgstr "Todavía no hay proyectos. Nuevas historias vienen en camino."
 
 #: .\apps\core\templates\core\home.html:78
 msgid "How-to & guides"
@@ -856,10 +852,8 @@ msgid "Wrench smarter. Ride farther."
 msgstr "Mejor taller. Más kilómetros."
 
 #: .\apps\core\templates\core\home.html:89
-msgid "No guides in the lane yet. The next workshop note is on its way."
-msgstr ""
-"Todavía no hay guías en la ruta. La próxima nota de taller ya viene en "
-"camino."
+msgid "No guides yet. New workshop notes are on the way."
+msgstr "Todavía no hay guías. Nuevas notas de taller vienen en camino."
 
 #: .\apps\core\templates\core\home.html:95
 msgid "Notes from the garage"
@@ -880,7 +874,7 @@ msgstr ""
 
 #: .\apps\core\templates\core\home.html:98
 msgid "Explore workshop guides"
-msgstr "Explora las guías de taller"
+msgstr "Explorá las guías de taller"
 
 #: .\apps\core\templates\core\home.html:100
 msgid "The Rider working on a motorcycle"
@@ -899,22 +893,20 @@ msgid "Gear worth taking on the road."
 msgstr "Equipo que vale llevar a la ruta."
 
 #: .\apps\core\templates\core\home.html:118
-msgid "No reviews in the lane yet. The next road test is on its way."
-msgstr ""
-"Todavía no hay reseñas en la ruta. La próxima prueba de carretera ya viene "
-"en camino."
+msgid "No reviews yet. New road tests are on the way."
+msgstr "Todavía no hay reseñas. Nuevas pruebas de ruta vienen en camino."
 
 #: .\apps\core\templates\core\home.html:126
 msgid ""
-"Create a profile to join the conversation, follow the builds, and share the "
-"road ahead."
+"Create a profile to join the conversation, follow the builds, and be part "
+"of the community."
 msgstr ""
-"Crea un perfil para sumarte a la conversación, seguir los proyectos y "
-"compartir la ruta que viene."
+"Creá un perfil para sumarte a la conversación, seguir los proyectos y ser "
+"parte de la comunidad."
 
 #: .\apps\core\templates\core\home.html:129
-msgid "The Rider pointing toward the join button"
-msgstr "The Rider señalando el botón para sumarte"
+msgid "The Rider"
+msgstr "The Rider"
 
 #: .\apps\core\templates\core\landing.html:3
 msgid "The Caffeine Lane · Ride, Build, Repeat"
@@ -956,16 +948,16 @@ msgstr "Demasiados mensajes. Intentá de nuevo más tarde."
 
 #: .\apps\core\views.py:107
 #, python-format
-msgid "Contact from Blog: %(subject)s"
-msgstr "Contacto desde el blog: %(subject)s"
+msgid "Contact from Caffeine Lane: %(subject)s"
+msgstr "Contacto desde Caffeine Lane: %(subject)s"
 
 #: .\apps\core\views.py:125
 msgid "We could not send your message right now. Please try again later."
 msgstr "No pudimos enviar tu mensaje ahora. Intentá de nuevo más tarde."
 
 #: .\apps\core\views.py:131
-msgid "Thank you for your message! We will get back to you soon."
-msgstr "¡Gracias por tu mensaje! Te responderemos pronto."
+msgid "Message sent. We'll get back to you soon."
+msgstr "Mensaje enviado. Te responderemos pronto."
 
 #: .\apps\posts\comment_services.py:12
 msgid "Replies are only allowed on visible comments."
@@ -1136,16 +1128,16 @@ msgid "All %(category_name)s"
 msgstr "Todos los %(category_name)s"
 
 #: .\apps\posts\templates\posts\category_view.html:35
-msgid "The shelf is clear."
-msgstr "La estantería está vacía."
+msgid "Nothing here yet."
+msgstr "Todavía no hay nada."
 
 #: .\apps\posts\templates\posts\category_view.html:36
 msgid ""
-"There are no stories in this category yet. Check the other lanes while the "
-"next one is being prepared."
+"There are no stories in this category yet. Check the other categories while "
+"the next one is being prepared."
 msgstr ""
-"Todavía no hay historias en esta categoría. Mirá las otras rutas mientras "
-"preparamos la próxima."
+"Todavía no hay historias en esta categoría. Mirá las otras categorías "
+"mientras preparamos la próxima."
 
 #: .\apps\posts\templates\posts\category_view.html:37
 msgid "Browse the latest stories"
@@ -1275,23 +1267,22 @@ msgid "Your turn"
 msgstr "Te toca"
 
 #: .\apps\posts\templates\posts\post_detail.html:85
-msgid "Have a road-tested take?"
-msgstr "¿Tenés una opinión probada en ruta?"
+msgid "Got something to add?"
+msgstr "¿Tenés algo para sumar?"
 
 #: .\apps\posts\templates\posts\post_detail.html:86
-msgid ""
-"Sign in to share a question, a fix, or a perspective from your own ride."
+msgid "Sign in to share a question, a fix, or your perspective."
 msgstr ""
-"Iniciá sesión para compartir una pregunta, una solución o la mirada de tu "
-"propia salida."
+"Iniciá sesión para compartir una pregunta, una solución o tu punto de "
+"vista."
 
 #: .\apps\posts\templates\posts\post_detail.html:87
 msgid "Sign in to comment"
 msgstr "Iniciá sesión para comentar"
 
 #: .\apps\posts\templates\posts\post_detail.html:89
-msgid "The Rider ready to talk about the road"
-msgstr "The Rider lista para hablar de la ruta"
+msgid "The Rider"
+msgstr "The Rider"
 
 #: .\apps\posts\templates\posts\post_detail.html:102
 #: .\apps\posts\templates\posts\post_detail.html:145
@@ -1356,15 +1347,12 @@ msgid "Start the conversation."
 msgstr "Empezá la conversación."
 
 #: .\apps\posts\templates\posts\post_detail.html:172
-msgid ""
-"The first note from the garage is often the one that helps the next rider "
-"most."
-msgstr ""
-"La primera nota del taller suele ser la que más ayuda a quien viene detrás."
+msgid "Be the first to share your thoughts."
+msgstr "Sé el primero en compartir lo que pensás."
 
 #: .\apps\posts\templates\posts\post_detail.html:174
-msgid "The Rider ready to start a conversation"
-msgstr "The Rider lista para iniciar una conversación"
+msgid "The Rider"
+msgstr "The Rider"
 
 #: .\apps\posts\templates\posts\post_detail.html:178
 msgid "No comments yet. Be the first to join the conversation."
@@ -1418,10 +1406,8 @@ msgid "Search the lane"
 msgstr "Buscar en la ruta"
 
 #: .\apps\posts\templates\posts\search_results.html:10
-msgid "Find builds, guides, and reviews worth carrying into your next ride."
-msgstr ""
-"Encontrá proyectos, guías y reseñas que vale la pena llevar a tu próxima "
-"salida."
+msgid "Find builds, guides, and reviews across the lane."
+msgstr "Encontrá proyectos, guías y reseñas en toda la ruta."
 
 #: .\apps\posts\templates\posts\search_results.html:13
 #: .\templates\components\footer.html:26 .\templates\components\header.html:23
@@ -1502,16 +1488,16 @@ msgid "You must be logged in to comment."
 msgstr "Tenés que iniciar sesión para comentar."
 
 #: .\apps\posts\views.py:46
-msgid "Comment added successfully."
-msgstr "El comentario se publicó correctamente."
+msgid "Comment posted."
+msgstr "Comentario publicado."
 
 #: .\apps\posts\views.py:52
 msgid "There was an error with your comment. Please try again."
 msgstr "Hubo un error con tu comentario. Intentá de nuevo."
 
 #: .\apps\posts\views.py:85
-msgid "Reply added successfully."
-msgstr "La respuesta se publicó correctamente."
+msgid "Reply posted."
+msgstr "Respuesta publicada."
 
 #: .\apps\posts\views.py:87
 msgid "Please correct the reply before submitting."
@@ -1522,8 +1508,8 @@ msgid "You do not have permission to edit this comment."
 msgstr "No tenés permiso para editar este comentario."
 
 #: .\apps\posts\views.py:122
-msgid "Comment edited successfully."
-msgstr "El comentario se actualizó correctamente."
+msgid "Comment updated."
+msgstr "Comentario actualizado."
 
 #: .\apps\posts\views.py:137
 msgid "Comment withdrawn."

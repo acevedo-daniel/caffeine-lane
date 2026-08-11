@@ -2,8 +2,6 @@
 
 **A personal Django editorial application for cafe racer builds, guides, and reviews.**
 
-## Description
-
 Caffeine Lane is a personal project for publishing practical motorcycle stories: build notes, riding guides, and reviews. It combines a public editorial site with accounts, comments, moderation, image uploads, search, and a responsive frontend.
 
 **Status:** active development. A live deployment is available at [caffeinelane.onrender.com](https://caffeinelane.onrender.com).
@@ -71,7 +69,7 @@ Open <http://localhost:8000>. `static/src` is authored source; `static/dist` is 
 
 ## Context
 
-**Category:** personal project. It is maintained as a solo editorial application and a practical place to develop Django, frontend, testing, and deployment decisions around a real content domain.
+Caffeine Lane started as a final project for the [Informatorio](https://informatorio.chaco.gob.ar/) program in Resistencia, Chaco, and was later rebuilt and modernized as a personal project. It is maintained as a solo editorial application and a practical place to develop Django, frontend, testing, and deployment decisions around a real content domain.
 
 ## Documentation
 

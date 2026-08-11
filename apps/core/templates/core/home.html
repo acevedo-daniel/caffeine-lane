@@ -68,7 +68,7 @@
             {% for post in new_builds %}{% include "components/post_card.html" with post=post %}{% endfor %}
           </div>
         {% else %}
-          <p class="editorial-empty mt-7">{% translate "No builds in the lane yet. The next garage story is on its way." %}</p>
+          <p class="editorial-empty mt-7">{% translate "No builds yet. New stories are on the way." %}</p>
         {% endif %}
       </section>
 
@@ -86,7 +86,7 @@
             {% for post in new_guides %}{% include "components/post_card.html" with post=post %}{% endfor %}
           </div>
         {% else %}
-          <p class="editorial-empty mt-7">{% translate "No guides in the lane yet. The next workshop note is on its way." %}</p>
+          <p class="editorial-empty mt-7">{% translate "No guides yet. New workshop notes are on the way." %}</p>
         {% endif %}
       </section>
 
@@ -115,7 +115,7 @@
             {% for post in new_reviews %}{% include "components/post_card.html" with post=post card_variant="compact" %}{% endfor %}
           </div>
         {% else %}
-          <p class="editorial-empty mt-7">{% translate "No reviews in the lane yet. The next road test is on its way." %}</p>
+          <p class="editorial-empty mt-7">{% translate "No reviews yet. New road tests are on the way." %}</p>
         {% endif %}
       </section>
 
@@ -123,10 +123,10 @@
         <div class="home-community-copy">
           <p class="editorial-kicker text-stone-300">{% translate "The Caffeine Lane community" %}</p>
           <h2 id="join-the-ride-heading" class="mt-2 font-bebas text-5xl leading-[0.9] tracking-wide text-white sm:text-6xl">{% translate "Join the ride" %}</h2>
-          <p class="mt-4 max-w-xl text-stone-300">{% translate "Create a profile to join the conversation, follow the builds, and share the road ahead." %}</p>
+          <p class="mt-4 max-w-xl text-stone-300">{% translate "Create a profile to join the conversation, follow the builds, and be part of the community." %}</p>
           <a class="home-community-cta motion-cta" href="{% url 'register' %}">{% translate "Create an account" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
         </div>
-        {% translate "The Rider pointing toward the join button" as pointing_alt %}
+        {% translate "The Rider" as pointing_alt %}
         {% include "components/character_badge.html" with asset="character-pointing.webp" size="lg" alt=pointing_alt class_name="home-community-rider character-badge--mirrored" %}
       </section>
     </div>

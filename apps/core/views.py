@@ -104,7 +104,8 @@ def contact(request):
                 },
             ).content.decode()
             message = EmailMultiAlternatives(
-                subject=_("Contact from Blog: %(subject)s") % {"subject": subject},
+                subject=_("Contact from Caffeine Lane: %(subject)s")
+                % {"subject": subject},
                 body=full_message,
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 to=[settings.CONTACT_RECIPIENT_EMAIL],
@@ -127,9 +128,7 @@ def contact(request):
                 )
                 return render(request, "core/contact.html", {"form": form}, status=503)
 
-            messages.success(
-                request, _("Thank you for your message! We will get back to you soon.")
-            )
+            messages.success(request, _("Message sent. We'll get back to you soon."))
             return redirect("contact")
     else:
         form = ContactForm()

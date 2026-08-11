@@ -43,7 +43,7 @@ def post_detail(request, slug):
                 form.add_error("content", error)
                 messages.error(request, _("Please correct the errors below."))
             else:
-                messages.success(request, _("Comment added successfully."))
+                messages.success(request, _("Comment posted."))
                 return redirect("post_detail", slug=post.slug)
 
         else:
@@ -82,7 +82,7 @@ def comment_reply(request, comment_id):
         except ValidationError as error:
             messages.error(request, "; ".join(error.messages))
         else:
-            messages.success(request, _("Reply added successfully."))
+            messages.success(request, _("Reply posted."))
     else:
         messages.error(request, _("Please correct the reply before submitting."))
     return redirect("post_detail", slug=post.slug)
@@ -119,7 +119,7 @@ def comment_edit(request, comment_id):
         edited_comment = form.save(commit=False)
         edited_comment.is_edited = True
         edited_comment.save(update_fields=["content", "is_edited", "updated_at"])
-        messages.success(request, _("Comment edited successfully."))
+        messages.success(request, _("Comment updated."))
         return redirect("post_detail", slug=comment.post.slug)
 
     context = {"form": form, "comment": comment}
