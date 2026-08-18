@@ -1,4 +1,4 @@
-# Environment and credentials
+﻿# Environment and credentials
 .env
 .env.*
 !.env.example
@@ -70,12 +70,4 @@ Thumbs.db
 *.orig
 *.rej
 *~
-
-# Temporary inspection and retired local uploads
-/docs/temporal/
 /tmp/
-/static/Media/
-
-# Local documentation tooling
-/docs/templates/
-AGENTS.md

@@ -1,69 +1,66 @@
-# Project
+﻿# Project
 
 ## Summary
 
-Caffeine Lane is a personal editorial web application for people interested in cafe racer motorcycles. It publishes builds, guides, and reviews, then gives readers a way to find content, create an account, and participate in moderated discussion.
+Caffeine Lane is an editorial web application for cafe racer builds, riding guides, and motorcycle reviews. It combines a public content platform with email-based authentication, user profiles, interactive comments with one-level replies, administrative moderation, search, and a responsive interface with English and Spanish language options.
 
 ## Problem
 
-Motorcycle build notes, practical riding advice, and gear opinions are often scattered across disconnected sources. Caffeine Lane provides one focused, readable space where that content can be organized, discovered, and discussed.
+Motorcycle build logs, practical mechanical advice, and riding gear reviews are often scattered across ephemeral forums and social media. Caffeine Lane provides a dedicated, structured editorial space where detailed build stories and guides can be published, categorized, discovered, and discussed.
 
-## Users and stakeholders
+## Actors and Permissions
 
-| Role | Need / responsibility |
-|---|---|
-| Visitor | Read published stories, browse categories, search, and contact the site owner. |
-| Registered reader | Maintain a profile and write or reply to comments. |
-| Editor | Create, update, publish, and remove posts through Django Admin or authorized editorial views. |
-| Moderator | Hide comments that require moderation. |
-| Site owner | Maintains content, provider configuration, and deployment. |
-
-## Objectives
-
-- Make practical cafe racer content easy to read, search, and browse by category.
-- Provide a safe, lightweight participation path through accounts and moderated comments.
-- Keep local development and the hosted deployment reproducible with documented tooling.
-
-## Out of scope
-
-- Payments, subscriptions, newsletters, and social-login integrations.
-- Native mobile clients.
-- Automatic import of unreviewed content, images, users, or passwords.
-- Public password-reset email while the configured sender cannot deliver to arbitrary recipients.
+| Actor                 | Access & Capabilities                                                                                                                                                       |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Visitor**           | Unauthenticated reader. Discovers published posts, browses categories, searches content, filters by tag/category, changes interface language, and submits contact messages. |
+| **Registered Reader** | Authenticated user. Manages profile details, changes passwords, posts comments on published articles, and submits single-level replies to other readers.                    |
+| **Comment Author**    | The author of a specific comment. Can edit or withdraw their own active comments.                                                                                           |
+| **Moderator**         | Staff member with `posts.moderate_comment` permission. Can review, hide, or moderate inappropriate comments.                                                                |
+| **Editor / Admin**    | Staff member with Django post management permissions. Creates, edits, publishes, and organizes posts and categories via the Django Admin interface.                         |
+| **Site Owner**        | Technical administrator. Manages infrastructure, database lifecycle, cloud integrations, and environment deployments.                                                       |
 
 ## Scope
 
-### Includes
+### In Scope
 
-- A public landing page, home page, static pages, post detail, categories, and search.
-- Editorial posts with draft/published status, categories, featured images, and alternative text.
-- Accounts, profiles, password changes, comments, one-level replies, and moderation.
-- English and Spanish interface selection.
-- Docker-based hosting with managed database, media, static assets, and transactional email providers.
+- **Editorial Publishing:** Rich articles with featured images, structured categories, draft/published lifecycle, publication dates, and alternative text.
+- **Content Discovery:** Home hero carousel, category-filtered catalog (`builds`, `guides`, `reviews`), text search with query persistence across pagination, and related post suggestions.
+- **User Accounts & Profiles:** Email-based authentication, two-step registration, profile customization (bio, avatar), password change, and controlled password-reset capability.
+- **Reader Participation:** Nested single-level comment threads, comment editing, self-service withdrawal, and administrative moderation.
+- **Internationalization:** English as the primary default language with Spanish interface translations.
+- **Cloud Infrastructure:** Multi-stage Dockerized delivery, Neon PostgreSQL, Cloudinary media storage, Resend transactional email, WhiteNoise static delivery, and `/healthz/` liveness monitoring.
 
-### Does not include
+### Out of Scope
 
-- Any functionality listed in **Out of scope**.
-- Preservation or conversion of databases that contain the incompatible `accounts_profile` schema.
+- E-commerce transactions, paid subscriptions, or digital paywalls.
+- Social OAuth / third-party identity providers (intentionally email-based auth).
+- Multi-tier threaded discussions beyond one level of parent-child replies.
+- Public automated unreviewed content scraping or user self-publishing without editorial review.
 
-## Success criteria
+## Domain & Business Rules
 
-- A fresh local installation can migrate, seed the portfolio, build assets, and serve the site using the documented commands.
-- Visitors can reach published content and each structural category without an unexpected server error or missing route.
-- Authorized users can complete the documented account, editorial, and comment actions.
-- The hosted service exposes `/healthz/` and keeps uploaded media outside the Render filesystem.
+| Rule ID    | Domain Rule                 | Description                                                                                                                                           |
+| ---------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **BR-001** | **Structural Taxonomy**     | `builds`, `guides`, and `reviews` are permanent structural categories and must exist in the database after initial migrations.                        |
+| **BR-002** | **Publication Visibility**  | Public post listings and detail views display only articles with `is_published=True` and a valid publication timestamp.                               |
+| **BR-003** | **Reserved Slugs**          | The URL slugs `search` and `new` are strictly reserved for system routes and cannot be used by post entities.                                         |
+| **BR-004** | **Accessible Media**        | Every visible uploaded post image requires meaningful descriptive alternative text (`alt_text`).                                                      |
+| **BR-005** | **Single-Level Replies**    | Comments belong to exactly one post. A reply can target a top-level comment, but replies to replies are rejected to maintain clean, readable threads. |
+| **BR-006** | **Author Seeding Security** | Seeded demo authors are non-privileged accounts created with unusable passwords.                                                                      |
 
-## Relevant constraints
+## Relevant Constraints & Limitations
 
-- The public taxonomy always includes `builds`, `guides`, and `reviews`.
-- Production runtime uses Neon pooled connections; schema migrations require a direct Neon connection.
-- Production media is stored by Cloudinary and static files are served by WhiteNoise.
-- The current Resend onboarding sender limits password-reset delivery; the public reset flow is disabled by default.
+- **Email Delivery Constraints:** Public password reset requires an operational transactional email provider; demo configurations keep `PASSWORD_RESET_ENABLED=false` by default when using testing senders.
+- **Database Schema Invariant:** The database requires the custom email-based `accounts.User` schema. Legacy databases containing the deprecated `accounts_profile` table from earlier iterations are rejected at startup by `check_fresh_baseline`.
+- **Media Persistence:** Uploaded media files are stored in Cloudinary in production to ensure persistence outside ephemeral Docker container filesystems.
 
-## Background
+## Project Background
 
-Caffeine Lane started as a final project for the Informatorio program in Resistencia, Chaco. It was later rebuilt and modernized as a personal project, adopting current Django practices, a custom frontend pipeline, managed cloud providers, and structured testing.
+Caffeine Lane originated as a final project for the Informatorio program in Resistencia, Chaco, and was subsequently rebuilt and modernized as an independent personal application. It serves as a practical showcase of modern Python/Django architecture, structured database workflows, and multi-provider cloud delivery.
 
-## Category context
+## Related Documentation
 
-Personal project. Caffeine Lane is maintained by a single developer and documented for reproducible development, operation, and future personal work without introducing unnecessary organizational process.
+- [Architecture](ARCHITECTURE.md)
+- [Development](DEVELOPMENT.md)
+- [Testing](TESTING.md)
+- [Deployment](DEPLOYMENT.md)
