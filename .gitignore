@@ -1,4 +1,4 @@
-﻿# Environment and credentials
+# Environment and credentials
 .env
 .env.*
 !.env.example
@@ -13,7 +13,6 @@ __pycache__/
 *$py.class
 *.so
 .Python
-.python-version
 .venv/
 env/
 venv/
@@ -71,3 +70,8 @@ Thumbs.db
 *.rej
 *~
 /tmp/
+
+# Local documentation and agent tooling
+/docs/temporal/
+/docs/templates/
+AGENTS.md
