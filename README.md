@@ -11,15 +11,15 @@ Caffeine Lane is a publishing and community application for motorcycle builders 
 
 ## Screenshots
 
-### Public experience
+### Public and editorial experience
 
-| Entry experience | Editorial home |
+| Entry experience | Article detail |
 | --- | --- |
-| ![Caffeine Lane entry experience with its editorial hero and primary call to action](docs/screenshots/public-landing.png) | ![Caffeine Lane editorial home with featured motorcycle content](docs/screenshots/public-home.png) |
+| ![Caffeine Lane entry experience with its editorial hero and primary call to action](docs/screenshots/public-landing.png) | ![Caffeine Lane article detail with long-form editorial content and featured media](docs/screenshots/post-detail.png) |
 
-### Editorial experience
+### Editorial home
 
-![Caffeine Lane article detail with long-form editorial content and featured media](docs/screenshots/post-detail.png)
+![Caffeine Lane editorial home with featured motorcycle content](docs/screenshots/public-home.png)
 
 ### Discovery and participation
 

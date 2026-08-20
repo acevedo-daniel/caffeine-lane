@@ -10,7 +10,7 @@
     "build:js": "node scripts/build-assets.mjs",
     "build": "pnpm run build:css && pnpm run build:js",
     "test": "node --test tests/frontend/*.test.mjs",
-    "test:e2e": "playwright test"
+    "test:e2e": "node scripts/prepare-e2e.mjs && playwright test"
   },
   "devDependencies": {
     "@playwright/test": "1.62.1",
