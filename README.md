@@ -1,13 +1,12 @@
 # Caffeine Lane
 
+[![CI](https://github.com/acevedo-daniel/caffeine-lane/actions/workflows/ci.yml/badge.svg)](https://github.com/acevedo-daniel/caffeine-lane/actions/workflows/ci.yml)
+
 > A Django editorial application for cafe racer builds, guides, and reviews.
 
 Caffeine Lane is a publishing and community application for motorcycle builders and enthusiasts. It combines editorial content, search, reader accounts and profiles, moderated discussions, media uploads, and a bilingual interface. It is intentionally not an e-commerce marketplace.
 
-## Demo
-
-- [Production web app](https://caffeinelane.onrender.com)
-- [Service health](https://caffeinelane.onrender.com/healthz/)
+**[Open Live Application](https://caffeinelane.onrender.com)**
 
 ## Screenshots
 
@@ -15,7 +14,7 @@ Caffeine Lane is a publishing and community application for motorcycle builders 
 
 | Entry experience | Article detail |
 | --- | --- |
-| ![Caffeine Lane entry experience with its editorial hero and primary call to action](docs/screenshots/public-landing.png) | ![Caffeine Lane article detail with long-form editorial content and featured media](docs/screenshots/post-detail.png) |
+| ![Caffeine Lane entry experience with editorial hero](docs/screenshots/public-landing.png) | ![Caffeine Lane article detail with long-form editorial content](docs/screenshots/post-detail.png) |
 
 ### Editorial home
 
@@ -54,11 +53,7 @@ Browser -> Render container (Gunicorn -> Django)
          WhiteNoise serves collected static assets from the Django runtime
 ```
 
-- **Django application:** Owns routing, authentication, validation, editorial and discussion behavior, internationalization, and server-rendered templates.
-- **Data and integrations:** PostgreSQL persists application data; Cloudinary handles persistent uploaded media; Resend through Anymail handles production email.
-- **Delivery/runtime:** Render runs the Docker/Gunicorn service, while WhiteNoise serves collected static assets from the Django runtime.
-
-See [Architecture](docs/ARCHITECTURE.md) for component boundaries, data flow, and external integrations.
+Django owns routing, authentication, validation, editorial and discussion behavior, internationalization, and server-rendered templates. PostgreSQL persists application data, Cloudinary stores media, Resend delivers transactional emails, and Render runs the containerized Gunicorn service.
 
 ## Technology stack
 
@@ -69,35 +64,38 @@ See [Architecture](docs/ARCHITECTURE.md) for component boundaries, data flow, an
 
 ## Repository structure
 
-| Path              | Responsibility                                                                      |
-| ----------------- | ----------------------------------------------------------------------------------- |
-| `apps/accounts`   | Custom user model, authentication, registration, profiles, and password flows.      |
-| `apps/core`       | Landing/home surfaces, contact flow, image validation, and health endpoints.        |
-| `apps/posts`      | Editorial content, taxonomy, search, comments, moderation, and publishing behavior. |
-| `config/settings` | Base, local, test, and production Django settings.                                  |
-| `static/`         | Authored frontend source and generated distribution assets.                         |
-| `templates/`      | Shared server-rendered layouts and page templates.                                  |
-| `tests/`          | Frontend asset tests and Playwright browser tests.                                  |
-| `docker/`         | Production container startup and migration orchestration.                           |
+| Path | Responsibility |
+| --- | --- |
+| `apps/accounts` | Custom user model, authentication, registration, profiles, and password flows. |
+| `apps/core` | Landing/home surfaces, contact flow, image validation, and health endpoints. |
+| `apps/posts` | Editorial content, taxonomy, search, comments, moderation, and publishing behavior. |
+| `config/settings` | Base, local, test, and production Django settings. |
+| `docker/` | Production container startup and migration orchestration. |
+| `static/` | Authored frontend source and generated distribution assets. |
+| `templates/` | Shared server-rendered layouts and page templates. |
+| `tests/` | Frontend asset tests and Playwright browser tests. |
 
 ## Local development
 
 Prerequisites: Python 3.14+, uv, Node.js 22, pnpm 10, and Docker Compose.
 
-```powershell
-Copy-Item .env.example .env
+```bash
+# Setup environment and dependencies
+cp .env.example .env
 docker compose up -d db
 uv sync --locked
 pnpm install --frozen-lockfile
 pnpm run build
+
+# Initialize and seed database
 uv run python manage.py check_fresh_baseline
 uv run python manage.py migrate
 uv run python manage.py seed_portfolio
 ```
 
-On macOS or Linux, replace `Copy-Item` with `cp`.
+On Windows PowerShell, use `Copy-Item .env.example .env`.
 
-Run the frontend asset watcher:
+Run the frontend asset watcher in one terminal:
 
 ```bash
 pnpm run dev
@@ -124,12 +122,12 @@ pnpm test
 pnpm run test:e2e
 ```
 
-CI runs the Python suite against PostgreSQL 18 on Python 3.14, validates production settings, builds and tests frontend assets, runs Playwright browser smoke tests, and smoke-tests the production Docker image. See [Testing](docs/TESTING.md) for test boundaries and release verification.
+CI runs the Python suite against PostgreSQL 18 on Python 3.14, validates production settings, builds and tests frontend assets, runs Playwright browser smoke tests, and smoke-tests the production Docker image.
 
 ## Documentation
 
-- [Project](docs/PROJECT.md) — product scope, actors, and durable domain rules.
-- [Architecture](docs/ARCHITECTURE.md) — system structure, component boundaries, and external integrations.
-- [Development](docs/DEVELOPMENT.md) — local environment, database workflow, and common commands.
-- [Testing](docs/TESTING.md) — test strategy, data dependencies, and quality gates.
-- [Deployment](docs/DEPLOYMENT.md) — production delivery, database migrations, and validation.
+- [Project](docs/PROJECT.md) — Product domain, actors, scope, and durable business rules.
+- [Architecture](docs/ARCHITECTURE.md) — System topology, component boundaries, and invariants.
+- [Development](docs/DEVELOPMENT.md) — Local setup, developer workflow, and database lifecycle.
+- [Testing](docs/TESTING.md) — Testing strategy, test layers, and quality gates.
+- [Deployment](docs/DEPLOYMENT.md) — Hosting topology, Docker delivery, and release pipeline.

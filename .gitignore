@@ -74,4 +74,5 @@ Thumbs.db
 # Local documentation and agent tooling
 /docs/temporal/
 /docs/templates/
+/design/
 AGENTS.md

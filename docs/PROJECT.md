@@ -1,6 +1,6 @@
 # Caffeine Lane — Project
 
-> Product scope, actors, domain concepts, and durable business rules for Caffeine Lane.
+> Product scope, actors, domain concepts, and durable business rules.
 
 ## Product
 
@@ -12,7 +12,46 @@ The product is centered on editorial publishing and community participation rath
 
 Detailed motorcycle builds, practical guides, and reviews are often fragmented across social feeds and forum threads. Caffeine Lane organizes that content into durable articles with categories, search, reader profiles, and discussions.
 
-## Actors
+## Scope
+
+### In scope
+
+- **Editorial publishing:** Create and manage draft or published posts across categories (`builds`, `guides`, `reviews`), with validated image uploads and related content surfacing.
+- **Content discovery:** Browse editorial surfaces and categories, search published content with relevance ranking, and preserve search/filter state across pagination.
+- **Accounts and profiles:** Register and authenticate using email identity, manage reader profile details and avatars, with environment-controlled password-reset flows.
+- **Discussion and moderation:** Comment on published posts, reply one level deep, edit or withdraw personal comments, and hide comments via dedicated moderation permissions.
+- **Localization:** Serve the entire application in English or Spanish via Django internationalization.
+
+### Out of scope
+
+- E-commerce, subscriptions, payments, or paywalls.
+- Third-party social login providers (OAuth/OIDC).
+- Unrestricted recursive multi-level comment trees.
+- Public reader-authored article publishing (publishing is restricted to staff/editorial roles).
+- Automated unreviewed content scraping or feed ingestion.
+- A separate Single Page Application (SPA) or public REST/GraphQL API product surface.
+
+## Core workflows
+
+### Editorial publishing
+
+```text
+Editor drafts article -> Assigns taxonomy (category, tags) -> Uploads featured media
+-> Validates preview -> Sets publication timestamp -> Published across discovery surfaces
+```
+
+### Reader discussion and moderation
+
+```text
+Reader authenticates -> Submits comment on published post
+-> Optional: Reader or other user submits 1-level reply
+-> Author may edit or withdraw own comment (marked WITHDRAWN)
+-> Moderator may hide abusive comment (marked HIDDEN via permission)
+```
+
+## Actors and domain concepts
+
+### Actors
 
 | Actor | Capabilities |
 | --- | --- |
@@ -21,123 +60,32 @@ Detailed motorcycle builds, practical guides, and reviews are often fragmented a
 | Moderator | Hide comments when granted the `posts.moderate_comment` permission. |
 | Editor / administrator | Manage editorial content and categories through Django permissions and the Django Admin. |
 
-## Scope
+### Domain concepts
 
-### Editorial publishing
-
-- Create and manage draft or published posts.
-- Associate posts with editorial categories.
-- Add featured images and alternative text.
-- Publish or return posts to draft state.
-- Surface related published content.
-
-### Content discovery
-
-- Browse the home/editorial surfaces.
-- Browse posts by category.
-- Search published content.
-- Sort and paginate search results.
-- Preserve search/filter state across pagination.
-
-### Accounts and profiles
-
-- Register and authenticate with email-based accounts.
-- Maintain profile information and an avatar.
-- Change passwords.
-- Expose password-reset flows only when the feature is enabled for the environment.
-
-### Discussion and moderation
-
-- Add comments to published posts.
-- Reply one level deep to top-level comments.
-- Edit or withdraw an author's own visible comments.
-- Hide comments through a dedicated moderation permission.
-- Preserve visible, withdrawn, and moderator-hidden comment states.
-
-### Localization
-
-- Serve the interface in English or Spanish using Django internationalization.
-
-## Out of scope
-
-Caffeine Lane does not currently include:
-
-- e-commerce, subscriptions, payments, or paywalls;
-- social-login providers;
-- unrestricted multi-level comment trees;
-- public reader-authored article publishing;
-- automated unreviewed content scraping or ingestion;
-- a separate SPA or public API product surface.
-
-## Domain model
-
-### User
-
-`accounts.User` is the application identity. Email is unique and is used as the authentication identifier.
-
-A user can also hold profile information such as display name, biography, avatar, personal URL, and motorcycle ownership metadata.
-
-Django permissions determine editorial and moderation capabilities.
-
-### Category
-
-`posts.Category` organizes published content. The application defines three structural category slugs:
-
-```text
-builds
-guides
-reviews
-```
-
-Additional category records may exist, but these three form the primary editorial taxonomy used by the application.
-
-### Post
-
-`posts.Post` represents an editorial article.
-
-Its lifecycle is intentionally small:
-
-```text
-DRAFT <-> PUBLISHED
-```
-
-A published post requires a non-null publication timestamp. Public listing/detail queries use the published queryset rather than exposing drafts.
-
-Posts may have multiple categories and an optional featured image.
-
-### Comment
-
-`posts.Comment` belongs to one post and one author.
-
-Comment visibility is explicit:
-
-```text
-VISIBLE
-WITHDRAWN
-HIDDEN
-```
-
-A comment may reply to a top-level comment, but replies to replies are rejected.
+- **User (`accounts.User`):** Application identity using unique email as the authentication identifier, with associated reader profile metadata.
+- **Category (`posts.Category`):** Editorial taxonomy centered around three structural slugs: `builds`, `guides`, and `reviews`.
+- **Post (`posts.Post`):** Editorial article with lifecycle `DRAFT <-> PUBLISHED`. A publication timestamp is required for public exposure.
+- **Comment (`posts.Comment`):** Discussion record linked to a post and author, with explicit visibility states (`VISIBLE`, `WITHDRAWN`, `HIDDEN`) and maximum 1-level depth.
 
 ## Business rules
 
-- Public post listings and article detail pages expose only posts in `PUBLISHED` state with a publication timestamp.
+- Public post listings and article detail pages expose only posts in `PUBLISHED` state with a valid publication timestamp.
 - The slugs `search` and `new` are reserved for application routes and cannot be used by posts.
 - A post with a visible featured image requires alternative text.
-- Uploaded images are validated before use; accepted formats are JPEG, PNG, and WebP, with configured file-size and dimension limits.
+- Uploaded images are validated before persistence (accepted formats: JPEG, PNG, WebP, with enforced dimension and file-size limits).
 - A comment reply must belong to the same post as its parent.
-- Comment nesting is limited to one reply level.
+- Comment nesting is strictly limited to one reply level (replies to replies are rejected).
 - Replies are accepted only for visible parent comments.
 - An author may withdraw their own comment; hiding requires the `posts.moderate_comment` permission.
-- Repeated identical comments from the same author on the same post are temporarily rejected to reduce accidental duplicate submission.
-- Email is unique for application users and is the login identifier.
+- Repeated identical comments from the same author on the same post are temporarily rejected to prevent duplicate submissions.
+- Email is globally unique and serves as the single authentication identifier.
 
 ## Current limitations
 
 - Editorial article creation is permission-controlled rather than open reader self-publishing.
-- Password reset depends on environment configuration and a working email provider.
+- Password reset depends on environment configuration and a functioning external email provider.
 - Production media persistence depends on the configured Cloudinary account.
-- The custom `accounts.User` baseline is incompatible with legacy databases that still contain the former `accounts_profile` table; `check_fresh_baseline` stops startup/migration work when that legacy table is detected.
+- The custom `accounts.User` baseline is incompatible with legacy databases containing the former `accounts_profile` table; `check_fresh_baseline` aborts startup or migration if detected.
 
 ## Provenance
 
