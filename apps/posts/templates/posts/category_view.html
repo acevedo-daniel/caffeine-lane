@@ -12,22 +12,16 @@
         <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
         {% translate "Back to home" %}
       </a>
-      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mt-4">
-        <div>
-          <p class="editorial-kicker text-stone-300">{% translate "Editorial Archive" %}</p>
-          <h1 id="category-title" class="category-hero__title">{{ category|localized_category }}</h1>
-          <p class="category-hero__count">
-            {% blocktranslate count counter=page_obj.paginator.count %}
-              {{ counter }} dispatch from the garage.
-            {% plural %}
-              {{ counter }} dispatches from the garage.
-            {% endblocktranslate %}
-          </p>
-        </div>
-        <div class="category-hero__rider">
-          {% translate "The Rider" as rider_alt %}
-          {% include "components/character_badge.html" with asset=rider_asset size="md" alt=rider_alt class_name="category-rider-badge" %}
-        </div>
+      <div class="mt-4">
+        <p class="editorial-kicker text-stone-300">{% translate "Editorial Archive" %}</p>
+        <h1 id="category-title" class="category-hero__title">{{ category|localized_category }}</h1>
+        <p class="category-hero__count">
+          {% blocktranslate count counter=page_obj.paginator.count %}
+            {{ counter }} dispatch from the garage.
+          {% plural %}
+            {{ counter }} dispatches from the garage.
+          {% endblocktranslate %}
+        </p>
       </div>
     </div>
   </section>

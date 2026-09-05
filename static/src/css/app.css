@@ -1214,6 +1214,10 @@
     background: var(--surface-muted);
   }
 
+  .flash-message__dismiss i {
+    pointer-events: none;
+  }
+
   .error-page {
     position: relative;
     display: flex;
@@ -2063,10 +2067,6 @@
     color: var(--foreground);
     padding: 0.4rem 0.75rem;
     cursor: pointer;
-  }
-
-  .category-hero__rider {
-    flex-shrink: 0;
   }
 
 

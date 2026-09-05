@@ -1,7 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { MobileMenuController } from "../../static/src/js/base.js";
+import {
+  MobileMenuController,
+  initializeFlashMessages,
+  dismissFlashMessage,
+} from "../../static/src/js/base.js";
 import { SearchFiltersController } from "../../static/src/js/search-filters.js";
 import { AvatarPreviewController } from "../../static/src/js/avatar-preview.js";
 
@@ -186,4 +190,71 @@ test("avatar preview rejects files exceeding 5MB and unsupported formats", () =>
   input.files = [{ name: "doc.pdf", type: "application/pdf", size: 1024 }];
   input.emit("change", { target: input });
   assert.equal(errorContainer.textContent, "Images must use JPEG, PNG, or WebP format.");
+});
+
+test("dismissFlashMessage adds is-dismissing class and removes message from DOM", async () => {
+  let removed = false;
+  const classNames = new Set();
+  const container = {
+    classList: { contains: (name) => name === "flash-messages" },
+    children: [],
+    remove() {},
+  };
+  const message = {
+    classList: {
+      add: (name) => classNames.add(name),
+      contains: (name) => classNames.has(name),
+    },
+    parentElement: container,
+    remove() {
+      removed = true;
+    },
+  };
+
+  dismissFlashMessage(message);
+  assert.equal(message.classList.contains("is-dismissing"), true);
+
+  await new Promise((resolve) => setTimeout(resolve, 250));
+  assert.equal(removed, true);
+});
+
+test("initializeFlashMessages delegates dismiss clicks to closest flash message", async () => {
+  const documentRef = createDocument();
+  initializeFlashMessages(documentRef);
+
+  let removed = false;
+  const classNames = new Set();
+  const messageElement = {
+    classList: {
+      add: (name) => classNames.add(name),
+      contains: (name) => classNames.has(name),
+    },
+    parentElement: null,
+    remove() {
+      removed = true;
+    },
+  };
+
+  const buttonElement = {
+    closest(selector) {
+      if (selector === "[data-dismiss-message]") return buttonElement;
+      if (selector === ".flash-message") return messageElement;
+      return null;
+    },
+  };
+
+  const iconElement = {
+    closest(selector) {
+      if (selector === "[data-dismiss-message]") return buttonElement;
+      if (selector === ".flash-message") return messageElement;
+      return null;
+    },
+  };
+
+  // Clicking the icon inside the button should trigger dismissal
+  documentRef.emit("click", { target: iconElement });
+  assert.equal(messageElement.classList.contains("is-dismissing"), true);
+
+  await new Promise((resolve) => setTimeout(resolve, 250));
+  assert.equal(removed, true);
 });

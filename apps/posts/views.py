@@ -105,13 +105,6 @@ def category_view(request, category_slug):
         sort = "newest"
         posts_qs = posts_qs.order_by("-published_at", "-created_at")
 
-    rider_poses = {
-        "builds": "character-mechanic.webp",
-        "guides": "character-pointing.webp",
-        "reviews": "character-signature.webp",
-    }
-    rider_asset = rider_poses.get(category.slug, "character-welcome.webp")
-
     paginator = Paginator(posts_qs, 12)
     page_obj = paginator.get_page(request.GET.get("page"))
 
@@ -124,7 +117,6 @@ def category_view(request, category_slug):
         "page_obj": page_obj,
         "is_paginated": page_obj.has_other_pages(),
         "current_sort": sort,
-        "rider_asset": rider_asset,
         "pagination_query": pagination_query.urlencode(),
     }
     return render(request, "posts/category_view.html", context)

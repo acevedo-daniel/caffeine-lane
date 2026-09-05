@@ -102,7 +102,7 @@ test.describe("compiled frontend smoke checks", () => {
     // 3. Category Archive checks
     await page.goto("/posts/category/builds/");
     await expect(page.locator("h1#category-title")).toBeVisible();
-    await expect(page.locator(".category-hero__rider")).toBeVisible();
+    await expect(page.locator(".category-hero__rider")).toHaveCount(0);
     await expect(page.locator("#sort-select")).toBeVisible();
     await expect(page.locator(".category-post-grid")).toBeVisible();
   });
@@ -180,6 +180,14 @@ test.describe("compiled frontend smoke checks", () => {
     await page.getByRole("button", { name: "Create account" }).click();
 
     await expect(page).toHaveURL(/\/home\/$/);
+
+    // Flash messages dismissal check
+    const flashMessages = page.locator(".flash-message");
+    await expect(flashMessages).toHaveCount(2);
+    await flashMessages.first().locator("[data-dismiss-message]").click();
+    await expect(flashMessages).toHaveCount(1);
+    await flashMessages.first().locator("[data-dismiss-message]").click();
+    await expect(flashMessages).toHaveCount(0);
 
     // 2. Profile hub view
     await page.goto("/accounts/profile/");

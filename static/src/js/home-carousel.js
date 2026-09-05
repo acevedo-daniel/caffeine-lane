@@ -39,7 +39,7 @@ export class HomeCarouselController {
 const AUTOPLAY_DELAY_MS = 7000;
 const SWIPE_THRESHOLD_PX = 40;
 
-if (typeof document !== "undefined") document.addEventListener("DOMContentLoaded", () => {
+const initCarousel = () => {
   const hero = document.querySelector("[aria-roledescription='carousel']");
   const track = document.getElementById("carousel-container");
   if (!hero || !track) return;
@@ -149,4 +149,12 @@ if (typeof document !== "undefined") document.addEventListener("DOMContentLoaded
   });
 
   scheduleAutoplay();
-});
+};
+
+if (typeof document !== "undefined") {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initCarousel);
+  } else {
+    initCarousel();
+  }
+}

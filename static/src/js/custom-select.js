@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+const initCustomSelect = () => {
   let sequence = 0;
 
   const getLabel = (select) => {
@@ -207,4 +207,12 @@ document.addEventListener("DOMContentLoaded", () => {
     select.form?.addEventListener("reset", () => window.setTimeout(sync, 0));
     sync();
   });
-});
+};
+
+if (typeof document !== "undefined") {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initCustomSelect);
+  } else {
+    initCustomSelect();
+  }
+}

@@ -89,16 +89,36 @@ export const initializeMobileMenu = (documentRef = document) => {
   return controller;
 };
 
+export const dismissFlashMessage = (messageElement) => {
+  if (!messageElement) return;
+  messageElement.classList?.add("is-dismissing");
+  setTimeout(() => {
+    const container = messageElement.parentElement;
+    messageElement.remove?.();
+    if (
+      container &&
+      container.classList?.contains?.("flash-messages") &&
+      container.children?.length === 0
+    ) {
+      container.remove?.();
+    }
+  }, 200);
+};
+
+const initializedFlashDocuments = new WeakSet();
+
 export const initializeFlashMessages = (documentRef = document) => {
-  if (!documentRef.querySelectorAll) return;
-  documentRef.querySelectorAll("[data-dismiss-message]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const message = button.closest(".flash-message");
-      if (message) {
-        message.classList.add("is-dismissing");
-        setTimeout(() => message.remove(), 200);
-      }
-    });
+  if (!documentRef?.addEventListener || initializedFlashDocuments.has(documentRef)) return;
+  initializedFlashDocuments.add(documentRef);
+
+  documentRef.addEventListener("click", (event) => {
+    const target = event.target?.nodeType === 3 ? event.target.parentElement : event.target;
+    const button = target?.closest?.("[data-dismiss-message]");
+    if (!button) return;
+    const message = button.closest?.(".flash-message");
+    if (message) {
+      dismissFlashMessage(message);
+    }
   });
 };
 
@@ -119,10 +139,16 @@ export const initializeSearchShortcut = (documentRef = document) => {
   });
 };
 
+const initializeBase = () => {
+  initializeMobileMenu();
+  initializeFlashMessages();
+  initializeSearchShortcut();
+};
+
 if (typeof document !== "undefined") {
-  document.addEventListener("DOMContentLoaded", () => {
-    initializeMobileMenu();
-    initializeFlashMessages();
-    initializeSearchShortcut();
-  });
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initializeBase);
+  } else {
+    initializeBase();
+  }
 }

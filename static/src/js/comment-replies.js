@@ -72,5 +72,9 @@ export const initializeCommentReplies = (documentRef = document) => {
 };
 
 if (typeof document !== "undefined") {
-  document.addEventListener("DOMContentLoaded", () => initializeCommentReplies());
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => initializeCommentReplies());
+  } else {
+    initializeCommentReplies();
+  }
 }
