@@ -10,7 +10,7 @@ from apps.accounts.models import User
 from apps.posts.models import Category, Post
 from apps.posts.taxonomy import STRUCTURAL_CATEGORIES, CategorySlug
 
-PORTFOLIO_POSTS = (
+EDITORIAL_POSTS = (
     {
         "slug": "cafe-racer-de-garaje",
         "title": "Café racer de garaje: una base honesta",
@@ -205,25 +205,25 @@ PORTFOLIO_POSTS = (
 
 
 class Command(BaseCommand):
-    help = "Create the idempotent public portfolio dataset and upload its images."
+    help = "Create the idempotent public editorial dataset and upload its images."
 
     def handle(self, *args, **options):
-        assets_dir = Path(settings.BASE_DIR) / "assets" / "portfolio"
+        assets_dir = Path(settings.BASE_DIR) / "assets" / "editorial"
         missing_assets = sorted(
             {
                 item["image"]
-                for item in PORTFOLIO_POSTS
+                for item in EDITORIAL_POSTS
                 if not (assets_dir / item["image"]).is_file()
             }
         )
         if missing_assets:
-            raise CommandError("Missing portfolio assets: " + ", ".join(missing_assets))
+            raise CommandError("Missing editorial assets: " + ", ".join(missing_assets))
 
         with transaction.atomic():
             author, _ = User.objects.get_or_create(
-                email="portfolio-author@example.invalid",
+                email="editorial-author@example.invalid",
                 defaults={
-                    "username": "portfolio-author",
+                    "username": "editorial-author",
                     "display_name": "Caffeine Lane",
                 },
             )
@@ -242,7 +242,7 @@ class Command(BaseCommand):
                     },
                 )
 
-            for item in PORTFOLIO_POSTS:
+            for item in EDITORIAL_POSTS:
                 post, _ = Post.objects.update_or_create(
                     slug=item["slug"],
                     defaults={
@@ -264,7 +264,7 @@ class Command(BaseCommand):
 
         self.stdout.write(
             self.style.SUCCESS(
-                f"Portfolio ready: {len(STRUCTURAL_CATEGORIES)} categories and "
-                f"{len(PORTFOLIO_POSTS)} posts."
+                f"Editorial dataset ready: {len(STRUCTURAL_CATEGORIES)} categories and "
+                f"{len(EDITORIAL_POSTS)} posts."
             )
         )

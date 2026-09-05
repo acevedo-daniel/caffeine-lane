@@ -8,7 +8,7 @@ from django.test import TestCase
 
 from apps.accounts.models import User
 from apps.posts.content_import import import_selected_content
-from apps.posts.management.commands.seed_portfolio import PORTFOLIO_POSTS
+from apps.posts.management.commands.seed_editorial import EDITORIAL_POSTS
 from apps.posts.models import Category, Post
 
 
@@ -45,11 +45,11 @@ class ContentImportTests(TestCase):
             3,
         )
 
-    def test_seed_portfolio_is_idempotent_and_uploads_webp_images(self):
-        call_command("seed_portfolio")
-        call_command("seed_portfolio")
+    def test_seed_editorial_is_idempotent_and_uploads_webp_images(self):
+        call_command("seed_editorial")
+        call_command("seed_editorial")
 
-        author = User.objects.get(email="portfolio-author@example.invalid")
+        author = User.objects.get(email="editorial-author@example.invalid")
         posts = Post.objects.filter(author=author)
         self.assertFalse(author.is_staff)
         self.assertFalse(author.is_superuser)
@@ -63,15 +63,15 @@ class ContentImportTests(TestCase):
         )
         self.assertTrue(all(post.featured_image_alt for post in posts))
         self.assertIn(
-            "source/reviews/review-04.webp", {item["image"] for item in PORTFOLIO_POSTS}
+            "source/reviews/review-04.webp", {item["image"] for item in EDITORIAL_POSTS}
         )
         self.assertEqual(
             posts.order_by("-published_at").first().slug,
             "review-the-ride-that-starts-the-story",
         )
 
-    def test_verify_portfolio_baseline_confirms_migration_and_categories(self):
-        call_command("verify_portfolio_baseline")
+    def test_verify_editorial_baseline_confirms_migration_and_categories(self):
+        call_command("verify_editorial_baseline")
 
     def test_selected_import_is_idempotent(self):
         import_selected_content(self.payload, author=self.author)

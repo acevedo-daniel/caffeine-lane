@@ -50,7 +50,7 @@ and waits for the readiness signal:
 /healthz/
 ```
 
-The test runner uses Chromium, single-worker isolation, and retained failure traces. Locally, browser tests can run against the active development database; in CI, `scripts/prepare-e2e.mjs` provisions a dedicated database with migrations and portfolio seed data prior to execution.
+The test runner uses Chromium, single-worker isolation, and retained failure traces. Locally, browser tests can run against the active development database; in CI, `scripts/prepare-e2e.mjs` provisions a dedicated database with migrations and editorial seed data prior to execution.
 
 ## Run tests
 

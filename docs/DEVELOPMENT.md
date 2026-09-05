@@ -30,7 +30,7 @@ pnpm run build
 # Run baseline verification, migrations, and demo seeding
 uv run python manage.py check_fresh_baseline
 uv run python manage.py migrate
-uv run python manage.py seed_portfolio
+uv run python manage.py seed_editorial
 ```
 
 On Windows PowerShell, use `Copy-Item .env.example .env`.
@@ -89,7 +89,7 @@ The local email backend writes messages directly to the Django server log. Uploa
 | Check migration drift | `uv run python manage.py makemigrations --check --dry-run` | Detect uncommitted model changes without migrations. |
 | Apply migrations | `uv run python manage.py migrate` | Apply pending Django migrations. |
 | Baseline guard | `uv run python manage.py check_fresh_baseline` | Verify database does not contain legacy profile tables. |
-| Seed portfolio | `uv run python manage.py seed_portfolio` | Seed reproducible demo/portfolio articles and categories. |
+| Seed editorial dataset | `uv run python manage.py seed_editorial` | Seed reproducible editorial articles and categories. |
 | Create administrator | `uv run python manage.py createsuperuser` | Provision a local Django superuser. |
 | Python tests | `uv run pytest` | Run Pytest suite with test coverage reporting. |
 | Lint Python | `uv run ruff check .` | Run Ruff linter. |
@@ -117,15 +117,15 @@ db.sqlite3
 
 That fallback is convenient for isolated or offline work, but PostgreSQL is the recommended local path when verifying database-specific behavior such as ranked full-text search.
 
-### Portfolio demo seed
+### Editorial dataset
 
 ```bash
-uv run python manage.py seed_portfolio
+uv run python manage.py seed_editorial
 ```
 
-The portfolio seed populates a structured content set used for local demonstration and automated browser tests.
+The editorial seed populates a structured content set used for local demonstration and automated browser tests.
 
-Production startup does **not** seed by default; container startup executes `seed_portfolio` only when `SEED_PORTFOLIO_ON_START=true` is explicitly provided.
+Vercel deployments never seed automatically. Docker startup executes `seed_editorial` only when `SEED_EDITORIAL_ON_START=true` is explicitly provided.
 
 ## Generated frontend assets
 
@@ -160,7 +160,7 @@ Do not edit files inside `static/dist/` manually.
 | Symptom | Resolution |
 | --- | --- |
 | CSS or JS changes do not appear | Run `pnpm run dev` or rebuild with `pnpm run build`; never edit `static/dist/` directly. |
-| No editorial content is visible | Apply migrations with `uv run python manage.py migrate` and run `uv run python manage.py seed_portfolio`. |
+| No editorial content is visible | Apply migrations with `uv run python manage.py migrate` and run `uv run python manage.py seed_editorial`. |
 | `check_fresh_baseline` fails | The active database contains incompatible legacy profile tables; switch to a clean database or reset disposable local data. |
 | Local emails are not delivered externally | By design: local development settings route emails to Django's console backend. |
 

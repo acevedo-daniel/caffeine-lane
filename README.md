@@ -6,7 +6,7 @@
 
 Caffeine Lane is a publishing and community application for motorcycle builders and enthusiasts. It combines editorial content, search, reader accounts and profiles, moderated discussions, media uploads, and a bilingual interface. It is intentionally not an e-commerce marketplace.
 
-**[Open Live Application](https://caffeinelane.onrender.com)**
+**[Deployment guide](docs/DEPLOYMENT.md)**
 
 ## Screenshots
 
@@ -39,27 +39,25 @@ Caffeine Lane is a publishing and community application for motorcycle builders 
 - **Email-based Django identity.** A custom `accounts.User` model makes email the authentication identifier while retaining Django's authentication and permission system; production password hashing prioritizes Argon2.
 - **PostgreSQL-aware search.** Published content uses weighted `SearchVector` and `SearchRank` queries on PostgreSQL, with a simpler text-search fallback when another database backend is used.
 - **Discussion rules are enforced before persistence.** Comment creation runs model validation through a service boundary, keeping replies to one level and preserving explicit visible, withdrawn, and moderator-hidden states.
-- **Runtime and migration database paths are separated.** Production traffic can use Neon's pooled connection while the container temporarily switches to a direct connection for schema migrations.
+- **Runtime and migration database paths are separated.** Production traffic uses Neon's pooled connection while an explicit release command uses a direct connection for schema migrations.
 - **Verification crosses application and delivery boundaries.** CI tests Python 3.14 against PostgreSQL 18, validates generated frontend assets, runs Playwright browser smoke tests, checks production settings, and smoke-tests the production Docker image.
 
 ## Architecture
 
 ```text
-Browser -> Render container (Gunicorn -> Django)
-                              -> Neon PostgreSQL
-                              -> Cloudinary media storage
-                              -> Resend email
-
-         WhiteNoise serves collected static assets from the Django runtime
+Browser -> Vercel CDN / Django function
+                  -> Neon PostgreSQL
+                  -> Cloudinary media storage
+                  -> Resend email
 ```
 
-Django owns routing, authentication, validation, editorial and discussion behavior, internationalization, and server-rendered templates. PostgreSQL persists application data, Cloudinary stores media, Resend delivers transactional emails, and Render runs the containerized Gunicorn service.
+Django owns routing, authentication, validation, editorial and discussion behavior, internationalization, and server-rendered templates. PostgreSQL persists application data, Cloudinary stores media, Resend delivers transactional emails, and Vercel runs the web runtime and CDN.
 
 ## Technology stack
 
 - **Backend:** Python 3.14, Django 6, PostgreSQL, and Gunicorn.
 - **Frontend:** Django Templates, Tailwind CSS 4, and JavaScript.
-- **Services:** Neon, Cloudinary, Resend through Anymail, WhiteNoise, and Render.
+- **Services:** Neon, Cloudinary, Resend through Anymail, WhiteNoise, and Vercel.
 - **Tooling:** uv, pnpm, Pytest, Playwright, Ruff, Docker, and GitHub Actions.
 
 ## Repository structure
@@ -90,7 +88,7 @@ pnpm run build
 # Initialize and seed database
 uv run python manage.py check_fresh_baseline
 uv run python manage.py migrate
-uv run python manage.py seed_portfolio
+uv run python manage.py seed_editorial
 ```
 
 On Windows PowerShell, use `Copy-Item .env.example .env`.

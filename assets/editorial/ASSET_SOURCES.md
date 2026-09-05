@@ -1,8 +1,8 @@
-# Portfolio Image Provenance and Rights
+# Editorial Image Provenance and Rights
 
 ## Statement of Provenance
 
-The project owner confirmed on July 29, 2026, that all images under `source/` were downloaded from [Unsplash](https://unsplash.com/). They were converted to WebP with the longest edge constrained to 1600 px for use in `seed_portfolio`.
+The project owner confirmed on July 29, 2026, that all images under `source/` were downloaded from [Unsplash](https://unsplash.com/). They were converted to WebP with the longest edge constrained to 1600 px for use in `seed_editorial`.
 
 The [Unsplash License](https://unsplash.com/license) permits downloading, copying, modifying, distributing, and using images for free, including for commercial purposes, without requiring permission or attribution. It does not permit selling unmodified copies or compiling the images to replicate a similar or competing service.
 
