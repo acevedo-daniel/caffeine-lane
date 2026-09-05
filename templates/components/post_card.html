@@ -1,27 +1,50 @@
 {% load i18n post_i18n %}
 <article class="editorial-card group motion-card">
-  <a class="block h-full no-underline" href="{{ post.get_absolute_url }}">
-    {% if post.featured_image %}
-      <img class="aspect-[16/10] w-full object-cover motion-card-image" src="{{ post.featured_image.url }}" alt="{{ post.featured_image_alt }}" width="640" height="400" loading="lazy" decoding="async">
-    {% else %}
-      <div class="flex aspect-[16/10] items-end bg-stone-950 p-5" aria-hidden="true">
-        <span class="font-bebas text-3xl tracking-wide text-white">{% translate "The Caffeine Lane" %}</span>
-      </div>
-    {% endif %}
-
-    <div class="flex min-h-40 flex-col p-5">
-      <p class="editorial-kicker">
-        {% for category in post.categories.all %}
-          {{ category|localized_category }}{% if not forloop.last %} · {% endif %}
-        {% empty %}
-          {% translate "Post" %}
-        {% endfor %}
-      </p>
-      <h3 class="motion-title mt-2 font-bebas text-3xl leading-[0.95] tracking-wide text-stone-950 group-hover:text-stone-600">{{ post.title }}</h3>
-      {% if post.excerpt and card_variant != "compact" %}
-        <p class="mt-3 line-clamp-2 text-sm leading-6 text-stone-600">{{ post.excerpt }}</p>
+  <a class="flex h-full flex-col no-underline text-inherit" href="{{ post.get_absolute_url }}">
+    <div class="relative overflow-hidden aspect-[3/2] w-full bg-stone-900">
+      {% if post.featured_image %}
+        <img class="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-105" src="{{ post.featured_image.url }}" alt="{{ post.featured_image_alt }}" width="640" height="427" loading="lazy" decoding="async">
+      {% else %}
+        <div class="flex h-full w-full items-end bg-stone-950 p-5" aria-hidden="true">
+          <span class="font-bebas text-3xl tracking-wide text-stone-400">{% translate "CAFFEINE LANE" %}</span>
+        </div>
       {% endif %}
-      <p class="mt-auto pt-4 text-xs font-semibold uppercase tracking-[0.12em] text-stone-500">{% translate "By" %} {{ post.author.display_name|default:post.author.username }}</p>
+      <div class="absolute top-3 left-3 flex flex-wrap gap-1.5 pointer-events-none">
+        {% for category in post.categories.all %}
+          <span class="inline-block px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider bg-stone-950/85 text-stone-100 backdrop-blur-sm rounded-sm">
+            {{ category|localized_category }}
+          </span>
+        {% empty %}
+          <span class="inline-block px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider bg-stone-950/85 text-stone-100 backdrop-blur-sm rounded-sm">
+            {% translate "Dispatch" %}
+          </span>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="flex flex-1 flex-col p-5 bg-white">
+      <div class="flex items-center gap-2 text-xs font-semibold text-stone-500 mb-2">
+        {% if post.published_at %}
+          <time datetime="{{ post.published_at|date:'Y-m-d' }}">{{ post.published_at|date:"M d, Y" }}</time>
+          <span aria-hidden="true">·</span>
+        {% endif %}
+        <span>{% blocktranslate with minutes=post.reading_time %}{{ minutes }} min read{% endblocktranslate %}</span>
+      </div>
+
+      <h3 class="font-bebas text-2xl sm:text-3xl leading-[0.98] tracking-wide text-stone-950 transition-colors duration-150 group-hover:text-primary">
+        {{ post.title }}
+      </h3>
+
+      {% if post.excerpt and card_variant != "compact" %}
+        <p class="mt-2.5 line-clamp-2 text-sm leading-relaxed text-stone-600">{{ post.excerpt }}</p>
+      {% endif %}
+
+      <div class="mt-auto pt-4 flex items-center justify-between border-t border-stone-100 text-xs text-stone-500 font-semibold uppercase tracking-wider">
+        <span>{% translate "By" %} {{ post.author.display_name|default:post.author.username }}</span>
+        <span class="text-stone-400 group-hover:text-primary transition-colors inline-flex items-center gap-1 font-bold">
+          <i class="fa-solid fa-arrow-right text-[10px]" aria-hidden="true"></i>
+        </span>
+      </div>
     </div>
   </a>
 </article>

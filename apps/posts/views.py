@@ -5,7 +5,7 @@ from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.paginator import Paginator
 from django.db import connection
-from django.db.models import Prefetch, Q
+from django.db.models import Count, Prefetch, Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
@@ -90,13 +90,42 @@ def comment_reply(request, comment_id):
 
 def category_view(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug)
-    paginator = Paginator(Post.objects.for_listing().filter(categories=category), 12)
+    sort = request.GET.get("sort", "newest")
+    posts_qs = Post.objects.for_listing().filter(categories=category)
+
+    if sort == "oldest":
+        posts_qs = posts_qs.order_by("published_at", "created_at")
+    elif sort == "comments":
+        posts_qs = posts_qs.annotate(
+            comment_count=Count(
+                "comments", filter=Q(comments__visibility=Comment.Visibility.VISIBLE)
+            )
+        ).order_by("-comment_count", "-published_at")
+    else:
+        sort = "newest"
+        posts_qs = posts_qs.order_by("-published_at", "-created_at")
+
+    rider_poses = {
+        "builds": "character-mechanic.webp",
+        "guides": "character-pointing.webp",
+        "reviews": "character-signature.webp",
+    }
+    rider_asset = rider_poses.get(category.slug, "character-welcome.webp")
+
+    paginator = Paginator(posts_qs, 12)
     page_obj = paginator.get_page(request.GET.get("page"))
+
+    pagination_query = request.GET.copy()
+    pagination_query.pop("page", None)
+
     context = {
         "category": category,
         "posts": page_obj.object_list,
         "page_obj": page_obj,
         "is_paginated": page_obj.has_other_pages(),
+        "current_sort": sort,
+        "rider_asset": rider_asset,
+        "pagination_query": pagination_query.urlencode(),
     }
     return render(request, "posts/category_view.html", context)
 

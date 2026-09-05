@@ -80,4 +80,30 @@ test.describe("compiled frontend smoke checks", () => {
     await replyForm.locator("[data-reply-cancel]").click();
     await expect(replyForm).toBeHidden();
   });
+
+  test("Phase 3: Public Landing and Category Archive render editorial surfaces with The Rider", async ({ page }) => {
+    // 1. Public Landing checks
+    await page.goto("/");
+    await expect(page.locator("h1#landing-hero-title")).toBeVisible();
+    await expect(page.locator(".landing-manifesto-card")).toBeVisible();
+    await expect(page.locator(".category-card")).toHaveCount(3);
+    await expect(page.locator(".landing-community")).toBeVisible();
+
+    // 2. Home keyboard navigation checks
+    await page.goto("/home/");
+    const hero = page.locator("[aria-roledescription='carousel']");
+    const index = hero.locator("[data-carousel-index]");
+    await hero.focus();
+    await page.keyboard.press("ArrowRight");
+    await expect(index).toHaveText("02");
+    await page.keyboard.press("ArrowLeft");
+    await expect(index).toHaveText("01");
+
+    // 3. Category Archive checks
+    await page.goto("/posts/category/builds/");
+    await expect(page.locator("h1#category-title")).toBeVisible();
+    await expect(page.locator(".category-hero__rider")).toBeVisible();
+    await expect(page.locator("#sort-select")).toBeVisible();
+    await expect(page.locator(".category-post-grid")).toBeVisible();
+  });
 });

@@ -119,6 +119,11 @@ class Post(models.Model):
     def get_absolute_url(self):
         return reverse("post_detail", kwargs={"slug": self.slug})
 
+    @property
+    def reading_time(self):
+        words = len(self.content.split())
+        return max(1, round(words / 200))
+
     class Meta:
         ordering = ["-published_at", "-created_at"]
         constraints = [

@@ -138,5 +138,15 @@ if (typeof document !== "undefined") document.addEventListener("DOMContentLoaded
   });
   track.addEventListener("pointercancel", () => { touchStartX = null; });
 
+  hero.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      navigate("previous");
+    } else if (event.key === "ArrowRight") {
+      event.preventDefault();
+      navigate("next");
+    }
+  });
+
   scheduleAutoplay();
 });

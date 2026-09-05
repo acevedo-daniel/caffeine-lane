@@ -2,7 +2,7 @@
 {% load i18n post_i18n %}
 {% block title %}{% blocktranslate with category_name=category|localized_category %}{{ category_name }} · The Caffeine Lane{% endblocktranslate %}{% endblock title %}
 {% block content %}
-  <section class="category-hero">
+  <section class="category-hero" aria-labelledby="category-title">
     {% if category.image %}
       <img class="category-hero__image" src="{{ category.image.url }}" alt="" aria-hidden="true" width="1920" height="680">
     {% endif %}
@@ -12,10 +12,22 @@
         <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
         {% translate "Back to home" %}
       </a>
-      <div>
-        <p class="editorial-kicker text-stone-300">{% translate "The Caffeine Lane · Archive" %}</p>
-        <h1 class="category-hero__title">{{ category|localized_category }}</h1>
-        <p class="category-hero__count">{% blocktranslate count counter=page_obj.paginator.count %}{{ counter }} story from the road.{% plural %}{{ counter }} stories from the road.{% endblocktranslate %}</p>
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mt-4">
+        <div>
+          <p class="editorial-kicker text-stone-300">{% translate "Editorial Archive" %}</p>
+          <h1 id="category-title" class="category-hero__title">{{ category|localized_category }}</h1>
+          <p class="category-hero__count">
+            {% blocktranslate count counter=page_obj.paginator.count %}
+              {{ counter }} dispatch from the garage.
+            {% plural %}
+              {{ counter }} dispatches from the garage.
+            {% endblocktranslate %}
+          </p>
+        </div>
+        <div class="category-hero__rider">
+          {% translate "The Rider" as rider_alt %}
+          {% include "components/character_badge.html" with asset=rider_asset size="md" alt=rider_alt class_name="category-rider-badge" %}
+        </div>
       </div>
     </div>
   </section>
@@ -23,33 +35,68 @@
   <div class="editorial-page">
     <div class="editorial-container editorial-section">
       <section aria-labelledby="category-posts-heading">
-        <div class="editorial-rule">
-          <p class="editorial-kicker">{% translate "Latest dispatches" %}</p>
-          <h2 id="category-posts-heading" class="editorial-heading mt-1">{% blocktranslate with category_name=category|localized_category %}All {{ category_name }}{% endblocktranslate %}</h2>
+        <!-- Controls Toolbar -->
+        <div class="category-toolbar flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 mb-8 border-b border-stone-200">
+          <div>
+            <h2 id="category-posts-heading" class="font-bebas text-3xl sm:text-4xl tracking-wide text-stone-950">
+              {% blocktranslate with category_name=category|localized_category %}All {{ category_name }}{% endblocktranslate %}
+            </h2>
+            <p class="text-xs text-stone-500 font-semibold uppercase tracking-wider mt-0.5">
+              {% blocktranslate count counter=page_obj.paginator.count %}Showing {{ counter }} article{% plural %}Showing {{ counter }} articles{% endblocktranslate %}
+            </p>
+          </div>
+
+          <!-- Sort Order Dropdown -->
+          <form method="get" class="category-toolbar__sort flex items-center gap-2">
+            <label for="sort-select" class="text-xs font-bold uppercase tracking-wider text-stone-600 whitespace-nowrap">
+              <i class="fa-solid fa-arrow-down-short-wide mr-1" aria-hidden="true"></i>{% translate "Sort:" %}
+            </label>
+            <select id="sort-select" name="sort" data-submit-on-change="true" class="text-xs font-semibold uppercase tracking-wider">
+              <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>{% translate "Newest First" %}</option>
+              <option value="oldest" {% if current_sort == 'oldest' %}selected{% endif %}>{% translate "Oldest First" %}</option>
+              <option value="comments" {% if current_sort == 'comments' %}selected{% endif %}>{% translate "Most Discussed" %}</option>
+            </select>
+            <noscript><button type="submit" class="button-secondary text-xs px-2.5 py-1">{% translate "Apply" %}</button></noscript>
+          </form>
         </div>
-        <div class="category-post-grid mt-7">
+
+        <!-- 3-Column Post Card Grid -->
+        <div class="category-post-grid grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {% for post in posts %}
             {% include "components/post_card.html" with post=post %}
           {% empty %}
-            <div class="editorial-empty category-post-grid__empty">
+            <div class="editorial-empty col-span-full py-12 text-center bg-white border border-stone-200 rounded-sm p-8">
+              {% translate "The Rider searching for stories" as rider_empty_alt %}
+              {% include "components/character_badge.html" with asset="character-welcome.webp" size="md" alt=rider_empty_alt class_name="mx-auto mb-4" %}
               <h3 class="font-bebas text-4xl tracking-wide text-stone-950">{% translate "Nothing here yet." %}</h3>
-              <p class="mt-2">{% translate "There are no stories in this category yet. Check the other categories while the next one is being prepared." %}</p>
-              <a class="editorial-button mt-5" href="{% url 'home' %}">{% translate "Browse the latest stories" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+              <p class="mt-2 text-stone-600 max-w-md mx-auto">
+                {% translate "There are no stories in this category yet. Check the other categories while the next one is being prepared." %}
+              </p>
+              <a class="button-primary inline-flex items-center gap-2 mt-6 uppercase text-xs font-bold tracking-wider px-5 py-2.5" href="{% url 'home' %}">
+                {% translate "Browse all stories" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+              </a>
             </div>
           {% endfor %}
         </div>
 
+        <!-- Pagination -->
         {% if is_paginated %}
-          <nav class="editorial-pagination" aria-label="{% blocktranslate with category_name=category|localized_category %}Pages in {{ category_name }}{% endblocktranslate %}">
+          <nav class="editorial-pagination mt-12 pt-6 border-t border-stone-200 flex items-center justify-between" aria-label="{% blocktranslate with category_name=category|localized_category %}Pages in {{ category_name }}{% endblocktranslate %}">
             <div>
               {% if page_obj.has_previous %}
-                <a class="editorial-button" href="?page={{ page_obj.previous_page_number }}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> {% translate "Previous" %}</a>
+                <a class="editorial-button inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider" href="?page={{ page_obj.previous_page_number }}{% if pagination_query %}&{{ pagination_query }}{% endif %}">
+                  <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> {% translate "Previous" %}
+                </a>
               {% endif %}
             </div>
-            <p class="editorial-pagination__status">{% translate "Page" %} {{ page_obj.number }} <span aria-hidden="true">/</span> <span class="sr-only">{% translate "of" %}</span> {{ page_obj.paginator.num_pages }}</p>
+            <p class="editorial-pagination__status text-xs font-bold uppercase tracking-widest text-stone-500">
+              {% translate "Page" %} {{ page_obj.number }} <span aria-hidden="true">/</span> <span class="sr-only">{% translate "of" %}</span> {{ page_obj.paginator.num_pages }}
+            </p>
             <div>
               {% if page_obj.has_next %}
-                <a class="editorial-button" href="?page={{ page_obj.next_page_number }}">{% translate "Next" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                <a class="editorial-button inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider" href="?page={{ page_obj.next_page_number }}{% if pagination_query %}&{{ pagination_query }}{% endif %}">
+                  {% translate "Next" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </a>
               {% endif %}
             </div>
           </nav>

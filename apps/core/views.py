@@ -36,7 +36,19 @@ def health(request):
 
 
 def landing(request):
-    return render(request, "core/landing.html")
+    featured_build = (
+        Post.objects.for_listing().filter(categories__slug=CategorySlug.BUILDS).first()
+        or Post.objects.for_listing().first()
+    )
+    categories = Category.objects.all()
+    context = {
+        "featured_build": featured_build,
+        "categories": categories,
+        "builds_category_slug": CategorySlug.BUILDS,
+        "guides_category_slug": CategorySlug.GUIDES,
+        "reviews_category_slug": CategorySlug.REVIEWS,
+    }
+    return render(request, "core/landing.html", context)
 
 
 def home(request):
