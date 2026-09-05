@@ -49,3 +49,17 @@ def hide_comment(*, comment: Comment, actor) -> Comment:
         update_fields=["visibility", "moderated_at", "moderated_by", "updated_at"]
     )
     return comment
+
+
+def update_comment(*, comment: Comment, content: str, actor) -> Comment:
+    if not (comment.author_id == actor.pk or actor.has_perm("posts.moderate_comment")):
+        raise PermissionDenied(_("You do not have permission to edit this comment."))
+    if not comment.is_visible:
+        raise PermissionDenied(_("Cannot edit a hidden or withdrawn comment."))
+    content = content.strip()
+    if not content:
+        raise ValidationError(_("Comment content cannot be empty."))
+    comment.content = content
+    comment.is_edited = True
+    comment.save(update_fields=["content", "is_edited", "updated_at"])
+    return comment

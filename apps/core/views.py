@@ -8,6 +8,7 @@ from django.core.cache import cache
 from django.core.mail import EmailMultiAlternatives
 from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse
 from django.shortcuts import redirect, render
+from django.template.loader import render_to_string
 from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_exempt
 
@@ -23,6 +24,8 @@ logger = logging.getLogger(__name__)
 def csp_report(request):
     if request.method != "POST":
         return HttpResponseNotAllowed(["POST"])
+    if len(request.body) > 65536:
+        return HttpResponse(status=400)
     try:
         report = json.loads(request.body or "{}")
     except json.JSONDecodeError:
@@ -90,7 +93,13 @@ def contact(request):
     if request.method == "POST":
         form = ContactForm(request.POST)
         if form.is_valid():
-            rate_limit_key = f"contact-rate-limit:{request.META.get('REMOTE_ADDR', '')}"
+            forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+            client_ip = (
+                forwarded_for.split(",")[0].strip()
+                if forwarded_for
+                else request.META.get("REMOTE_ADDR", "")
+            )
+            rate_limit_key = f"contact-rate-limit:{client_ip}"
             if not cache.add(
                 rate_limit_key, 1, timeout=settings.CONTACT_RATE_LIMIT_WINDOW
             ):
@@ -105,8 +114,7 @@ def contact(request):
             message_text = form.cleaned_data["message"]
 
             full_message = f"From: {name} <{email}>\n\n{message_text}"
-            html_message = render(
-                request,
+            html_message = render_to_string(
                 "core/contact_email.html",
                 {
                     "name": name,
@@ -114,7 +122,8 @@ def contact(request):
                     "subject": subject,
                     "message": message_text,
                 },
-            ).content.decode()
+                request=request,
+            )
             message = EmailMultiAlternatives(
                 subject=_("Contact from Caffeine Lane: %(subject)s")
                 % {"subject": subject},

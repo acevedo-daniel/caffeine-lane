@@ -1,3 +1,5 @@
+from django.contrib.auth.models import Permission
+from django.contrib.messages import get_messages
 from django.test import TestCase
 from django.urls import reverse
 
@@ -177,3 +179,101 @@ class SearchAndListingTests(TestCase):
         if connection.vendor == "postgresql":
             # Title match (weight A) must rank ahead of content match (weight C)
             self.assertEqual(results[0], title_match)
+
+    def test_draft_preview_in_post_detail_by_role(self):
+        draft = Post.objects.create(
+            title="Secret Draft",
+            slug="secret-draft",
+            content="Draft notes",
+            author=self.author,
+            status=Post.Status.DRAFT,
+        )
+        editor = UserFactory(username="editor")
+        editor.user_permissions.add(Permission.objects.get(codename="change_post"))
+        stranger = UserFactory(username="stranger")
+
+        url = reverse("post_detail", kwargs={"slug": draft.slug})
+
+        # Anonymous gets 404
+        self.assertEqual(self.client.get(url).status_code, 404)
+
+        # Stranger gets 404
+        self.client.force_login(stranger)
+        self.assertEqual(self.client.get(url).status_code, 404)
+
+        # Author can view draft
+        self.client.force_login(self.author)
+        self.assertEqual(self.client.get(url).status_code, 200)
+
+        # Editor can view draft
+        self.client.force_login(editor)
+        self.assertEqual(self.client.get(url).status_code, 200)
+
+    def test_post_cbv_success_messages_and_permissions(self):
+        author = self.author
+        author.user_permissions.add(
+            Permission.objects.get(codename="add_post"),
+            Permission.objects.get(codename="change_post"),
+            Permission.objects.get(codename="delete_post"),
+        )
+        self.client.force_login(author)
+
+        # Create
+        create_res = self.client.post(
+            reverse("post_create"),
+            {
+                "title": "Fresh Post",
+                "excerpt": "Fresh excerpt",
+                "content": "Fresh body",
+                "categories": [self.builds.pk],
+                "status": Post.Status.PUBLISHED,
+                "published_at": "2026-09-05 12:00:00",
+            },
+            follow=True,
+        )
+        self.assertEqual(create_res.status_code, 200)
+        messages = list(get_messages(create_res.wsgi_request))
+        self.assertTrue(any("created successfully" in str(m) for m in messages))
+
+        created_post = Post.objects.get(title="Fresh Post")
+        self.assertEqual(created_post.author, author)
+
+        # Update
+        update_res = self.client.post(
+            reverse("post_update", kwargs={"slug": created_post.slug}),
+            {
+                "title": "Fresh Post Edited",
+                "excerpt": "Fresh excerpt",
+                "content": "Fresh body",
+                "categories": [self.builds.pk],
+                "status": Post.Status.PUBLISHED,
+                "published_at": "2026-09-05 12:00:00",
+            },
+            follow=True,
+        )
+        self.assertEqual(update_res.status_code, 200)
+        messages = list(get_messages(update_res.wsgi_request))
+        self.assertTrue(any("updated successfully" in str(m) for m in messages))
+
+        # Other user cannot update author's post
+        stranger = UserFactory(username="other-author")
+        stranger.user_permissions.add(
+            Permission.objects.get(codename="change_post"),
+            Permission.objects.get(codename="delete_post"),
+        )
+        self.client.force_login(stranger)
+        unauth_update = self.client.get(
+            reverse("post_update", kwargs={"slug": created_post.slug})
+        )
+        self.assertEqual(unauth_update.status_code, 404)
+
+        # Delete by author
+        self.client.force_login(author)
+        delete_res = self.client.post(
+            reverse("post_delete", kwargs={"slug": created_post.slug}),
+            follow=True,
+        )
+        self.assertEqual(delete_res.status_code, 200)
+        messages = list(get_messages(delete_res.wsgi_request))
+        self.assertTrue(any("deleted successfully" in str(m) for m in messages))
+        self.assertFalse(Post.objects.filter(pk=created_post.pk).exists())
