@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 
 from apps.accounts.models import User
-from apps.posts.models import Category, Post
+from apps.posts.models import Category, Comment, Post
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -46,3 +46,12 @@ class PostFactory(factory.django.DjangoModelFactory):
     def categories(instance, create, extracted, **kwargs):
         if create:
             instance.categories.add(extracted or CategoryFactory())
+
+
+class CommentFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Comment
+
+    author = factory.SubFactory(UserFactory)
+    post = factory.SubFactory(PostFactory)
+    content = factory.Sequence(lambda number: f"Comment content {number}")

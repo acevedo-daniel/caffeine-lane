@@ -19,6 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+from django.views import defaults as default_views
 
 from apps.core import views as core_views
 
@@ -29,6 +30,29 @@ urlpatterns = [
     path("", include("apps.core.urls")),
     path("posts/", include("apps.posts.urls")),
     path("accounts/", include("apps.accounts.urls")),
+    path(
+        "400/",
+        default_views.bad_request,
+        kwargs={"exception": Exception("Simulated Bad Request")},
+        name="simulated_400",
+    ),
+    path(
+        "403/",
+        default_views.permission_denied,
+        kwargs={"exception": Exception("Simulated Permission Denied")},
+        name="simulated_403",
+    ),
+    path(
+        "404/",
+        default_views.page_not_found,
+        kwargs={"exception": Exception("Simulated Page Not Found")},
+        name="simulated_404",
+    ),
+    path(
+        "500/",
+        default_views.server_error,
+        name="simulated_500",
+    ),
 ]
 
 if settings.DEBUG:

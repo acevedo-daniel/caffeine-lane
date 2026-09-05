@@ -156,4 +156,48 @@ test.describe("compiled frontend smoke checks", () => {
     await expect(emptyCard.locator(".search-suggestion-pill")).toHaveCount(4);
     await expect(emptyCard.locator(".search-suggestion-pill").first()).toContainText("CB750");
   });
+
+  test("Phase 6: Reader identity, two-step registration, profile hub, and simulated error pages", async ({ page }) => {
+    // 1. Two-step registration flow
+    await page.goto("/accounts/register/");
+    await expect(page.locator(".auth-shell")).toBeVisible();
+    await expect(page.locator(".auth-shell__rider")).toBeVisible();
+
+    const timestamp = Date.now();
+    const testEmail = `e2e-phase6-${timestamp}@example.test`;
+    await page.locator("#id_email").fill(testEmail);
+    await page.getByRole("button", { name: "Continue" }).click();
+
+    // Step 2 onboarding
+    await expect(page).toHaveURL(/\/accounts\/register\/step2\/$/);
+    await expect(page.locator(".auth-shell__rider")).toBeVisible();
+    await expect(page.locator("[data-avatar-preview-card]")).toBeVisible();
+    await page.locator("#id_username").fill(`rider${timestamp}`);
+    await page.locator("#id_display_name").fill("Phase 6 Test Rider");
+    await page.locator("#id_password1").fill("SecurePass123!");
+    await page.locator("#id_password2").fill("SecurePass123!");
+    await page.locator("#id_has_motorcycle_0").check();
+    await page.getByRole("button", { name: "Create account" }).click();
+
+    await expect(page).toHaveURL(/\/home\/$/);
+
+    // 2. Profile hub view
+    await page.goto("/accounts/profile/");
+    await expect(page.locator(".account-shell")).toBeVisible();
+    await expect(page.locator(".profile-avatar-card")).toBeVisible();
+    await expect(page.locator(".profile-fleet-card")).toBeVisible();
+    await expect(page.locator(".profile-fleet-card")).toContainText("Active Garage Rider");
+    await expect(page.locator(".profile-comments-section")).toBeVisible();
+
+    // 3. Simulated error pages
+    await page.goto("/404/");
+    await expect(page.locator(".error-page")).toBeVisible();
+    await expect(page.locator(".error-page .character-badge--xl")).toBeVisible();
+    await expect(page.locator(".error-page__action")).toBeVisible();
+
+    await page.goto("/500/");
+    await expect(page.locator(".error-page")).toBeVisible();
+    await expect(page.locator(".error-page .character-badge--xl")).toBeVisible();
+    await expect(page.locator(".error-page__action")).toBeVisible();
+  });
 });

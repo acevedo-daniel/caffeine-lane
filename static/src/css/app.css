@@ -3869,6 +3869,271 @@
 
   .account-state--warning .account-state__icon { color: var(--warning); }
 
+  /* Phase 6: Avatar Preview & Management */
+  .avatar-preview-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-secondary);
+    margin-bottom: 0.75rem;
+  }
+
+  .avatar-preview-badge {
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 9999px;
+    overflow: hidden;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    background: var(--surface);
+  }
+
+  .avatar-preview-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .avatar-preview-title {
+    font-weight: 800;
+    font-size: 0.875rem;
+    color: var(--foreground);
+  }
+
+  .avatar-preview-subtitle {
+    font-size: 0.75rem;
+    color: var(--foreground-muted);
+    margin-top: 0.2rem;
+  }
+
+  .avatar-preview-error {
+    font-size: 0.75rem;
+    color: var(--primary);
+    margin-top: 0.25rem;
+    font-weight: 700;
+  }
+
+  .profile-avatar-card {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-secondary);
+    margin-bottom: 1.5rem;
+  }
+
+  .profile-avatar-card__badge {
+    width: 5.5rem;
+    height: 5.5rem;
+    border-radius: 9999px;
+    overflow: hidden;
+    border: 3px solid var(--border);
+    flex-shrink: 0;
+    background: var(--surface);
+  }
+
+  .profile-avatar-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .profile-avatar-card__title {
+    font-family: var(--font-bebas);
+    font-size: 1.5rem;
+    letter-spacing: 0.04em;
+    color: var(--foreground);
+  }
+
+  .profile-avatar-card__desc {
+    font-size: 0.8125rem;
+    color: var(--foreground-secondary);
+    line-height: 1.5;
+    margin-top: 0.25rem;
+  }
+
+  /* Phase 6: Motorcycle Fleet Overview */
+  .profile-fleet-card {
+    padding: 1.25rem;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--primary);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    margin-bottom: 1.75rem;
+  }
+
+  .profile-fleet-card__header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .profile-fleet-card__icon {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 9999px;
+    background: var(--surface-dark);
+    color: var(--color-white);
+    display: grid;
+    place-items: center;
+    font-size: 1.125rem;
+    flex-shrink: 0;
+  }
+
+  .profile-fleet-card__title {
+    font-family: var(--font-bebas);
+    font-size: 1.5rem;
+    letter-spacing: 0.03em;
+    color: var(--foreground);
+  }
+
+  .profile-fleet-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.6875rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .profile-fleet-badge--active {
+    background: var(--surface-dark);
+    color: var(--color-white);
+  }
+
+  .profile-fleet-badge--inactive {
+    background: var(--surface-secondary);
+    color: var(--foreground-secondary);
+    border: 1px solid var(--border);
+  }
+
+  .profile-fleet-card__desc {
+    font-size: 0.875rem;
+    color: var(--foreground-secondary);
+    line-height: 1.6;
+  }
+
+  /* Phase 6: Recent Comments History */
+  .profile-comments-list {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .profile-comment-item {
+    padding: 1.125rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+  }
+
+  .profile-comment-item:hover {
+    border-color: var(--border-focus);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 0.04);
+  }
+
+  .profile-comment-item__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .profile-comment-item__post-title {
+    font-weight: 800;
+    font-size: 0.9375rem;
+    color: var(--foreground);
+    text-decoration: none;
+    line-height: 1.4;
+  }
+
+  .profile-comment-item__post-title:hover {
+    color: var(--primary);
+  }
+
+  .profile-comment-item__date {
+    font-size: 0.75rem;
+    color: var(--foreground-muted);
+    white-space: nowrap;
+    font-weight: 600;
+  }
+
+  .profile-comment-item__content {
+    font-size: 0.875rem;
+    color: var(--foreground-secondary);
+    line-height: 1.6;
+  }
+
+  .profile-comment-item__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.75rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .profile-comment-item__status {
+    font-size: 0.6875rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--radius-pill);
+  }
+
+  .profile-comment-item__status--visible {
+    background: rgb(240 253 244);
+    color: rgb(22 101 52);
+  }
+
+  .profile-comment-item__status--withdrawn {
+    background: var(--surface-secondary);
+    color: var(--foreground-muted);
+  }
+
+  .profile-comment-item__status--hidden {
+    background: var(--danger-surface);
+    color: var(--danger);
+  }
+
+  .profile-comment-item__edit-link {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--foreground-secondary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: color 150ms ease;
+  }
+
+  .profile-comment-item__edit-link:hover {
+    color: var(--primary);
+  }
+
+  .profile-comments-empty {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.75rem;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-secondary);
+    margin-top: 1rem;
+  }
+
   .about-hero {
     position: relative;
     overflow: hidden;
