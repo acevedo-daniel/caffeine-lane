@@ -43,9 +43,11 @@ def landing(request):
         Post.objects.for_listing().filter(categories__slug=CategorySlug.BUILDS).first()
         or Post.objects.for_listing().first()
     )
+    recent_posts = Post.objects.for_listing()[:3]
     categories = Category.objects.all()
     context = {
         "featured_build": featured_build,
+        "recent_posts": recent_posts,
         "categories": categories,
         "builds_category_slug": CategorySlug.BUILDS,
         "guides_category_slug": CategorySlug.GUIDES,

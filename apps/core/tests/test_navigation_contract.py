@@ -95,3 +95,17 @@ class NavigationContractTests(TestCase):
             with self.subTest(href=href):
                 linked_response = self.client.get(href)
                 self.assertNotIn(linked_response.status_code, {404, 500})
+
+    def test_landing_cards_and_layout_links_never_return_404_or_500(self):
+        call_command("seed_portfolio")
+        response = self.client.get(reverse("landing"))
+        self.assertEqual(response.status_code, 200)
+
+        parser = InternalLinkParser()
+        parser.feed(response.content.decode())
+        self.assertTrue(parser.hrefs)
+
+        for href in set(parser.hrefs):
+            with self.subTest(href=href):
+                linked_response = self.client.get(href)
+                self.assertNotIn(linked_response.status_code, {404, 500})

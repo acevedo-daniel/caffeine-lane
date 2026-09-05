@@ -70,6 +70,7 @@ Thumbs.db
 *.rej
 *~
 /tmp/
+/scratch/
 
 # Local documentation and agent tooling
 /docs/temporal/
