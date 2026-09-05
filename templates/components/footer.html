@@ -14,7 +14,7 @@
     <div class="footer-rider-column">
       {% translate "The Rider" as rider_alt %}
       {% include "components/character_badge.html" with asset="character-signature.webp" size="lg" alt=rider_alt class_name="footer-rider" %}
-      <a href="{% url 'home' %}" class="footer-wordmark motion-wordmark">{% translate "THE CAFFEINE LANE" %}</a>
+      <a href="{% url 'home' %}" class="footer-wordmark motion-wordmark">CAFFEINE LANE</a>
       <p class="footer-manifesto">{% translate "Welcome, rider. The road is ours." %}</p>
     </div>
 
@@ -27,5 +27,10 @@
       </ul>
     </nav>
   </div>
-  <div class="footer-bottom">© 2026 {% translate "The Caffeine Lane" %}. {% translate "Built for the long way home." %}</div>
+  <div class="footer-bottom">
+    <div class="editorial-container footer-bottom__inner">
+      <span>© 2026 CAFFEINE LANE.</span>
+      <span>{% translate "Built for the long way home." %}</span>
+    </div>
+  </div>
 </footer>

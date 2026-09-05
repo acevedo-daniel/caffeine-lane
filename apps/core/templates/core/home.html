@@ -3,7 +3,7 @@
 {% block title %}{% translate "Home · The Caffeine Lane" %}{% endblock title %}
 {% block content %}
   {% if banner_posts %}
-    <section class="home-hero" aria-roledescription="carousel" aria-label="{% translate 'Featured posts' %}">
+    <section class="home-hero" aria-roledescription="carousel" aria-label="{% translate 'Featured posts' %}" tabindex="0">
       <div id="carousel-container" class="home-hero__track" aria-live="polite" aria-atomic="true">
         {% for post in banner_posts %}
           <article class="carousel-slide home-hero__slide" aria-roledescription="{% translate 'slide' %}" aria-label="{% blocktranslate with counter=forloop.counter %}Featured post {{ counter }}{% endblocktranslate %}"{% if not forloop.first %} aria-hidden="true" inert{% endif %}>
@@ -54,6 +54,32 @@
 
   <div class="editorial-page">
     <div class="home-index editorial-container editorial-section">
+      <!-- Taxonomy Navigation Ribbon -->
+      <nav class="taxonomy-ribbon mb-10" aria-label="{% translate 'Category navigation' %}">
+        <div class="taxonomy-ribbon__track">
+          <a href="{% url 'home' %}" class="taxonomy-pill is-active" aria-current="page">
+            <i class="fa-solid fa-layer-group mr-1 text-xs" aria-hidden="true"></i>
+            <span>{% translate "All Stories" %}</span>
+            <span class="taxonomy-pill__count">{{ total_posts }}</span>
+          </a>
+          {% for cat in categories %}
+            <a href="{% url 'category_view' category_slug=cat.slug %}" class="taxonomy-pill">
+              {% if cat.slug == 'builds' %}
+                <i class="fa-solid fa-wrench mr-1 text-xs" aria-hidden="true"></i>
+              {% elif cat.slug == 'guides' %}
+                <i class="fa-solid fa-book-open mr-1 text-xs" aria-hidden="true"></i>
+              {% elif cat.slug == 'reviews' %}
+                <i class="fa-solid fa-shield-halved mr-1 text-xs" aria-hidden="true"></i>
+              {% else %}
+                <i class="fa-solid fa-tag mr-1 text-xs" aria-hidden="true"></i>
+              {% endif %}
+              <span>{{ cat|localized_category }}</span>
+            </a>
+          {% endfor %}
+        </div>
+      </nav>
+
+      <!-- Builds Section -->
       <section class="home-section home-section--builds" aria-labelledby="builds-heading">
         <div class="home-section__header home-section__header--builds">
           <div>
@@ -72,6 +98,7 @@
         {% endif %}
       </section>
 
+      <!-- Guides Section with Workshop Spotlight -->
       <section class="home-section home-section--guides" aria-labelledby="guides-heading">
         <div class="home-section__header home-section__header--guides">
           <div>
@@ -92,15 +119,16 @@
 
       <aside class="home-garage-note" aria-labelledby="garage-note-heading">
         <div class="home-garage-note__copy">
-          <p class="editorial-kicker">{% translate "Notes from the garage" %}</p>
+          <p class="editorial-kicker">{% translate "Workshop Spotlight" %}</p>
           <h2 id="garage-note-heading" class="mt-2 font-bebas text-4xl leading-[0.9] tracking-wide text-stone-950 sm:text-5xl">{% translate "Garage to road" %}</h2>
           <p class="mt-3 max-w-2xl text-stone-600">{% translate "The best miles begin at the bench: a careful check, a cleaner adjustment, and a machine you know well enough to trust when the road opens up." %}</p>
           <a class="home-garage-note__link" href="{% url 'category_view' category_slug=guides_category_slug %}">{% translate "Explore workshop guides" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
         </div>
         {% translate "The Rider working on a motorcycle" as mechanic_alt %}
-        {% include "components/character_badge.html" with asset="character-mechanic.webp" size="md" alt=mechanic_alt class_name="home-garage-note__rider" %}
+        {% include "components/character_badge.html" with asset="character-mechanic.webp" size="lg" alt=mechanic_alt class_name="home-garage-note__rider" %}
       </aside>
 
+      <!-- Reviews Section -->
       <section class="home-section home-section--reviews" aria-labelledby="reviews-heading">
         <div class="home-section__header home-section__header--reviews">
           <div>
@@ -119,6 +147,7 @@
         {% endif %}
       </section>
 
+      <!-- Community Callout Section -->
       <section class="home-community" aria-labelledby="join-the-ride-heading">
         <div class="home-community-copy">
           <p class="editorial-kicker text-stone-300">{% translate "The Caffeine Lane community" %}</p>

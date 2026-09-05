@@ -1,58 +1,57 @@
 # Caffeine Lane — Development
 
-> Local setup, environment configuration, asset workflow, and database lifecycle.
+> Local setup, environment configuration, commands, and database workflow.
 
 ## Requirements
 
-| Tool | Version / requirement | Source |
+| Tool | Version | Source |
 | --- | --- | --- |
 | Python | `>=3.14,<3.15` | `pyproject.toml` |
-| uv | Required for the locked Python environment | `uv.lock` / project workflow |
-| Node.js | 22.x used by CI and the asset build | CI / Dockerfile |
+| uv | Locked Python package manager | `uv.lock` |
+| Node.js | `22.x` | `Dockerfile` / CI |
 | pnpm | `10.18.3` | `package.json` |
-| Docker Compose | Required for the default local PostgreSQL workflow | `compose.yaml` |
-| PostgreSQL | 18 in the provided local Compose service | `compose.yaml` |
+| Docker Compose | Required for local PostgreSQL 18 | `compose.yaml` |
+| PostgreSQL | 18 | `compose.yaml` |
 
-## Initial setup
+## Setup
 
-From the repository root:
+```bash
+# Copy environment configuration
+cp .env.example .env
 
-```powershell
-Copy-Item .env.example .env
+# Start local PostgreSQL container
 docker compose up -d db
+
+# Install locked dependencies and build assets
 uv sync --locked
 pnpm install --frozen-lockfile
 pnpm run build
+
+# Run baseline verification, migrations, and demo seeding
 uv run python manage.py check_fresh_baseline
 uv run python manage.py migrate
 uv run python manage.py seed_portfolio
 ```
 
-On macOS or Linux, replace `Copy-Item .env.example .env` with:
-
-```bash
-cp .env.example .env
-```
+On Windows PowerShell, use `Copy-Item .env.example .env`.
 
 ## Local environment
 
-`.env.example` contains development-safe defaults. Real secrets must stay outside version control.
+`.env.example` contains development-safe default values. Local development uses `config.settings.local`, which explicitly enables Django debug mode.
 
-Local development uses `config.settings.local`, which explicitly enables Django debug mode.
-
-| Variable | Required locally | Purpose |
+| Variable | Required | Purpose |
 | --- | :---: | --- |
-| `DJANGO_SETTINGS_MODULE` | Yes | Selects the Django settings module; local default is `config.settings.local`. |
-| `SECRET_KEY` | Yes | Local signing key. The example value is development-only. |
-| `DATABASE_URL` | No | Database connection. The example points to Compose PostgreSQL; omitting it enables the SQLite fallback. |
-| `ALLOWED_HOSTS` | No | Allowed local hosts. |
-| `CSRF_TRUSTED_ORIGINS` | No | Trusted origins for local form requests. |
+| `DJANGO_SETTINGS_MODULE` | Yes | Selects the Django settings module; default is `config.settings.local`. |
+| `SECRET_KEY` | Yes | Local signing key. The default value is development-only. |
+| `DATABASE_URL` | No | Database connection string. Points to Compose PostgreSQL; omitting it enables the SQLite fallback. |
+| `ALLOWED_HOSTS` | No | Allowed hostnames for local requests. |
+| `CSRF_TRUSTED_ORIGINS` | No | Trusted origins for local form submissions. |
 | `DEBUG_TOOLBAR_ENABLED` | No | Enables Django Debug Toolbar locally. |
-| `DEFAULT_FROM_EMAIL` | No | Sender used by the local console email flow. |
-| `CONTACT_RECIPIENT_EMAIL` | No | Recipient used while exercising the contact form. |
-| `PASSWORD_RESET_ENABLED` | No | Controls whether the password-reset UI/flow is available. |
+| `DEFAULT_FROM_EMAIL` | No | Sender address used by local console email flow. |
+| `CONTACT_RECIPIENT_EMAIL` | No | Recipient address when testing contact submissions. |
+| `PASSWORD_RESET_ENABLED` | No | Controls whether password-reset UI and routes are enabled. |
 
-Provider credentials and production security settings are documented in [Deployment](DEPLOYMENT.md), not in the local workflow.
+Never include real secrets.
 
 ## Run locally
 
@@ -62,42 +61,41 @@ Run the frontend asset watcher in one terminal:
 pnpm run dev
 ```
 
-Run Django in another:
+Run Django in another terminal:
 
 ```bash
 uv run python manage.py runserver
 ```
 
 Open:
+- Application: `http://localhost:8000`
+- Service health: `http://localhost:8000/healthz/`
+- Admin interface: `http://localhost:8000/admin/`
 
-```text
-http://localhost:8000
-```
-
-The local email backend writes messages to the Django process output. Uploaded media is stored on the local filesystem.
+The local email backend writes messages directly to the Django server log. Uploaded media is saved to the local filesystem.
 
 ## Commands
 
 | Task | Command | Purpose |
 | --- | --- | --- |
-| Start database | `docker compose up -d db` | Start local PostgreSQL 18. |
-| Stop database | `docker compose down` | Stop Compose while preserving the named volume. |
-| Install Python deps | `uv sync --locked` | Reproduce the locked Python environment. |
-| Install frontend deps | `pnpm install --frozen-lockfile` | Reproduce the locked asset-tooling environment. |
+| Start database | `docker compose up -d db` | Start local PostgreSQL 18 in background. |
+| Stop database | `docker compose down` | Stop Compose services while preserving database volume. |
+| Install Python deps | `uv sync --locked` | Install locked Python environment dependencies. |
+| Install frontend deps | `pnpm install --frozen-lockfile` | Install locked Node.js asset-pipeline packages. |
 | Build assets | `pnpm run build` | Build minified CSS and JavaScript into `static/dist/`. |
-| Watch assets | `pnpm run dev` | Rebuild authored frontend assets during development. |
-| Run Django | `uv run python manage.py runserver` | Start the development server. |
-| Django checks | `uv run python manage.py check` | Run Django system checks. |
-| Migration drift | `uv run python manage.py makemigrations --check --dry-run` | Detect model changes without committed migrations. |
-| Apply migrations | `uv run python manage.py migrate` | Apply committed Django migrations. |
-| Baseline guard | `uv run python manage.py check_fresh_baseline` | Reject a legacy database using the old profile baseline. |
-| Seed portfolio | `uv run python manage.py seed_portfolio` | Populate the maintained demo/portfolio dataset. |
-| Create admin | `uv run python manage.py createsuperuser` | Create a local Django administrator. |
-| Python tests | `uv run pytest` | Run pytest/pytest-django with coverage reporting. |
-| Lint | `uv run ruff check .` | Run Ruff lint checks. |
-| Format check | `uv run ruff format --check .` | Verify Ruff formatting. |
-| Frontend tests | `pnpm test` | Run Node.js asset-pipeline tests. |
-| Browser tests | `pnpm run test:e2e` | Run the Playwright browser suite. |
+| Watch assets | `pnpm run dev` | Watch and rebuild frontend assets during development. |
+| Run Django | `uv run python manage.py runserver` | Start the local Django development server. |
+| Django system check | `uv run python manage.py check` | Validate Django configuration and models. |
+| Check migration drift | `uv run python manage.py makemigrations --check --dry-run` | Detect uncommitted model changes without migrations. |
+| Apply migrations | `uv run python manage.py migrate` | Apply pending Django migrations. |
+| Baseline guard | `uv run python manage.py check_fresh_baseline` | Verify database does not contain legacy profile tables. |
+| Seed portfolio | `uv run python manage.py seed_portfolio` | Seed reproducible demo/portfolio articles and categories. |
+| Create administrator | `uv run python manage.py createsuperuser` | Provision a local Django superuser. |
+| Python tests | `uv run pytest` | Run Pytest suite with test coverage reporting. |
+| Lint Python | `uv run ruff check .` | Run Ruff linter. |
+| Format Python check | `uv run ruff format --check .` | Verify Ruff code formatting. |
+| Frontend tests | `pnpm test` | Run Node.js asset-pipeline unit tests. |
+| Browser tests | `pnpm run test:e2e` | Execute Playwright browser smoke test suite. |
 
 ## Database workflow
 
@@ -109,7 +107,7 @@ uv run python manage.py check_fresh_baseline
 uv run python manage.py migrate
 ```
 
-`check_fresh_baseline` inspects the selected database before migrations. If the legacy `accounts_profile` table exists, the command stops and requires a fresh/reset database rather than attempting to migrate the incompatible authentication baseline in place.
+`check_fresh_baseline` inspects the selected database before migrations. If the legacy `accounts_profile` table exists, the command stops and requires a fresh or reset database rather than attempting to migrate the incompatible legacy authentication schema in place.
 
 If `DATABASE_URL` is omitted, local settings fall back to:
 
@@ -117,17 +115,17 @@ If `DATABASE_URL` is omitted, local settings fall back to:
 db.sqlite3
 ```
 
-That fallback is useful for isolated/offline work, but PostgreSQL is the intended local path when verifying database-specific behavior such as ranked search.
+That fallback is convenient for isolated or offline work, but PostgreSQL is the recommended local path when verifying database-specific behavior such as ranked full-text search.
 
-## Demo data
+### Portfolio demo seed
 
 ```bash
 uv run python manage.py seed_portfolio
 ```
 
-The portfolio seed creates a repeatable content set used for local/demo presentation and automated browser setup.
+The portfolio seed populates a structured content set used for local demonstration and automated browser tests.
 
-Production startup does **not** seed by default. The container only runs `seed_portfolio` when `SEED_PORTFOLIO_ON_START=true` is explicitly set.
+Production startup does **not** seed by default; container startup executes `seed_portfolio` only when `SEED_PORTFOLIO_ON_START=true` is explicitly provided.
 
 ## Generated frontend assets
 
@@ -137,7 +135,7 @@ Authored frontend files live in:
 static/src/
 ```
 
-Generated runtime assets live in:
+Compiled distribution assets live in:
 
 ```text
 static/dist/
@@ -149,24 +147,22 @@ Use:
 pnpm run build
 ```
 
-or:
+or during development:
 
 ```bash
 pnpm run dev
 ```
 
-Do not edit `static/dist/` manually.
-
-The production Docker image rebuilds these assets in its Node stage before the Django runtime image is assembled.
+Do not edit files inside `static/dist/` manually.
 
 ## Troubleshooting
 
-| Symptom | Check |
+| Symptom | Resolution |
 | --- | --- |
-| CSS/JS changes are missing | Run `pnpm run dev` or rebuild with `pnpm run build`; do not edit `static/dist/`. |
-| No editorial content is visible | Apply migrations and run `seed_portfolio` in a disposable/local environment. |
-| `check_fresh_baseline` fails | The selected database contains the incompatible legacy profile baseline; use a fresh database or reset disposable local data. |
-| Local email is not delivered externally | Expected: local settings use Django's console email backend. |
+| CSS or JS changes do not appear | Run `pnpm run dev` or rebuild with `pnpm run build`; never edit `static/dist/` directly. |
+| No editorial content is visible | Apply migrations with `uv run python manage.py migrate` and run `uv run python manage.py seed_portfolio`. |
+| `check_fresh_baseline` fails | The active database contains incompatible legacy profile tables; switch to a clean database or reset disposable local data. |
+| Local emails are not delivered externally | By design: local development settings route emails to Django's console backend. |
 
 ## Related documentation
 

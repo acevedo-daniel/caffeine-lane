@@ -47,7 +47,7 @@ def register_step2(request):
         return redirect("register_step1")
 
     if request.method == "POST":
-        form = RegistrationStep2Form(request.POST)
+        form = RegistrationStep2Form(request.POST, request.FILES)
         if form.is_valid() and form.validate_registration_email(email):
             try:
                 with transaction.atomic():
@@ -82,7 +82,18 @@ def profile(request):
     else:
         form = ProfileForm(instance=request.user)
 
-    return render(request, "accounts/profile.html", {"form": form})
+    recent_comments = request.user.comments.select_related("post").order_by(
+        "-created_at"
+    )[:5]
+
+    return render(
+        request,
+        "accounts/profile.html",
+        {
+            "form": form,
+            "recent_comments": recent_comments,
+        },
+    )
 
 
 @require_POST

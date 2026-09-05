@@ -39,7 +39,7 @@ export class HomeCarouselController {
 const AUTOPLAY_DELAY_MS = 7000;
 const SWIPE_THRESHOLD_PX = 40;
 
-if (typeof document !== "undefined") document.addEventListener("DOMContentLoaded", () => {
+const initCarousel = () => {
   const hero = document.querySelector("[aria-roledescription='carousel']");
   const track = document.getElementById("carousel-container");
   if (!hero || !track) return;
@@ -138,5 +138,23 @@ if (typeof document !== "undefined") document.addEventListener("DOMContentLoaded
   });
   track.addEventListener("pointercancel", () => { touchStartX = null; });
 
+  hero.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      navigate("previous");
+    } else if (event.key === "ArrowRight") {
+      event.preventDefault();
+      navigate("next");
+    }
+  });
+
   scheduleAutoplay();
-});
+};
+
+if (typeof document !== "undefined") {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initCarousel);
+  } else {
+    initCarousel();
+  }
+}

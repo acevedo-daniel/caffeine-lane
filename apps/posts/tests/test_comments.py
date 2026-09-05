@@ -1,8 +1,9 @@
 from django.contrib.auth.models import Permission
-from django.core.exceptions import ValidationError
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.test import TestCase
 from django.urls import reverse
 
+from apps.posts.comment_services import update_comment
 from apps.posts.models import Comment
 from apps.tests.factories import PostFactory, UserFactory
 
@@ -171,3 +172,50 @@ class CommentModerationTests(TestCase):
         self.assertNotContains(response, reverse("comment_edit", args=[comment.pk]))
         self.assertNotContains(response, reverse("comment_withdraw", args=[comment.pk]))
         self.assertNotContains(response, reverse("comment_hide", args=[comment.pk]))
+
+    def test_update_comment_service(self):
+        comment = self.create_comment(content="Initial text")
+        # Valid edit by author
+        updated = update_comment(
+            comment=comment, content="Updated text", actor=self.author
+        )
+        self.assertEqual(updated.content, "Updated text")
+        self.assertTrue(updated.is_edited)
+
+        # Unauthorized actor
+        with self.assertRaises(PermissionDenied):
+            update_comment(
+                comment=comment, content="Hacked text", actor=self.other_user
+            )
+
+        # Moderator can edit
+        mod_updated = update_comment(
+            comment=comment, content="Mod edited", actor=self.moderator
+        )
+        self.assertEqual(mod_updated.content, "Mod edited")
+
+        # Empty content raises ValidationError
+        with self.assertRaises(ValidationError):
+            update_comment(comment=comment, content="   ", actor=self.author)
+
+        # Non-visible comment cannot be edited
+        comment.visibility = Comment.Visibility.HIDDEN
+        comment.save()
+        with self.assertRaises(PermissionDenied):
+            update_comment(comment=comment, content="Should fail", actor=self.author)
+
+    def test_comment_edit_view_with_service(self):
+        comment = self.create_comment(content="Before edit")
+        self.client.force_login(self.author)
+        url = reverse("comment_edit", args=[comment.pk])
+
+        # GET view renders form
+        get_res = self.client.get(url)
+        self.assertEqual(get_res.status_code, 200)
+
+        # POST valid edit
+        post_res = self.client.post(url, {"content": "After edit"})
+        self.assertRedirects(post_res, comment.post.get_absolute_url())
+        comment.refresh_from_db()
+        self.assertEqual(comment.content, "After edit")
+        self.assertTrue(comment.is_edited)

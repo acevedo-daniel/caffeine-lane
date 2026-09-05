@@ -1,5 +1,5 @@
 {% extends "layouts/account.html" %}
-{% load i18n %}
+{% load i18n static %}
 {% block title %}{% translate "Your profile · The Caffeine Lane" %}{% endblock title %}
 {% block account_title %}{% translate "Your profile." %}{% endblock account_title %}
 {% block account_intro %}{% translate "Set the details that ride with your name, from the garage to every conversation ahead." %}{% endblock account_intro %}
@@ -9,12 +9,107 @@
     <h2 id="account-panel-heading" class="account-panel__title">{% translate "Profile details" %}</h2>
     <p class="account-panel__intro">{% translate "Your avatar and details appear with the stories and conversations you share." %}</p>
   </div>
+
+  <!-- Avatar Management & Live Preview -->
+  <div class="profile-avatar-card" data-avatar-preview-card>
+    <div class="profile-avatar-card__badge">
+      <img class="profile-avatar-card__image" data-avatar-preview-image src="{{ user.avatar_url }}" alt="{% blocktranslate with name=user.display_name|default:user.username %}Avatar for {{ name }}{% endblocktranslate %}" width="96" height="96">
+    </div>
+    <div class="profile-avatar-card__info">
+      <h3 class="profile-avatar-card__title">{% translate "Avatar Management" %}</h3>
+      <p class="profile-avatar-card__desc">{% translate "Upload a fresh photo to represent you in the lane. Updates instantly upon file selection (JPG, PNG, WebP up to 5MB)." %}</p>
+      <p class="profile-avatar-card__error form-error" data-avatar-error hidden></p>
+    </div>
+  </div>
+
+  <!-- Motorcycle Fleet Overview -->
+  <div class="profile-fleet-card" aria-label="{% translate 'Motorcycle fleet overview' %}">
+    <div class="profile-fleet-card__header">
+      <div class="profile-fleet-card__icon">
+        <i class="fa-solid fa-motorcycle" aria-hidden="true"></i>
+      </div>
+      <div>
+        <h3 class="profile-fleet-card__title">{% translate "Motorcycle Fleet & Garage Status" %}</h3>
+        <p class="profile-fleet-card__status">
+          {% if user.has_motorcycle %}
+            <span class="profile-fleet-badge profile-fleet-badge--active"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> {% translate "Active Garage Rider" %}</span>
+          {% else %}
+            <span class="profile-fleet-badge profile-fleet-badge--inactive"><i class="fa-solid fa-wrench" aria-hidden="true"></i> {% translate "Enthusiast & Project Builder" %}</span>
+          {% endif %}
+        </p>
+      </div>
+    </div>
+    <p class="profile-fleet-card__desc">
+      {% if user.has_motorcycle %}
+        {% translate "You are registered as an active motorcycle owner in the Caffeine Lane garage. Your comments and dispatches highlight your rider status." %}
+      {% else %}
+        {% translate "You are currently wrenching from the sidelines or preparing for your next project bike. Check the box below anytime to register as an active rider." %}
+      {% endif %}
+    </p>
+  </div>
+
   <form method="post" enctype="multipart/form-data" class="account-form" novalidate>
     {% csrf_token %}
     {% if form.non_field_errors %}<div class="account-form__error" role="alert">{{ form.non_field_errors }}</div>{% endif %}
     {% for field in form %}{% include "components/form_field.html" with field=field %}{% endfor %}
-    <button class="button-primary" type="submit">{% translate "Save changes" %}</button>
+    <div class="mt-2">
+      <button class="button-primary" type="submit">{% translate "Save changes" %}</button>
+    </div>
   </form>
+
+  <!-- Recent Comments History -->
+  <section class="profile-comments-section mt-10 pt-8 border-t border-stone-200" aria-labelledby="recent-comments-heading">
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <p class="account-panel__eyebrow text-xs font-bold uppercase tracking-wider text-stone-500">{% translate "Activity" %}</p>
+        <h3 id="recent-comments-heading" class="font-bebas text-3xl tracking-wide text-stone-950">{% translate "Recent Garage Comments" %}</h3>
+      </div>
+      <span class="text-xs font-bold text-stone-500 uppercase tracking-wider">
+        {% blocktranslate count counter=recent_comments|length %}{{ counter }} recent{% plural %}{{ counter }} recent{% endblocktranslate %}
+      </span>
+    </div>
+
+    {% if recent_comments %}
+      <div class="profile-comments-list">
+        {% for comment in recent_comments %}
+          <article class="profile-comment-item">
+            <div class="profile-comment-item__header">
+              <a href="{{ comment.post.get_absolute_url }}" class="profile-comment-item__post-title">
+                {{ comment.post.title }} <i class="fa-solid fa-arrow-up-right-from-square text-[10px]" aria-hidden="true"></i>
+              </a>
+              <time class="profile-comment-item__date" datetime="{{ comment.created_at|date:'Y-m-d\TH:i:s' }}">
+                {{ comment.created_at|date:"M j, Y · H:i" }}
+              </time>
+            </div>
+            <p class="profile-comment-item__content">{{ comment.content|truncatechars:180 }}</p>
+            <div class="profile-comment-item__footer">
+              <span class="profile-comment-item__status profile-comment-item__status--{{ comment.visibility }}">
+                {{ comment.get_visibility_display }}
+              </span>
+              {% if comment.visibility == "visible" %}
+                <a href="{% url 'comment_edit' comment.id %}" class="profile-comment-item__edit-link">
+                  <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i> {% translate "Edit dispatch" %}
+                </a>
+              {% endif %}
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="profile-comments-empty">
+        <div class="profile-comments-empty__rider">
+          {% translate "The Rider talking about stories" as talking_alt %}
+          {% include "components/character_badge.html" with asset="character-talking.webp" size="sm" alt=talking_alt %}
+        </div>
+        <div class="profile-comments-empty__content">
+          <h4 class="font-bebas text-2xl text-stone-900">{% translate "No comments posted yet" %}</h4>
+          <p class="text-sm text-stone-600 mt-1">{% translate "Join the garage discussions, share technical feedback, or ask questions on builds." %}</p>
+          <a href="{% url 'home' %}" class="editorial-button mt-4">{% translate "Explore latest stories" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+      </div>
+    {% endif %}
+  </section>
+
   <div class="account-actions" aria-label="{% translate 'Account actions' %}">
     <div class="account-actions__group">
       <p class="account-actions__label">{% translate "Security" %}</p>
@@ -26,3 +121,6 @@
     </div>
   </div>
 {% endblock account_panel %}
+{% block scripts %}
+  <script type="module" src="{% static 'dist/js/avatar-preview.js' %}"></script>
+{% endblock scripts %}

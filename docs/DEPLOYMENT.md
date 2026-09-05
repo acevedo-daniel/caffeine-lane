@@ -17,195 +17,135 @@ Browser
           -> WhiteNoise static assets
 ```
 
-| Component | Target | Responsibility |
+| Component | Platform | Responsibility |
 | --- | --- | --- |
-| Web runtime | Render | Run the production Docker image and expose the Django/Gunicorn service. |
-| Database | Neon | Persist application data through PostgreSQL. |
-| Media | Cloudinary | Persist uploaded post images and avatars. |
-| Email | Resend through Anymail | Deliver production email. |
-| Static assets | WhiteNoise | Serve collected, fingerprinted/compressed static assets from the application runtime. |
+| Web runtime | Render | Run the production Docker container and serve Django via Gunicorn. |
+| Database | Neon | Persist application relational data via PostgreSQL. |
+| Media storage | Cloudinary | Persist user-uploaded post images and profile avatars. |
+| Email service | Resend | Deliver transactional emails via Anymail backend. |
+| Static assets | WhiteNoise | Serve compressed and fingerprinted static assets from the web runtime. |
 
-The repository contains the Docker build and startup logic. Provider-specific secrets and service configuration are managed outside Git.
+The repository contains the Docker build and startup orchestration. Provider credentials and service settings are managed securely outside Git.
 
-## Docker image
+## Release flow
 
-The production `Dockerfile` has three stages.
+```text
+Git push to main
+-> GitHub Actions CI (tests, migrations check, Docker smoke)
+-> Render auto-deploy triggered
+-> Multi-stage Docker image built
+-> entrypoint.sh checks baseline and applies migrations via DIRECT_DATABASE_URL
+-> Static assets collected
+-> Gunicorn launches web process
+-> Render health check confirms /healthz/
+-> Live traffic cut over to new release
+```
 
-### Asset stage
+GitHub Actions automates code verification, asset validation, and Docker container smoke tests. Merging to `main` triggers automated container delivery on Render.
 
-A Node 22 image:
+## Web runtime container
 
-- installs the locked pnpm dependencies;
-- builds Tailwind CSS;
-- builds JavaScript assets into `static/dist/`.
+The production container is defined in `Dockerfile` across three stages:
 
-### Python dependency stage
+- **Asset stage (Node 22):** installs locked dependencies via pnpm, compiles Tailwind CSS, and minifies JavaScript into `static/dist/`.
+- **Python dependency stage (Python 3.14):** installs pinned `uv` and builds the production virtual environment in `.venv`.
+- **Runtime stage (Python 3.14):** runs as a non-root `app` user, copies the virtual environment and static assets, executes `docker/entrypoint.sh`, binds Gunicorn to the provider `PORT`, and monitors `/healthz/`.
 
-A Python 3.14 image:
+### Container startup sequence
 
-- installs the pinned `uv` tool;
-- installs the locked production Python environment into `.venv`.
-
-### Runtime stage
-
-The final Python 3.14 image:
-
-- runs as a non-root `app` user;
-- copies the production virtual environment and built frontend assets;
-- uses `docker/entrypoint.sh`;
-- starts Gunicorn on the provider-supplied `PORT`;
-- defines a container health check against `/healthz/`.
-
-## Startup sequence
-
-`docker/entrypoint.sh` runs:
+`docker/entrypoint.sh` executes the following sequence:
 
 ```text
 check_fresh_baseline
--> migrate when RUN_MIGRATIONS_ON_START=true
--> seed only when SEED_PORTFOLIO_ON_START=true
+-> migrate (when RUN_MIGRATIONS_ON_START=true)
+-> seed (only when SEED_PORTFOLIO_ON_START=true)
 -> collectstatic
 -> Gunicorn
 ```
 
-Migrations and seeding are separately controlled so normal production startup can migrate without automatically inserting portfolio demo content.
+Migrations and demo seeding are controlled independently to ensure routine deployments execute migrations without altering live production data.
 
 ## Production configuration
 
-Production uses:
+Production operates under:
 
 ```text
 DJANGO_SETTINGS_MODULE=config.settings.production
 ```
 
-Important environment values include:
+| Variable | Component | Requirement |
+| --- | --- | --- |
+| `DJANGO_SETTINGS_MODULE` | Web runtime | Must be set to `config.settings.production`. |
+| `SECRET_KEY` | Web runtime | Unique cryptographic secret; never use development fallback. |
+| `DATABASE_URL` | Web runtime | Pooled PostgreSQL connection string for normal web traffic. |
+| `DIRECT_DATABASE_URL` | Migrations | Direct unpooled PostgreSQL connection string for schema migrations. |
+| `ALLOWED_HOSTS` | Web runtime | Comma-separated list of approved production domain names. |
+| `CSRF_TRUSTED_ORIGINS` | Web runtime | Comma-separated list of trusted HTTPS origins for CSRF validation. |
+| `CLOUDINARY_URL` | Media storage | Cloudinary API URI for uploaded asset storage. |
+| `RESEND_API_KEY` | Email service | API credential for transactional email dispatch. |
+| `DEFAULT_FROM_EMAIL` | Email service | Verified sender email address. |
+| `CONTACT_RECIPIENT_EMAIL` | Web runtime | Destination address for contact inquiries. |
+| `USE_X_FORWARDED_PROTO` | Web runtime | Set to `true` behind Render's HTTPS reverse proxy. |
+| `RUN_MIGRATIONS_ON_START` | Migrations | Set to `true` to execute migrations during container startup. |
+| `SEED_PORTFOLIO_ON_START` | Web runtime | Set to `false` in production to prevent unintended demo data insertion. |
+| `SECURE_HSTS_SECONDS` | Security | Positive integer specifying HSTS header duration. |
+| `SECURE_HSTS_INCLUDE_SUBDOMAINS` | Security | Boolean to extend HSTS to subdomains. |
+| `SECURE_HSTS_PRELOAD` | Security | Boolean enabling browser HSTS preload registration. |
+| `CSP_ENFORCE` | Security | Set to `true` to enforce CSP; `false` keeps report-only mode. |
 
-| Variable | Purpose |
-| --- | --- |
-| `SECRET_KEY` | Django signing secret. Must not use the local/default value. |
-| `DATABASE_URL` | PostgreSQL connection used by the normal application runtime. |
-| `DIRECT_DATABASE_URL` | Direct PostgreSQL connection used by startup migrations when enabled. |
-| `ALLOWED_HOSTS` | Allowed production hostnames. |
-| `CSRF_TRUSTED_ORIGINS` | Trusted HTTPS origins for CSRF-protected requests. |
-| `CLOUDINARY_URL` | Production uploaded-media storage credentials/configuration. |
-| `RESEND_API_KEY` | Resend credential used by Anymail. |
-| `DEFAULT_FROM_EMAIL` | Production sender identity. |
-| `CONTACT_RECIPIENT_EMAIL` | Recipient for contact submissions. |
-| `USE_X_FORWARDED_PROTO` | Enables trust of the HTTPS proxy header when required by the host. |
-| `RUN_MIGRATIONS_ON_START` | Controls startup migration execution; the image defaults it to `true`. |
-| `SEED_PORTFOLIO_ON_START` | Controls portfolio seeding; the image defaults it to `false`. |
-| `SECURE_HSTS_SECONDS` | Configures HSTS duration. |
-| `SECURE_HSTS_INCLUDE_SUBDOMAINS` | Extends HSTS to subdomains when enabled. |
-| `SECURE_HSTS_PRELOAD` | Enables HSTS preload flag when appropriate. |
-| `CSP_ENFORCE` | Switches the configured CSP from report-only to enforced mode. |
-
-Do not commit production values for these settings.
-
-## Production security configuration
-
-`config.settings.production` requires a non-development `SECRET_KEY`, `DATABASE_URL`, and at least one allowed host.
-
-It configures:
-
-- `DEBUG = False`;
-- HTTPS redirect behavior;
-- secure session and CSRF cookies;
-- configurable HSTS;
-- content-type and referrer protections;
-- a Content Security Policy;
-- Cloudinary storage for uploaded media;
-- WhiteNoise compressed-manifest storage for static assets;
-- Resend/Anymail for email;
-- Argon2 as the first password hasher.
-
-Run Django's deployment checks when production configuration changes:
-
-```bash
-uv run python manage.py check --deploy
-```
-
-with the required production environment supplied.
+Never commit production credentials or secrets to source control.
 
 ## Database migrations
 
-Committed Django migrations are the schema-change mechanism.
+Committed Django migrations are the sole mechanism for database schema evolution.
 
-When:
+When `RUN_MIGRATIONS_ON_START=true`, the container entrypoint:
+1. Validates that both `DATABASE_URL` and `DIRECT_DATABASE_URL` are present.
+2. Temporarily points Django to `DIRECT_DATABASE_URL` for unpooled migration execution:
+   ```bash
+   python manage.py migrate --noinput
+   ```
+3. Restores `DATABASE_URL` so Gunicorn uses pooled connections for application traffic.
 
-```text
-RUN_MIGRATIONS_ON_START=true
-```
-
-the entrypoint requires both database URLs. It temporarily replaces the normal pooled `DATABASE_URL` with `DIRECT_DATABASE_URL`, runs:
-
-```bash
-python manage.py migrate --noinput
-```
-
-then restores the pooled runtime URL before Gunicorn starts.
-
-Production rules:
-
-- do not point migration commands at an unintended database;
-- keep migration files committed with model changes;
-- run `makemigrations --check --dry-run` in CI before release;
-- keep `SEED_PORTFOLIO_ON_START=false` for normal deployments;
-- use `seed_portfolio` only as an intentional bootstrap when demo content is actually desired.
-
-## Static and media delivery
-
-Static frontend assets are built during the Docker build and collected at container startup.
-
-Production static path:
-
-```text
-static/src
--> build
--> static/dist
--> collectstatic
--> WhiteNoise
-```
-
-Uploaded media is stored through Cloudinary and therefore does not rely on the Render container filesystem.
+Safety rules:
+- Run `check_fresh_baseline` prior to migration execution to guard against legacy schema collisions.
+- Keep migration files committed and reviewed alongside their corresponding model changes.
+- Validate with `uv run python manage.py makemigrations --check --dry-run` before release.
+- Keep `SEED_PORTFOLIO_ON_START=false` for production deployments.
 
 ## Validation
 
-### Health
+### Health endpoint
 
-The public liveness endpoint is:
+Verify service liveness:
 
-```text
-https://caffeinelane.onrender.com/healthz/
+```bash
+curl -f https://caffeinelane.onrender.com/healthz/
 ```
 
-The Docker `HEALTHCHECK`, browser test server, and CI smoke workflow all use `/healthz/` as a readiness/liveness signal.
+The Docker `HEALTHCHECK`, browser test runner, and CI container smoke job all monitor `/healthz/` as the readiness indicator.
 
-### Application
+### Post-deployment verification
 
-After a deployment, verify:
-
-- the landing/home route loads;
-- generated CSS and JavaScript are served;
-- a published article can be opened;
-- search/category navigation works;
-- uploaded media renders through the production storage configuration.
-
-### Provider-dependent flows
-
-When changing Cloudinary or Resend configuration, separately verify the affected upload/email workflow rather than treating the health endpoint as proof of external-provider behavior.
+After deployment, confirm:
+- The landing and editorial home surfaces load without errors.
+- Compiled CSS and JavaScript assets are delivered with correct MIME types and caching headers.
+- Article detail pages and search filtering functions correctly.
+- Uploaded media renders via Cloudinary storage.
+- Health check returns HTTP 200.
 
 ## Deployment boundaries
 
-- The browser never receives database or provider secret credentials.
-- Persistent application data belongs in PostgreSQL, not the Render container filesystem.
-- Persistent uploaded media belongs in Cloudinary, not the Render container filesystem.
-- WhiteNoise serves built/collected static assets; it is not persistent user-media storage.
-- Production schema migration uses the direct connection only for the migration step; normal runtime uses `DATABASE_URL`.
-- The repository does not currently define a Render-specific infrastructure manifest, so provider-side service/secrets configuration must remain synchronized with the Docker/application requirements.
+- Browser clients never receive database credentials or third-party secret tokens.
+- Persistent application state belongs strictly in Neon PostgreSQL, never in container ephemeral storage.
+- User-uploaded media belongs in Cloudinary, not the container filesystem.
+- WhiteNoise serves static distribution assets; it does not store user uploads.
+- Schema migrations use a dedicated direct connection, isolating migration DDL from pooled web requests.
 
 ## Related documentation
 
 - [README](../README.md)
+- [Project](PROJECT.md)
 - [Architecture](ARCHITECTURE.md)
 - [Development](DEVELOPMENT.md)
 - [Testing](TESTING.md)

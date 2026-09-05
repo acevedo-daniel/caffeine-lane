@@ -1,18 +1,304 @@
 {% extends "base.html" %}
-{% load i18n %}
-{% block title %}{% translate "The Caffeine Lane · Ride, Build, Repeat" %}{% endblock title %}
-{% block header %}{% endblock header %}
-{% block footer %}{% endblock footer %}
+{% load i18n static %}
+
+{% block title %}{% translate "CAFFEINE LANE · Curated Cafe Racer Culture" %}{% endblock title %}
+
 {% block content %}
-  <section class="landing-cover" aria-labelledby="landing-title">
-    <div class="landing-content">
-      {% translate "The Rider welcomes you to The Caffeine Lane" as rider_alt %}
-      {% include "components/character_badge.html" with asset="character-welcome.webp" size="lg" alt=rider_alt class_name="landing-rider" %}
-      <p class="landing-kicker">{% translate "Independent motorcycle culture" %}</p>
-      <h1 id="landing-title" class="landing-wordmark motion-wordmark">{% translate "THE CAFFEINE LANE" %}</h1>
-      <p class="landing-tagline">{% translate "Ride · Build · Repeat" %}</p>
-      <p class="landing-manifesto">{% translate "For the bikes we make our own, the roads worth taking twice, and the stories that follow." %}</p>
-      <a class="landing-cta motion-cta" href="{% url 'home' %}">{% translate "Enter the lane" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+<div class="landing-view">
+  <!-- 1. Split Hero Section -->
+  <section class="landing-hero" aria-labelledby="landing-hero-title">
+    <div class="editorial-container">
+      <div class="landing-hero__grid">
+        <div class="landing-hero__content">
+          <div class="landing-hero__eyebrow">
+            <span class="landing-hero__badge">{% translate "Issue 2026" %}</span>
+            <p class="editorial-kicker text-stone-500">{% translate "Curated Moto Journeys" %}</p>
+          </div>
+          <h1 id="landing-hero-title" class="landing-hero__title">
+            {% translate "HAND-BUILT HONESTY. CURATED CAFE RACER CULTURE." %}
+          </h1>
+          <p class="landing-hero__subtitle">
+            {% translate "Stories, technical teardowns, and garage craft for riders who take the long way home." %}
+          </p>
+          <div class="landing-hero__actions">
+            <a class="button-primary uppercase tracking-wider text-xs px-6 py-3 font-bold" href="{% url 'category_view' category_slug=builds_category_slug %}">
+              {% translate "Explore Builds" %} <i class="fa-solid fa-arrow-right ml-1.5" aria-hidden="true"></i>
+            </a>
+            <a class="button-secondary text-xs uppercase tracking-wider px-5 py-3 font-bold" href="{% url 'home' %}">
+              {% translate "Read Magazine" %}
+            </a>
+          </div>
+
+          <!-- Hero Highlights Anchor Strip -->
+          <div class="landing-hero__strip">
+            <div class="landing-hero__strip-item">
+              <span class="landing-hero__strip-num">01</span>
+              <div>
+                <h4 class="landing-hero__strip-heading">{% translate "Hand-Built" %}</h4>
+                <p class="landing-hero__strip-desc">{% translate "Curated garage features" %}</p>
+              </div>
+            </div>
+            <div class="landing-hero__strip-item">
+              <span class="landing-hero__strip-num">02</span>
+              <div>
+                <h4 class="landing-hero__strip-heading">{% translate "Bench Wisdom" %}</h4>
+                <p class="landing-hero__strip-desc">{% translate "Teardowns & tuning" %}</p>
+              </div>
+            </div>
+            <div class="landing-hero__strip-item">
+              <span class="landing-hero__strip-num">03</span>
+              <div>
+                <h4 class="landing-hero__strip-heading">{% translate "Field Tested" %}</h4>
+                <p class="landing-hero__strip-desc">{% translate "Road-proven gear" %}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="landing-hero__visual">
+          {% if featured_build and featured_build.featured_image %}
+            <a href="{{ featured_build.get_absolute_url }}" class="landing-hero__card group block" aria-label="{{ featured_build.title }}">
+              <div class="landing-hero__image-wrapper">
+                <img class="landing-hero__image" src="{{ featured_build.featured_image.url }}" alt="{{ featured_build.featured_image_alt }}" width="960" height="720" fetchpriority="high">
+                <div class="landing-hero__image-overlay"></div>
+                <div class="landing-hero__card-caption">
+                  <div class="landing-hero__card-badge-row">
+                    <span class="editorial-kicker text-stone-300">{% translate "Featured Build" %}</span>
+                    {% if featured_build.reading_time %}
+                      <span class="landing-hero__card-meta">{{ featured_build.reading_time }} min read</span>
+                    {% endif %}
+                  </div>
+                  <h2 class="font-bebas text-3xl sm:text-4xl text-white tracking-wide mt-1.5 group-hover:text-stone-300 transition-colors">
+                    {{ featured_build.title }}
+                  </h2>
+                  <span class="landing-hero__card-cta">
+                    {% translate "Inspect machine" %} <i class="fa-solid fa-arrow-right text-[10px]" aria-hidden="true"></i>
+                  </span>
+                </div>
+              </div>
+            </a>
+          {% else %}
+            <div class="landing-hero__card-fallback">
+              <div class="landing-hero__fallback-inner">
+                <i class="fa-solid fa-motorcycle text-5xl text-stone-700 mb-3" aria-hidden="true"></i>
+                <span class="font-bebas text-3xl text-stone-300 tracking-wider">CAFFEINE LANE</span>
+                <p class="text-xs text-stone-400 uppercase tracking-widest mt-1">{% translate "Garage to Road" %}</p>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
     </div>
   </section>
+
+  <!-- 2. Manifesto & The Rider Card -->
+  <section class="landing-manifesto-section" aria-labelledby="manifesto-heading">
+    <div class="editorial-container">
+      <div class="editorial-rule mb-8">
+        <p class="editorial-kicker">{% translate "Editorial Ethos" %}</p>
+        <h2 id="manifesto-heading" class="editorial-heading mt-1">
+          {% translate "Built for hands that turn wrenches." %}
+        </h2>
+      </div>
+
+      <div class="landing-manifesto-card">
+        <div class="landing-manifesto-card__rider">
+          {% translate "The Rider welcoming you to Caffeine Lane" as welcome_alt %}
+          {% include "components/character_badge.html" with asset="character-welcome.webp" size="lg" alt=welcome_alt class_name="landing-manifesto-badge" %}
+        </div>
+        <div class="landing-manifesto-card__content">
+          <h3 class="landing-manifesto-card__title">
+            {% translate "Independent garage journalism." %}
+          </h3>
+          <p class="landing-manifesto-card__body">
+            {% translate "Caffeine Lane is an independent journal dedicated to cafe racers, custom garage builds, and the road culture that binds us. Every machine featured is built with intention, tested in the elements, and documented down to the last fastener." %}
+          </p>
+          <div class="landing-manifesto-card__quote">
+            <span class="landing-manifesto-card__signoff">“The road is ours.”</span>
+            <span class="text-xs text-stone-500 font-semibold tracking-wider uppercase">— The Rider</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 Pillars Grid to make the section substantial and complete -->
+      <div class="landing-pillars grid gap-6 sm:grid-cols-3 mt-8">
+        <div class="landing-pillar-card">
+          <div class="landing-pillar-card__num">01</div>
+          <h4 class="landing-pillar-card__title">{% translate "Garage Craft" %}</h4>
+          <p class="landing-pillar-card__desc">{% translate "From frame geometry to handcrafted aluminum tanks, every build documents real wrenching and bespoke fabrication." %}</p>
+        </div>
+        <div class="landing-pillar-card">
+          <div class="landing-pillar-card__num">02</div>
+          <h4 class="landing-pillar-card__title">{% translate "Bench Wisdom" %}</h4>
+          <p class="landing-pillar-card__desc">{% translate "Carburetor jetting, electrical wiring schematics, and valve clearances explained with clarity for hands-on riders." %}</p>
+        </div>
+        <div class="landing-pillar-card">
+          <div class="landing-pillar-card__num">03</div>
+          <h4 class="landing-pillar-card__title">{% translate "The Open Road" %}</h4>
+          <p class="landing-pillar-card__desc">{% translate "No trailer queens. Every machine and piece of gear is evaluated across thousands of real road miles in the elements." %}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Category Explorer (3 Columns) -->
+  <section class="landing-categories" aria-labelledby="landing-categories-title">
+    <div class="editorial-container">
+      <div class="editorial-rule">
+        <p class="editorial-kicker text-stone-400">{% translate "Core Taxonomy" %}</p>
+        <h2 id="landing-categories-title" class="editorial-heading text-white mt-1">
+          {% translate "Explore By Category" %}
+        </h2>
+      </div>
+
+      <div class="landing-categories__grid mt-8">
+        <!-- Builds Card -->
+        <a href="{% url 'category_view' category_slug=builds_category_slug %}" class="category-card group">
+          <div class="category-card__header">
+            <div class="category-card__header-left">
+              <span class="category-card__icon"><i class="fa-solid fa-wrench" aria-hidden="true"></i></span>
+              <span class="category-card__kicker">{% translate "Garage Craft" %}</span>
+            </div>
+            <span class="category-card__index">01</span>
+          </div>
+          <h3 class="category-card__title group-hover:text-stone-300 transition-colors">
+            {% translate "Builds" %}
+          </h3>
+          <p class="category-card__desc">
+            {% translate "One-of-a-kind cafe racers, trackers, and brats forged with craft, sweat, and steel." %}
+          </p>
+          <div class="category-card__tags">
+            <span class="category-card__tag">Cafe Racers</span>
+            <span class="category-card__tag">Trackers</span>
+            <span class="category-card__tag">Scramblers</span>
+          </div>
+          <span class="category-card__link">
+            {% translate "View Builds" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          </span>
+        </a>
+
+        <!-- Guides Card -->
+        <a href="{% url 'category_view' category_slug=guides_category_slug %}" class="category-card group">
+          <div class="category-card__header">
+            <div class="category-card__header-left">
+              <span class="category-card__icon"><i class="fa-solid fa-book-open" aria-hidden="true"></i></span>
+              <span class="category-card__kicker">{% translate "Workshop Notes" %}</span>
+            </div>
+            <span class="category-card__index">02</span>
+          </div>
+          <h3 class="category-card__title group-hover:text-stone-300 transition-colors">
+            {% translate "Guides" %}
+          </h3>
+          <p class="category-card__desc">
+            {% translate "Step-by-step teardowns, carburetor tuning, wiring schematics, and bench wisdom." %}
+          </p>
+          <div class="category-card__tags">
+            <span class="category-card__tag">Carburetors</span>
+            <span class="category-card__tag">Electrical</span>
+            <span class="category-card__tag">Engine Tuning</span>
+          </div>
+          <span class="category-card__link">
+            {% translate "Read Guides" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          </span>
+        </a>
+
+        <!-- Reviews Card -->
+        <a href="{% url 'category_view' category_slug=reviews_category_slug %}" class="category-card group">
+          <div class="category-card__header">
+            <div class="category-card__header-left">
+              <span class="category-card__icon"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></span>
+              <span class="category-card__kicker">{% translate "Field Tested" %}</span>
+            </div>
+            <span class="category-card__index">03</span>
+          </div>
+          <h3 class="category-card__title group-hover:text-stone-300 transition-colors">
+            {% translate "Reviews" %}
+          </h3>
+          <p class="category-card__desc">
+            {% translate "Helmets, leathers, boots, and tools evaluated across thousands of real road miles." %}
+          </p>
+          <div class="category-card__tags">
+            <span class="category-card__tag">Helmets</span>
+            <span class="category-card__tag">Leathers</span>
+            <span class="category-card__tag">Garage Tools</span>
+          </div>
+          <span class="category-card__link">
+            {% translate "Browse Reviews" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Latest Dispatches Section -->
+  {% if recent_posts %}
+    <section class="landing-latest" aria-labelledby="landing-latest-title">
+      <div class="editorial-container">
+        <div class="landing-latest__header">
+          <div>
+            <p class="editorial-kicker">{% translate "Fresh From The Bench" %}</p>
+            <h2 id="landing-latest-title" class="editorial-heading mt-1">
+              {% translate "Latest Dispatches" %}
+            </h2>
+          </div>
+          <a class="editorial-button" href="{% url 'home' %}">
+            {% translate "View all stories" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <div class="landing-latest__grid mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {% for post in recent_posts %}
+            {% include "components/post_card.html" with post=post %}
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
+  <!-- 5. Community Banner with The Rider (Pointing) -->
+  <section class="landing-community" aria-labelledby="landing-community-title">
+    <div class="editorial-container">
+      <div class="landing-community__panel">
+        <div class="landing-community__content">
+          <p class="editorial-kicker text-stone-400">{% translate "Global Collective" %}</p>
+          <h2 id="landing-community-title" class="landing-community__title">
+            {% translate "Join 1,000+ custom motorcycle builders" %}
+          </h2>
+          <p class="landing-community__body">
+            {% translate "Create your rider profile, follow the builds, participate in discussions, and join an international community of builders and riders." %}
+          </p>
+          <div class="landing-community__actions">
+            <a class="button-primary uppercase tracking-wider text-xs px-6 py-3 font-bold" href="{% url 'register' %}">
+              {% translate "Join The Garage" %} <i class="fa-solid fa-arrow-right ml-1.5" aria-hidden="true"></i>
+            </a>
+            <a class="button-secondary text-xs uppercase tracking-wider px-5 py-3 font-bold" href="{% url 'login' %}">
+              {% translate "Sign In" %}
+            </a>
+          </div>
+
+          <!-- Community Highlights Row -->
+          <div class="landing-community__metrics">
+            <div class="landing-community__metric">
+              <span class="landing-community__metric-val">1,000+</span>
+              <span class="landing-community__metric-label">{% translate "Riders & Builders" %}</span>
+            </div>
+            <div class="landing-community__metric">
+              <span class="landing-community__metric-val">100%</span>
+              <span class="landing-community__metric-label">{% translate "Independent & Ad-Free" %}</span>
+            </div>
+            <div class="landing-community__metric">
+              <span class="landing-community__metric-val">Weekly</span>
+              <span class="landing-community__metric-label">{% translate "Fresh Dispatches" %}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="landing-community__rider">
+          {% translate "The Rider pointing towards community registration" as pointing_alt %}
+          {% include "components/character_badge.html" with asset="character-pointing.webp" size="xl" alt=pointing_alt class_name="landing-community-badge character-badge--mirrored" %}
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
 {% endblock content %}

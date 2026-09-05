@@ -11,7 +11,7 @@
         <a class="error-page__action" href="{% url 'search' %}">{% translate "Search the lane" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
       </div>
       {% translate "The Rider taking a wrong turn" as rider_alt %}
-      {% include "components/character_badge.html" with asset="character-oops.webp" size="lg" alt=rider_alt class_name="error-page__rider" %}
+      {% include "components/character_badge.html" with asset="character-oops.webp" size="xl" alt=rider_alt class_name="error-page__rider" %}
     </div>
   </section>
 {% endblock content %}

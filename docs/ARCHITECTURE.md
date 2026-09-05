@@ -1,6 +1,6 @@
 # Caffeine Lane — Architecture
 
-> System structure, Django application boundaries, persistence, external integrations, and technical trade-offs.
+> System structure, component boundaries, persistence, external integrations, and technical trade-offs.
 
 ## Summary
 
@@ -10,33 +10,31 @@ Django owns routing, authentication, forms and validation, persistence, editoria
 
 Production runs the application as a Dockerized Gunicorn service on Render.
 
-```mermaid
-flowchart LR
-    B[Browser] --> R[Render container]
-    R --> G[Gunicorn]
-    G --> D[Django]
-    D --> N[(Neon PostgreSQL)]
-    D --> C[Cloudinary media]
-    D --> E[Resend via Anymail]
-    D --> W[WhiteNoise static assets]
+```text
+Browser -> Render container (Gunicorn -> Django)
+                              -> Neon PostgreSQL
+                              -> Cloudinary media storage
+                              -> Resend email
+
+         WhiteNoise serves collected static assets from the Django runtime
 ```
 
-## Application boundaries
+## Component boundaries
 
-| Area | Owns | Boundary |
+| Component | Owns | Boundary |
 | --- | --- | --- |
 | `apps/core` | Landing/home surfaces, contact flow, image validation, CSP reporting, health endpoints | Does not own accounts or editorial domain models |
 | `apps/accounts` | Custom user model, authentication, registration, profiles, password flows | Does not own post/comment behavior |
 | `apps/posts` | Categories, posts, publishing behavior, search, comments, and moderation | Uses Django's user/permission boundary rather than owning authentication |
 | `config/settings` | Base, local, test, and production configuration | Does not own application business behavior |
-| `templates/` | Server-rendered layouts, forms, partials, and page templates | Does not own persistence/business logic |
-| `static/src/` | Authored Tailwind and JavaScript source | Generated output belongs in `static/dist/` |
+| `templates/` | Server-rendered layouts, forms, partials, and page templates | Does not own persistence or business logic |
+| `static/src/` | Authored Tailwind CSS and JavaScript source | Generated output belongs in `static/dist/` |
 | `static/dist/` | Compiled frontend assets | Must not be edited manually |
-| `docker/` | Container startup/migration/static-collection orchestration | Does not define local developer workflow |
+| `docker/` | Container startup, migration, and static-collection orchestration | Does not define local developer workflow |
 
-## Request flow
+### Request lifecycle
 
-A typical server-rendered request follows Django's normal request lifecycle:
+A typical server-rendered request follows Django's standard request lifecycle:
 
 ```text
 HTTP request
@@ -48,97 +46,73 @@ HTTP request
 -> HTTP response
 ```
 
-Responsibilities are deliberately modest:
-
 - **Views and forms** handle request input, permissions, form validation, messages, redirects, and rendering.
 - **Models/querysets** define persistence shape and reusable query semantics such as published-content filtering.
 - **Small services** hold lifecycle behavior where a named operation is clearer than embedding it directly in a view, such as publishing posts or moderating comments.
-- **Templates/context processors** render the localized server-side interface.
+- **Templates and context processors** render the localized server-side interface.
 
-The project does not impose a repository layer or a larger service architecture where Django's ORM and application boundaries are already sufficient.
+The project does not impose an artificial repository layer where Django's ORM and application boundaries are already sufficient.
 
-## Data and persistence
+### Frontend and static asset pipeline
 
-Production application data is stored in PostgreSQL on Neon. Local development normally uses PostgreSQL 18 through Docker Compose, with SQLite available as an intentional local fallback when `DATABASE_URL` is omitted.
-
-Tests use a separate configuration: SQLite in memory by default, or the explicit `TEST_DATABASE_URL` supplied by CI.
-
-Important models:
-
-- **`accounts.User`** — custom user model with unique email authentication.
-- **`posts.Category`** — editorial taxonomy.
-- **`posts.Post`** — draft/published editorial article with categories and media metadata.
-- **`posts.Comment`** — discussion record with explicit visibility and optional one-level parent relation.
-
-Django migrations are the schema source of truth.
-
-## Search
-
-Search behavior adapts to the active database backend.
-
-On PostgreSQL, published content uses weighted full-text search:
-
-```text
-title   -> weight A
-excerpt -> weight B
-content -> weight C
-```
-
-`SearchVector`, `SearchQuery`, and `SearchRank` provide relevance ordering.
-
-When another database backend is active, search falls back to case-insensitive matching across title, excerpt, and content. This keeps local/offline fallback usable without pretending to reproduce PostgreSQL ranking behavior.
-
-## External integrations
-
-| Integration | Responsibility | Application boundary |
-| --- | --- | --- |
-| Neon | Production PostgreSQL persistence | Only Django connects to the database |
-| Cloudinary | Persistent uploaded media in production | Configured through Django storage |
-| Resend through Anymail | Production email delivery | Accessed through Django's email backend |
-| WhiteNoise | Collected static-file delivery | Runs inside the Django WSGI application |
-| Render | Hosts the production Docker/Gunicorn service | Deployment/runtime concern |
-
-The local/test configurations replace external services where appropriate: local media uses the filesystem, local email uses the console backend, and tests use in-memory email/media storage.
-
-## Security boundaries
-
-Caffeine Lane relies on Django's session authentication and permission system.
-
-Production configuration adds:
-
-- secure session and CSRF cookies;
-- HTTPS redirect behavior;
-- configurable HSTS;
-- a Content Security Policy that can run in report-only or enforced mode;
-- restricted production hosts and trusted CSRF origins;
-- Argon2 as the first production password hasher;
-- provider credentials loaded from environment variables rather than source control.
-
-Authorization for editorial and moderation actions is enforced through authentication checks and Django permissions.
-
-## Static and media assets
-
-Authored frontend assets live under `static/src/`.
-
-The pnpm build pipeline:
+Authored frontend assets live under `static/src/`. The build pipeline compiles assets into distribution artifacts:
 
 ```text
 static/src
--> Tailwind / JavaScript build
+-> Tailwind CSS / JavaScript build (pnpm)
 -> static/dist
 -> collectstatic
 -> WhiteNoise in production
 ```
 
-Uploaded media follows a different path:
-
-```text
-local development -> filesystem
-tests             -> in-memory storage
-production        -> Cloudinary
-```
+Uploaded media follows a distinct path:
+- Local development: filesystem storage
+- Tests: in-memory storage
+- Production: Cloudinary storage
 
 Keeping static build artifacts and user-uploaded media separate avoids depending on the ephemeral application container for persistent uploads.
+
+### External integrations
+
+| Integration | Platform | Responsibility | Application boundary |
+| --- | --- | --- | --- |
+| Neon | Hosted PostgreSQL | Production data persistence | Only Django connects to the database |
+| Cloudinary | Media CDN | Production uploaded media storage | Configured through Django storage backend |
+| Resend | Email API | Production transactional emails | Accessed via Django's email backend through Anymail |
+| WhiteNoise | Python WSGI middleware | Static asset delivery | Runs inside the Django WSGI application |
+| Render | Container Cloud | Production Docker/Gunicorn hosting | Deployment and runtime environment |
+
+### Security boundaries
+
+Caffeine Lane relies on Django's session authentication and permission system:
+
+- Secure session and CSRF cookies in production.
+- HTTPS redirect and configurable HSTS.
+- Content Security Policy (CSP) supporting report-only or enforced modes.
+- Restricted production hosts and trusted CSRF origins.
+- Argon2 as the prioritized password hasher in production.
+- Provider credentials injected via environment variables rather than committed to source control.
+- Server-side authorization checks for all editorial and moderation actions.
+
+## Data and persistence
+
+Production application data is stored in PostgreSQL on Neon. Local development normally uses PostgreSQL 18 through Docker Compose, with SQLite available as an intentional fallback when `DATABASE_URL` is omitted.
+
+Tests use an isolated configuration: in-memory SQLite by default, or the explicit `TEST_DATABASE_URL` supplied in CI.
+
+Core persistent entities:
+- **`accounts.User`:** Custom user model with unique email authentication.
+- **`posts.Category`:** Editorial taxonomy records.
+- **`posts.Post`:** Draft/published editorial articles with categories and media metadata.
+- **`posts.Comment`:** Discussion records with explicit visibility and optional one-level parent relations.
+
+Django migrations are the single source of truth for the database schema.
+
+### Search architecture
+
+Search behavior adapts to the active database backend:
+- **PostgreSQL:** Published content uses weighted full-text search (`SearchVector`, `SearchQuery`, `SearchRank`) across title (weight A), excerpt (weight B), and content (weight C).
+- **SQLite fallback:** Falls back to case-insensitive substring matching (`icontains`) across title, excerpt, and content, keeping offline development functional without emulating full-text search.
 
 ## Hosted topology
 
@@ -155,30 +129,30 @@ The repository contains the production `Dockerfile` and entrypoint. Provider-spe
 
 ## Invariants
 
-- **Published-content boundary:** public editorial queries do not expose drafts.
-- **Identity boundary:** email remains unique and is the authentication identifier.
-- **Comment-depth boundary:** replies do not become recursive trees.
-- **Permission boundary:** moderation/editing behavior is checked server-side.
-- **Media boundary:** production uploads do not depend on container-local persistence.
-- **Migration boundary:** production migrations can use a direct database connection separately from pooled web traffic.
+- **Published-content boundary:** Public editorial queries do not expose draft articles.
+- **Identity boundary:** Email remains globally unique and serves as the single authentication identifier.
+- **Comment-depth boundary:** Replies never exceed one level of nesting.
+- **Permission boundary:** Moderation and editorial operations are enforced strictly server-side.
+- **Media boundary:** Production uploads do not depend on container-local persistence.
+- **Migration boundary:** Production migrations execute via a direct database connection separately from pooled web traffic.
 
 ## Trade-offs
 
 ### Server-rendered Django
 
-Django templates keep routing, forms, authentication, localization, and rendering in one application boundary. The project gains a simpler deployment and avoids maintaining a separate frontend API contract, at the cost of tighter coupling between presentation and the Django application.
+Django templates keep routing, forms, authentication, localization, and rendering in one cohesive application boundary. The project gains a simpler deployment and avoids maintaining a separate frontend API contract, at the cost of tighter coupling between presentation and Django.
 
-### PostgreSQL search with a fallback
+### PostgreSQL search with SQLite fallback
 
-PostgreSQL provides the intended ranked search behavior. The SQLite fallback keeps local/test scenarios usable, but its `icontains` behavior is intentionally less capable.
+PostgreSQL provides the intended ranked full-text search behavior. The SQLite fallback keeps local and test scenarios lightweight, but its `icontains` behavior is deliberately less capable than full-text indexing.
 
-### Pooled runtime and direct migrations
+### Pooled runtime with direct migrations
 
-Production runtime can use Neon's pooled connection while startup migrations temporarily switch to `DIRECT_DATABASE_URL`. This keeps normal web traffic compatible with pooling while giving schema operations a direct connection.
+Production web traffic uses Neon's pooled connection, while startup migrations temporarily switch to `DIRECT_DATABASE_URL`. This preserves pooling efficiency for web requests while giving schema migrations an unpooled direct connection.
 
 ### Single-level discussions
 
-One-level replies provide conversational context without requiring recursive rendering, deep thread navigation, or more complex moderation rules.
+One-level comment replies provide conversational context without requiring recursive tree rendering, deep nested navigation, or complex moderation rules.
 
 ## Related documentation
 
