@@ -103,3 +103,77 @@ class SearchAndListingTests(TestCase):
             for post in posts:
                 str(post.author)
                 list(post.categories.all())
+
+    def test_search_supports_multi_category_and_slug_filtering(self):
+        reviews = CategoryFactory(name="Reviews")
+        review_post = PostFactory(
+            title="Helmet Review",
+            author=self.author,
+            categories=reviews,
+        )
+
+        # Test single category by slug
+        response_slug = self.client.get(reverse("search"), {"category": "reviews"})
+        self.assertContains(response_slug, review_post.title)
+        self.assertNotContains(response_slug, self.related.title)
+
+        # Test multi-category filtering
+        response_multi = self.client.get(
+            reverse("search"),
+            {"category": [self.builds.slug, reviews.slug]},
+        )
+        self.assertContains(response_multi, self.related.title)
+        self.assertContains(response_multi, review_post.title)
+        self.assertNotContains(response_multi, self.match.title)
+
+    def test_zero_results_renders_rider_empty_state_and_suggested_topic_pills(self):
+        response = self.client.get(reverse("search"), {"q": "nonexistenttermxyz"})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "search-empty-card")
+        self.assertContains(response, "character-searching.webp")
+        self.assertContains(response, "CB750")
+        self.assertContains(response, "BMW R-Series")
+        self.assertContains(response, "Carb Tuning")
+        self.assertContains(response, "Cafe Seat Guide")
+
+    def test_search_highlighting_template_filter(self):
+        from apps.posts.templatetags.post_i18n import highlight_search
+
+        text = "This is a great cafe racer build with custom exhaust."
+        result = highlight_search(text, "cafe exhaust")
+        self.assertIn('<mark class="search-highlight">cafe</mark>', result)
+        self.assertIn('<mark class="search-highlight">exhaust</mark>', result)
+
+        # Test XSS safety
+        unsafe = "<script>alert('xss')</script> cafe"
+        safe_result = highlight_search(unsafe, "cafe")
+        self.assertNotIn("<script>", safe_result)
+        self.assertIn("&lt;script&gt;", safe_result)
+        self.assertIn('<mark class="search-highlight">cafe</mark>', safe_result)
+
+    def test_search_ranking_prioritizes_title_over_content_in_postgresql(self):
+        from django.db import connection
+
+        title_match = PostFactory(
+            title="Custom Mikuni setup",
+            excerpt="General workshop update",
+            content="Standard chassis assembly notes",
+            author=self.author,
+            categories=self.builds,
+        )
+        content_match = PostFactory(
+            title="General assembly",
+            excerpt="Regular garage notes",
+            content="Detailed installation of a Mikuni carburetor for the build",
+            author=self.author,
+            categories=self.builds,
+        )
+
+        response = self.client.get(reverse("search"), {"q": "Mikuni"})
+        results = list(response.context["results"])
+        self.assertIn(title_match, results)
+        self.assertIn(content_match, results)
+
+        if connection.vendor == "postgresql":
+            # Title match (weight A) must rank ahead of content match (weight C)
+            self.assertEqual(results[0], title_match)

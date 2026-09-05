@@ -75,3 +75,40 @@ test("search filters preserve the server-selected open state and close with Esca
   assert.equal(panel.classList.contains("is-open"), false);
   assert.equal(toggle.focusCount, 1);
 });
+
+test("search instant clear button clears input and updates visibility", () => {
+  const documentRef = createDocument();
+  const input = {
+    value: "CB750",
+    focusCount: 0,
+    listeners: new Map(),
+    addEventListener(name, cb) { this.listeners.set(name, cb); },
+    emit(name) { this.listeners.get(name)?.(); },
+    focus() { this.focusCount += 1; },
+  };
+  const clearBtn = {
+    hidden: false,
+    style: { display: "" },
+    listeners: new Map(),
+    setAttribute(name) { if (name === "hidden") this.hidden = true; },
+    removeAttribute(name) { if (name === "hidden") this.hidden = false; },
+    addEventListener(name, cb) { this.listeners.set(name, cb); },
+    emit(name) { this.listeners.get(name)?.(); },
+  };
+
+  const controller = new SearchFiltersController({ clearBtn, input, documentRef });
+  controller.initialize();
+
+  assert.equal(clearBtn.hidden, false);
+
+  // Click clear button
+  clearBtn.emit("click");
+  assert.equal(input.value, "");
+  assert.equal(clearBtn.hidden, true);
+  assert.equal(input.focusCount, 1);
+
+  // Type again
+  input.value = "BMW";
+  input.emit("input");
+  assert.equal(clearBtn.hidden, false);
+});

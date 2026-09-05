@@ -191,8 +191,31 @@ class PostSearchView(ListView):
         self.search_form = PostSearchForm(self.request.GET)
         self.search_form.is_valid()
         query = self.search_form.cleaned_data.get("q", "").strip()
-        category = self.search_form.cleaned_data.get("category")
         sort_by = self.search_form.cleaned_data.get("sort") or "relevance"
+
+        # Multi-category support (supports both slug and id)
+        raw_categories = self.request.GET.getlist("category")
+        self.selected_category_slugs = []
+        if raw_categories:
+            category_filter = Q()
+            for cat_val in raw_categories:
+                cat_val = str(cat_val).strip()
+                if not cat_val or cat_val.lower() == "all":
+                    continue
+                if cat_val.isdigit():
+                    category_filter |= Q(categories__id=int(cat_val))
+                    cat_obj = Category.objects.filter(id=int(cat_val)).first()
+                    if cat_obj:
+                        self.selected_category_slugs.append(cat_obj.slug)
+                else:
+                    category_filter |= Q(categories__slug=cat_val)
+                    self.selected_category_slugs.append(cat_val)
+            if category_filter:
+                queryset = queryset.filter(category_filter)
+        elif self.search_form.cleaned_data.get("category"):
+            chosen_cat = self.search_form.cleaned_data["category"]
+            queryset = queryset.filter(categories=chosen_cat)
+            self.selected_category_slugs.append(chosen_cat.slug)
 
         if query:
             if connection.vendor == "postgresql":
@@ -211,9 +234,6 @@ class PostSearchView(ListView):
                     | Q(excerpt__icontains=query)
                     | Q(content__icontains=query)
                 )
-
-        if category:
-            queryset = queryset.filter(categories=category)
 
         sort_mapping = {
             "newest": "-created_at",
@@ -234,6 +254,10 @@ class PostSearchView(ListView):
         pagination_query.pop("page", None)
         context["form"] = self.search_form
         context["query"] = self.search_form.cleaned_data.get("q", "")
+        context["selected_category_slugs"] = getattr(
+            self, "selected_category_slugs", []
+        )
+        context["all_categories"] = Category.objects.all().order_by("name")
         context["current_category"] = self.request.GET.get("category", "")
         context["current_sort"] = self.search_form.cleaned_data.get("sort", "relevance")
         context["pagination_query"] = pagination_query.urlencode()

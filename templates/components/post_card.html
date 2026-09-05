@@ -36,7 +36,7 @@
       </h3>
 
       {% if post.excerpt and card_variant != "compact" %}
-        <p class="mt-2.5 line-clamp-2 text-sm leading-relaxed text-stone-600">{{ post.excerpt }}</p>
+        <p class="mt-2.5 line-clamp-2 text-sm leading-relaxed text-stone-600">{% if highlight_query %}{{ post.excerpt|highlight_search:highlight_query }}{% else %}{{ post.excerpt }}{% endif %}</p>
       {% endif %}
 
       <div class="mt-auto pt-4 flex items-center justify-between border-t border-stone-100 text-xs text-stone-500 font-semibold uppercase tracking-wider">

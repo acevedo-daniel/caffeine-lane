@@ -130,4 +130,30 @@ test.describe("compiled frontend smoke checks", () => {
     await expect(commentsHeader).toBeVisible();
     await expect(commentsHeader.locator(".comments-section-header__rider")).toBeVisible();
   });
+
+  test("Phase 5: Search interface, clear button, category chips, results highlighting, and zero-results empty card", async ({ page }) => {
+    // 1. Search page load with query
+    await page.goto("/posts/search/?q=cafe");
+    await expect(page.locator(".search-panel")).toBeVisible();
+    await expect(page.locator(".search-category-chips")).toBeVisible();
+
+    // 2. Clear button is visible and clears input
+    const clearBtn = page.locator("#search-clear-btn");
+    await expect(clearBtn).toBeVisible();
+    await clearBtn.click();
+    await expect(page.locator("#id_q")).toHaveValue("");
+    await expect(clearBtn).toBeHidden();
+
+    // 3. Category chips navigation
+    const allChip = page.locator(".search-chip").first();
+    await expect(allChip).toBeVisible();
+
+    // 4. Zero results empty state
+    await page.goto("/posts/search/?q=xyznonexistentterm");
+    const emptyCard = page.locator(".search-empty-card");
+    await expect(emptyCard).toBeVisible();
+    await expect(emptyCard.locator(".search-empty-badge")).toBeVisible();
+    await expect(emptyCard.locator(".search-suggestion-pill")).toHaveCount(4);
+    await expect(emptyCard.locator(".search-suggestion-pill").first()).toContainText("CB750");
+  });
 });
