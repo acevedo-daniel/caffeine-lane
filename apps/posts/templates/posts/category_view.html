@@ -60,8 +60,9 @@
             {% include "components/post_card.html" with post=post %}
           {% empty %}
             <div class="editorial-empty col-span-full py-12 text-center bg-white border border-stone-200 rounded-sm p-8">
-              {% translate "The Rider searching for stories" as rider_empty_alt %}
-              {% include "components/character_badge.html" with asset="character-welcome.webp" size="md" alt=rider_empty_alt class_name="mx-auto mb-4" %}
+              <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-stone-100 text-stone-500 mb-4 mx-auto text-xl" aria-hidden="true">
+                <i class="fa-solid fa-box-archive"></i>
+              </div>
               <h3 class="font-bebas text-4xl tracking-wide text-stone-950">{% translate "Nothing here yet." %}</h3>
               <p class="mt-2 text-stone-600 max-w-md mx-auto">
                 {% translate "There are no stories in this category yet. Check the other categories while the next one is being prepared." %}

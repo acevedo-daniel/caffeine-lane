@@ -98,7 +98,7 @@
               {% include "components/character_badge.html" with asset="character-searching.webp" size="lg" alt=searching_alt class_name="search-empty-badge" %}
             </div>
             <div class="search-empty-card__content">
-              <p class="editorial-kicker text-primary">{% translate "Zero Results Found" %}</p>
+              <p class="editorial-kicker text-stone-500">{% translate "Zero Results Found" %}</p>
               <h3 class="search-empty-card__title">
                 {% if query %}
                   {% blocktranslate with search_query=query %}No stories found for “{{ search_query }}”{% endblocktranslate %}

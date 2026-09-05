@@ -31,7 +31,7 @@
         <span>{% blocktranslate with minutes=post.reading_time %}{{ minutes }} min read{% endblocktranslate %}</span>
       </div>
 
-      <h3 class="font-bebas text-2xl sm:text-3xl leading-[0.98] tracking-wide text-stone-950 transition-colors duration-150 group-hover:text-primary">
+      <h3 class="font-bebas text-2xl sm:text-3xl leading-[0.98] tracking-wide text-stone-950 transition-colors duration-150 group-hover:text-stone-600">
         {{ post.title }}
       </h3>
 
@@ -41,7 +41,7 @@
 
       <div class="mt-auto pt-4 flex items-center justify-between border-t border-stone-100 text-xs text-stone-500 font-semibold uppercase tracking-wider">
         <span>{% translate "By" %} {{ post.author.display_name|default:post.author.username }}</span>
-        <span class="text-stone-400 group-hover:text-primary transition-colors inline-flex items-center gap-1 font-bold">
+        <span class="text-stone-400 group-hover:text-stone-900 transition-colors inline-flex items-center gap-1 font-bold">
           <i class="fa-solid fa-arrow-right text-[10px]" aria-hidden="true"></i>
         </span>
       </div>
