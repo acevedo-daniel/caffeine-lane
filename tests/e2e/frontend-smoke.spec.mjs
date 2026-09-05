@@ -106,4 +106,28 @@ test.describe("compiled frontend smoke checks", () => {
     await expect(page.locator("#sort-select")).toBeVisible();
     await expect(page.locator(".category-post-grid")).toBeVisible();
   });
+
+  test("Phase 4: Article page features reading progress, build specs inspector, author seal, and comment discussion", async ({ page }) => {
+    await page.goto("/posts/cafe-racer-de-garaje/");
+
+    // 1. Reading progress bar
+    const progressBar = page.locator("#reading-progress");
+    await expect(progressBar).toBeAttached();
+
+    // 2. Build specs inspector
+    const specsInspector = page.locator(".build-specs-inspector");
+    await expect(specsInspector).toBeVisible();
+    await expect(specsInspector.locator("h2#specs-heading")).toHaveText("Technical Specs Inspector");
+    await expect(specsInspector.locator(".build-specs-inspector__row").first()).toBeVisible();
+
+    // 3. Author signature seal with The Rider signature badge
+    const authorSeal = page.locator(".author-signature-seal");
+    await expect(authorSeal).toBeVisible();
+    await expect(authorSeal.locator(".author-signature-seal__badge")).toBeVisible();
+
+    // 4. Comments header with The Rider Talking badge
+    const commentsHeader = page.locator(".comments-section-header");
+    await expect(commentsHeader).toBeVisible();
+    await expect(commentsHeader.locator(".comments-section-header__rider")).toBeVisible();
+  });
 });

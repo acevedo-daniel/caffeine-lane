@@ -124,6 +124,50 @@ class Post(models.Model):
         words = len(self.content.split())
         return max(1, round(words / 200))
 
+    @property
+    def build_specs(self):
+        """Return technical build specifications dictionary for build posts, or None."""
+        if not self.categories.filter(slug="builds").exists():
+            return None
+
+        title_lower = self.title.lower()
+        if "frenos" in title_lower:
+            return {
+                "donor": "Yamaha SR500",
+                "displacement": "499 cc Single Cylinder",
+                "frame": "Original semi-double cradle, lightened and de-tabbed",
+                "front_brake": "Dual 298mm drilled discs with Brembo 2-piston calipers",
+                "rear_brake": "Upgraded ventilated drum with custom linkage",
+                "exhaust": "SuperTrapp stainless steel 1.75-inch reverse cone",
+            }
+        elif "cableado" in title_lower:
+            return {
+                "donor": "Moto Guzzi Le Mans II",
+                "displacement": "844 cc 90° V-Twin",
+                "frame": "Lino Tonti spine frame, brushed satin finish",
+                "carburetor": "Dell'Orto PHF 36mm pumper carbs",
+                "electrical": "Custom simplified loom with solid-state control module",
+                "exhaust": "Lafranconi Competizione stainless dual pipes",
+            }
+        elif "asiento" in title_lower or "postura" in title_lower:
+            return {
+                "donor": "Honda CB550 Four",
+                "displacement": "544 cc SOHC Air-Cooled Inline-Four",
+                "frame": "Shortened rear subframe with integrated LED hoop",
+                "seat": "Hand-shaped high-density foam with distressed cognac leather",
+                "cockpit": "Tommaselli clip-ons, Tarozzi rearsets",
+                "exhaust": "4-into-1 ceramic black header with reverse cone",
+            }
+        else:
+            return {
+                "donor": "1978 Honda CB750 Four",
+                "displacement": "736 cc SOHC Inline-Four",
+                "frame": "Custom rear loop, de-tabbed and powder-coated satin black",
+                "carburetor": "Keihin 28mm rebuilt with velocity stacks and brass jets",
+                "exhaust": "Custom 4-into-1 raw stainless steel with megaphone muffler",
+                "suspension": "Showa 35mm lowered 30mm with progressive springs",
+            }
+
     class Meta:
         ordering = ["-published_at", "-created_at"]
         constraints = [
