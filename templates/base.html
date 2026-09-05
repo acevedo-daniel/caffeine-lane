@@ -5,8 +5,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    {% block meta_description %}<meta name="description" content="{% translate 'The Caffeine Lane: builds, guides and reviews for cafe racer enthusiasts.' %}">{% endblock %}
-    <title>{% block title %}{% translate "The Caffeine Lane" %}{% endblock %}</title>
+    {% block meta_description %}<meta name="description" content="{% translate 'CAFFEINE LANE: builds, guides and reviews for cafe racer enthusiasts.' %}">{% endblock %}
+    <title>{% block title %}CAFFEINE LANE{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -15,7 +15,7 @@
   </head>
   <body class="flex min-h-screen flex-col bg-stone-50 font-mont text-stone-950 antialiased">
     {% block header %}{% include "components/header.html" %}{% endblock %}
-    <main id="main-content" class="flex-1">
+    <main id="main-content" class="flex-1 min-h-[calc(100vh-4.5rem-18rem)]">
       {% include "components/messages.html" %}
       {% block content %}{% endblock %}
     </main>
