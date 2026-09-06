@@ -2136,3 +2136,31 @@ msgstr "Inicio de The Caffeine Lane"
 #: .\templates\layouts\auth.html:12
 msgid "Ride · Build · Repeat"
 msgstr "Ride · Build · Repeat"
+
+#: templates/components/header.html
+msgid "Toggle theme"
+msgstr "Cambiar tema"
+
+#: templates/components/header.html
+msgid "Switch to light theme"
+msgstr "Cambiar a tema claro"
+
+#: templates/components/header.html
+msgid "Switch to dark theme"
+msgstr "Cambiar a tema oscuro"
+
+#: templates/components/header.html
+msgid "Appearance"
+msgstr "Apariencia"
+
+#: templates/components/header.html
+msgid "Dark mode"
+msgstr "Modo oscuro"
+
+#: templates/components/header.html
+msgid "Light mode"
+msgstr "Modo claro"
+
+#: templates/components/header.html
+msgid "Theme"
+msgstr "Tema"
