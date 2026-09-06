@@ -85,6 +85,8 @@ Production settings require the Resend configuration because the production emai
 
 The contact flow must report a delivery failure instead of showing success when Resend rejects or cannot deliver a message. Exercise that failure path in tests and use Resend's [safe test recipients](https://resend.com/docs/dashboard/emails/send-test-emails) for controlled delivery checks.
 
+Contact protection combines CSRF, a hidden honeypot field, input length limits, and an IP-based rate limit. The default limit is five submissions per hour (`CONTACT_RATE_LIMIT=5`, `CONTACT_RATE_LIMIT_WINDOW=3600`). Vercel's default cache is not a shared distributed limiter, so this is a basic best-effort protection; introduce shared rate limiting only if real abuse requires it.
+
 ## Database migrations
 
 ```bash

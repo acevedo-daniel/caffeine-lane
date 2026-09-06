@@ -1,4 +1,5 @@
 import os
+from email.utils import parseaddr
 
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.csp import CSP
@@ -26,6 +27,15 @@ DEFAULT_FROM_EMAIL = env.str(
 CONTACT_RECIPIENT_EMAIL = env.str("CONTACT_RECIPIENT_EMAIL")
 EMAIL_BACKEND = "anymail.backends.resend.EmailBackend"
 ANYMAIL = {"RESEND_API_KEY": env.str("RESEND_API_KEY")}
+PASSWORD_RESET_ENABLED = env.bool("PASSWORD_RESET_ENABLED", default=False)
+
+if PASSWORD_RESET_ENABLED:
+    sender_address = parseaddr(DEFAULT_FROM_EMAIL)[1].lower()
+    sender_domain = sender_address.rsplit("@", 1)[-1]
+    if not sender_address or sender_domain == "resend.dev":
+        raise ImproperlyConfigured(
+            "PASSWORD_RESET_ENABLED requires a sender on a verified custom domain."
+        )
 
 if not os.environ.get("CLOUDINARY_URL"):
     raise ImproperlyConfigured("CLOUDINARY_URL is required in production.")

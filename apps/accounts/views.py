@@ -53,7 +53,12 @@ def register_step2(request):
                 with transaction.atomic():
                     user = form.save(email=email)
             except IntegrityError:
-                form.add_error(None, _("An account with this email already exists."))
+                form.add_error(
+                    None,
+                    _(
+                        "This email cannot be registered. Please sign in or use another email address."
+                    ),
+                )
             else:
                 login(request, user)
                 del request.session["registration_email"]

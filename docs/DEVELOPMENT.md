@@ -76,6 +76,8 @@ The local email backend writes messages directly to the Django server log. Uploa
 
 Password recovery is disabled by default in local and production-like environments unless `PASSWORD_RESET_ENABLED=true` is explicitly configured. Do not enable it for a hosted environment until the Resend sender domain is verified and delivery has been tested.
 
+The contact form requires CSRF, rejects the hidden honeypot field, limits each input length, and permits five submissions per hour by default. The rate limit uses Django's configured cache and is intentionally a basic best-effort guard in serverless deployments.
+
 ## Commands
 
 | Task | Command | Purpose |

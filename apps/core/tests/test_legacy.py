@@ -4,7 +4,7 @@ from anymail.exceptions import AnymailAPIError
 from django.core import mail
 from django.core.cache import cache
 from django.template.loader import get_template
-from django.test import TestCase
+from django.test import Client, TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils.csp import CSP
@@ -96,6 +96,34 @@ class LegacyCoreCharacterizationTests(TestCase):
         self.assertContains(limited_response, "Too many messages")
         self.assertEqual(len(mail.outbox), 5)
 
+    def test_contact_requires_csrf_and_enforces_field_limits(self):
+        payload = {
+            "from_name": "Legacy tester",
+            "from_email": "legacy@example.com",
+            "subject": "Characterization",
+            "message": "Checking the contact flow.",
+        }
+        csrf_client = Client(enforce_csrf_checks=True)
+
+        csrf_response = csrf_client.post(reverse("contact"), payload)
+
+        self.assertEqual(csrf_response.status_code, 403)
+
+        field_limits = {
+            "from_name": 100,
+            "from_email": 254,
+            "subject": 150,
+            "message": 5000,
+        }
+        for field_name, maximum in field_limits.items():
+            with self.subTest(field_name=field_name):
+                form_payload = {**payload, field_name: "x" * (maximum + 1)}
+                response = self.client.post(reverse("contact"), form_payload)
+
+                self.assertEqual(response.status_code, 200)
+                self.assertContains(response, "Ensure this value has at most")
+                self.assertEqual(len(mail.outbox), 0)
+
     def test_contact_handles_email_delivery_failures_without_reporting_success(self):
         payload = {
             "from_name": "Legacy tester",
@@ -116,7 +144,10 @@ class LegacyCoreCharacterizationTests(TestCase):
         self.assertEqual(response.status_code, 503)
         self.assertContains(response, "We could not send your message", status_code=503)
         self.assertNotContains(response, "Thank you for your message", status_code=503)
-        self.assertIn("error_type=AnymailAPIError", logs.output[0])
+        log_output = "\n".join(logs.output)
+        self.assertIn("error_type=AnymailAPIError", log_output)
+        self.assertNotIn(payload["from_email"], log_output)
+        self.assertNotIn(payload["message"], log_output)
 
 
 class ErrorPageTests(TestCase):

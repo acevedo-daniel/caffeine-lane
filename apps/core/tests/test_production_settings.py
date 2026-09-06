@@ -124,6 +124,38 @@ class ProductionSettingsTests(SimpleTestCase):
             ],
         )
 
+    def test_password_reset_rejects_the_resend_dev_sender(self):
+        environment = os.environ.copy()
+        environment.update(
+            {
+                "DJANGO_SETTINGS_MODULE": "config.settings.production",
+                "SECRET_KEY": "test-production-secret-key-not-for-deployment-0123456789",
+                "DATABASE_URL": "sqlite:///:memory:",
+                "ALLOWED_HOSTS": "example.test",
+                "CLOUDINARY_URL": "cloudinary://123456789012345:test@example",
+                "RESEND_API_KEY": "re_test_not_a_real_key",
+                "DEFAULT_FROM_EMAIL": "The Caffeine Lane <onboarding@resend.dev>",
+                "CONTACT_RECIPIENT_EMAIL": "owner@example.test",
+                "PASSWORD_RESET_ENABLED": "true",
+            }
+        )
+        result = subprocess.run(
+            [
+                sys.executable,
+                "manage.py",
+                "check",
+                "--settings=config.settings.production",
+            ],
+            cwd=Path(__file__).resolve().parents[3],
+            env=environment,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("verified custom domain", result.stderr)
+
 
 class LocalSettingsTests(SimpleTestCase):
     def test_local_settings_are_explicitly_development_oriented(self):

@@ -123,6 +123,8 @@ After a successful Vercel deployment, verify the public application at [caffeine
 - `/healthz/` returns HTTP 200.
 - The landing page, home, categories, search and article detail render correctly.
 - Authentication and contact flows return controlled responses.
+- Contact POSTs require CSRF, reject the honeypot, enforce field limits, rate-limit repeated submissions, and do not log message contents or visitor email addresses on delivery failure.
+- Registration does not reveal an existing email during the first step; duplicate-account handling remains generic.
 - Contact delivery is tested only with an approved Resend test recipient or a verified sender domain.
 - Password recovery remains visibly unavailable while `PASSWORD_RESET_ENABLED=false`.
 - Vercel runtime logs contain no import, database, static asset or email configuration errors.
