@@ -127,10 +127,8 @@
           <div class="comments-section-header__text">
             <p class="editorial-kicker">{% translate "The conversation" %}</p>
             <h2 id="comments-heading" class="editorial-heading mt-1">{% translate "Comments" %}</h2>
-            <p class="text-stone-600 text-sm mt-1">{% translate "Join the discussion, share garage wisdom, or ask technical questions." %}</p>
+            <p class="text-foreground-muted text-sm mt-1">{% translate "Join the discussion, share garage wisdom, or ask technical questions." %}</p>
           </div>
-          {% translate "The Rider in Talking pose" as rider_talking_alt %}
-          {% include "components/character_badge.html" with asset="character-talking.webp" size="md" alt=rider_talking_alt class_name="comments-section-header__rider" %}
         </div>
 
         {% if user.is_authenticated %}
@@ -146,12 +144,12 @@
           <aside class="comment-participation">
             <div>
               <p class="editorial-kicker">{% translate "Your turn" %}</p>
-              <h3 class="mt-2 font-bebas text-4xl leading-[0.9] tracking-wide text-stone-950">{% translate "Got something to add?" %}</h3>
-              <p class="mt-3 max-w-xl text-stone-600">{% translate "Sign in to share a question, a fix, or your perspective." %}</p>
+              <h3 class="mt-2 font-bebas text-4xl leading-[0.9] tracking-wide text-foreground">{% translate "Got something to add?" %}</h3>
+              <p class="mt-3 max-w-xl text-foreground-secondary">{% translate "Sign in to share a question, a fix, or your perspective." %}</p>
               <a class="editorial-button mt-5" href="{% url 'login' %}?next={{ request.path|urlencode }}">{% translate "Sign in to comment" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
             </div>
-            {% translate "The Rider" as talking_alt %}
-            {% include "components/character_badge.html" with asset="character-talking.webp" size="lg" alt=talking_alt class_name="comment-participation__rider" %}
+            {% translate "The Rider pointing to comment action" as pointing_alt %}
+            {% include "components/character_badge.html" with asset="character-pointing.webp" size="lg" alt=pointing_alt class_name="comment-participation__rider" %}
           </aside>
         {% endif %}
 
@@ -244,8 +242,8 @@
             <aside class="comment-empty">
               <div>
                 <p class="editorial-kicker">{% translate "Open road" %}</p>
-                <h3 class="mt-2 font-bebas text-4xl leading-[0.9] tracking-wide text-stone-950">{% translate "Start the conversation." %}</h3>
-                <p class="mt-3 text-stone-600">{% translate "Be the first to share your thoughts, questions, or garage experiences." %}</p>
+                <h3 class="mt-2 font-bebas text-4xl leading-[0.9] tracking-wide text-foreground">{% translate "Start the conversation." %}</h3>
+                <p class="mt-3 text-foreground-secondary">{% translate "Be the first to share your thoughts, questions, or garage experiences." %}</p>
                 {% if not user.is_authenticated %}
                   <a class="editorial-button mt-4" href="{% url 'login' %}?next={{ request.path|urlencode }}">{% translate "Sign in to comment" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
                 {% endif %}

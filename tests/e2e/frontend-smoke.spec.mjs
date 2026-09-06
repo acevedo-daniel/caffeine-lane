@@ -134,10 +134,10 @@ test.describe("compiled frontend smoke checks", () => {
     await expect(authorSeal).toBeVisible();
     await expect(authorSeal.locator(".author-signature-seal__badge")).toBeVisible();
 
-    // 4. Comments header with The Rider Talking badge
+    // 4. Comments header and participation card with The Rider badge
     const commentsHeader = page.locator(".comments-section-header");
     await expect(commentsHeader).toBeVisible();
-    await expect(commentsHeader.locator(".comments-section-header__rider")).toBeVisible();
+    await expect(page.locator(".comment-participation__rider, .comment-empty__rider").first()).toBeVisible();
   });
 
   test("Phase 5: Search interface, clear button, category chips, results highlighting, and zero-results empty card", async ({ page }) => {

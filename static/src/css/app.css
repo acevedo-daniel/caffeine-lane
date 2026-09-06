@@ -3646,14 +3646,14 @@
 
   .comment-compose {
     margin-top: 1.75rem;
-    border: 1px solid var(--color-stone-200);
-    background: var(--color-white);
+    border: 1px solid var(--border-subtle);
+    background: var(--surface);
     padding: clamp(1.25rem, 4vw, 2rem);
   }
 
   .comment-compose textarea,
   .comment-reply-form textarea {
-    border-color: var(--color-stone-300);
+    border-color: var(--border);
     border-radius: 0;
     box-shadow: none;
   }
