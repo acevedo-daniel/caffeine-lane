@@ -4,13 +4,11 @@
 
 ## Product
 
-Caffeine Lane is an editorial web application for cafe racer builds, practical guides, reviews, and community discussions. It gives motorcycle builders and enthusiasts a structured platform to discover long-form content, maintain reader accounts and profiles, and participate in moderated discussions.
-
-The product is centered on editorial publishing and community participation rather than commerce or open self-publishing.
+Caffeine Lane is an editorial journal dedicated to custom motorcycles, cafe racer builds, workshop tutorials, and thoughtful rider conversations. Rather than building an ephemeral social feed or marketplace, it focuses on durable long-form articles, verified build specs, and focused reader exchanges.
 
 ## Problem
 
-Detailed motorcycle builds, practical guides, and reviews are often fragmented across social feeds and forum threads without durable organization or editorial quality. Caffeine Lane organizes that content into structured articles with categories, full-text search, reader profiles, and one-level discussions.
+Great motorcycle craftsmanship takes months or years of work in the garage. Yet, detailed documentation of these builds is often scattered across messy social feeds or fragmented forum threads with broken image links. Caffeine Lane preserves that craft in structured, searchable articles with categorized taxonomy, clean spec sheets, and focused community discussions.
 
 ## Scope
 
@@ -90,7 +88,7 @@ Reader authenticates -> Submits comment on published post
 
 ## Provenance
 
-Caffeine Lane started as a final project for the Informatorio program and was later rebuilt and modernized as a personal application.
+Caffeine Lane originated as a capstone project for the Informatorio software training program in Chaco, Argentina. It was subsequently reimagined and rebuilt from scratch as an independent, production-grade web application to explore clean Django architecture, server-rendered responsiveness, bilingual publishing, and motorcycle culture.
 
 ## Related documentation
 
