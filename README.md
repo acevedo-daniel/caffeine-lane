@@ -17,19 +17,19 @@ The public instance is live and running at [caffeine-lane.vercel.app](https://ca
 
 ## Screenshots
 
-### Inside the journal
+### Editorial home
 
-| Editorial home | Article detail and build specs |
+![Caffeine Lane editorial home with featured motorcycle stories in dark theme](docs/screenshots/public-home.png)
+
+### Experience & community
+
+| Article detail & build specs | Community discussion |
 | --- | --- |
-| ![Caffeine Lane editorial home in dark theme with featured motorcycle stories](docs/screenshots/public-home.png) | ![Caffeine Lane article detail and technical build specifications in dark theme](docs/screenshots/post-detail.png) |
+| ![Caffeine Lane article detail and technical build specifications in dark theme](docs/screenshots/post-detail.png) | ![Caffeine Lane discussion thread with community comments in dark theme](docs/screenshots/discussion-thread.png) |
 
-| Community discussion | Search and filters |
+| Search & category filters | Public landing experience |
 | --- | --- |
-| ![Caffeine Lane discussion thread with community comments in dark theme](docs/screenshots/discussion-thread.png) | ![Caffeine Lane search results and category filters in dark theme](docs/screenshots/search-results.png) |
-
-### Public landing
-
-![Caffeine Lane public landing with editorial cafe racer hero in dark theme](docs/screenshots/public-landing.png)
+| ![Caffeine Lane search results and category filters in dark theme](docs/screenshots/search-results.png) | ![Caffeine Lane public landing with editorial cafe racer hero in dark theme](docs/screenshots/public-landing.png) |
 
 ## What's inside
 
