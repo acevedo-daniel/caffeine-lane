@@ -1,146 +1,134 @@
 # Caffeine Lane — Deployment
 
-> Production topology, Docker delivery, environment boundaries, migrations, and release validation.
+> Vercel runtime, Neon database releases, environment boundaries, and production verification.
 
 ## Production topology
 
-Caffeine Lane is deployed as a single Dockerized Django web service on Render.
-
 ```text
 Browser
-  -> Render container
-      -> Gunicorn
-      -> Django
-          -> Neon PostgreSQL
-          -> Cloudinary media storage
-          -> Resend through Anymail
-          -> WhiteNoise static assets
+  -> Vercel CDN (static assets)
+  -> Vercel Django function (WSGI)
+      -> Neon PostgreSQL (pooled connection)
+      -> Cloudinary media storage
+      -> Resend through Anymail
 ```
 
 | Component | Platform | Responsibility |
 | --- | --- | --- |
-| Web runtime | Render | Run the production Docker container and serve Django via Gunicorn. |
-| Database | Neon | Persist application relational data via PostgreSQL. |
-| Media storage | Cloudinary | Persist user-uploaded post images and profile avatars. |
-| Email service | Resend | Deliver transactional emails via Anymail backend. |
-| Static assets | WhiteNoise | Serve compressed and fingerprinted static assets from the web runtime. |
+| Web runtime | Vercel | Serve the Django application through the Python runtime. |
+| Static assets | Vercel CDN | Serve the compiled CSS, JavaScript, fonts, and local static assets. |
+| Database | Neon | Persist application data in PostgreSQL. |
+| Media storage | Cloudinary | Persist user-uploaded images and avatars. |
+| Email service | Resend | Deliver transactional email through Anymail. |
 
-The repository contains the Docker build and startup orchestration. Provider credentials and service settings are managed securely outside Git.
+Vercel detects Django from `manage.py` and the WSGI configuration. The build hook in `pyproject.toml` compiles frontend assets with pnpm. No `vercel.json`, Docker image, or `/api` redirect is needed for this application.
 
 ## Release flow
 
 ```text
-Git push to main
--> GitHub Actions CI (tests, migrations check, Docker smoke)
--> Render auto-deploy triggered
--> Multi-stage Docker image built
--> entrypoint.sh checks baseline and applies migrations via DIRECT_DATABASE_URL
--> Static assets collected
--> Gunicorn launches web process
--> Render health check confirms /healthz/
--> Live traffic cut over to new release
+Pull request
+-> GitHub Actions CI
+-> Vercel preview (no production migrations)
+-> Review preview
+-> Merge to main
+-> Explicit Neon release command (direct connection)
+-> Vercel production deployment
+-> Health and user-flow verification
 ```
 
-GitHub Actions automates code verification, asset validation, and Docker container smoke tests. Merging to `main` triggers automated container delivery on Render.
+Schema changes are deliberately outside the Vercel build. A preview must never alter the production Neon database.
 
-## Web runtime container
+## Vercel configuration
 
-The production container is defined in `Dockerfile` across three stages:
+Set these variables in the Vercel project for the appropriate environment:
 
-- **Asset stage (Node 22):** installs locked dependencies via pnpm, compiles Tailwind CSS, and minifies JavaScript into `static/dist/`.
-- **Python dependency stage (Python 3.14):** installs pinned `uv` and builds the production virtual environment in `.venv`.
-- **Runtime stage (Python 3.14):** runs as a non-root `app` user, copies the virtual environment and static assets, executes `docker/entrypoint.sh`, binds Gunicorn to the provider `PORT`, and monitors `/healthz/`.
+| Variable | Purpose |
+| --- | --- |
+| `DJANGO_SETTINGS_MODULE` | `config.settings.production` |
+| `SECRET_KEY` | Unique Django cryptographic secret. |
+| `DATABASE_URL` | Neon **pooled** connection used by the web runtime. |
+| `ALLOWED_HOSTS` | Production and preview hostnames, comma-separated. |
+| `CSRF_TRUSTED_ORIGINS` | HTTPS production and preview origins, comma-separated. |
+| `CLOUDINARY_URL` | Cloudinary storage credentials. |
+| `RESEND_API_KEY` | Resend API credential. |
+| `DEFAULT_FROM_EMAIL` | Verified sender address. |
+| `CONTACT_RECIPIENT_EMAIL` | Recipient for contact submissions. |
+| `USE_X_FORWARDED_PROTO` | `true` behind Vercel's HTTPS proxy. |
+| `CSP_ENFORCE` | Start with `false`; enable after CSP reports are reviewed. |
+| `SECURE_HSTS_SECONDS` | Positive duration after the production domain is stable. |
+| `SECURE_HSTS_INCLUDE_SUBDOMAINS` | Enable only when every subdomain is HTTPS-ready. |
+| `SECURE_HSTS_PRELOAD` | Enable only after an intentional preload decision. |
 
-### Container startup sequence
+Do **not** add `DIRECT_DATABASE_URL` to the Vercel runtime. It is only used by a controlled release command from a trusted terminal or release runner.
 
-`docker/entrypoint.sh` executes the following sequence:
+Preview deployments need an isolated Neon branch/database and their own `DATABASE_URL`, `ALLOWED_HOSTS`, and `CSRF_TRUSTED_ORIGINS`. Until that branch integration is configured, keep previews read-only or use no database-backed preview paths.
+
+## Database release
+
+Create migration files locally and commit them with their model changes:
+
+```bash
+uv run python manage.py makemigrations
+uv run python manage.py makemigrations --check --dry-run
+```
+
+Run the production release from a trusted environment with both Neon URLs available. The script switches Django to the direct connection only while applying schema changes:
+
+```bash
+# macOS / Linux
+./scripts/release.sh
+
+# Windows PowerShell
+./scripts/release.ps1
+```
+
+Both scripts perform:
 
 ```text
 check_fresh_baseline
--> migrate (when RUN_MIGRATIONS_ON_START=true)
--> seed (only when SEED_PORTFOLIO_ON_START=true)
--> collectstatic
--> Gunicorn
+-> migrate --noinput
+-> verify_editorial_baseline
 ```
 
-Migrations and demo seeding are controlled independently to ensure routine deployments execute migrations without altering live production data.
+`migrate` is idempotent: a release with no pending migrations does not alter the schema. Never run `makemigrations` against Neon.
 
-## Production configuration
+## Editorial dataset
 
-Production operates under:
+The editorial dataset is intentionally separate from schema release:
 
-```text
-DJANGO_SETTINGS_MODULE=config.settings.production
+```bash
+uv run python manage.py seed_editorial --dry-run
+uv run python manage.py seed_editorial
 ```
 
-| Variable | Component | Requirement |
-| --- | --- | --- |
-| `DJANGO_SETTINGS_MODULE` | Web runtime | Must be set to `config.settings.production`. |
-| `SECRET_KEY` | Web runtime | Unique cryptographic secret; never use development fallback. |
-| `DATABASE_URL` | Web runtime | Pooled PostgreSQL connection string for normal web traffic. |
-| `DIRECT_DATABASE_URL` | Migrations | Direct unpooled PostgreSQL connection string for schema migrations. |
-| `ALLOWED_HOSTS` | Web runtime | Comma-separated list of approved production domain names. |
-| `CSRF_TRUSTED_ORIGINS` | Web runtime | Comma-separated list of trusted HTTPS origins for CSRF validation. |
-| `CLOUDINARY_URL` | Media storage | Cloudinary API URI for uploaded asset storage. |
-| `RESEND_API_KEY` | Email service | API credential for transactional email dispatch. |
-| `DEFAULT_FROM_EMAIL` | Email service | Verified sender email address. |
-| `CONTACT_RECIPIENT_EMAIL` | Web runtime | Destination address for contact inquiries. |
-| `USE_X_FORWARDED_PROTO` | Web runtime | Set to `true` behind Render's HTTPS reverse proxy. |
-| `RUN_MIGRATIONS_ON_START` | Migrations | Set to `true` to execute migrations during container startup. |
-| `SEED_PORTFOLIO_ON_START` | Web runtime | Set to `false` in production to prevent unintended demo data insertion. |
-| `SECURE_HSTS_SECONDS` | Security | Positive integer specifying HSTS header duration. |
-| `SECURE_HSTS_INCLUDE_SUBDOMAINS` | Security | Boolean to extend HSTS to subdomains. |
-| `SECURE_HSTS_PRELOAD` | Security | Boolean enabling browser HSTS preload registration. |
-| `CSP_ENFORCE` | Security | Set to `true` to enforce CSP; `false` keeps report-only mode. |
-
-Never commit production credentials or secrets to source control.
-
-## Database migrations
-
-Committed Django migrations are the sole mechanism for database schema evolution.
-
-When `RUN_MIGRATIONS_ON_START=true`, the container entrypoint:
-1. Validates that both `DATABASE_URL` and `DIRECT_DATABASE_URL` are present.
-2. Temporarily points Django to `DIRECT_DATABASE_URL` for unpooled migration execution:
-   ```bash
-   python manage.py migrate --noinput
-   ```
-3. Restores `DATABASE_URL` so Gunicorn uses pooled connections for application traffic.
-
-Safety rules:
-- Run `check_fresh_baseline` prior to migration execution to guard against legacy schema collisions.
-- Keep migration files committed and reviewed alongside their corresponding model changes.
-- Validate with `uv run python manage.py makemigrations --check --dry-run` before release.
-- Keep `SEED_PORTFOLIO_ON_START=false` for production deployments.
+The dry run checks text, slugs, dates, category distribution, and bundled images without writing data. The seed itself is idempotent, but it writes content and can upload media. Run it only after editorial review and never as part of a normal Vercel deployment. Docker's `SEED_EDITORIAL_ON_START` remains disabled by default for exceptional self-hosted use.
 
 ## Validation
 
-### Health endpoint
-
-Verify service liveness:
+Before production:
 
 ```bash
-curl -f https://caffeinelane.onrender.com/healthz/
+uv run ruff check .
+uv run ruff format --check .
+uv run python manage.py makemigrations --check --dry-run
+uv run python manage.py check --deploy
+uv run pytest
+pnpm run build
+pnpm test
+pnpm run test:e2e
 ```
 
-The Docker `HEALTHCHECK`, browser test runner, and CI container smoke job all monitor `/healthz/` as the readiness indicator.
+After deployment, verify:
 
-### Post-deployment verification
+- `/healthz/` returns HTTP 200.
+- Landing, home, categories, search, authentication, and contact flow work.
+- CSS and JavaScript are served from Vercel's CDN.
+- Cloudinary media renders correctly.
+- No errors appear in Vercel deployment and runtime logs.
 
-After deployment, confirm:
-- The landing and editorial home surfaces load without errors.
-- Compiled CSS and JavaScript assets are delivered with correct MIME types and caching headers.
-- Article detail pages and search filtering functions correctly.
-- Uploaded media renders via Cloudinary storage.
-- Health check returns HTTP 200.
+## Docker boundary
 
-## Deployment boundaries
-
-- Browser clients never receive database credentials or third-party secret tokens.
-- Persistent application state belongs strictly in Neon PostgreSQL, never in container ephemeral storage.
-- User-uploaded media belongs in Cloudinary, not the container filesystem.
-- WhiteNoise serves static distribution assets; it does not store user uploads.
-- Schema migrations use a dedicated direct connection, isolating migration DDL from pooled web requests.
+The Docker image remains a portable production-like artifact and a CI smoke-test target. Its startup defaults do not run migrations or seed editorial data. Vercel does not execute `docker/entrypoint.sh`.
 
 ## Related documentation
 

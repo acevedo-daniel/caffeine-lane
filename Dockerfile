@@ -26,8 +26,8 @@ FROM python:3.14.7-slim AS runtime
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     DJANGO_SETTINGS_MODULE=config.settings.production \
-    RUN_MIGRATIONS_ON_START=true \
-    SEED_PORTFOLIO_ON_START=false \
+    RUN_MIGRATIONS_ON_START=false \
+    SEED_EDITORIAL_ON_START=false \
     PATH="/app/.venv/bin:$PATH"
 
 WORKDIR /app

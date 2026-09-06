@@ -39,7 +39,7 @@
         {% get_current_language as CURRENT_LANGUAGE %}
         {% get_available_languages as LANGUAGES %}
         <i class="fa-solid fa-globe site-header__lang-icon" aria-hidden="true"></i>
-        <select id="language-switcher" name="language" data-submit-on-change="true">
+        <select id="language-switcher" name="language" aria-label="{% translate 'Language' %}" data-submit-on-change="true">
           {% for language_code, language_name in LANGUAGES %}
             <option value="{{ language_code }}" {% if language_code == CURRENT_LANGUAGE %}selected{% endif %}>{{ language_code }}</option>
           {% endfor %}
@@ -129,6 +129,27 @@
           <span>{% translate "Contact" %}</span>
         </a>
       </nav>
+
+      <!-- Mobile Language Switcher -->
+      <div class="mobile-drawer__lang-wrap px-5 py-3 border-t border-stone-200/60 flex items-center justify-between">
+        <span class="text-xs font-bold uppercase tracking-wider text-stone-500 flex items-center gap-2">
+          <i class="fa-solid fa-globe text-stone-400" aria-hidden="true"></i>
+          <span>{% translate "Language" %}</span>
+        </span>
+        <form action="{% url 'set_language' %}" method="post" class="language-switcher site-header__lang">
+          {% csrf_token %}
+          <input name="next" type="hidden" value="{{ request.get_full_path }}">
+          <label class="sr-only" for="mobile-language-switcher">{% translate "Language" %}</label>
+          {% get_current_language as CURRENT_LANGUAGE %}
+          {% get_available_languages as LANGUAGES %}
+          <select id="mobile-language-switcher" name="language" aria-label="{% translate 'Language' %}" data-submit-on-change="true">
+            {% for language_code, language_name in LANGUAGES %}
+              <option value="{{ language_code }}" {% if language_code == CURRENT_LANGUAGE %}selected{% endif %}>{{ language_code }}</option>
+            {% endfor %}
+          </select>
+          <noscript><button type="submit">{% translate "Change language" %}</button></noscript>
+        </form>
+      </div>
 
       <!-- Drawer Auth / Actions -->
       <div class="mobile-drawer__footer">

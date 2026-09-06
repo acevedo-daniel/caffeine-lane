@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: caffeine-lane\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-11 09:00-0300\n"
+"POT-Creation-Date: 2026-09-05 22:37-0300\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\apps\accounts\forms.py:11 .\apps\accounts\forms.py:51
+#: .\apps\accounts\forms.py:11 .\apps\accounts\forms.py:64
 msgid "Email address"
 msgstr "Correo electrónico"
 
@@ -17,7 +17,7 @@ msgstr "Correo electrónico"
 msgid "you@example.com"
 msgstr "tu@ejemplo.com"
 
-#: .\apps\accounts\forms.py:18 .\apps\accounts\forms.py:36
+#: .\apps\accounts\forms.py:18 .\apps\accounts\forms.py:47
 #: .\apps\accounts\views.py:56
 msgid "An account with this email already exists."
 msgstr "Ya existe una cuenta con este correo electrónico."
@@ -34,6 +34,10 @@ msgstr "No"
 msgid "Do you ride a motorcycle?"
 msgstr "¿Andás en moto?"
 
+#: .\apps\accounts\forms.py:31
+msgid "Profile picture (optional)"
+msgstr "Foto de perfil (opcional)"
+
 #: .\apps\accounts\templates\accounts\login.html:3
 msgid "Sign in · The Caffeine Lane"
 msgstr "Iniciar sesión · The Caffeine Lane"
@@ -41,7 +45,7 @@ msgstr "Iniciar sesión · The Caffeine Lane"
 #: .\apps\accounts\templates\accounts\login.html:5
 #: .\apps\accounts\templates\accounts\register_step1.html:5
 #: .\apps\accounts\templates\accounts\register_step2.html:5
-#: .\apps\core\templates\core\home.html:124
+#: .\apps\core\templates\core\home.html:153
 msgid "The Caffeine Lane community"
 msgstr "La comunidad de The Caffeine Lane"
 
@@ -50,12 +54,8 @@ msgid "Back on the road."
 msgstr "De vuelta en la ruta."
 
 #: .\apps\accounts\templates\accounts\login.html:7
-msgid ""
-"Sign in to save stories, share what you have learned, and keep the "
-"conversation moving."
-msgstr ""
-"Inicia sesión para guardar historias, compartir lo que aprendiste y mantener "
-"la conversación en marcha."
+msgid "Sign in to save stories, share what you have learned, and keep the conversation moving."
+msgstr "Iniciá sesión para guardar historias, compartir lo que aprendiste y mantener la conversación en marcha."
 
 #: .\apps\accounts\templates\accounts\login.html:8
 #: .\apps\core\templates\core\about.html:13
@@ -70,13 +70,13 @@ msgstr "Acceso de miembros"
 #: .\apps\accounts\templates\accounts\login.html:27
 #: .\apps\accounts\templates\accounts\password_reset_complete.html:17
 #: .\apps\accounts\templates\accounts\register_step1.html:26
-#: .\templates\components\header.html:62
+#: .\templates\components\header.html:66 .\templates\components\header.html:179
 msgid "Sign in"
 msgstr "Iniciar sesión"
 
 #: .\apps\accounts\templates\accounts\login.html:14
 msgid "Use the email address connected to your account."
-msgstr "Usa el correo electrónico asociado a tu cuenta."
+msgstr "Usá el correo electrónico asociado a tu cuenta."
 
 #: .\apps\accounts\templates\accounts\login.html:22
 msgid "Forgot your password?"
@@ -88,10 +88,10 @@ msgstr "La recuperación de contraseña no está disponible en esta demo"
 
 #: .\apps\accounts\templates\accounts\login.html:29
 msgid "New to the lane?"
-msgstr "¿Recién llegas a la ruta?"
+msgstr "¿Recién llegás a la ruta?"
 
 #: .\apps\accounts\templates\accounts\login.html:29
-#: .\apps\core\templates\core\home.html:127
+#: .\apps\core\templates\core\home.html:156
 msgid "Create an account"
 msgstr "Crear una cuenta"
 
@@ -112,7 +112,7 @@ msgid "Account security"
 msgstr "Seguridad de la cuenta"
 
 #: .\apps\accounts\templates\accounts\password_change.html:8
-#: .\apps\accounts\templates\accounts\profile.html:21
+#: .\apps\accounts\templates\accounts\profile.html:116
 msgid "Change password"
 msgstr "Cambiar contraseña"
 
@@ -127,7 +127,7 @@ msgstr "Actualizar contraseña"
 
 #: .\apps\accounts\templates\accounts\password_change.html:14
 #: .\apps\posts\templates\posts\comment_edit.html:17
-#: .\apps\posts\templates\posts\post_detail.html:132
+#: .\apps\posts\templates\posts\post_detail.html:203
 #: .\apps\posts\templates\posts\post_form.html:22
 msgid "Cancel"
 msgstr "Cancelar"
@@ -143,8 +143,7 @@ msgstr "Contraseña actualizada."
 
 #: .\apps\accounts\templates\accounts\password_change_done.html:5
 msgid "Your account security is up to date and your profile is ready to go."
-msgstr ""
-"La seguridad de tu cuenta está al día y tu perfil está listo para seguir."
+msgstr "La seguridad de tu cuenta está al día y tu perfil está listo para seguir."
 
 #: .\apps\accounts\templates\accounts\password_change_done.html:9
 #: .\apps\accounts\templates\accounts\password_reset_complete.html:14
@@ -183,12 +182,8 @@ msgid "Find your way back."
 msgstr "Encontrá el camino de vuelta."
 
 #: .\apps\accounts\templates\accounts\password_reset.html:7
-msgid ""
-"Enter your email and we will send the next step to the address connected to "
-"your account."
-msgstr ""
-"Ingresá tu correo y enviaremos el siguiente paso a la dirección asociada a "
-"tu cuenta."
+msgid "Enter your email and we will send the next step to the address connected to your account."
+msgstr "Ingresá tu correo y enviaremos el siguiente paso a la dirección asociada a tu cuenta."
 
 #: .\apps\accounts\templates\accounts\password_reset.html:11
 msgid "Reset password"
@@ -196,9 +191,7 @@ msgstr "Restablecer contraseña"
 
 #: .\apps\accounts\templates\accounts\password_reset.html:12
 msgid "We will send a reset link if an account matches this address."
-msgstr ""
-"Enviaremos un enlace de recuperación si hay una cuenta asociada a esta "
-"dirección."
+msgstr "Enviaremos un enlace de recuperación si hay una cuenta asociada a esta dirección."
 
 #: .\apps\accounts\templates\accounts\password_reset.html:17
 msgid "Send reset link"
@@ -216,8 +209,7 @@ msgstr "Ya estás de vuelta en la ruta."
 
 #: .\apps\accounts\templates\accounts\password_reset_complete.html:7
 msgid "Your new password is in place. Sign in and pick up where you left off."
-msgstr ""
-"Tu nueva contraseña ya está lista. Iniciá sesión y seguí donde lo dejaste."
+msgstr "Tu nueva contraseña ya está lista. Iniciá sesión y seguí donde lo dejaste."
 
 #: .\apps\accounts\templates\accounts\password_reset_complete.html:8
 msgid "The Rider welcoming you back"
@@ -249,8 +241,7 @@ msgstr "Elegí una contraseña nueva para proteger tu cuenta y volver a la ruta.
 
 #: .\apps\accounts\templates\accounts\password_reset_confirm.html:7
 msgid "This reset link is no longer valid. Request a fresh one to continue."
-msgstr ""
-"Este enlace de recuperación ya no es válido. Pedí uno nuevo para continuar."
+msgstr "Este enlace de recuperación ya no es válido. Pedí uno nuevo para continuar."
 
 #: .\apps\accounts\templates\accounts\password_reset_confirm.html:8
 msgid "The Rider noticing an invalid reset link"
@@ -274,12 +265,8 @@ msgid "Request a new link."
 msgstr "Solicitá un enlace nuevo."
 
 #: .\apps\accounts\templates\accounts\password_reset_confirm.html:26
-msgid ""
-"For your security, password reset links can only be used once and expire "
-"after a short time."
-msgstr ""
-"Por seguridad, los enlaces para restablecer la contraseña se usan una sola "
-"vez y vencen pronto."
+msgid "For your security, password reset links can only be used once and expire after a short time."
+msgstr "Por seguridad, los enlaces para restablecer la contraseña se usan una sola vez y vencen pronto."
 
 #: .\apps\accounts\templates\accounts\password_reset_confirm.html:27
 msgid "Request reset link"
@@ -294,23 +281,16 @@ msgid "Check your inbox."
 msgstr "Revisá tu bandeja de entrada."
 
 #: .\apps\accounts\templates\accounts\password_reset_done.html:7
-msgid ""
-"The next step is in your email, if that address belongs to an account in "
-"the lane."
-msgstr ""
-"El siguiente paso está en tu correo, si esa dirección pertenece a una "
-"cuenta en la ruta."
+msgid "The next step is in your email, if that address belongs to an account in the lane."
+msgstr "El siguiente paso está en tu correo, si esa dirección pertenece a una cuenta en la ruta."
 
 #: .\apps\accounts\templates\accounts\password_reset_done.html:13
 msgid "Check your email."
 msgstr "Revisá tu correo."
 
 #: .\apps\accounts\templates\accounts\password_reset_done.html:14
-msgid ""
-"If an account is associated with that address, we sent a password reset link."
-msgstr ""
-"Si hay una cuenta asociada a esa dirección, enviamos un enlace para "
-"restablecer la contraseña."
+msgid "If an account is associated with that address, we sent a password reset link."
+msgstr "Si hay una cuenta asociada a esa dirección, enviamos un enlace para restablecer la contraseña."
 
 #: .\apps\accounts\templates\accounts\password_reset_email.html:6
 msgid "Reset your password"
@@ -343,12 +323,8 @@ msgid "A temporary detour."
 msgstr "Un desvío temporal."
 
 #: .\apps\accounts\templates\accounts\password_reset_unavailable.html:7
-msgid ""
-"Public password recovery is limited while this demo uses a restricted email "
-"sender."
-msgstr ""
-"La recuperación pública de contraseña está limitada mientras esta demo use "
-"un remitente de correo restringido."
+msgid "Public password recovery is limited while this demo uses a restricted email sender."
+msgstr "La recuperación pública de contraseña está limitada mientras esta demo use un remitente de correo restringido."
 
 #: .\apps\accounts\templates\accounts\password_reset_unavailable.html:8
 msgid "The Rider noticing a temporary limitation"
@@ -363,12 +339,8 @@ msgid "Password recovery is unavailable."
 msgstr "La recuperación de contraseña no está disponible."
 
 #: .\apps\accounts\templates\accounts\password_reset_unavailable.html:16
-msgid ""
-"Email delivery in this demo is limited by the provider, so we cannot send "
-"reset links to external visitors."
-msgstr ""
-"El proveedor limita el envío de correos en esta demo, por lo que no podemos "
-"mandar enlaces de recuperación a visitantes externos."
+msgid "Email delivery in this demo is limited by the provider, so we cannot send reset links to external visitors."
+msgstr "El proveedor limita el envío de correos en esta demo, por lo que no podemos mandar enlaces de recuperación a visitantes externos."
 
 #: .\apps\accounts\templates\accounts\password_reset_unavailable.html:17
 msgid "This feature remains available in internal test environments only."
@@ -383,12 +355,8 @@ msgid "Your profile."
 msgstr "Tu perfil."
 
 #: .\apps\accounts\templates\accounts\profile.html:5
-msgid ""
-"Set the details that ride with your name, from the garage to every "
-"conversation ahead."
-msgstr ""
-"Definí los datos que acompañan tu nombre, desde el taller hasta cada "
-"conversación que sigue."
+msgid "Set the details that ride with your name, from the garage to every conversation ahead."
+msgstr "Definí los datos que acompañan tu nombre, desde el taller hasta cada conversación que sigue."
 
 #: .\apps\accounts\templates\accounts\profile.html:8
 msgid "Member profile"
@@ -399,31 +367,100 @@ msgid "Profile details"
 msgstr "Datos del perfil"
 
 #: .\apps\accounts\templates\accounts\profile.html:10
-msgid ""
-"Your avatar and details appear with the stories and conversations you share."
-msgstr ""
-"Tu avatar y tus datos aparecen junto a las historias y conversaciones que "
-"compartís."
+msgid "Your avatar and details appear with the stories and conversations you share."
+msgstr "Tu avatar y tus datos aparecen junto a las historias y conversaciones que compartís."
 
 #: .\apps\accounts\templates\accounts\profile.html:16
+#, python-format
+msgid "Avatar for %(name)s"
+msgstr "Avatar de %(name)s"
+
+#: .\apps\accounts\templates\accounts\profile.html:19
+msgid "Avatar Management"
+msgstr "Gestión del avatar"
+
+#: .\apps\accounts\templates\accounts\profile.html:20
+msgid "Upload a fresh photo to represent you in the lane. Updates instantly upon file selection (JPG, PNG, WebP up to 5MB)."
+msgstr "Subí una foto nueva para representarte en la ruta. Se actualiza al instante al seleccionar el archivo (JPG, PNG, WebP hasta 5MB)."
+
+#: .\apps\accounts\templates\accounts\profile.html:26
+msgid "Motorcycle fleet overview"
+msgstr "Resumen de flota de motocicletas"
+
+#: .\apps\accounts\templates\accounts\profile.html:32
+msgid "Motorcycle Fleet & Garage Status"
+msgstr "Flota de motos y estado en el garaje"
+
+#: .\apps\accounts\templates\accounts\profile.html:35
+msgid "Active Garage Rider"
+msgstr "Motorista activo de garaje"
+
+#: .\apps\accounts\templates\accounts\profile.html:37
+msgid "Enthusiast & Project Builder"
+msgstr "Entusiasta y constructor de proyectos"
+
+#: .\apps\accounts\templates\accounts\profile.html:44
+msgid "You are registered as an active motorcycle owner in the Caffeine Lane garage. Your comments and dispatches highlight your rider status."
+msgstr "Estás registrado como dueño de moto activo en el garaje de Caffeine Lane. Tus comentarios y despachos destacan tu estado de motociclista."
+
+#: .\apps\accounts\templates\accounts\profile.html:46
+msgid "You are currently wrenching from the sidelines or preparing for your next project bike. Check the box below anytime to register as an active rider."
+msgstr "Actualmente estás aprendiendo desde el taller o preparando tu próxima moto de proyecto. Marcá la casilla abajo cuando quieras para registrarte como motociclista activo."
+
+#: .\apps\accounts\templates\accounts\profile.html:56
 #: .\apps\posts\templates\posts\comment_edit.html:17
 msgid "Save changes"
 msgstr "Guardar cambios"
 
-#: .\apps\accounts\templates\accounts\profile.html:18
+#: .\apps\accounts\templates\accounts\profile.html:64
+msgid "Activity"
+msgstr "Actividad"
+
+#: .\apps\accounts\templates\accounts\profile.html:65
+msgid "Recent Garage Comments"
+msgstr "Comentarios recientes en el garaje"
+
+#: .\apps\accounts\templates\accounts\profile.html:68
+#, python-format
+msgid "%(counter)s recent"
+msgid_plural "%(counter)s recent"
+msgstr[0] "%(counter)s reciente"
+msgstr[1] "%(counter)s recientes"
+
+#: .\apps\accounts\templates\accounts\profile.html:91
+msgid "Edit dispatch"
+msgstr "Editar publicación"
+
+#: .\apps\accounts\templates\accounts\profile.html:101
+msgid "The Rider talking about stories"
+msgstr "The Rider comentando historias"
+
+#: .\apps\accounts\templates\accounts\profile.html:105
+msgid "No comments posted yet"
+msgstr "Todavía no hay comentarios publicados"
+
+#: .\apps\accounts\templates\accounts\profile.html:106
+msgid "Join the garage discussions, share technical feedback, or ask questions on builds."
+msgstr "Sumate a las charlas del garaje, compartí opiniones técnicas o hacé preguntas sobre los proyectos."
+
+#: .\apps\accounts\templates\accounts\profile.html:107
+msgid "Explore latest stories"
+msgstr "Explorar las últimas historias"
+
+#: .\apps\accounts\templates\accounts\profile.html:113
 msgid "Account actions"
 msgstr "Acciones de cuenta"
 
-#: .\apps\accounts\templates\accounts\profile.html:20
+#: .\apps\accounts\templates\accounts\profile.html:115
 msgid "Security"
 msgstr "Seguridad"
 
-#: .\apps\accounts\templates\accounts\profile.html:24
+#: .\apps\accounts\templates\accounts\profile.html:119
 msgid "Session"
 msgstr "Sesión"
 
-#: .\apps\accounts\templates\accounts\profile.html:25
-#: .\templates\components\header.html:60
+#: .\apps\accounts\templates\accounts\profile.html:120
+#: .\templates\components\header.html:61 .\templates\components\header.html:172
 msgid "Sign out"
 msgstr "Cerrar sesión"
 
@@ -436,12 +473,8 @@ msgid "Join the ride."
 msgstr "Sumate a la ruta."
 
 #: .\apps\accounts\templates\accounts\register_step1.html:7
-msgid ""
-"A profile gives your voice a place in the garage, on the road, and "
-"throughout the lane."
-msgstr ""
-"Un perfil le da lugar a tu voz en el taller, en la ruta y en toda la "
-"comunidad."
+msgid "A profile gives your voice a place in the garage, on the road, and throughout the lane."
+msgstr "Un perfil le da lugar a tu voz en el taller, en la ruta y en toda la comunidad."
 
 #: .\apps\accounts\templates\accounts\register_step1.html:8
 msgid "The Rider welcoming new members"
@@ -485,6 +518,11 @@ msgid "A few details are all it takes to make your place in the lane your own."
 msgstr "Unos pocos datos alcanzan para hacer tuyo tu lugar en la ruta."
 
 #: .\apps\accounts\templates\accounts\register_step2.html:8
+#: .\apps\core\templates\core\home.html:158
+#: .\apps\core\templates\core\landing.html:118
+#: .\apps\posts\templates\posts\post_detail.html:153
+#: .\apps\posts\templates\posts\post_detail.html:253
+#: .\templates\components\footer.html:15
 msgid "The Rider"
 msgstr "The Rider"
 
@@ -508,15 +546,27 @@ msgstr "Completá tu perfil"
 msgid "Choose the details that will travel with your name."
 msgstr "Elegí los datos que van a acompañar tu nombre."
 
-#: .\apps\accounts\templates\accounts\register_step2.html:24
+#: .\apps\accounts\templates\accounts\register_step2.html:27
+msgid "Avatar preview"
+msgstr "Vista previa del avatar"
+
+#: .\apps\accounts\templates\accounts\register_step2.html:30
+msgid "Avatar Preview"
+msgstr "Vista previa del avatar"
+
+#: .\apps\accounts\templates\accounts\register_step2.html:31
+msgid "Updates instantly when you select a photo (JPG, PNG, WebP up to 5MB)."
+msgstr "Se actualiza al instante cuando elegís una foto (JPG, PNG, WebP hasta 5MB)."
+
+#: .\apps\accounts\templates\accounts\register_step2.html:37
 msgid "Create account"
 msgstr "Crear cuenta"
 
-#: .\apps\accounts\templates\accounts\register_step2.html:26
+#: .\apps\accounts\templates\accounts\register_step2.html:39
 msgid "Need a different email?"
 msgstr "¿Necesitás otro correo?"
 
-#: .\apps\accounts\templates\accounts\register_step2.html:26
+#: .\apps\accounts\templates\accounts\register_step2.html:39
 msgid "Start again"
 msgstr "Empezar de nuevo"
 
@@ -525,19 +575,19 @@ msgstr "Empezar de nuevo"
 msgid "Account created."
 msgstr "Cuenta creada."
 
-#: .\apps\accounts\views.py:64
-msgid "Welcome \u2014 head to your profile to add your details."
+#: .\apps\accounts\views.py:63
+msgid "Welcome — head to your profile to add your details."
 msgstr "Bienvenido — visitá tu perfil para agregar tus datos."
 
-#: .\apps\accounts\views.py:80
+#: .\apps\accounts\views.py:78
 msgid "Profile updated."
 msgstr "Perfil actualizado."
 
-#: .\apps\accounts\views.py:83 .\apps\posts\views.py:44
+#: .\apps\accounts\views.py:81 .\apps\posts\views.py:64
 msgid "Please correct the errors below."
 msgstr "Corregí los errores que aparecen abajo."
 
-#: .\apps\accounts\views.py:93
+#: .\apps\accounts\views.py:102
 msgid "You've been signed out."
 msgstr "Cerraste sesión."
 
@@ -577,6 +627,14 @@ msgstr "Escribí tu mensaje..."
 msgid "Spam detected."
 msgstr "Se detectó spam."
 
+#: .\apps\core\image_validators.py:18
+msgid "Images must be 5 MB or smaller."
+msgstr "Las imágenes deben pesar 5 MB o menos."
+
+#: .\apps\core\image_validators.py:26
+msgid "Upload a valid image file."
+msgstr "Subí un archivo de imagen válido."
+
 #: .\apps\core\templates\core\about.html:3
 msgid "About · The Caffeine Lane"
 msgstr "Acerca de · The Caffeine Lane"
@@ -584,9 +642,8 @@ msgstr "Acerca de · The Caffeine Lane"
 #: .\apps\core\templates\core\about.html:9
 #: .\apps\core\templates\core\contact.html:8
 #: .\apps\core\templates\core\home.html:48
-#: .\apps\posts\templates\posts\post_detail.html:47 .\templates\base.html:9
-#: .\templates\components\footer.html:30
-#: .\templates\components\post_card.html:8 .\templates\layouts\auth.html:11
+#: .\apps\posts\templates\posts\post_detail.html:50
+#: .\templates\layouts\auth.html:11
 msgid "The Caffeine Lane"
 msgstr "The Caffeine Lane"
 
@@ -595,12 +652,8 @@ msgid "Built for the ride between the garage and the road."
 msgstr "Hecho para el viaje entre el garaje y la ruta."
 
 #: .\apps\core\templates\core\about.html:11
-msgid ""
-"The Caffeine Lane is an editorial home for the people who keep a machine "
-"close, a tool roll nearby, and a better route in mind."
-msgstr ""
-"The Caffeine Lane es un hogar editorial para quienes mantienen una máquina "
-"cerca, un juego de herramientas a mano y una mejor ruta en mente."
+msgid "The Caffeine Lane is an editorial home for the people who keep a machine close, a tool roll nearby, and a better route in mind."
+msgstr "The Caffeine Lane es un hogar editorial para quienes mantienen una máquina cerca, un juego de herramientas a mano y una mejor ruta en mente."
 
 #: .\apps\core\templates\core\about.html:20
 msgid "The mission"
@@ -611,21 +664,12 @@ msgid "Machines carry stories."
 msgstr "Las máquinas llevan historias."
 
 #: .\apps\core\templates\core\about.html:24
-msgid ""
-"We believe a motorcycle is more than transportation. It is a record of "
-"choices, hands-on work, wrong turns, and the miles that prove what matters."
-msgstr ""
-"Creemos que una motocicleta es más que transporte. Es un registro de "
-"decisiones, trabajo manual, desvíos y los kilómetros que demuestran lo que "
-"importa."
+msgid "We believe a motorcycle is more than transportation. It is a record of choices, hands-on work, wrong turns, and the miles that prove what matters."
+msgstr "Creemos que una motocicleta es más que transporte. Es un registro de decisiones, trabajo manual, desvíos y los kilómetros que demuestran lo que importa."
 
 #: .\apps\core\templates\core\about.html:25
-msgid ""
-"That is why we make room for practical guides, honest reviews, and builds "
-"with a point of view — work worth taking from the bench to the open road."
-msgstr ""
-"Por eso damos lugar a guías prácticas, reseñas honestas y proyectos con "
-"punto de vista: trabajo que vale la pena llevar del banco a la ruta abierta."
+msgid "That is why we make room for practical guides, honest reviews, and builds with a point of view — work worth taking from the bench to the open road."
+msgstr "Por eso damos lugar a guías prácticas, reseñas honestas y proyectos con punto de vista: trabajo que vale la pena llevar del banco a la ruta abierta."
 
 #: .\apps\core\templates\core\about.html:31
 msgid "The Rider working in the garage"
@@ -637,17 +681,11 @@ msgstr "El garaje"
 
 #: .\apps\core\templates\core\about.html:35
 msgid "Learn it. Tune it. Ride it."
-msgstr "Conócela. Ajústala. Rodala."
+msgstr "Conocela. Ajustala. Rodala."
 
 #: .\apps\core\templates\core\about.html:36
-msgid ""
-"The garage is where curiosity becomes confidence. We share the thinking "
-"behind maintenance and modification, so every rider can understand the "
-"machine beneath them."
-msgstr ""
-"El garaje es donde la curiosidad se vuelve confianza. Compartimos el "
-"criterio detrás del mantenimiento y la modificación para que cada rider "
-"entienda la máquina que tiene debajo."
+msgid "The garage is where curiosity becomes confidence. We share the thinking behind maintenance and modification, so every rider can understand the machine beneath them."
+msgstr "El garaje es donde la curiosidad se vuelve confianza. Compartimos el criterio detrás del mantenimiento y la modificación para que cada rider entienda la máquina que tiene debajo."
 
 #: .\apps\core\templates\core\about.html:37
 msgid "Explore the guides"
@@ -670,12 +708,8 @@ msgid "Make it yours."
 msgstr "Hacela tuya."
 
 #: .\apps\core\templates\core\about.html:51
-msgid ""
-"Practical knowledge for hands-on riders, from first checks to long-term "
-"builds."
-msgstr ""
-"Conocimiento práctico para riders que meten mano, desde las primeras "
-"revisiones hasta proyectos de largo plazo."
+msgid "Practical knowledge for hands-on riders, from first checks to long-term builds."
+msgstr "Conocimiento práctico para riders que meten mano, desde las primeras revisiones hasta proyectos de largo plazo."
 
 #: .\apps\core\templates\core\about.html:54
 msgid "02 · Road"
@@ -687,9 +721,7 @@ msgstr "Ponela a trabajar."
 
 #: .\apps\core\templates\core\about.html:56
 msgid "Real-world notes on gear, machines, and the rides that connect them."
-msgstr ""
-"Notas del mundo real sobre equipamiento, máquinas y los viajes que las "
-"conectan."
+msgstr "Notas del mundo real sobre equipamiento, máquinas y los viajes que las conectan."
 
 #: .\apps\core\templates\core\about.html:59
 msgid "03 · Community"
@@ -700,26 +732,19 @@ msgid "Pass it on."
 msgstr "Compartilo."
 
 #: .\apps\core\templates\core\about.html:61
-msgid ""
-"A lane for sharing solutions, perspectives, and the stories behind the miles."
-msgstr ""
-"Una ruta para compartir soluciones, perspectivas y las historias detrás de "
-"los kilómetros."
+msgid "A lane for sharing solutions, perspectives, and the stories behind the miles."
+msgstr "Una ruta para compartir soluciones, perspectivas y las historias detrás de los kilómetros."
 
 #: .\apps\core\templates\core\about.html:67
 msgid "Your place in the lane"
 msgstr "Tu lugar en la ruta"
 
 #: .\apps\core\templates\core\about.html:69
-msgid ""
-"Create a profile and add your voice to the conversations that move the "
-"culture forward."
-msgstr ""
-"Creá un perfil y sumá tu voz a las conversaciones que hacen avanzar la "
-"cultura."
+msgid "Create a profile and add your voice to the conversations that move the culture forward."
+msgstr "Creá un perfil y sumá tu voz a las conversaciones que hacen avanzar la cultura."
 
 #: .\apps\core\templates\core\about.html:70
-#: .\apps\core\templates\core\home.html:125
+#: .\apps\core\templates\core\home.html:154
 msgid "Join the ride"
 msgstr "Sumate a la ruta"
 
@@ -732,16 +757,12 @@ msgid "Talk shop. Share the road."
 msgstr "Hablemos de taller. Hablemos de ruta."
 
 #: .\apps\core\templates\core\contact.html:10
-msgid ""
-"Have a question, a useful fix, or a story from your own garage? Send it our "
-"way. Every good conversation starts somewhere."
-msgstr ""
-"¿Tenés una pregunta, una solución útil o una historia de tu propio taller? "
-"Mandánosla. Toda buena conversación empieza en algún lugar."
+msgid "Have a question, a useful fix, or a story from your own garage? Send it our way. Every good conversation starts somewhere."
+msgstr "¿Tenés una pregunta, una solución útil o una historia de tu propio taller? Mandánosla. Toda buena conversación empieza en algún lugar."
 
 #: .\apps\core\templates\core\contact.html:11
 msgid "The Rider ready to talk shop"
-msgstr "The Rider lista para hablar de taller"
+msgstr "The Rider listo para hablar de taller"
 
 #: .\apps\core\templates\core\contact.html:16
 msgid "Send a message"
@@ -789,7 +810,7 @@ msgid "Featured post %(counter)s"
 msgstr "Publicación destacada %(counter)s"
 
 #: .\apps\core\templates\core\home.html:24
-#: .\templates\components\post_card.html:24
+#: .\templates\components\post_card.html:43
 msgid "By"
 msgstr "Por"
 
@@ -817,145 +838,346 @@ msgstr "Historias para la ruta."
 msgid "New dispatches are being prepared."
 msgstr "Estamos preparando nuevas historias."
 
-#: .\apps\core\templates\core\home.html:60
+#: .\apps\core\templates\core\home.html:58
+msgid "Category navigation"
+msgstr "Navegación de categorías"
+
+#: .\apps\core\templates\core\home.html:62
+msgid "All Stories"
+msgstr "Todas las historias"
+
+#: .\apps\core\templates\core\home.html:86
 msgid "Builds & features"
 msgstr "Proyectos y destacados"
 
-#: .\apps\core\templates\core\home.html:61 .\apps\posts\presentation.py:8
+#: .\apps\core\templates\core\home.html:87
+#: .\apps\core\templates\core\landing.html:165 .\apps\posts\presentation.py:8
 msgid "Builds"
 msgstr "Proyectos"
 
-#: .\apps\core\templates\core\home.html:62
+#: .\apps\core\templates\core\home.html:88
 msgid "Built in garages. Made for the road."
 msgstr "Nacidas en el garaje. Hechas para la ruta."
 
-#: .\apps\core\templates\core\home.html:64
-#: .\apps\core\templates\core\home.html:82
-#: .\apps\core\templates\core\home.html:111
+#: .\apps\core\templates\core\home.html:90
+#: .\apps\core\templates\core\home.html:109
+#: .\apps\core\templates\core\home.html:139
 msgid "View all"
 msgstr "Ver todo"
 
-#: .\apps\core\templates\core\home.html:71
+#: .\apps\core\templates\core\home.html:97
 msgid "No builds yet. New stories are on the way."
 msgstr "Todavía no hay proyectos. Nuevas historias vienen en camino."
 
-#: .\apps\core\templates\core\home.html:78
+#: .\apps\core\templates\core\home.html:105
 msgid "How-to & guides"
 msgstr "Tutoriales y guías"
 
-#: .\apps\core\templates\core\home.html:79 .\apps\posts\presentation.py:9
+#: .\apps\core\templates\core\home.html:106
+#: .\apps\core\templates\core\landing.html:190 .\apps\posts\presentation.py:9
 msgid "Guides"
 msgstr "Guías"
 
-#: .\apps\core\templates\core\home.html:80
+#: .\apps\core\templates\core\home.html:107
 msgid "Wrench smarter. Ride farther."
-msgstr "Mejor taller. Más kilómetros."
+msgstr "Más maña en el taller. Más kilómetros en la ruta."
 
-#: .\apps\core\templates\core\home.html:89
+#: .\apps\core\templates\core\home.html:116
 msgid "No guides yet. New workshop notes are on the way."
 msgstr "Todavía no hay guías. Nuevas notas de taller vienen en camino."
 
-#: .\apps\core\templates\core\home.html:95
-msgid "Notes from the garage"
-msgstr "Notas desde el garaje"
+#: .\apps\core\templates\core\home.html:122
+msgid "Workshop Spotlight"
+msgstr "Destacado de taller"
 
-#: .\apps\core\templates\core\home.html:96
+#: .\apps\core\templates\core\home.html:123
 msgid "Garage to road"
 msgstr "Del garaje a la ruta"
 
-#: .\apps\core\templates\core\home.html:97
-msgid ""
-"The best miles begin at the bench: a careful check, a cleaner adjustment, "
-"and a machine you know well enough to trust when the road opens up."
-msgstr ""
-"Los mejores kilómetros empiezan en el banco: una revisión atenta, un ajuste "
-"preciso y una máquina que conocés lo suficiente para confiar en ella cuando "
-"se abre la ruta."
+#: .\apps\core\templates\core\home.html:124
+msgid "The best miles begin at the bench: a careful check, a cleaner adjustment, and a machine you know well enough to trust when the road opens up."
+msgstr "Los mejores kilómetros empiezan en el banco: una revisión atenta, un ajuste preciso y una máquina que conocés lo suficiente para confiar en ella cuando se abre la ruta."
 
-#: .\apps\core\templates\core\home.html:98
+#: .\apps\core\templates\core\home.html:125
 msgid "Explore workshop guides"
 msgstr "Explorá las guías de taller"
 
-#: .\apps\core\templates\core\home.html:100
+#: .\apps\core\templates\core\home.html:127
 msgid "The Rider working on a motorcycle"
 msgstr "The Rider trabajando en una motocicleta"
 
-#: .\apps\core\templates\core\home.html:107
+#: .\apps\core\templates\core\home.html:135
 msgid "Gear & product reviews"
 msgstr "Reseñas de equipamiento y productos"
 
-#: .\apps\core\templates\core\home.html:108 .\apps\posts\presentation.py:10
+#: .\apps\core\templates\core\home.html:136
+#: .\apps\core\templates\core\landing.html:215 .\apps\posts\presentation.py:10
 msgid "Reviews"
 msgstr "Reseñas"
 
-#: .\apps\core\templates\core\home.html:109
+#: .\apps\core\templates\core\home.html:137
 msgid "Gear worth taking on the road."
-msgstr "Equipo que vale llevar a la ruta."
+msgstr "Equipamiento que vale la pena llevar a la ruta."
 
-#: .\apps\core\templates\core\home.html:118
+#: .\apps\core\templates\core\home.html:146
 msgid "No reviews yet. New road tests are on the way."
 msgstr "Todavía no hay reseñas. Nuevas pruebas de ruta vienen en camino."
 
-#: .\apps\core\templates\core\home.html:126
-msgid ""
-"Create a profile to join the conversation, follow the builds, and be part "
-"of the community."
-msgstr ""
-"Creá un perfil para sumarte a la conversación, seguir los proyectos y ser "
-"parte de la comunidad."
+#: .\apps\core\templates\core\home.html:155
+msgid "Create a profile to join the conversation, follow the builds, and be part of the community."
+msgstr "Creá un perfil para sumarte a la conversación, seguir los proyectos y ser parte de la comunidad."
 
-#: .\apps\core\templates\core\home.html:129
-msgid "The Rider"
-msgstr "The Rider"
-
-#: .\apps\core\templates\core\landing.html:3
-msgid "The Caffeine Lane · Ride, Build, Repeat"
-msgstr "The Caffeine Lane · Ride · Build · Repeat"
-
-#: .\apps\core\templates\core\landing.html:9
-msgid "The Rider welcomes you to The Caffeine Lane"
-msgstr "The Rider te recibe en The Caffeine Lane"
-
-#: .\apps\core\templates\core\landing.html:11
-msgid "Independent motorcycle culture"
-msgstr "Cultura motociclista independiente"
-
-#: .\apps\core\templates\core\landing.html:12
-#: .\templates\components\footer.html:17 .\templates\components\header.html:34
-msgid "THE CAFFEINE LANE"
-msgstr "THE CAFFEINE LANE"
-
-#: .\apps\core\templates\core\landing.html:13
-#: .\templates\components\header.html:35 .\templates\layouts\auth.html:12
-msgid "Ride · Build · Repeat"
-msgstr "Ride · Build · Repeat"
+#: .\apps\core\templates\core\landing.html:4
+msgid "CAFFEINE LANE · Curated Cafe Racer Culture"
+msgstr "CAFFEINE LANE · Cultura Café Racer Curada"
 
 #: .\apps\core\templates\core\landing.html:14
-msgid ""
-"For the bikes we make our own, the roads worth taking twice, and the stories "
-"that follow."
-msgstr ""
-"Para las motos que hacemos nuestras, las rutas que vale la pena recorrer dos "
-"veces y las historias que siguen."
+msgid "Issue 2026"
+msgstr "Edición 2026"
 
 #: .\apps\core\templates\core\landing.html:15
-msgid "Enter the lane"
-msgstr "Entrar a la ruta"
+msgid "Curated Moto Journeys"
+msgstr "Viajes en moto seleccionados"
 
-#: .\apps\core\views.py:87
+#: .\apps\core\templates\core\landing.html:18
+msgid "HAND-BUILT HONESTY. CURATED CAFE RACER CULTURE."
+msgstr "HONESTIDAD HECHA A MANO. CULTURA CAFÉ RACER CURADA."
+
+#: .\apps\core\templates\core\landing.html:21
+msgid "Stories, technical teardowns, and garage craft for riders who take the long way home."
+msgstr "Historias, despieces técnicos y oficio de taller para motociclistas que eligen el camino largo a casa."
+
+#: .\apps\core\templates\core\landing.html:25
+msgid "Explore Builds"
+msgstr "Explorar proyectos"
+
+#: .\apps\core\templates\core\landing.html:28
+msgid "Read Magazine"
+msgstr "Leer revista"
+
+#: .\apps\core\templates\core\landing.html:37
+msgid "Hand-Built"
+msgstr "Hecho a mano"
+
+#: .\apps\core\templates\core\landing.html:38
+msgid "Curated garage features"
+msgstr "Historias seleccionadas de garaje"
+
+#: .\apps\core\templates\core\landing.html:44
+#: .\apps\core\templates\core\landing.html:132
+msgid "Bench Wisdom"
+msgstr "Oficio de banco"
+
+#: .\apps\core\templates\core\landing.html:45
+msgid "Teardowns & tuning"
+msgstr "Desarmes y puesta a punto"
+
+#: .\apps\core\templates\core\landing.html:51
+#: .\apps\core\templates\core\landing.html:210
+msgid "Field Tested"
+msgstr "Probado en ruta"
+
+#: .\apps\core\templates\core\landing.html:52
+msgid "Road-proven gear"
+msgstr "Equipamiento probado en asfalto"
+
+#: .\apps\core\templates\core\landing.html:66
+msgid "Featured Build"
+msgstr "Proyecto destacado"
+
+#: .\apps\core\templates\core\landing.html:68
+#: .\templates\components\post_card.html:31
+#, python-format
+msgid "%(minutes)s min read"
+msgstr "%(minutes)s min de lectura"
+
+#: .\apps\core\templates\core\landing.html:75
+msgid "Inspect machine"
+msgstr "Inspeccionar máquina"
+
+#: .\apps\core\templates\core\landing.html:85
+msgid "Garage to Road"
+msgstr "Del garaje a la ruta"
+
+#: .\apps\core\templates\core\landing.html:98
+msgid "Editorial Ethos"
+msgstr "Espíritu editorial"
+
+#: .\apps\core\templates\core\landing.html:100
+msgid "Built for hands that turn wrenches."
+msgstr "Hecho para manos que usan herramientas."
+
+#: .\apps\core\templates\core\landing.html:106
+msgid "The Rider welcoming you to Caffeine Lane"
+msgstr "The Rider dándote la bienvenida a Caffeine Lane"
+
+#: .\apps\core\templates\core\landing.html:111
+msgid "Independent garage journalism."
+msgstr "Periodismo independiente de garaje."
+
+#: .\apps\core\templates\core\landing.html:114
+msgid "Caffeine Lane is an independent journal dedicated to cafe racers, custom garage builds, and the road culture that binds us. Every machine featured is built with intention, tested in the elements, and documented down to the last fastener."
+msgstr "Caffeine Lane es una publicación independiente dedicada a café racers, motos personalizadas de garaje y la cultura de ruta que nos une. Cada máquina presentada se construye con intención, se prueba a la intemperie y se documenta hasta el último tornillo."
+
+#: .\apps\core\templates\core\landing.html:117
+msgid "“The road is ours.”"
+msgstr "“La ruta es nuestra.”"
+
+#: .\apps\core\templates\core\landing.html:127
+#: .\apps\core\templates\core\landing.html:160
+msgid "Garage Craft"
+msgstr "Oficio de garaje"
+
+#: .\apps\core\templates\core\landing.html:128
+msgid "From frame geometry to handcrafted aluminum tanks, every build documents real wrenching and bespoke fabrication."
+msgstr "Desde la geometría del chasis hasta tanques de aluminio modelados a mano, cada proyecto documenta trabajo real de taller y fabricación artesanal."
+
+#: .\apps\core\templates\core\landing.html:133
+msgid "Carburetor jetting, electrical wiring schematics, and valve clearances explained with clarity for hands-on riders."
+msgstr "Reglaje de carburadores, diagramas de instalación eléctrica y luz de válvulas explicados con claridad para quienes se ensucian las manos."
+
+#: .\apps\core\templates\core\landing.html:137
+msgid "The Open Road"
+msgstr "La ruta abierta"
+
+#: .\apps\core\templates\core\landing.html:138
+msgid "No trailer queens. Every machine and piece of gear is evaluated across thousands of real road miles in the elements."
+msgstr "Nada de motos para exhibición en remolque. Cada máquina y pieza de equipo se evalúa a lo largo de miles de kilómetros reales en ruta."
+
+#: .\apps\core\templates\core\landing.html:148
+msgid "Core Taxonomy"
+msgstr "Taxonomía principal"
+
+#: .\apps\core\templates\core\landing.html:150
+msgid "Explore By Category"
+msgstr "Explorar por categoría"
+
+#: .\apps\core\templates\core\landing.html:168
+msgid "One-of-a-kind cafe racers, trackers, and brats forged with craft, sweat, and steel."
+msgstr "Café racers, trackers y brats únicas forjadas con oficio, sudor y acero."
+
+#: .\apps\core\templates\core\landing.html:171
+msgid "Cafe Racers"
+msgstr "Café Racers"
+
+#: .\apps\core\templates\core\landing.html:172
+msgid "Trackers"
+msgstr "Trackers"
+
+#: .\apps\core\templates\core\landing.html:173
+msgid "Scramblers"
+msgstr "Scramblers"
+
+#: .\apps\core\templates\core\landing.html:176
+msgid "View Builds"
+msgstr "Ver proyectos"
+
+#: .\apps\core\templates\core\landing.html:185
+msgid "Workshop Notes"
+msgstr "Notas de taller"
+
+#: .\apps\core\templates\core\landing.html:193
+msgid "Step-by-step teardowns, carburetor tuning, wiring schematics, and bench wisdom."
+msgstr "Desarmes paso a paso, puesta a punto de carburación, esquemas eléctricos y oficio de banco."
+
+#: .\apps\core\templates\core\landing.html:196
+msgid "Carburetors"
+msgstr "Carburadores"
+
+#: .\apps\core\templates\core\landing.html:197
+msgid "Electrical"
+msgstr "Sistema eléctrico"
+
+#: .\apps\core\templates\core\landing.html:198
+msgid "Engine Tuning"
+msgstr "Puesta a punto de motor"
+
+#: .\apps\core\templates\core\landing.html:201
+msgid "Read Guides"
+msgstr "Leer guías"
+
+#: .\apps\core\templates\core\landing.html:218
+msgid "Helmets, leathers, boots, and tools evaluated across thousands of real road miles."
+msgstr "Cascos, camperas de cuero, botas y herramientas evaluados a lo largo de miles de kilómetros reales de ruta."
+
+#: .\apps\core\templates\core\landing.html:221
+msgid "Helmets"
+msgstr "Cascos"
+
+#: .\apps\core\templates\core\landing.html:222
+msgid "Leathers"
+msgstr "Indumentaria de cuero"
+
+#: .\apps\core\templates\core\landing.html:223
+msgid "Garage Tools"
+msgstr "Herramientas de garaje"
+
+#: .\apps\core\templates\core\landing.html:226
+msgid "Browse Reviews"
+msgstr "Ver reseñas"
+
+#: .\apps\core\templates\core\landing.html:239
+msgid "Fresh From The Bench"
+msgstr "Recién salido del banco"
+
+#: .\apps\core\templates\core\landing.html:241
+msgid "Latest Dispatches"
+msgstr "Últimas publicaciones"
+
+#: .\apps\core\templates\core\landing.html:245
+msgid "View all stories"
+msgstr "Ver todas las historias"
+
+#: .\apps\core\templates\core\landing.html:263
+msgid "Global Collective"
+msgstr "Comunidad global"
+
+#: .\apps\core\templates\core\landing.html:265
+msgid "Join 1,000+ custom motorcycle builders"
+msgstr "Sumate a más de 1.000 constructores de motos custom"
+
+#: .\apps\core\templates\core\landing.html:268
+msgid "Create your rider profile, follow the builds, participate in discussions, and join an international community of builders and riders."
+msgstr "Creá tu perfil de motociclista, seguí los proyectos, participá en las charlas y unite a una comunidad internacional de constructores y pilotos."
+
+#: .\apps\core\templates\core\landing.html:272
+msgid "Join The Garage"
+msgstr "Sumate al garaje"
+
+#: .\apps\core\templates\core\landing.html:275
+msgid "Sign In"
+msgstr "Iniciar sesión"
+
+#: .\apps\core\templates\core\landing.html:283
+msgid "Riders & Builders"
+msgstr "Pilotos y constructores"
+
+#: .\apps\core\templates\core\landing.html:287
+msgid "Independent & Ad-Free"
+msgstr "Independiente y sin publicidad"
+
+#: .\apps\core\templates\core\landing.html:291
+msgid "Fresh Dispatches"
+msgstr "Publicaciones recientes"
+
+#: .\apps\core\templates\core\landing.html:297
+msgid "The Rider pointing towards community registration"
+msgstr "The Rider señalando el registro comunitario"
+
+#: .\apps\core\views.py:110
 msgid "Too many messages. Please try again later."
 msgstr "Demasiados mensajes. Intentá de nuevo más tarde."
 
-#: .\apps\core\views.py:107
+#: .\apps\core\views.py:130
 #, python-format
 msgid "Contact from Caffeine Lane: %(subject)s"
 msgstr "Contacto desde Caffeine Lane: %(subject)s"
 
-#: .\apps\core\views.py:125
+#: .\apps\core\views.py:149
 msgid "We could not send your message right now. Please try again later."
 msgstr "No pudimos enviar tu mensaje ahora. Intentá de nuevo más tarde."
 
-#: .\apps\core\views.py:131
+#: .\apps\core\views.py:154
 msgid "Message sent. We'll get back to you soon."
 msgstr "Mensaje enviado. Te responderemos pronto."
 
@@ -966,6 +1188,19 @@ msgstr "Sólo se puede responder a comentarios visibles."
 #: .\apps\posts\comment_services.py:21
 msgid "Please wait before submitting the same comment again."
 msgstr "Esperá un momento antes de enviar el mismo comentario otra vez."
+
+#: .\apps\posts\comment_services.py:56 .\apps\posts\views.py:152
+#: .\apps\posts\views.py:170
+msgid "You do not have permission to edit this comment."
+msgstr "No tenés permiso para editar este comentario."
+
+#: .\apps\posts\comment_services.py:58
+msgid "Cannot edit a hidden or withdrawn comment."
+msgstr "No se puede editar un comentario oculto o retirado."
+
+#: .\apps\posts\comment_services.py:61
+msgid "Comment content cannot be empty."
+msgstr "El contenido del comentario no puede estar vacío."
 
 #: .\apps\posts\forms.py:9
 msgid "Relevance"
@@ -999,8 +1234,8 @@ msgstr "Tu comentario"
 msgid "Comments must contain at least 3 characters."
 msgstr "Los comentarios deben tener al menos 3 caracteres."
 
-#: .\apps\posts\forms.py:55 .\apps\posts\templates\posts\search_results.html:20
-#: .\templates\components\header.html:50
+#: .\apps\posts\forms.py:55 .\apps\posts\templates\posts\search_results.html:27
+#: .\templates\components\header.html:30 .\templates\components\header.html:107
 msgid "Search"
 msgstr "Buscar"
 
@@ -1008,7 +1243,7 @@ msgstr "Buscar"
 msgid "Search posts..."
 msgstr "Buscar publicaciones..."
 
-#: .\apps\posts\forms.py:65 .\apps\posts\templates\posts\search_results.html:26
+#: .\apps\posts\forms.py:65
 msgid "Category"
 msgstr "Categoría"
 
@@ -1016,7 +1251,7 @@ msgstr "Categoría"
 msgid "All categories"
 msgstr "Todas las categorías"
 
-#: .\apps\posts\forms.py:76 .\apps\posts\templates\posts\search_results.html:30
+#: .\apps\posts\forms.py:76
 msgid "Sort by"
 msgstr "Ordenar por"
 
@@ -1040,7 +1275,7 @@ msgstr "Imagen destacada"
 msgid "Featured image alternative text"
 msgstr "Texto alternativo de la imagen destacada"
 
-#: .\apps\posts\forms.py:107
+#: .\apps\posts\forms.py:107 .\templates\components\header.html:111
 msgid "Categories"
 msgstr "Categorías"
 
@@ -1054,8 +1289,7 @@ msgstr "Fecha de publicación"
 
 #: .\apps\posts\forms.py:118
 msgid "This title would create a slug reserved for an application route."
-msgstr ""
-"Este título generaría un slug reservado para una ruta de la aplicación."
+msgstr "Este título generaría un slug reservado para una ruta de la aplicación."
 
 #: .\apps\posts\forms.py:123 .\apps\posts\models.py:95
 msgid "Published posts require a date."
@@ -1077,23 +1311,23 @@ msgstr "Publicado"
 msgid "This slug is reserved for an application route."
 msgstr "Este slug está reservado para una ruta de la aplicación."
 
-#: .\apps\posts\models.py:134
+#: .\apps\posts\models.py:183
 msgid "Visible"
 msgstr "Visible"
 
-#: .\apps\posts\models.py:135
+#: .\apps\posts\models.py:184
 msgid "Withdrawn by author"
 msgstr "Retirado por su autor"
 
-#: .\apps\posts\models.py:136
+#: .\apps\posts\models.py:185
 msgid "Hidden by moderator"
 msgstr "Oculto por moderación"
 
-#: .\apps\posts\models.py:168
+#: .\apps\posts\models.py:217
 msgid "Replies must belong to the same post."
 msgstr "Las respuestas deben pertenecer a la misma publicación."
 
-#: .\apps\posts\models.py:172
+#: .\apps\posts\models.py:221
 msgid "Replies can only be one level deep."
 msgstr "Las respuestas sólo pueden tener un nivel de profundidad."
 
@@ -1107,64 +1341,94 @@ msgid "Back to home"
 msgstr "Volver al inicio"
 
 #: .\apps\posts\templates\posts\category_view.html:16
-#: .\apps\posts\templates\posts\search_results.html:8
-msgid "The Caffeine Lane · Archive"
-msgstr "The Caffeine Lane · Archivo"
+msgid "Editorial Archive"
+msgstr "Archivo editorial"
 
-#: .\apps\posts\templates\posts\category_view.html:18
+#: .\apps\posts\templates\posts\category_view.html:19
 #, python-format
-msgid "%(counter)s story from the road."
-msgid_plural "%(counter)s stories from the road."
-msgstr[0] "%(counter)s historia de la ruta."
-msgstr[1] "%(counter)s historias de la ruta."
+msgid ""
+"\n"
+"            %(counter)s dispatch from the garage.\n"
+"          "
+msgid_plural ""
+"\n"
+"            %(counter)s dispatches from the garage.\n"
+"          "
+msgstr[0] ""
+"\n"
+"            %(counter)s publicación del taller.\n"
+"          "
+msgstr[1] ""
+"\n"
+"            %(counter)s publicaciones del taller.\n"
+"          "
 
-#: .\apps\posts\templates\posts\category_view.html:27
-msgid "Latest dispatches"
-msgstr "Últimas novedades"
-
-#: .\apps\posts\templates\posts\category_view.html:28
+#: .\apps\posts\templates\posts\category_view.html:36
 #, python-format
 msgid "All %(category_name)s"
-msgstr "Todos los %(category_name)s"
+msgstr "Archivo de %(category_name)s"
 
-#: .\apps\posts\templates\posts\category_view.html:35
+#: .\apps\posts\templates\posts\category_view.html:39
+#, python-format
+msgid "Showing %(counter)s article"
+msgid_plural "Showing %(counter)s articles"
+msgstr[0] "Mostrando %(counter)s artículo"
+msgstr[1] "Mostrando %(counter)s artículos"
+
+#: .\apps\posts\templates\posts\category_view.html:46
+msgid "Sort:"
+msgstr "Ordenar:"
+
+#: .\apps\posts\templates\posts\category_view.html:49
+msgid "Newest First"
+msgstr "Más recientes primero"
+
+#: .\apps\posts\templates\posts\category_view.html:50
+msgid "Oldest First"
+msgstr "Más antiguos primero"
+
+#: .\apps\posts\templates\posts\category_view.html:51
+msgid "Most Discussed"
+msgstr "Más comentados"
+
+#: .\apps\posts\templates\posts\category_view.html:53
+msgid "Apply"
+msgstr "Aplicar"
+
+#: .\apps\posts\templates\posts\category_view.html:66
 msgid "Nothing here yet."
 msgstr "Todavía no hay nada."
 
-#: .\apps\posts\templates\posts\category_view.html:36
-msgid ""
-"There are no stories in this category yet. Check the other categories while "
-"the next one is being prepared."
-msgstr ""
-"Todavía no hay historias en esta categoría. Mirá las otras categorías "
-"mientras preparamos la próxima."
+#: .\apps\posts\templates\posts\category_view.html:68
+msgid "There are no stories in this category yet. Check the other categories while the next one is being prepared."
+msgstr "Todavía no hay historias en esta categoría. Mirá las otras categorías mientras preparamos la próxima."
 
-#: .\apps\posts\templates\posts\category_view.html:37
-msgid "Browse the latest stories"
-msgstr "Ver las últimas historias"
+#: .\apps\posts\templates\posts\category_view.html:71
+msgid "Browse all stories"
+msgstr "Ver todas las historias"
 
-#: .\apps\posts\templates\posts\category_view.html:43
+#: .\apps\posts\templates\posts\category_view.html:79
 #, python-format
 msgid "Pages in %(category_name)s"
 msgstr "Páginas de %(category_name)s"
 
-#: .\apps\posts\templates\posts\category_view.html:46
-#: .\apps\posts\templates\posts\search_results.html:81
+#: .\apps\posts\templates\posts\category_view.html:83
+#: .\apps\posts\templates\posts\search_results.html:140
 msgid "Previous"
 msgstr "Anterior"
 
-#: .\apps\posts\templates\posts\category_view.html:49
-#: .\apps\posts\templates\posts\search_results.html:84
+#: .\apps\posts\templates\posts\category_view.html:88
+#: .\apps\posts\templates\posts\search_results.html:143
 msgid "Page"
 msgstr "Página"
 
-#: .\apps\posts\templates\posts\category_view.html:49
-#: .\apps\posts\templates\posts\search_results.html:84
+#: .\apps\posts\templates\posts\category_view.html:88
+#: .\apps\posts\templates\posts\search_results.html:143
 msgid "of"
 msgstr "de"
 
-#: .\apps\posts\templates\posts\category_view.html:52
-#: .\apps\posts\templates\posts\search_results.html:87
+#: .\apps\posts\templates\posts\category_view.html:93
+#: .\apps\posts\templates\posts\search_results.html:146
 msgid "Next"
 msgstr "Siguiente"
 
@@ -1203,8 +1467,7 @@ msgstr "Eliminar publicación"
 
 #: .\apps\posts\templates\posts\post_confirm_delete.html:9
 msgid "This permanently removes the post and its discussion from the lane."
-msgstr ""
-"Esto elimina definitivamente la publicación y su conversación de la ruta."
+msgstr "Esto elimina definitivamente la publicación y su conversación de la ruta."
 
 #: .\apps\posts\templates\posts\post_confirm_delete.html:15
 msgid "Selected post"
@@ -1223,140 +1486,199 @@ msgstr "Conservar publicación"
 msgid "%(post_title)s · The Caffeine Lane"
 msgstr "%(post_title)s · The Caffeine Lane"
 
-#: .\apps\posts\templates\posts\post_detail.html:9
+#: .\apps\posts\templates\posts\post_detail.html:11
 #: .\apps\posts\templates\posts\post_form.html:7
 msgid "Back to stories"
 msgstr "Volver a las historias"
 
-#: .\apps\posts\templates\posts\post_detail.html:35
-#: .\apps\posts\templates\posts\post_detail.html:107
-#: .\apps\posts\templates\posts\post_detail.html:150
+#: .\apps\posts\templates\posts\post_detail.html:37
+#: .\apps\posts\templates\posts\post_detail.html:171
+#: .\apps\posts\templates\posts\post_detail.html:221
 msgid "Edit"
 msgstr "Editar"
 
-#: .\apps\posts\templates\posts\post_detail.html:36
+#: .\apps\posts\templates\posts\post_detail.html:38
 msgid "Delete"
 msgstr "Eliminar"
 
-#: .\apps\posts\templates\posts\post_detail.html:55
+#: .\apps\posts\templates\posts\post_detail.html:61
+msgid "Build Specification"
+msgstr "Especificaciones del proyecto"
+
+#: .\apps\posts\templates\posts\post_detail.html:63
+msgid "Technical Specs Inspector"
+msgstr "Inspector de especificaciones técnicas"
+
+#: .\apps\posts\templates\posts\post_detail.html:69
+msgid "Donor Bike"
+msgstr "Moto base donante"
+
+#: .\apps\posts\templates\posts\post_detail.html:70
+msgid "Displacement"
+msgstr "Cilindrada"
+
+#: .\apps\posts\templates\posts\post_detail.html:71
+msgid "Frame / Chassis"
+msgstr "Cuadro / Chasis"
+
+#: .\apps\posts\templates\posts\post_detail.html:72
+msgid "Carburetor / Fuel"
+msgstr "Carburación y combustible"
+
+#: .\apps\posts\templates\posts\post_detail.html:73
+msgid "Exhaust System"
+msgstr "Sistema de escape"
+
+#: .\apps\posts\templates\posts\post_detail.html:74
+msgid "Suspension"
+msgstr "Suspensión"
+
+#: .\apps\posts\templates\posts\post_detail.html:75
+msgid "Front Brake"
+msgstr "Freno delantero"
+
+#: .\apps\posts\templates\posts\post_detail.html:76
+msgid "Rear Brake"
+msgstr "Freno trasero"
+
+#: .\apps\posts\templates\posts\post_detail.html:77
+msgid "Electrical Loom"
+msgstr "Instalación eléctrica"
+
+#: .\apps\posts\templates\posts\post_detail.html:78
+msgid "Seat / Tail"
+msgstr "Asiento y colín"
+
+#: .\apps\posts\templates\posts\post_detail.html:79
+msgid "Cockpit / Controls"
+msgstr "Puesto de mando y controles"
+
+#: .\apps\posts\templates\posts\post_detail.html:91
+msgid "The Rider verified signature"
+msgstr "Firma verificada de The Rider"
+
+#: .\apps\posts\templates\posts\post_detail.html:98
+msgid "Authored by"
+msgstr "Escrito por"
+
+#: .\apps\posts\templates\posts\post_detail.html:105
+msgid "Staff builder and technical writer at The Caffeine Lane, chronicling garage craft, vintage iron, and cafe culture."
+msgstr "Constructor y redactor técnico de The Caffeine Lane, documentando oficio de garaje, fierros clásicos y cultura café racer."
+
+#: .\apps\posts\templates\posts\post_detail.html:114
 msgid "Keep exploring"
 msgstr "Seguí explorando"
 
-#: .\apps\posts\templates\posts\post_detail.html:56
+#: .\apps\posts\templates\posts\post_detail.html:115
 msgid "More from this lane"
 msgstr "Más de esta ruta"
 
-#: .\apps\posts\templates\posts\post_detail.html:68
+#: .\apps\posts\templates\posts\post_detail.html:128
 msgid "The conversation"
 msgstr "La conversación"
 
-#: .\apps\posts\templates\posts\post_detail.html:69
+#: .\apps\posts\templates\posts\post_detail.html:129
 msgid "Comments"
 msgstr "Comentarios"
 
-#: .\apps\posts\templates\posts\post_detail.html:76
+#: .\apps\posts\templates\posts\post_detail.html:130
+msgid "Join the discussion, share garage wisdom, or ask technical questions."
+msgstr "Sumate a la charla, compartí conocimiento de taller o hacé preguntas técnicas."
+
+#: .\apps\posts\templates\posts\post_detail.html:132
+msgid "The Rider in Talking pose"
+msgstr "The Rider en pose conversacional"
+
+#: .\apps\posts\templates\posts\post_detail.html:140
 msgid "Add to the conversation"
 msgstr "Sumate a la conversación"
 
-#: .\apps\posts\templates\posts\post_detail.html:79
+#: .\apps\posts\templates\posts\post_detail.html:143
 msgid "Post comment"
 msgstr "Publicar comentario"
 
-#: .\apps\posts\templates\posts\post_detail.html:84
+#: .\apps\posts\templates\posts\post_detail.html:148
 msgid "Your turn"
 msgstr "Te toca"
 
-#: .\apps\posts\templates\posts\post_detail.html:85
+#: .\apps\posts\templates\posts\post_detail.html:149
 msgid "Got something to add?"
 msgstr "¿Tenés algo para sumar?"
 
-#: .\apps\posts\templates\posts\post_detail.html:86
+#: .\apps\posts\templates\posts\post_detail.html:150
 msgid "Sign in to share a question, a fix, or your perspective."
-msgstr ""
-"Iniciá sesión para compartir una pregunta, una solución o tu punto de "
-"vista."
+msgstr "Iniciá sesión para compartir una pregunta, una solución o tu punto de vista."
 
-#: .\apps\posts\templates\posts\post_detail.html:87
+#: .\apps\posts\templates\posts\post_detail.html:151
+#: .\apps\posts\templates\posts\post_detail.html:250
 msgid "Sign in to comment"
 msgstr "Iniciá sesión para comentar"
 
-#: .\apps\posts\templates\posts\post_detail.html:89
-msgid "The Rider"
-msgstr "The Rider"
-
-#: .\apps\posts\templates\posts\post_detail.html:102
-#: .\apps\posts\templates\posts\post_detail.html:145
+#: .\apps\posts\templates\posts\post_detail.html:166
+#: .\apps\posts\templates\posts\post_detail.html:216
 msgid "edited"
 msgstr "editado"
 
-#: .\apps\posts\templates\posts\post_detail.html:106
+#: .\apps\posts\templates\posts\post_detail.html:170
 msgid "Comment actions"
 msgstr "Acciones del comentario"
 
-#: .\apps\posts\templates\posts\post_detail.html:108
-#: .\apps\posts\templates\posts\post_detail.html:151
+#: .\apps\posts\templates\posts\post_detail.html:172
+#: .\apps\posts\templates\posts\post_detail.html:222
 msgid "Withdraw"
 msgstr "Retirar"
 
-#: .\apps\posts\templates\posts\post_detail.html:109
-#: .\apps\posts\templates\posts\post_detail.html:152
+#: .\apps\posts\templates\posts\post_detail.html:173
+#: .\apps\posts\templates\posts\post_detail.html:223
 msgid "Hide"
 msgstr "Ocultar"
 
-#: .\apps\posts\templates\posts\post_detail.html:117
+#: .\apps\posts\templates\posts\post_detail.html:183
 msgid "This comment was withdrawn by its author."
 msgstr "Este comentario fue retirado por su autor."
 
-#: .\apps\posts\templates\posts\post_detail.html:119
+#: .\apps\posts\templates\posts\post_detail.html:188
 msgid "This comment was hidden by moderation."
 msgstr "Este comentario fue ocultado por moderación."
 
-#: .\apps\posts\templates\posts\post_detail.html:119
+#: .\apps\posts\templates\posts\post_detail.html:189
 msgid "Hidden by moderation."
 msgstr "Oculto por moderación."
 
-#: .\apps\posts\templates\posts\post_detail.html:124
-#: .\apps\posts\templates\posts\post_detail.html:131
+#: .\apps\posts\templates\posts\post_detail.html:195
+#: .\apps\posts\templates\posts\post_detail.html:202
 msgid "Reply"
 msgstr "Responder"
 
-#: .\apps\posts\templates\posts\post_detail.html:128
-#: .\apps\posts\templates\posts\post_detail.html:129
+#: .\apps\posts\templates\posts\post_detail.html:199
+#: .\apps\posts\templates\posts\post_detail.html:200
 #, python-format
 msgid "Reply to %(author_name)s"
 msgstr "Responder a %(author_name)s"
 
-#: .\apps\posts\templates\posts\post_detail.html:149
+#: .\apps\posts\templates\posts\post_detail.html:220
 msgid "Reply actions"
 msgstr "Acciones de la respuesta"
 
-#: .\apps\posts\templates\posts\post_detail.html:159
+#: .\apps\posts\templates\posts\post_detail.html:232
 msgid "This reply was withdrawn by its author."
 msgstr "Esta respuesta fue retirada por su autor."
 
-#: .\apps\posts\templates\posts\post_detail.html:161
+#: .\apps\posts\templates\posts\post_detail.html:237
 msgid "This reply was hidden by moderation."
 msgstr "Esta respuesta fue ocultada por moderación."
 
-#: .\apps\posts\templates\posts\post_detail.html:170
+#: .\apps\posts\templates\posts\post_detail.html:246
 msgid "Open road"
 msgstr "Ruta abierta"
 
-#: .\apps\posts\templates\posts\post_detail.html:171
+#: .\apps\posts\templates\posts\post_detail.html:247
 msgid "Start the conversation."
 msgstr "Empezá la conversación."
 
-#: .\apps\posts\templates\posts\post_detail.html:172
-msgid "Be the first to share your thoughts."
-msgstr "Sé el primero en compartir lo que pensás."
-
-#: .\apps\posts\templates\posts\post_detail.html:174
-msgid "The Rider"
-msgstr "The Rider"
-
-#: .\apps\posts\templates\posts\post_detail.html:178
-msgid "No comments yet. Be the first to join the conversation."
-msgstr "Todavía no hay comentarios. Sumate primero a la conversación."
+#: .\apps\posts\templates\posts\post_detail.html:248
+msgid "Be the first to share your thoughts, questions, or garage experiences."
+msgstr "Sé el primero en compartir tus ideas, preguntas o experiencias de taller."
 
 #: .\apps\posts\templates\posts\post_form.html:3
 msgid "Edit post · The Caffeine Lane"
@@ -1375,21 +1697,16 @@ msgid "Edit post"
 msgstr "Editar publicación"
 
 #: .\apps\posts\templates\posts\post_form.html:10
-#: .\templates\components\header.html:58
+#: .\templates\components\header.html:54 .\templates\components\header.html:165
 msgid "New post"
 msgstr "Nueva publicación"
 
 #: .\apps\posts\templates\posts\post_form.html:11
-msgid ""
-"Refine the details, keep the image accessible, and save when the story is "
-"ready."
-msgstr ""
-"Afiná los detalles, mantené la imagen accesible y guardá cuando la historia "
-"esté lista."
+msgid "Refine the details, keep the image accessible, and save when the story is ready."
+msgstr "Afiná los detalles, mantené la imagen accesible y guardá cuando la historia esté lista."
 
 #: .\apps\posts\templates\posts\post_form.html:11
-msgid ""
-"Build a clear story for the garage, the road, and everyone following along."
+msgid "Build a clear story for the garage, the road, and everyone following along."
 msgstr "Creá una historia clara para el taller, la ruta y quienes la siguen."
 
 #: .\apps\posts\templates\posts\post_form.html:21
@@ -1397,127 +1714,188 @@ msgid "Save post"
 msgstr "Guardar publicación"
 
 #: .\apps\posts\templates\posts\search_results.html:3
-msgid "Search posts · The Caffeine Lane"
-msgstr "Buscar publicaciones · The Caffeine Lane"
+#, python-format
+msgid "“%(search_query)s” · Search · The Caffeine Lane"
+msgstr "“%(search_query)s” · Búsqueda · The Caffeine Lane"
+
+#: .\apps\posts\templates\posts\search_results.html:3
+msgid "Search stories · The Caffeine Lane"
+msgstr "Buscar historias · The Caffeine Lane"
+
+#: .\apps\posts\templates\posts\search_results.html:8
+msgid "The Caffeine Lane · Archive"
+msgstr "The Caffeine Lane · Archivo"
 
 #: .\apps\posts\templates\posts\search_results.html:9 .\templates\404.html:11
-#: .\templates\components\header.html:25
 msgid "Search the lane"
 msgstr "Buscar en la ruta"
 
 #: .\apps\posts\templates\posts\search_results.html:10
-msgid "Find builds, guides, and reviews across the lane."
-msgstr "Encontrá proyectos, guías y reseñas en toda la ruta."
+msgid "Find builds, technical guides, reviews, and garage dispatches."
+msgstr "Encontrá proyectos, guías técnicas, reseñas y publicaciones del taller."
 
 #: .\apps\posts\templates\posts\search_results.html:13
-#: .\templates\components\footer.html:26 .\templates\components\header.html:23
-#: .\templates\components\header.html:26
+#: .\templates\components\footer.html:26 .\templates\components\header.html:28
+#: .\templates\components\header.html:74
 msgid "Search posts"
 msgstr "Buscar publicaciones"
 
-#: .\apps\posts\templates\posts\search_results.html:18
-msgid "Filters"
-msgstr "Filtros"
+#: .\apps\posts\templates\posts\search_results.html:17
+msgid "Search builds, guides, reviews, topics..."
+msgstr "Buscar proyectos, guías, reseñas, temas..."
 
-#: .\apps\posts\templates\posts\search_results.html:42
+#: .\apps\posts\templates\posts\search_results.html:18
+msgid "Clear search input"
+msgstr "Borrar búsqueda"
+
+#: .\apps\posts\templates\posts\search_results.html:24
+msgid "Sort & Filters"
+msgstr "Orden y filtros"
+
+#: .\apps\posts\templates\posts\search_results.html:33
+msgid "Filter by category"
+msgstr "Filtrar por categoría"
+
+#: .\apps\posts\templates\posts\search_results.html:34
+msgid "Category:"
+msgstr "Categoría:"
+
+#: .\apps\posts\templates\posts\search_results.html:36
+msgid "All Categories"
+msgstr "Todas las categorías"
+
+#: .\apps\posts\templates\posts\search_results.html:49
+msgid "Category selection"
+msgstr "Selección de categoría"
+
+#: .\apps\posts\templates\posts\search_results.html:53
+msgid "Sort order"
+msgstr "Orden de clasificación"
+
+#: .\apps\posts\templates\posts\search_results.html:65
 msgid "Search results"
 msgstr "Resultados de búsqueda"
 
-#: .\apps\posts\templates\posts\search_results.html:44
+#: .\apps\posts\templates\posts\search_results.html:67
 #, python-format
 msgid "Results for “%(search_query)s”"
 msgstr "Resultados para “%(search_query)s”"
 
-#: .\apps\posts\templates\posts\search_results.html:46
+#: .\apps\posts\templates\posts\search_results.html:69
 msgid "All stories"
 msgstr "Todas las historias"
 
-#: .\apps\posts\templates\posts\search_results.html:49
+#: .\apps\posts\templates\posts\search_results.html:74
 #, python-format
-msgid "%(counter)s result"
-msgid_plural "%(counter)s results"
-msgstr[0] "%(counter)s resultado"
-msgstr[1] "%(counter)s resultados"
+msgid "%(counter)s story found"
+msgid_plural "%(counter)s stories found"
+msgstr[0] "%(counter)s historia encontrada"
+msgstr[1] "%(counter)s historias encontradas"
 
-#: .\apps\posts\templates\posts\search_results.html:53
+#: .\apps\posts\templates\posts\search_results.html:80
 msgid "Active search filters"
 msgstr "Filtros de búsqueda activos"
 
-#: .\apps\posts\templates\posts\search_results.html:54
-msgid "Category filter"
-msgstr "Filtro de categoría"
+#: .\apps\posts\templates\posts\search_results.html:82
+msgid "Filtered by category"
+msgstr "Filtrado por categoría"
 
-#: .\apps\posts\templates\posts\search_results.html:55
+#: .\apps\posts\templates\posts\search_results.html:85
 msgid "Custom sort"
 msgstr "Orden personalizado"
 
-#: .\apps\posts\templates\posts\search_results.html:56
+#: .\apps\posts\templates\posts\search_results.html:87
 msgid "Clear filters"
 msgstr "Limpiar filtros"
 
-#: .\apps\posts\templates\posts\search_results.html:66
-msgid "No match yet"
-msgstr "Todavía no hay coincidencias"
-
-#: .\apps\posts\templates\posts\search_results.html:67
-msgid "No stories found"
-msgstr "No encontramos historias"
-
-#: .\apps\posts\templates\posts\search_results.html:68
-msgid ""
-"Try a broader search, clear a filter, or return to the latest work from the "
-"lane."
-msgstr ""
-"Probá una búsqueda más amplia, limpiá un filtro o volvé a las últimas "
-"historias de la ruta."
-
-#: .\apps\posts\templates\posts\search_results.html:69
-msgid "Browse all stories"
-msgstr "Ver todas las historias"
-
-#: .\apps\posts\templates\posts\search_results.html:71
+#: .\apps\posts\templates\posts\search_results.html:97
 msgid "The Rider searching through the archive"
 msgstr "The Rider buscando en el archivo"
 
-#: .\apps\posts\templates\posts\search_results.html:78
+#: .\apps\posts\templates\posts\search_results.html:101
+msgid "Zero Results Found"
+msgstr "Sin resultados en la búsqueda"
+
+#: .\apps\posts\templates\posts\search_results.html:104
+#, python-format
+msgid "No stories found for “%(search_query)s”"
+msgstr "No se encontraron historias para “%(search_query)s”"
+
+#: .\apps\posts\templates\posts\search_results.html:106
+msgid "No stories found in this selection"
+msgstr "No se encontraron historias en esta selección"
+
+#: .\apps\posts\templates\posts\search_results.html:110
+msgid "We couldn't find any garage builds, guides, or dispatches matching your criteria. Try adjusting your spelling, removing category filters, or explore one of these frequent workshop searches:"
+msgstr "No encontramos proyectos de garaje, guías ni notas que coincidan con tu búsqueda. Probá ajustando los términos, quitando filtros de categoría o explorá una de estas búsquedas habituales de taller:"
+
+#: .\apps\posts\templates\posts\search_results.html:114
+msgid "Popular workshop searches:"
+msgstr "Búsquedas populares del taller:"
+
+#: .\apps\posts\templates\posts\search_results.html:118
+msgid "Carb Tuning"
+msgstr "Puesta a punto de carburador"
+
+#: .\apps\posts\templates\posts\search_results.html:119
+msgid "Cafe Seat Guide"
+msgstr "Guía de colines café racer"
+
+#: .\apps\posts\templates\posts\search_results.html:125
+msgid "Reset all filters"
+msgstr "Restablecer todos los filtros"
+
+#: .\apps\posts\templates\posts\search_results.html:128
+msgid "Return to magazine"
+msgstr "Volver a la revista"
+
+#: .\apps\posts\templates\posts\search_results.html:137
 msgid "Search result pages"
 msgstr "Páginas de resultados de búsqueda"
 
-#: .\apps\posts\views.py:32
+#: .\apps\posts\views.py:52
 msgid "You must be logged in to comment."
 msgstr "Tenés que iniciar sesión para comentar."
 
-#: .\apps\posts\views.py:46
+#: .\apps\posts\views.py:66
 msgid "Comment posted."
 msgstr "Comentario publicado."
 
-#: .\apps\posts\views.py:52
+#: .\apps\posts\views.py:72
 msgid "There was an error with your comment. Please try again."
 msgstr "Hubo un error con tu comentario. Intentá de nuevo."
 
-#: .\apps\posts\views.py:85
+#: .\apps\posts\views.py:105
 msgid "Reply posted."
 msgstr "Respuesta publicada."
 
-#: .\apps\posts\views.py:87
+#: .\apps\posts\views.py:107
 msgid "Please correct the reply before submitting."
 msgstr "Corregí la respuesta antes de enviarla."
 
-#: .\apps\posts\views.py:111
-msgid "You do not have permission to edit this comment."
-msgstr "No tenés permiso para editar este comentario."
-
-#: .\apps\posts\views.py:122
+#: .\apps\posts\views.py:174
 msgid "Comment updated."
 msgstr "Comentario actualizado."
 
-#: .\apps\posts\views.py:137
+#: .\apps\posts\views.py:189
 msgid "Comment withdrawn."
 msgstr "El comentario fue retirado."
 
-#: .\apps\posts\views.py:149
+#: .\apps\posts\views.py:201
 msgid "Comment hidden by moderation."
 msgstr "El comentario fue ocultado por moderación."
+
+#: .\apps\posts\views.py:309
+msgid "Post created successfully."
+msgstr "Publicación creada exitosamente."
+
+#: .\apps\posts\views.py:323
+msgid "Post updated successfully."
+msgstr "Publicación actualizada exitosamente."
+
+#: .\apps\posts\views.py:341
+msgid "Post deleted successfully."
+msgstr "Publicación eliminada exitosamente."
 
 #: .\templates\400.html:3
 msgid "Bad request · The Caffeine Lane"
@@ -1532,12 +1910,8 @@ msgid "Loose bolt."
 msgstr "Tornillo flojo."
 
 #: .\templates\400.html:10
-msgid ""
-"That request did not fit together. Check the information and try the next "
-"move from a clean line."
-msgstr ""
-"Esa solicitud no encajó. Revisa la información e inténtalo de nuevo desde "
-"una línea limpia."
+msgid "That request didn't come through. Check what you entered and try again."
+msgstr "Esa solicitud no se pudo procesar. Revisá lo que ingresaste e intentalo de nuevo."
 
 #: .\templates\400.html:11 .\templates\403.html:11 .\templates\500.html:11
 msgid "Back to the lane"
@@ -1560,12 +1934,8 @@ msgid "Road closed."
 msgstr "Ruta cerrada."
 
 #: .\templates\403.html:10
-msgid ""
-"This stretch is reserved for a different rider. Head back to the lane and "
-"choose another route."
-msgstr ""
-"Este tramo está reservado para otro rider. Vuelve a la ruta y elige otro "
-"camino."
+msgid "You don't have access to this page. Head back to the lane or try a different route."
+msgstr "No tenés acceso a esta página. Volvé a la ruta principal o probá otro camino."
 
 #: .\templates\403.html:13
 msgid "The Rider at a closed road"
@@ -1584,12 +1954,8 @@ msgid "Wrong turn."
 msgstr "Tomamos un desvío."
 
 #: .\templates\404.html:10
-msgid ""
-"There is no story at this mile marker. Search the lane or return to the "
-"latest work from the road."
-msgstr ""
-"No hay una historia en este punto del camino. Busca en la ruta o vuelve a lo "
-"último de la carretera."
+msgid "Nothing here. Search the lane or head back to the latest stories."
+msgstr "No hay nada aquí. Buscá en la ruta o volvé a las últimas historias."
 
 #: .\templates\404.html:13
 msgid "The Rider taking a wrong turn"
@@ -1608,22 +1974,16 @@ msgid "Engine trouble."
 msgstr "Problemas de motor."
 
 #: .\templates\500.html:10
-msgid ""
-"Something under the tank needs attention. Give us a moment, then head back "
-"to the lane and try again."
-msgstr ""
-"Algo bajo el tanque necesita atención. Danos un momento, luego vuelve a la "
-"ruta e inténtalo otra vez."
+msgid "Something under the tank needs attention. Give us a moment, then head back to the lane and try again."
+msgstr "Algo bajo el tanque necesita atención. Danos un momento, luego volvé a la ruta e intentalo de nuevo."
 
 #: .\templates\500.html:13
 msgid "The Rider noticing engine trouble"
 msgstr "The Rider notando un problema de motor"
 
 #: .\templates\base.html:8
-msgid ""
-"The Caffeine Lane: builds, guides and reviews for cafe racer enthusiasts."
-msgstr ""
-"The Caffeine Lane: proyectos, guías y reseñas para amantes de las café racer."
+msgid "CAFFEINE LANE: builds, guides and reviews for cafe racer enthusiasts."
+msgstr "CAFFEINE LANE: proyectos, guías y reseñas para entusiastas del café racer."
 
 #: .\templates\components\footer.html:4
 msgid "Explore posts"
@@ -1637,10 +1997,6 @@ msgstr "Explorar"
 msgid "Latest posts"
 msgstr "Últimas publicaciones"
 
-#: .\templates\components\footer.html:15
-msgid "The Rider"
-msgstr "The Rider"
-
 #: .\templates\components\footer.html:18
 msgid "Welcome, rider. The road is ours."
 msgstr "Bienvenido, rider. La ruta es nuestra."
@@ -1651,17 +2007,19 @@ msgstr "Contacto e información"
 
 #: .\templates\components\footer.html:22
 msgid "Stay on the lane"
-msgstr "Sigue en la ruta"
+msgstr "Seguí en la ruta"
 
-#: .\templates\components\footer.html:24 .\templates\components\header.html:54
+#: .\templates\components\footer.html:24 .\templates\components\header.html:21
+#: .\templates\components\header.html:125
 msgid "About"
 msgstr "Acerca de"
 
-#: .\templates\components\footer.html:25 .\templates\components\header.html:6
+#: .\templates\components\footer.html:25 .\templates\components\header.html:22
+#: .\templates\components\header.html:129
 msgid "Contact"
 msgstr "Contacto"
 
-#: .\templates\components\footer.html:30
+#: .\templates\components\footer.html:33
 msgid "Built for the long way home."
 msgstr "Hecho para el camino largo a casa."
 
@@ -1669,37 +2027,70 @@ msgstr "Hecho para el camino largo a casa."
 msgid "Skip to content"
 msgstr "Saltar al contenido"
 
-#: .\templates\components\header.html:11
-msgid "Language"
-msgstr "Idioma"
-
-#: .\templates\components\header.html:20
-msgid "Change language"
-msgstr "Cambiar idioma"
-
-#: .\templates\components\header.html:41
-msgid "Primary navigation"
-msgstr "Navegación principal"
-
-#: .\templates\components\header.html:43
+#: .\templates\components\header.html:7
 msgid "Go to home"
 msgstr "Ir al inicio"
 
-#: .\templates\components\header.html:46
-msgid "Menu"
-msgstr "Menú"
+#: .\templates\components\header.html:16
+msgid "Primary navigation"
+msgstr "Navegación principal"
 
-#: .\templates\components\header.html:49
+#: .\templates\components\header.html:17 .\templates\components\header.html:103
 msgid "Home"
 msgstr "Inicio"
 
-#: .\templates\components\header.html:63
-msgid "Join"
-msgstr "Unirse"
+#: .\templates\components\header.html:38 .\templates\components\header.html:137
+#: .\templates\components\header.html:142
+msgid "Language"
+msgstr "Idioma"
 
-#: .\templates\components\post_card.html:17
-msgid "Post"
+#: .\templates\components\header.html:47 .\templates\components\header.html:150
+msgid "Change language"
+msgstr "Cambiar idioma"
+
+#: .\templates\components\header.html:67 .\templates\components\header.html:178
+msgid "Join"
+msgstr "Sumate"
+
+#: .\templates\components\header.html:77
+msgid "Toggle navigation menu"
+msgstr "Abrir menú de navegación"
+
+#: .\templates\components\header.html:79
+msgid "Menu"
+msgstr "Menú"
+
+#: .\templates\components\header.html:85
+msgid "Mobile navigation"
+msgstr "Navegación móvil"
+
+#: .\templates\components\header.html:87
+msgid "Site navigation menu"
+msgstr "Menú de navegación del sitio"
+
+#: .\templates\components\header.html:94
+msgid "Close navigation menu"
+msgstr "Cerrar menú de navegación"
+
+#: .\templates\components\header.html:100
+msgid "Mobile primary navigation"
+msgstr "Navegación principal móvil"
+
+#: .\templates\components\header.html:121
+msgid "Publication"
 msgstr "Publicación"
+
+#: .\templates\components\messages.html:20
+msgid "Dismiss message"
+msgstr "Cerrar mensaje"
+
+#: .\templates\components\post_card.html:9
+msgid "CAFFEINE LANE"
+msgstr "CAFFEINE LANE"
+
+#: .\templates\components\post_card.html:19
+msgid "Dispatch"
+msgstr "Despacho"
 
 #: .\templates\layouts\account.html:7
 msgid "Account"
@@ -1710,9 +2101,8 @@ msgid "Your place in the lane."
 msgstr "Tu lugar en la ruta."
 
 #: .\templates\layouts\account.html:9
-msgid "Keep your profile and account details ready for the next ride."
-msgstr ""
-"Mantén tu perfil y los datos de tu cuenta listos para la próxima salida."
+msgid "Keep your profile and account details up to date."
+msgstr "Mantené tu perfil y los datos de tu cuenta actualizados."
 
 #: .\templates\layouts\account.html:13
 msgid "Account overview"
@@ -1743,11 +2133,6 @@ msgstr "Contraseña y seguridad"
 msgid "The Caffeine Lane home"
 msgstr "Inicio de The Caffeine Lane"
 
-#~ msgid "Apply"
-#~ msgstr "Aplicar"
-
-#~ msgid "The Caffeine Lane account"
-#~ msgstr "Cuenta de The Caffeine Lane"
-
-#~ msgid "The Rider acknowledging your updated password"
-#~ msgstr "The Rider celebrando tu contraseña actualizada"
+#: .\templates\layouts\auth.html:12
+msgid "Ride · Build · Repeat"
+msgstr "Ride · Build · Repeat"

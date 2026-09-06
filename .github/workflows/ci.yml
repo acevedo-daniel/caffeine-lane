@@ -74,6 +74,9 @@ jobs:
         run: |
           pnpm run build
           pnpm test
+      - name: Verify Vercel build contract
+        run: >-
+          uv run python -c "import tomllib; config = tomllib.load(open('pyproject.toml', 'rb')); assert config['tool']['vercel']['scripts']['build'] == 'pnpm run build'"
       - name: Prepare isolated local browser data
         env:
           DJANGO_SETTINGS_MODULE: config.settings.local
@@ -83,7 +86,7 @@ jobs:
           rm -f /tmp/caffeine-lane-e2e.sqlite3
           uv run python manage.py check_fresh_baseline
           uv run python manage.py migrate --noinput
-          uv run python manage.py seed_portfolio
+          uv run python manage.py seed_editorial
           uv run python manage.py shell -c "from apps.accounts.models import User; from apps.posts.models import Comment, Post; user, _ = User.objects.get_or_create(email='e2e-rider@example.test', defaults={'username': 'e2e-rider', 'display_name': 'E2E Rider'}); user.set_password('e2e-rider-password'); user.save(); post = Post.objects.get(slug='cafe-racer-de-garaje'); Comment.objects.get_or_create(post=post, author=user, content='E2E smoke comment')"
       - name: Install Chromium for browser smoke tests
         run: pnpm exec playwright install --with-deps chromium
@@ -120,7 +123,7 @@ jobs:
           CONTAINER_PORT: "10000"
         run: |
           set -euo pipefail
-          docker image inspect caffeine-lane-ci --format '{{range .Config.Env}}{{println .}}{{end}}' | grep -qx 'SEED_PORTFOLIO_ON_START=false'
+          docker image inspect caffeine-lane-ci --format '{{range .Config.Env}}{{println .}}{{end}}' | grep -qx 'SEED_EDITORIAL_ON_START=false'
 
           docker run --detach --name "$CONTAINER_NAME" --publish "$CONTAINER_PORT:$CONTAINER_PORT" \
             --env PORT="$CONTAINER_PORT" \
@@ -137,7 +140,7 @@ jobs:
             --env USE_X_FORWARDED_PROTO=true \
             --env CSP_ENFORCE=false \
             --env RUN_MIGRATIONS_ON_START=true \
-            --env SEED_PORTFOLIO_ON_START=false \
+            --env SEED_EDITORIAL_ON_START=false \
             caffeine-lane-ci
 
           cleanup() {

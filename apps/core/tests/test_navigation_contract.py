@@ -83,7 +83,7 @@ class NavigationContractTests(TestCase):
                 self.assertIn(linked_response.status_code, {200, 302, 403, 405})
 
     def test_home_cards_and_layout_links_never_return_404_or_500(self):
-        call_command("seed_portfolio")
+        call_command("seed_editorial")
         response = self.client.get(reverse("home"))
         self.assertEqual(response.status_code, 200)
 
@@ -97,7 +97,7 @@ class NavigationContractTests(TestCase):
                 self.assertNotIn(linked_response.status_code, {404, 500})
 
     def test_landing_cards_and_layout_links_never_return_404_or_500(self):
-        call_command("seed_portfolio")
+        call_command("seed_editorial")
         response = self.client.get(reverse("landing"))
         self.assertEqual(response.status_code, 200)
 

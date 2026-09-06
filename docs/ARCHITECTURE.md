@@ -6,17 +6,15 @@
 
 Caffeine Lane is a server-rendered Django monolith.
 
-Django owns routing, authentication, forms and validation, persistence, editorial and discussion behavior, internationalization, template rendering, and the administrative interface. A small Node.js/pnpm pipeline builds Tailwind CSS and JavaScript assets before they are served by Django/WhiteNoise.
+Django owns routing, authentication, forms and validation, persistence, editorial and discussion behavior, internationalization, template rendering, and the administrative interface. A small Node.js/pnpm pipeline builds Tailwind CSS and JavaScript assets before Vercel serves them from its CDN.
 
-Production runs the application as a Dockerized Gunicorn service on Render.
+Production runs the application as a Django WSGI function on Vercel.
 
 ```text
-Browser -> Render container (Gunicorn -> Django)
-                              -> Neon PostgreSQL
-                              -> Cloudinary media storage
-                              -> Resend email
-
-         WhiteNoise serves collected static assets from the Django runtime
+Browser -> Vercel CDN / Django function
+                  -> Neon PostgreSQL
+                  -> Cloudinary media storage
+                  -> Resend email
 ```
 
 ## Component boundaries
@@ -61,8 +59,7 @@ Authored frontend assets live under `static/src/`. The build pipeline compiles a
 static/src
 -> Tailwind CSS / JavaScript build (pnpm)
 -> static/dist
--> collectstatic
--> WhiteNoise in production
+-> Vercel CDN in production
 ```
 
 Uploaded media follows a distinct path:
@@ -79,8 +76,7 @@ Keeping static build artifacts and user-uploaded media separate avoids depending
 | Neon | Hosted PostgreSQL | Production data persistence | Only Django connects to the database |
 | Cloudinary | Media CDN | Production uploaded media storage | Configured through Django storage backend |
 | Resend | Email API | Production transactional emails | Accessed via Django's email backend through Anymail |
-| WhiteNoise | Python WSGI middleware | Static asset delivery | Runs inside the Django WSGI application |
-| Render | Container Cloud | Production Docker/Gunicorn hosting | Deployment and runtime environment |
+| Vercel | Python runtime and CDN | Django web runtime and static asset delivery | Deployment and runtime environment |
 
 ### Security boundaries
 
@@ -118,14 +114,13 @@ Search behavior adapts to the active database backend:
 
 ```text
 Browser
-  -> Render / Gunicorn / Django
+  -> Vercel CDN / Django function
       -> Neon PostgreSQL
       -> Cloudinary
       -> Resend
-      -> WhiteNoise-collected static assets
 ```
 
-The repository contains the production `Dockerfile` and entrypoint. Provider-specific secrets and service settings are configured outside Git.
+The repository retains a production-like `Dockerfile` and entrypoint for portable hosting and CI smoke tests. Vercel detects Django directly; provider-specific secrets and service settings are configured outside Git.
 
 ## Invariants
 
@@ -148,7 +143,7 @@ PostgreSQL provides the intended ranked full-text search behavior. The SQLite fa
 
 ### Pooled runtime with direct migrations
 
-Production web traffic uses Neon's pooled connection, while startup migrations temporarily switch to `DIRECT_DATABASE_URL`. This preserves pooling efficiency for web requests while giving schema migrations an unpooled direct connection.
+Production web traffic uses Neon's pooled connection, while explicit release scripts temporarily switch to `DIRECT_DATABASE_URL`. This preserves pooling efficiency for web requests while giving schema migrations an unpooled direct connection.
 
 ### Single-level discussions
 

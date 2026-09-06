@@ -22,7 +22,10 @@ def clean_text(value, *, field):
         raise ValidationError(
             {field: "The text contains invalid encoding or control characters."}
         )
-    if any(marker in value.lower() for marker in PROVISIONAL_TEXT_MARKERS):
+    if any(
+        re.search(rf"\b{re.escape(marker)}\b", value, flags=re.IGNORECASE)
+        for marker in PROVISIONAL_TEXT_MARKERS
+    ):
         raise ValidationError({field: "Provisional text is not importable."})
     return value
 

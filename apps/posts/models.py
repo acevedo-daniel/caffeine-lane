@@ -134,38 +134,38 @@ class Post(models.Model):
         if "frenos" in title_lower:
             return {
                 "donor": "Yamaha SR500",
-                "displacement": "499 cc Single Cylinder",
-                "frame": "Original semi-double cradle, lightened and de-tabbed",
-                "front_brake": "Dual 298mm drilled discs with Brembo 2-piston calipers",
-                "rear_brake": "Upgraded ventilated drum with custom linkage",
-                "exhaust": "SuperTrapp stainless steel 1.75-inch reverse cone",
+                "displacement": "Monocilíndrico de 499 cc",
+                "frame": "Doble cuna original, aligerado y sin soportes superfluos",
+                "front_brake": "Doble disco perforado de 298 mm con pinzas Brembo de dos pistones",
+                "rear_brake": "Tambor ventilado mejorado con varillaje a medida",
+                "exhaust": "SuperTrapp de acero inoxidable con cono inverso de 1,75 pulgadas",
             }
         elif "cableado" in title_lower:
             return {
                 "donor": "Moto Guzzi Le Mans II",
-                "displacement": "844 cc 90° V-Twin",
-                "frame": "Lino Tonti spine frame, brushed satin finish",
-                "carburetor": "Dell'Orto PHF 36mm pumper carbs",
-                "electrical": "Custom simplified loom with solid-state control module",
-                "exhaust": "Lafranconi Competizione stainless dual pipes",
+                "displacement": "Bicilíndrico en V a 90° de 844 cc",
+                "frame": "Bastidor de espina Lino Tonti con acabado satinado cepillado",
+                "carburetor": "Carburadores Dell'Orto PHF de 36 mm con bomba de aceleración",
+                "electrical": "Arnés simplificado a medida con módulo de estado sólido",
+                "exhaust": "Doble escape Lafranconi Competizione de acero inoxidable",
             }
         elif "asiento" in title_lower or "postura" in title_lower:
             return {
                 "donor": "Honda CB550 Four",
-                "displacement": "544 cc SOHC Air-Cooled Inline-Four",
-                "frame": "Shortened rear subframe with integrated LED hoop",
-                "seat": "Hand-shaped high-density foam with distressed cognac leather",
-                "cockpit": "Tommaselli clip-ons, Tarozzi rearsets",
-                "exhaust": "4-into-1 ceramic black header with reverse cone",
+                "displacement": "Cuatro cilindros en línea SOHC de 544 cc refrigerado por aire",
+                "frame": "Subchasis trasero acortado con aro LED integrado",
+                "seat": "Espuma de alta densidad moldeada a mano y cuero coñac envejecido",
+                "cockpit": "Semimanillares Tommaselli y estriberas retrasadas Tarozzi",
+                "exhaust": "Colector 4 en 1 negro cerámico con cono inverso",
             }
         else:
             return {
                 "donor": "1978 Honda CB750 Four",
-                "displacement": "736 cc SOHC Inline-Four",
-                "frame": "Custom rear loop, de-tabbed and powder-coated satin black",
-                "carburetor": "Keihin 28mm rebuilt with velocity stacks and brass jets",
-                "exhaust": "Custom 4-into-1 raw stainless steel with megaphone muffler",
-                "suspension": "Showa 35mm lowered 30mm with progressive springs",
+                "displacement": "Cuatro cilindros en línea SOHC de 736 cc",
+                "frame": "Aro trasero a medida, sin soportes superfluos y pintura negra satinada",
+                "carburetor": "Keihin de 28 mm reconstruidos con trompetas y chicleres de bronce",
+                "exhaust": "Escape 4 en 1 a medida en acero inoxidable crudo con silenciador megáfono",
+                "suspension": "Showa de 35 mm rebajada 30 mm con resortes progresivos",
             }
 
     class Meta:
