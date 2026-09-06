@@ -6,7 +6,7 @@
 
 Caffeine Lane is a server-rendered Django monolith.
 
-Django owns routing, authentication, forms and validation, persistence, editorial and discussion behavior, internationalization, template rendering, and the administrative interface. A small Node.js/pnpm pipeline builds Tailwind CSS and JavaScript assets before Vercel serves them from its CDN.
+Django owns routing, authentication, forms and validation, persistence, editorial and discussion behavior, internationalization, template rendering, and the administrative interface. A small Node.js/pnpm pipeline builds Tailwind CSS and JavaScript assets before Vercel serves them from its CDN. Vercel installs the Python environment from `pyproject.toml` and `uv.lock`; the hosted project explicitly installs pnpm dependencies before running the asset build.
 
 Production runs the application as a Django WSGI function on Vercel.
 
@@ -89,6 +89,7 @@ Caffeine Lane relies on Django's session authentication and permission system:
 - Argon2 as the prioritized password hasher in production.
 - Provider credentials injected via environment variables rather than committed to source control.
 - Server-side authorization checks for all editorial and moderation actions.
+- Email delivery treated as an external boundary: password recovery is environment-controlled, and contact delivery errors must not be reported as successful submissions.
 
 ## Data and persistence
 
@@ -121,6 +122,8 @@ Browser
 ```
 
 The repository retains a production-like `Dockerfile` and entrypoint for portable hosting and CI smoke tests. Vercel detects Django directly; provider-specific secrets and service settings are configured outside Git.
+
+The public deployment is available at [caffeine-lane.vercel.app](https://caffeine-lane.vercel.app/). Vercel does not run the Docker entrypoint, Django migrations, or the editorial seed during a normal deployment.
 
 ## Invariants
 

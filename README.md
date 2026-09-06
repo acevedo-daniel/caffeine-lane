@@ -2,11 +2,15 @@
 
 [![CI](https://github.com/acevedo-daniel/caffeine-lane/actions/workflows/ci.yml/badge.svg)](https://github.com/acevedo-daniel/caffeine-lane/actions/workflows/ci.yml)
 
-> A Django editorial application for cafe racer builds, guides, and reviews.
+> Editorial web application for cafe racer builds, practical guides, reviews, and rider community discussions.
 
-Caffeine Lane is a publishing and community application for motorcycle builders and enthusiasts. It combines editorial content, search, reader accounts and profiles, moderated discussions, media uploads, and a bilingual interface. It is intentionally not an e-commerce marketplace.
+Caffeine Lane is a publishing and community application for motorcycle builders and enthusiasts. It combines editorial content, search, reader accounts and profiles, moderated discussions, media uploads, and a bilingual interface.
 
-**[Deployment guide](docs/DEPLOYMENT.md)**
+**[Open Live Application](https://caffeine-lane.vercel.app/)** · **[Deployment Guide](docs/DEPLOYMENT.md)**
+
+## Live demo
+
+Visit [caffeine-lane.vercel.app](https://caffeine-lane.vercel.app/) to explore the live application.
 
 ## Screenshots
 
@@ -32,7 +36,7 @@ Caffeine Lane is a publishing and community application for motorcycle builders 
 - **Content discovery:** Browse categories, search published content, sort and paginate results, and surface related posts.
 - **Accounts and profiles:** Authenticate with email-based accounts and maintain reader profile information and avatars.
 - **Discussion and moderation:** Comment, reply one level deep, edit or withdraw personal comments, and support permission-based moderation.
-- **Localization:** Serve the interface in English or Spanish through Django internationalization.
+- **Localization & themes:** Serve the interface in English or Spanish with light and dark theme persistence.
 
 ## Engineering highlights
 
@@ -52,6 +56,8 @@ Browser -> Vercel CDN / Django function
 ```
 
 Django owns routing, authentication, validation, editorial and discussion behavior, internationalization, and server-rendered templates. PostgreSQL persists application data, Cloudinary stores media, Resend delivers transactional emails, and Vercel runs the web runtime and CDN.
+
+The public demo keeps password recovery controlled by environment configuration. Until a verified sending domain is available in Resend, email delivery should be treated as a controlled test integration rather than a general production capability.
 
 ## Technology stack
 

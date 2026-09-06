@@ -74,6 +74,8 @@ Open:
 
 The local email backend writes messages directly to the Django server log. Uploaded media is saved to the local filesystem.
 
+Password recovery is disabled by default in local and production-like environments unless `PASSWORD_RESET_ENABLED=true` is explicitly configured. Do not enable it for a hosted environment until the Resend sender domain is verified and delivery has been tested.
+
 ## Commands
 
 | Task | Command | Purpose |
@@ -89,6 +91,7 @@ The local email backend writes messages directly to the Django server log. Uploa
 | Check migration drift | `uv run python manage.py makemigrations --check --dry-run` | Detect uncommitted model changes without migrations. |
 | Apply migrations | `uv run python manage.py migrate` | Apply pending Django migrations. |
 | Baseline guard | `uv run python manage.py check_fresh_baseline` | Verify database does not contain legacy profile tables. |
+| Verify editorial baseline | `uv run python manage.py verify_editorial_baseline` | Validate that structural categories and editorial constraints are met. |
 | Seed editorial dataset | `uv run python manage.py seed_editorial` | Seed reproducible editorial articles and categories. |
 | Create administrator | `uv run python manage.py createsuperuser` | Provision a local Django superuser. |
 | Python tests | `uv run pytest` | Run Pytest suite with test coverage reporting. |
@@ -105,6 +108,7 @@ The copied `.env.example` points local development to the PostgreSQL 18 Compose 
 docker compose up -d db
 uv run python manage.py check_fresh_baseline
 uv run python manage.py migrate
+uv run python manage.py verify_editorial_baseline
 ```
 
 `check_fresh_baseline` inspects the selected database before migrations. If the legacy `accounts_profile` table exists, the command stops and requires a fresh or reset database rather than attempting to migrate the incompatible legacy authentication schema in place.
@@ -127,6 +131,16 @@ uv run python manage.py seed_editorial
 The editorial seed populates a curated Spanish-language content set used for local demonstration and automated browser tests. The dry run validates every slug, publication date, category distribution, text field, and bundled image without writing data.
 
 Vercel deployments never seed automatically. Docker startup executes `seed_editorial` only when `SEED_EDITORIAL_ON_START=true` is explicitly provided.
+
+### Vercel build contract
+
+Vercel installs the Python environment from `pyproject.toml` and `uv.lock` automatically. Keep the Vercel project **Install Command** at its default. Because the repository also needs pnpm dependencies for Tailwind and the JavaScript asset copy, use this Vercel **Build Command**:
+
+```bash
+pnpm install --frozen-lockfile --prod=false && pnpm run build
+```
+
+The repository's `pyproject.toml` build hook remains `pnpm run build` for CI. If the Vercel build reports `ModuleNotFoundError: No module named 'django'`, remove the custom pnpm-only Install Command and redeploy so Vercel can restore the Python installation.
 
 ## Generated frontend assets
 
@@ -164,6 +178,7 @@ Do not edit files inside `static/dist/` manually.
 | No editorial content is visible | Apply migrations with `uv run python manage.py migrate` and run `uv run python manage.py seed_editorial`. |
 | `check_fresh_baseline` fails | The active database contains incompatible legacy profile tables; switch to a clean database or reset disposable local data. |
 | Local emails are not delivered externally | By design: local development settings route emails to Django's console backend. |
+| Resend rejects hosted email | Keep password reset disabled until a Resend domain is verified; use the documented test recipient for controlled checks. |
 
 ## Related documentation
 
