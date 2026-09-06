@@ -18,7 +18,7 @@ Python coverage is measured through `pytest-cov` across `apps` and `config`.
 | Layer | Purpose | Tool / location |
 | --- | --- | --- |
 | Django / ORM | Accounts, permissions, forms, editorial lifecycle, comments, search behavior, and management commands | Pytest + pytest-django in `apps/**/tests/` |
-| Frontend assets | Asset pipeline build output, progressive enhancements, and JavaScript modules | Node.js test runner in `tests/frontend/` |
+| Frontend assets | Asset pipeline build output, progressive enhancements, theme controller, and JavaScript modules | Node.js test runner in `tests/frontend/` |
 | Browser smoke | End-to-end user workflows against a real running Django server | Playwright / Chromium in `tests/e2e/` |
 | Production settings | Validate Django's production security settings with `check --deploy` | GitHub Actions / Django system checks |
 | Docker smoke | Build production container, verify bundled assets, and test health/public endpoints | Docker in GitHub Actions |
@@ -33,6 +33,8 @@ Python coverage is measured through `pytest-cov` across `apps` and `config`.
 - In-memory email backend.
 - In-memory uploaded-media storage.
 - Fast MD5 password hasher to optimize test runtimes.
+
+Email tests use Django's in-memory backend and do not send real messages. Hosted Resend delivery must be verified separately with a controlled recipient; the test suite should continue to cover provider failures without requiring Resend credentials.
 
 In CI, `TEST_DATABASE_URL` is set so the Python suite executes against a real PostgreSQL 18 service on Python 3.14. This distinction ensures fast local feedback while verifying database-specific behavior (such as PostgreSQL full-text search) in CI.
 
@@ -114,6 +116,21 @@ A dedicated container verification job:
 4. Waits for `/healthz/` liveness.
 5. Verifies public responses, static asset delivery, and HTTP headers.
 
+### Hosted verification
+
+After a successful Vercel deployment, verify the public application at [caffeine-lane.vercel.app](https://caffeine-lane.vercel.app/):
+
+- `/healthz/` returns HTTP 200.
+- The landing page, home, categories, search and article detail render correctly.
+- Authentication and contact flows return controlled responses.
+- Contact POSTs require CSRF, reject the honeypot, enforce field limits, rate-limit repeated submissions, and do not log message contents or visitor email addresses on delivery failure.
+- Registration does not reveal an existing email during the first step; duplicate-account handling remains generic.
+- Contact delivery is tested only with an approved Resend test recipient or a verified sender domain.
+- Password recovery remains visibly unavailable while `PASSWORD_RESET_ENABLED=false`.
+- `/robots.txt` lists only the intended crawl exclusions and points to the public sitemap.
+- `/sitemap.xml`, canonical URLs, social cards, and JSON-LD use the configured `PUBLIC_SITE_URL` in production.
+- Vercel runtime logs contain no import, database, static asset or email configuration errors.
+
 ## Pre-release verification
 
 Recommended local pre-release verification sequence:
@@ -124,6 +141,7 @@ uv run ruff format --check .
 uv run python manage.py check
 uv run python manage.py makemigrations --check --dry-run
 uv run pytest
+pnpm install --frozen-lockfile --prod=false
 pnpm run build
 pnpm test
 pnpm run test:e2e

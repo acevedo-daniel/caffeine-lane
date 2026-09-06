@@ -57,8 +57,28 @@ class AccountFlowTests(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "An account with this email already exists.")
+        self.assertContains(
+            response,
+            "This email cannot be registered. Please sign in or use another email address.",
+        )
         self.assertFalse(User.objects.filter(username="new-rider").exists())
+
+    def test_registration_step1_does_not_reveal_an_existing_email(self):
+        User.objects.create_user(
+            email="existing@example.com",
+            username="existing-rider",
+            password="safe-test-password-123",
+        )
+
+        response = self.client.post(
+            reverse("register_step1"), {"email": "existing@example.com"}
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("register_step2"))
+        self.assertEqual(
+            self.client.session["registration_email"], "existing@example.com"
+        )
 
     def test_registration_step2_handles_an_integrity_error(self):
         self.client.post(reverse("register_step1"), {"email": "race@example.com"})
@@ -79,7 +99,10 @@ class AccountFlowTests(TestCase):
             )
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "An account with this email already exists.")
+        self.assertContains(
+            response,
+            "This email cannot be registered. Please sign in or use another email address.",
+        )
 
     def test_login_uses_email(self):
         user = User.objects.create_user(

@@ -137,10 +137,10 @@ test("ThemeController uses stored theme when available", () => {
   assert.equal(controller.isDark(), true);
 });
 
-test("ThemeController falls back to system preference when no storage is set", () => {
+test("ThemeController falls back to default dark when no storage is set", () => {
   const storage = createMockStorage();
   const doc = createMockDocument();
-  const win = createMockWindow({ prefersDark: true });
+  const win = createMockWindow({ prefersDark: false });
 
   const controller = new ThemeController({ storage, documentRef: doc, windowRef: win });
   controller.initialize();
@@ -160,25 +160,27 @@ test("ThemeController toggle switches between dark and light and persists to sto
   const controller = new ThemeController({ storage, documentRef: doc, windowRef: win });
   controller.initialize();
 
-  assert.equal(doc.documentElement.getAttribute("data-theme"), THEME_LIGHT);
-  assert.equal(desktopToggle.getAttribute("aria-pressed"), "false");
-  assert.equal(mobileToggle.getAttribute("aria-pressed"), "false");
-
-  // Click desktop toggle -> switches to dark
-  desktopToggle.emit("click");
+  // App starts in default dark mode
   assert.equal(doc.documentElement.getAttribute("data-theme"), THEME_DARK);
   assert.equal(doc.documentElement.classList.contains("dark"), true);
-  assert.equal(storage.getItem(THEME_STORAGE_KEY), THEME_DARK);
   assert.equal(desktopToggle.getAttribute("aria-pressed"), "true");
   assert.equal(mobileToggle.getAttribute("aria-pressed"), "true");
 
-  // Click mobile toggle -> switches to light
-  mobileToggle.emit("click");
+  // Click desktop toggle -> switches to light
+  desktopToggle.emit("click");
   assert.equal(doc.documentElement.getAttribute("data-theme"), THEME_LIGHT);
   assert.equal(doc.documentElement.classList.contains("dark"), false);
   assert.equal(storage.getItem(THEME_STORAGE_KEY), THEME_LIGHT);
   assert.equal(desktopToggle.getAttribute("aria-pressed"), "false");
   assert.equal(mobileToggle.getAttribute("aria-pressed"), "false");
+
+  // Click mobile toggle -> switches back to dark
+  mobileToggle.emit("click");
+  assert.equal(doc.documentElement.getAttribute("data-theme"), THEME_DARK);
+  assert.equal(doc.documentElement.classList.contains("dark"), true);
+  assert.equal(storage.getItem(THEME_STORAGE_KEY), THEME_DARK);
+  assert.equal(desktopToggle.getAttribute("aria-pressed"), "true");
+  assert.equal(mobileToggle.getAttribute("aria-pressed"), "true");
 });
 
 test("ThemeController syncs across tabs via storage event", () => {
@@ -190,11 +192,11 @@ test("ThemeController syncs across tabs via storage event", () => {
   const controller = new ThemeController({ storage, documentRef: doc, windowRef: win });
   controller.initialize();
 
-  assert.equal(doc.documentElement.getAttribute("data-theme"), THEME_LIGHT);
-
-  // Storage event fired from another tab
-  win.emit("storage", { key: THEME_STORAGE_KEY, newValue: THEME_DARK });
   assert.equal(doc.documentElement.getAttribute("data-theme"), THEME_DARK);
-  assert.equal(doc.documentElement.classList.contains("dark"), true);
-  assert.equal(desktopToggle.getAttribute("aria-pressed"), "true");
+
+  // Storage event fired from another tab switching to light
+  win.emit("storage", { key: THEME_STORAGE_KEY, newValue: THEME_LIGHT });
+  assert.equal(doc.documentElement.getAttribute("data-theme"), THEME_LIGHT);
+  assert.equal(doc.documentElement.classList.contains("dark"), false);
+  assert.equal(desktopToggle.getAttribute("aria-pressed"), "false");
 });

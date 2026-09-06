@@ -9,6 +9,7 @@
     "build:css": "pnpm exec tailwindcss -i ./static/src/css/app.css -o ./static/dist/css/app.css --minify",
     "build:js": "node scripts/build-assets.mjs",
     "build": "pnpm run build:css && pnpm run build:js",
+    "capture:docs": "playwright test --config=playwright.docs.config.mjs",
     "test": "node --test tests/frontend/*.test.mjs",
     "test:e2e": "node scripts/prepare-e2e.mjs && playwright test"
   },

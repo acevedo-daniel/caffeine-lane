@@ -27,14 +27,14 @@ export class ThemeController {
   }
 
   getSystemTheme() {
-    if (!this.window?.matchMedia) return THEME_LIGHT;
-    return this.window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? THEME_DARK
-      : THEME_LIGHT;
+    if (!this.window?.matchMedia) return THEME_DARK;
+    return this.window.matchMedia("(prefers-color-scheme: light)").matches
+      ? THEME_LIGHT
+      : THEME_DARK;
   }
 
   getCurrentTheme() {
-    return this.getStoredTheme() || this.getSystemTheme();
+    return this.getStoredTheme() || THEME_DARK;
   }
 
   isDark() {

@@ -228,37 +228,42 @@ test.describe("compiled frontend smoke checks", () => {
     const desktopToggle = page.locator(".site-header__actions [data-theme-toggle]");
     await expect(desktopToggle).toBeVisible();
 
-    // 2. Click desktop toggle to activate dark mode
-    await desktopToggle.click();
+    // 2. Default theme without storage is dark
     await expect(html).toHaveAttribute("data-theme", "dark");
     await expect(html).toHaveClass(/dark/);
     await expect(desktopToggle).toHaveAttribute("aria-pressed", "true");
+
+    // 3. Click desktop toggle to switch to light mode
+    await desktopToggle.click();
+    await expect(html).toHaveAttribute("data-theme", "light");
+    await expect(html).not.toHaveClass(/dark/);
+    await expect(desktopToggle).toHaveAttribute("aria-pressed", "false");
 
     const savedTheme = await page.evaluate(() => localStorage.getItem("caffeine_lane_theme"));
-    expect(savedTheme).toBe("dark");
+    expect(savedTheme).toBe("light");
 
-    // 3. Reload page to verify persistence and absence of FOUT
+    // 4. Reload page to verify persistence of light mode
     await page.reload();
-    await expect(html).toHaveAttribute("data-theme", "dark");
-    await expect(html).toHaveClass(/dark/);
-    await expect(desktopToggle).toHaveAttribute("aria-pressed", "true");
+    await expect(html).toHaveAttribute("data-theme", "light");
+    await expect(html).not.toHaveClass(/dark/);
+    await expect(desktopToggle).toHaveAttribute("aria-pressed", "false");
 
-    // 4. Test mobile drawer synchronization and toggling
+    // 5. Test mobile drawer synchronization and switching back to dark
     await page.setViewportSize({ width: 375, height: 800 });
     const mobileMenuButton = page.locator("[data-mobile-menu-button]");
     await mobileMenuButton.click();
 
     const mobileToggle = page.locator("[data-mobile-menu-panel] [data-theme-toggle]");
     await expect(mobileToggle).toBeVisible();
-    await expect(mobileToggle).toHaveAttribute("aria-pressed", "true");
-
-    // Switch back to light mode via mobile toggle
-    await mobileToggle.click();
-    await expect(html).toHaveAttribute("data-theme", "light");
-    await expect(html).not.toHaveClass(/dark/);
     await expect(mobileToggle).toHaveAttribute("aria-pressed", "false");
 
-    const lightTheme = await page.evaluate(() => localStorage.getItem("caffeine_lane_theme"));
-    expect(lightTheme).toBe("light");
+    // Switch back to dark mode via mobile toggle
+    await mobileToggle.click();
+    await expect(html).toHaveAttribute("data-theme", "dark");
+    await expect(html).toHaveClass(/dark/);
+    await expect(mobileToggle).toHaveAttribute("aria-pressed", "true");
+
+    const darkTheme = await page.evaluate(() => localStorage.getItem("caffeine_lane_theme"));
+    expect(darkTheme).toBe("dark");
   });
 });

@@ -1,0 +1,19 @@
+{
+  "name": "Caffeine Lane",
+  "short_name": "Caffeine Lane",
+  "description": "Diario independiente de cafe racers, proyectos de taller, reseñas y cultura de garaje.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0c0a09",
+  "theme_color": "#0c0a09",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "/static/images/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

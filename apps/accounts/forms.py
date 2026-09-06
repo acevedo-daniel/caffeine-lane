@@ -13,10 +13,7 @@ class EmailRegistrationForm(forms.Form):
     )
 
     def clean_email(self):
-        email = self.cleaned_data["email"].lower()
-        if User.objects.filter(email__iexact=email).exists():
-            raise forms.ValidationError(_("An account with this email already exists."))
-        return email
+        return self.cleaned_data["email"].lower()
 
 
 class RegistrationStep2Form(UserCreationForm):
@@ -44,7 +41,12 @@ class RegistrationStep2Form(UserCreationForm):
 
     def validate_registration_email(self, email):
         if User.objects.filter(email__iexact=email).exists():
-            self.add_error(None, _("An account with this email already exists."))
+            self.add_error(
+                None,
+                _(
+                    "This email cannot be registered. Please sign in or use another email address."
+                ),
+            )
             return False
         return True
 

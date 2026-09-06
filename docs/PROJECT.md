@@ -4,23 +4,21 @@
 
 ## Product
 
-Caffeine Lane is an editorial web application for cafe racer builds, guides, and reviews. It gives motorcycle enthusiasts a structured place to discover long-form content, maintain reader accounts, and participate in moderated discussions.
-
-The product is centered on editorial publishing and community participation rather than commerce or open self-publishing.
+Caffeine Lane is an editorial journal dedicated to custom motorcycles, cafe racer builds, workshop tutorials, and thoughtful rider conversations. Rather than building an ephemeral social feed or marketplace, it focuses on durable long-form articles, verified build specs, and focused reader exchanges.
 
 ## Problem
 
-Detailed motorcycle builds, practical guides, and reviews are often fragmented across social feeds and forum threads. Caffeine Lane organizes that content into durable articles with categories, search, reader profiles, and discussions.
+Great motorcycle craftsmanship takes months or years of work in the garage. Yet, detailed documentation of these builds is often scattered across messy social feeds or fragmented forum threads with broken image links. Caffeine Lane preserves that craft in structured, searchable articles with categorized taxonomy, clean spec sheets, and focused community discussions.
 
 ## Scope
 
 ### In scope
 
-- **Editorial publishing:** Create and manage draft or published posts across categories (`builds`, `guides`, `reviews`), with validated image uploads and related content surfacing.
+- **Editorial publishing:** Create and manage draft or published posts across structural categories (`builds`, `guides`, `reviews`), with validated image uploads and related content surfacing.
 - **Content discovery:** Browse editorial surfaces and categories, search published content with relevance ranking, and preserve search/filter state across pagination.
 - **Accounts and profiles:** Register and authenticate using email identity, manage reader profile details and avatars, with environment-controlled password-reset flows.
 - **Discussion and moderation:** Comment on published posts, reply one level deep, edit or withdraw personal comments, and hide comments via dedicated moderation permissions.
-- **Localization:** Serve the entire application in English or Spanish via Django internationalization.
+- **Localization & themes:** Serve the interface in English or Spanish with persistent light and dark themes.
 
 ### Out of scope
 
@@ -55,7 +53,7 @@ Reader authenticates -> Submits comment on published post
 
 | Actor | Capabilities |
 | --- | --- |
-| Visitor | Browse published content, search and filter articles, change interface language, and use the public contact flow. |
+| Visitor | Browse published content, search and filter articles, change interface language/theme, and use the public contact flow. |
 | Registered reader | Authenticate, maintain a profile, comment on published articles, reply to top-level comments, and manage their own comments. |
 | Moderator | Hide comments when granted the `posts.moderate_comment` permission. |
 | Editor / administrator | Manage editorial content and categories through Django permissions and the Django Admin. |
@@ -83,13 +81,14 @@ Reader authenticates -> Submits comment on published post
 ## Current limitations
 
 - Editorial article creation is permission-controlled rather than open reader self-publishing.
-- Password reset depends on environment configuration and a functioning external email provider.
+- Password reset is disabled by default and depends on environment configuration, a verified Resend sending domain, and a functioning external email provider.
+- Contact delivery depends on Resend; when the provider rejects a message, the application must return a controlled error rather than report success.
 - Production media persistence depends on the configured Cloudinary account.
 - The custom `accounts.User` baseline is incompatible with legacy databases containing the former `accounts_profile` table; `check_fresh_baseline` aborts startup or migration if detected.
 
 ## Provenance
 
-Caffeine Lane started as a final project for the Informatorio program and was later rebuilt and modernized as a personal application.
+Caffeine Lane originated as a capstone project for the Informatorio software training program in Chaco, Argentina. It was subsequently reimagined and rebuilt from scratch as an independent, production-grade web application to explore clean Django architecture, server-rendered responsiveness, bilingual publishing, and motorcycle culture.
 
 ## Related documentation
 
