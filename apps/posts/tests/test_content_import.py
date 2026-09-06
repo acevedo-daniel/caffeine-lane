@@ -3,12 +3,12 @@ import tempfile
 from pathlib import Path
 
 from django.core.exceptions import ValidationError
-from django.core.management import call_command
+from django.core.management import CommandError, call_command
 from django.test import TestCase
 
 from apps.accounts.models import User
 from apps.posts.content_import import import_selected_content
-from apps.posts.management.commands.seed_editorial import EDITORIAL_POSTS
+from apps.posts.management.commands.seed_editorial import EDITORIAL_POSTS, LEGACY_SLUGS
 from apps.posts.models import Category, Post
 
 
@@ -62,12 +62,71 @@ class ContentImportTests(TestCase):
             all(post.featured_image.name.endswith(".webp") for post in posts)
         )
         self.assertTrue(all(post.featured_image_alt for post in posts))
+        self.assertSetEqual(
+            set(posts.values_list("slug", flat=True)),
+            {item["slug"] for item in EDITORIAL_POSTS},
+        )
+        self.assertFalse(posts.filter(slug__in=LEGACY_SLUGS).exists())
         self.assertIn(
             "source/reviews/review-04.webp", {item["image"] for item in EDITORIAL_POSTS}
         )
         self.assertEqual(
             posts.order_by("-published_at").first().slug,
-            "review-the-ride-that-starts-the-story",
+            "la-salida-que-inicia-la-historia",
+        )
+
+    def test_seed_editorial_dry_run_validates_without_writing_data(self):
+        call_command("seed_editorial", "--dry-run")
+
+        self.assertFalse(
+            User.objects.filter(email="editorial-author@example.invalid").exists()
+        )
+        self.assertFalse(Post.objects.exists())
+
+    def test_seed_editorial_migrates_its_legacy_slugs(self):
+        author = User.objects.create_user(
+            email="editorial-author@example.invalid",
+            username="editorial-author",
+            password="unused-password",
+        )
+        legacy_slug, current_slug = next(iter(LEGACY_SLUGS.items()))
+        Post.objects.create(
+            slug=legacy_slug,
+            title="Entrada editorial anterior",
+            excerpt="Resumen editorial anterior.",
+            content="Contenido editorial anterior.",
+            author=author,
+            status=Post.Status.PUBLISHED,
+            published_at="2026-01-01T12:00:00+00:00",
+        )
+
+        call_command("seed_editorial")
+
+        self.assertFalse(Post.objects.filter(slug=legacy_slug).exists())
+        self.assertTrue(Post.objects.filter(slug=current_slug, author=author).exists())
+
+    def test_seed_editorial_does_not_overwrite_another_authors_post(self):
+        foreign_author = User.objects.create_user(
+            email="another-editor@example.invalid",
+            username="another-editor",
+            password="unused-password",
+        )
+        Post.objects.create(
+            slug=EDITORIAL_POSTS[0]["slug"],
+            title="Contenido de otro autor",
+            excerpt="Resumen de otro autor.",
+            content="Contenido que la semilla no debe sobrescribir.",
+            author=foreign_author,
+            status=Post.Status.PUBLISHED,
+            published_at="2026-01-01T12:00:00+00:00",
+        )
+
+        with self.assertRaisesRegex(CommandError, "another author"):
+            call_command("seed_editorial")
+
+        self.assertEqual(
+            Post.objects.get(slug=EDITORIAL_POSTS[0]["slug"]).author,
+            foreign_author,
         )
 
     def test_verify_editorial_baseline_confirms_migration_and_categories(self):

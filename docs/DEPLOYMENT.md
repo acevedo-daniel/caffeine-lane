@@ -97,10 +97,11 @@ check_fresh_baseline
 The editorial dataset is intentionally separate from schema release:
 
 ```bash
+uv run python manage.py seed_editorial --dry-run
 uv run python manage.py seed_editorial
 ```
 
-It is idempotent, but it writes content and can upload media. Run it only after editorial review and never as part of a normal Vercel deployment. Docker's `SEED_EDITORIAL_ON_START` remains disabled by default for exceptional self-hosted use.
+The dry run checks text, slugs, dates, category distribution, and bundled images without writing data. The seed itself is idempotent, but it writes content and can upload media. Run it only after editorial review and never as part of a normal Vercel deployment. Docker's `SEED_EDITORIAL_ON_START` remains disabled by default for exceptional self-hosted use.
 
 ## Validation
 

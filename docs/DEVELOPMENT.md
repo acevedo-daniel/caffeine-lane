@@ -120,10 +120,11 @@ That fallback is convenient for isolated or offline work, but PostgreSQL is the 
 ### Editorial dataset
 
 ```bash
+uv run python manage.py seed_editorial --dry-run
 uv run python manage.py seed_editorial
 ```
 
-The editorial seed populates a structured content set used for local demonstration and automated browser tests.
+The editorial seed populates a curated Spanish-language content set used for local demonstration and automated browser tests. The dry run validates every slug, publication date, category distribution, text field, and bundled image without writing data.
 
 Vercel deployments never seed automatically. Docker startup executes `seed_editorial` only when `SEED_EDITORIAL_ON_START=true` is explicitly provided.
 
