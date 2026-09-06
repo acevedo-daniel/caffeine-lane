@@ -127,6 +127,8 @@ After a successful Vercel deployment, verify the public application at [caffeine
 - Registration does not reveal an existing email during the first step; duplicate-account handling remains generic.
 - Contact delivery is tested only with an approved Resend test recipient or a verified sender domain.
 - Password recovery remains visibly unavailable while `PASSWORD_RESET_ENABLED=false`.
+- `/robots.txt` lists only the intended crawl exclusions and points to the public sitemap.
+- `/sitemap.xml`, canonical URLs, social cards, and JSON-LD use the configured `PUBLIC_SITE_URL` in production.
 - Vercel runtime logs contain no import, database, static asset or email configuration errors.
 
 ## Pre-release verification

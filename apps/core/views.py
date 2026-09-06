@@ -9,6 +9,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_exempt
 
@@ -16,6 +17,7 @@ from apps.posts.models import Category, Post
 from apps.posts.taxonomy import CategorySlug
 
 from .forms import ContactForm
+from .seo import absolute_url, article_schema, localized_copy, website_schema
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +40,24 @@ def health(request):
     return JsonResponse({"status": "ok"})
 
 
+def robots_txt(request):
+    lines = [
+        "User-agent: *",
+        "Disallow: /admin/",
+        "Disallow: /accounts/",
+        "Disallow: /csp-report/",
+        "Disallow: /posts/comments/",
+        "Disallow: /posts/new/",
+        "Disallow: /posts/search/",
+        "Disallow: /400/",
+        "Disallow: /403/",
+        "Disallow: /404/",
+        "Disallow: /500/",
+        f"Sitemap: {absolute_url(request, reverse('sitemap'))}",
+    ]
+    return HttpResponse("\n".join(lines) + "\n", content_type="text/plain")
+
+
 def landing(request):
     featured_build = (
         Post.objects.for_listing().filter(categories__slug=CategorySlug.BUILDS).first()
@@ -52,6 +72,24 @@ def landing(request):
         "builds_category_slug": CategorySlug.BUILDS,
         "guides_category_slug": CategorySlug.GUIDES,
         "reviews_category_slug": CategorySlug.REVIEWS,
+        "seo_page_title": localized_copy(
+            request,
+            "Caffeine Lane · Cultura cafe racer curada",
+            "Caffeine Lane · Curated Cafe Racer Culture",
+        ),
+        "seo_page_description": localized_copy(
+            request,
+            "Historias de taller, despieces técnicos y cultura cafe racer para "
+            "quienes eligen el camino largo a casa.",
+            "Workshop stories, technical breakdowns, and cafe racer culture for "
+            "riders who choose the long way home.",
+        ),
+        "seo_page_image": (
+            request.build_absolute_uri(featured_build.featured_image.url)
+            if featured_build and featured_build.featured_image
+            else None
+        ),
+        "seo_structured_data": website_schema(request),
     }
     return render(request, "core/landing.html", context)
 
@@ -78,6 +116,24 @@ def home(request):
         "reviews_category_slug": CategorySlug.REVIEWS,
         "total_posts": total_posts,
         "categories": categories,
+        "seo_page_title": localized_copy(
+            request,
+            "Caffeine Lane · Inicio editorial",
+            "Caffeine Lane · Editorial Home",
+        ),
+        "seo_page_description": localized_copy(
+            request,
+            "Explorá proyectos, guías y reseñas de motocicletas construidas para "
+            "el taller y la ruta.",
+            "Explore motorcycle builds, workshop guides, and reviews made for the "
+            "garage and the open road.",
+        ),
+        "seo_page_image": (
+            request.build_absolute_uri(banner_posts[0].featured_image.url)
+            if banner_posts and banner_posts[0].featured_image
+            else None
+        ),
+        "seo_structured_data": website_schema(request),
     }
 
     return render(request, "core/home.html", context)
@@ -87,7 +143,21 @@ def about(request):
     return render(
         request,
         "core/about.html",
-        {"guides_category_slug": CategorySlug.GUIDES},
+        {
+            "guides_category_slug": CategorySlug.GUIDES,
+            "seo_page_title": localized_copy(
+                request,
+                "Acerca de Caffeine Lane · Cultura moto editorial",
+                "About Caffeine Lane · Editorial Moto Culture",
+            ),
+            "seo_page_description": localized_copy(
+                request,
+                "Conocé el enfoque editorial de Caffeine Lane: oficio de garaje, "
+                "criterio técnico y cultura motociclista.",
+                "Learn about Caffeine Lane's editorial approach to garage craft, "
+                "technical judgment, and motorcycle culture.",
+            ),
+        },
     )
 
 
@@ -157,5 +227,14 @@ def contact(request):
         form = ContactForm()
     context = {
         "form": form,
+        "seo_page_title": localized_copy(
+            request, "Contacto · Caffeine Lane", "Contact Caffeine Lane"
+        ),
+        "seo_page_description": localized_copy(
+            request,
+            "Contactá al equipo editorial de Caffeine Lane.",
+            "Contact the Caffeine Lane editorial team.",
+        ),
+        "seo_robots": "noindex, follow",
     }
     return render(request, "core/contact.html", context)

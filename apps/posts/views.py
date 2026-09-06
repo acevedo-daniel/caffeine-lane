@@ -13,6 +13,8 @@ from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
+from apps.core.seo import article_schema, localized_copy
+
 from .comment_services import (
     create_comment,
     hide_comment,
@@ -81,6 +83,15 @@ def post_detail(request, slug):
             .exclude(pk=post.pk)
             .distinct()[:3]
         ),
+        "seo_page_title": f"{post.title} · Caffeine Lane",
+        "seo_page_description": post.excerpt or post.content[:160],
+        "seo_page_image": (
+            request.build_absolute_uri(post.featured_image.url)
+            if post.featured_image
+            else None
+        ),
+        "seo_page_type": "article",
+        "seo_structured_data": article_schema(request, post),
     }
     return render(request, "posts/post_detail.html", context)
 
@@ -138,6 +149,16 @@ def category_view(request, category_slug):
         "is_paginated": page_obj.has_other_pages(),
         "current_sort": sort,
         "pagination_query": pagination_query.urlencode(),
+        "seo_page_title": f"{category.name} · Caffeine Lane",
+        "seo_page_description": category.description
+        or localized_copy(
+            request,
+            f"Historias editoriales de la categoría {category.name}.",
+            f"Editorial stories from the {category.name} category.",
+        ),
+        "seo_page_image": (
+            request.build_absolute_uri(category.image.url) if category.image else None
+        ),
     }
     return render(request, "posts/category_view.html", context)
 
@@ -296,6 +317,16 @@ class PostSearchView(ListView):
         context["current_category"] = self.request.GET.get("category", "")
         context["current_sort"] = self.search_form.cleaned_data.get("sort", "relevance")
         context["pagination_query"] = pagination_query.urlencode()
+        context["seo_page_title"] = localized_copy(
+            self.request, "Buscar en Caffeine Lane", "Search Caffeine Lane"
+        )
+        context["seo_page_description"] = localized_copy(
+            self.request,
+            "Buscá proyectos cafe racer, guías de taller, reseñas y despachos "
+            "motociclistas.",
+            "Search cafe racer builds, workshop guides, reviews, and rider dispatches.",
+        )
+        context["seo_robots"] = "noindex, follow"
         return context
 
 

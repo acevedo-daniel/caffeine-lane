@@ -46,6 +46,7 @@ On Windows PowerShell, use `Copy-Item .env.example .env`.
 | `DATABASE_URL` | No | Database connection string. Points to Compose PostgreSQL; omitting it enables the SQLite fallback. |
 | `ALLOWED_HOSTS` | No | Allowed hostnames for local requests. |
 | `CSRF_TRUSTED_ORIGINS` | No | Trusted origins for local form submissions. |
+| `PUBLIC_SITE_URL` | No | Base URL for canonical, social-card, robots, and sitemap metadata; leave empty locally to use the request host. |
 | `DEBUG_TOOLBAR_ENABLED` | No | Enables Django Debug Toolbar locally. |
 | `DEFAULT_FROM_EMAIL` | No | Sender address used by local console email flow. |
 | `CONTACT_RECIPIENT_EMAIL` | No | Recipient address when testing contact submissions. |

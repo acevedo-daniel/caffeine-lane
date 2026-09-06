@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    "django.contrib.sitemaps",
     "django.contrib.staticfiles",
     "apps.core",
     "apps.posts",
@@ -52,6 +53,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "apps.accounts.context_processors.feature_flags",
                 "apps.posts.context_processors.navigation_categories",
+                "apps.core.context_processors.seo",
             ],
         },
     },
@@ -109,3 +111,4 @@ CONTACT_RECIPIENT_EMAIL = env.str("CONTACT_RECIPIENT_EMAIL", default=DEFAULT_FRO
 CONTACT_RATE_LIMIT = env.int("CONTACT_RATE_LIMIT", default=5)
 CONTACT_RATE_LIMIT_WINDOW = env.int("CONTACT_RATE_LIMIT_WINDOW", default=3600)
 PASSWORD_RESET_ENABLED = env.bool("PASSWORD_RESET_ENABLED", default=False)
+PUBLIC_SITE_URL = env.str("PUBLIC_SITE_URL", default="")

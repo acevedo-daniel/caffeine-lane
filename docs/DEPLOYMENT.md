@@ -64,6 +64,7 @@ Do not replace the Install Command with `pnpm install` alone: a custom install c
 | `DATABASE_URL` | Vercel runtime | Neon **pooled** connection string used by the web runtime. |
 | `ALLOWED_HOSTS` | Vercel runtime | Production and preview hostnames, comma-separated. |
 | `CSRF_TRUSTED_ORIGINS` | Vercel runtime | HTTPS production and preview origins, comma-separated. |
+| `PUBLIC_SITE_URL` | Vercel runtime | Canonical, sitemap, and social-card base URL; set production to `https://caffeine-lane.vercel.app`. |
 | `CLOUDINARY_URL` | Vercel runtime | Cloudinary storage credentials. |
 | `RESEND_API_KEY` | Vercel runtime | Resend API credential. |
 | `DEFAULT_FROM_EMAIL` | Vercel runtime | Verified sender address. |
@@ -86,6 +87,12 @@ Production settings require the Resend configuration because the production emai
 The contact flow must report a delivery failure instead of showing success when Resend rejects or cannot deliver a message. Exercise that failure path in tests and use Resend's [safe test recipients](https://resend.com/docs/dashboard/emails/send-test-emails) for controlled delivery checks.
 
 Contact protection combines CSRF, a hidden honeypot field, input length limits, and an IP-based rate limit. The default limit is five submissions per hour (`CONTACT_RATE_LIMIT=5`, `CONTACT_RATE_LIMIT_WINDOW=3600`). Vercel's default cache is not a shared distributed limiter, so this is a basic best-effort protection; introduce shared rate limiting only if real abuse requires it.
+
+### Public metadata boundary
+
+`PUBLIC_SITE_URL` is the source of truth for canonical URLs, Open Graph URLs, JSON-LD URLs, `robots.txt`, and `sitemap.xml`. Set it explicitly in the production Vercel environment and never point it at a preview deployment. Public landing, home, category, and published article pages are indexable; authentication, admin, contact, search, comment, editor, and error surfaces are marked `noindex` or disallowed from crawling.
+
+The base template also provides the favicon, web manifest, theme colors, Open Graph tags, and Twitter/X card tags. The sitemap only includes public landing, home, category, and published article URLs.
 
 ## Database migrations
 
@@ -141,6 +148,8 @@ After deployment, verify:
 - Landing, home, categories, search, authentication, and contact flow work.
 - CSS and JavaScript are served from Vercel's CDN.
 - Cloudinary media renders correctly.
+- `/robots.txt` and `/sitemap.xml` use the production public URL and expose only indexable routes.
+- The home page and a published article contain canonical, Open Graph, Twitter/X, and JSON-LD metadata.
 - No errors appear in Vercel deployment and runtime logs.
 
 ## Docker boundary
