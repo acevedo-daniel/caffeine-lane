@@ -59,12 +59,12 @@
           {% for post in posts %}
             {% include "components/post_card.html" with post=post %}
           {% empty %}
-            <div class="editorial-empty col-span-full py-12 text-center bg-white border border-stone-200 rounded-sm p-8">
-              <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-stone-100 text-stone-500 mb-4 mx-auto text-xl" aria-hidden="true">
+            <div class="editorial-empty col-span-full py-12 text-center bg-surface border border-border rounded-sm p-8">
+              <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-surface-secondary text-foreground-muted mb-4 mx-auto text-xl" aria-hidden="true">
                 <i class="fa-solid fa-box-archive"></i>
               </div>
-              <h3 class="font-bebas text-4xl tracking-wide text-stone-950">{% translate "Nothing here yet." %}</h3>
-              <p class="mt-2 text-stone-600 max-w-md mx-auto">
+              <h3 class="font-bebas text-4xl tracking-wide text-foreground">{% translate "Nothing here yet." %}</h3>
+              <p class="mt-2 text-foreground-secondary max-w-md mx-auto">
                 {% translate "There are no stories in this category yet. Check the other categories while the next one is being prepared." %}
               </p>
               <a class="button-primary inline-flex items-center gap-2 mt-6 uppercase text-xs font-bold tracking-wider px-5 py-2.5" href="{% url 'home' %}">

@@ -47,6 +47,13 @@
         <noscript><button type="submit">{% translate "Change language" %}</button></noscript>
       </form>
 
+      <!-- Theme Toggle -->
+      <button type="button" class="site-header__theme-toggle" data-theme-toggle aria-label="{% translate 'Toggle theme' %}" aria-pressed="false" data-label-light="{% translate 'Switch to light theme' %}" data-label-dark="{% translate 'Switch to dark theme' %}" title="{% translate 'Toggle theme' %}">
+        <i class="fa-solid fa-moon theme-toggle__icon-moon" aria-hidden="true"></i>
+        <i class="fa-solid fa-sun theme-toggle__icon-sun" aria-hidden="true"></i>
+        <span class="sr-only">{% translate "Toggle theme" %}</span>
+      </button>
+
       <!-- Auth CTAs -->
       <div class="site-header__auth flex items-center gap-3">
         {% if user.is_authenticated %}
@@ -89,7 +96,7 @@
       <div class="mobile-drawer__header">
         <div class="flex items-center gap-2.5">
           {% include "components/character_badge.html" with asset="character-signature-256.webp" size="xs" alt="" class_name="drawer-rider" %}
-          <span class="font-bebas text-2xl tracking-wider text-stone-900">CAFFEINE LANE</span>
+          <span class="font-bebas text-2xl tracking-wider text-foreground">CAFFEINE LANE</span>
         </div>
         <button type="button" data-mobile-menu-close class="mobile-drawer__close" aria-label="{% translate 'Close navigation menu' %}">
           <i class="fa-solid fa-xmark" aria-hidden="true"></i>
@@ -130,10 +137,23 @@
         </a>
       </nav>
 
+      <!-- Mobile Theme Toggle -->
+      <div class="mobile-drawer__theme-wrap px-5 py-3 border-t border-border-subtle flex items-center justify-between">
+        <span class="text-xs font-bold uppercase tracking-wider text-foreground-muted flex items-center gap-2">
+          <i class="fa-solid fa-circle-half-stroke text-foreground-muted" aria-hidden="true"></i>
+          <span>{% translate "Appearance" %}</span>
+        </span>
+        <button type="button" class="site-header__theme-toggle site-header__theme-toggle--mobile" data-theme-toggle aria-label="{% translate 'Toggle theme' %}" aria-pressed="false" data-label-light="{% translate 'Switch to light theme' %}" data-label-dark="{% translate 'Switch to dark theme' %}" data-text-dark="{% translate 'Dark mode' %}" data-text-light="{% translate 'Light mode' %}">
+          <i class="fa-solid fa-moon theme-toggle__icon-moon" aria-hidden="true"></i>
+          <i class="fa-solid fa-sun theme-toggle__icon-sun" aria-hidden="true"></i>
+          <span class="theme-toggle__state-text text-xs font-bold uppercase tracking-wider">{% translate "Theme" %}</span>
+        </button>
+      </div>
+
       <!-- Mobile Language Switcher -->
-      <div class="mobile-drawer__lang-wrap px-5 py-3 border-t border-stone-200/60 flex items-center justify-between">
-        <span class="text-xs font-bold uppercase tracking-wider text-stone-500 flex items-center gap-2">
-          <i class="fa-solid fa-globe text-stone-400" aria-hidden="true"></i>
+      <div class="mobile-drawer__lang-wrap px-5 py-3 border-t border-border-subtle flex items-center justify-between">
+        <span class="text-xs font-bold uppercase tracking-wider text-foreground-muted flex items-center gap-2">
+          <i class="fa-solid fa-globe text-foreground-muted" aria-hidden="true"></i>
           <span>{% translate "Language" %}</span>
         </span>
         <form action="{% url 'set_language' %}" method="post" class="language-switcher site-header__lang">

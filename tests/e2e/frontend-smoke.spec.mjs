@@ -217,4 +217,48 @@ test.describe("compiled frontend smoke checks", () => {
     await expect(page.locator(".error-page .character-badge--xl")).toBeVisible();
     await expect(page.locator(".error-page__action")).toBeVisible();
   });
+
+  test("Phase 4: Dark mode toggle switches themes, synchronizes mobile drawer, and persists across reloads", async ({ page }) => {
+    // 1. Visit home page and clear existing theme in storage
+    await page.goto("/home/");
+    await page.evaluate(() => localStorage.removeItem("caffeine_lane_theme"));
+    await page.reload();
+
+    const html = page.locator("html");
+    const desktopToggle = page.locator(".site-header__actions [data-theme-toggle]");
+    await expect(desktopToggle).toBeVisible();
+
+    // 2. Click desktop toggle to activate dark mode
+    await desktopToggle.click();
+    await expect(html).toHaveAttribute("data-theme", "dark");
+    await expect(html).toHaveClass(/dark/);
+    await expect(desktopToggle).toHaveAttribute("aria-pressed", "true");
+
+    const savedTheme = await page.evaluate(() => localStorage.getItem("caffeine_lane_theme"));
+    expect(savedTheme).toBe("dark");
+
+    // 3. Reload page to verify persistence and absence of FOUT
+    await page.reload();
+    await expect(html).toHaveAttribute("data-theme", "dark");
+    await expect(html).toHaveClass(/dark/);
+    await expect(desktopToggle).toHaveAttribute("aria-pressed", "true");
+
+    // 4. Test mobile drawer synchronization and toggling
+    await page.setViewportSize({ width: 375, height: 800 });
+    const mobileMenuButton = page.locator("[data-mobile-menu-button]");
+    await mobileMenuButton.click();
+
+    const mobileToggle = page.locator("[data-mobile-menu-panel] [data-theme-toggle]");
+    await expect(mobileToggle).toBeVisible();
+    await expect(mobileToggle).toHaveAttribute("aria-pressed", "true");
+
+    // Switch back to light mode via mobile toggle
+    await mobileToggle.click();
+    await expect(html).toHaveAttribute("data-theme", "light");
+    await expect(html).not.toHaveClass(/dark/);
+    await expect(mobileToggle).toHaveAttribute("aria-pressed", "false");
+
+    const lightTheme = await page.evaluate(() => localStorage.getItem("caffeine_lane_theme"));
+    expect(lightTheme).toBe("light");
+  });
 });

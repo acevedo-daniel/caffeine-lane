@@ -1,3 +1,5 @@
+import { initializeThemeToggle } from "./theme-toggle.js";
+
 export class MobileMenuController {
   constructor({ button, menu, documentRef = document } = {}) {
     this.button = button;
@@ -139,10 +141,13 @@ export const initializeSearchShortcut = (documentRef = document) => {
   });
 };
 
+export { initializeThemeToggle } from "./theme-toggle.js";
+
 const initializeBase = () => {
   initializeMobileMenu();
   initializeFlashMessages();
   initializeSearchShortcut();
+  initializeThemeToggle();
 };
 
 if (typeof document !== "undefined") {
