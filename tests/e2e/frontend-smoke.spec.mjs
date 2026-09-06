@@ -11,13 +11,13 @@ test.describe("compiled frontend smoke checks", () => {
     await expect(track).toHaveAttribute("data-carousel-initialized", "true");
     await expect(index).toHaveText("01");
 
-    await hero.getByRole("button", { name: "Next post" }).click();
+    await hero.getByRole("button", { name: /(Next post|Siguiente publicación)/i }).click();
     await expect(index).toHaveText("02");
     await expect(track).toHaveCSS("transform", /matrix\(1, 0, 0, 1, -/);
 
-    await hero.getByRole("button", { name: "Next post" }).click();
+    await hero.getByRole("button", { name: /(Next post|Siguiente publicación)/i }).click();
     await expect(index).toHaveText("03");
-    await hero.getByRole("button", { name: "Previous post" }).click();
+    await hero.getByRole("button", { name: /(Previous post|Publicación anterior)/i }).click();
     await expect(index).toHaveText("02");
 
     await page.mouse.move(0, 0);
@@ -37,8 +37,16 @@ test.describe("compiled frontend smoke checks", () => {
   test("language and custom selects synchronize with their native controls", async ({ page }) => {
     await page.goto("/home/");
 
+    // Phase 3 requirement: Default is Spanish on cold visit
+    await expect(page.locator("html")).toHaveAttribute("lang", "es");
+
     const languageSelect = page.locator("#language-switcher");
     const languageControl = languageSelect.locator("..");
+    await languageControl.getByRole("combobox").click();
+    await languageControl.getByRole("option", { name: "en", exact: true }).click();
+    await expect(page.locator("html")).toHaveAttribute("lang", "en");
+
+    // Can switch back to Spanish
     await languageControl.getByRole("combobox").click();
     await languageControl.getByRole("option", { name: "es", exact: true }).click();
     await expect(page.locator("html")).toHaveAttribute("lang", "es");
@@ -62,11 +70,12 @@ test.describe("compiled frontend smoke checks", () => {
     await menuButton.click();
     await expect(menuButton).toHaveAttribute("aria-expanded", "true");
     await expect(menuPanel).toHaveClass(/is-open/);
+    await expect(menuPanel.locator("#mobile-language-switcher")).toBeVisible();
 
     await page.goto("/accounts/login/");
     await page.locator("#id_username").fill("e2e-rider@example.test");
     await page.locator("#id_password").fill("e2e-rider-password");
-    await page.getByRole("button", { name: "Sign in" }).click();
+    await page.getByRole("button", { name: /(Sign in|Iniciar sesión)/i }).click();
     await expect(page).toHaveURL(/\/home\/$/);
 
     await page.goto("/posts/cafe-racer-de-garaje/");
@@ -117,7 +126,7 @@ test.describe("compiled frontend smoke checks", () => {
     // 2. Build specs inspector
     const specsInspector = page.locator(".build-specs-inspector");
     await expect(specsInspector).toBeVisible();
-    await expect(specsInspector.locator("h2#specs-heading")).toHaveText("Technical Specs Inspector");
+    await expect(specsInspector.locator("h2#specs-heading")).toHaveText(/(Technical Specs Inspector|Inspector de especificaciones técnicas)/);
     await expect(specsInspector.locator(".build-specs-inspector__row").first()).toBeVisible();
 
     // 3. Author signature seal with The Rider signature badge
@@ -166,7 +175,7 @@ test.describe("compiled frontend smoke checks", () => {
     const timestamp = Date.now();
     const testEmail = `e2e-phase6-${timestamp}@example.test`;
     await page.locator("#id_email").fill(testEmail);
-    await page.getByRole("button", { name: "Continue" }).click();
+    await page.getByRole("button", { name: /(Continue|Continuar)/i }).click();
 
     // Step 2 onboarding
     await expect(page).toHaveURL(/\/accounts\/register\/step2\/$/);
@@ -177,7 +186,7 @@ test.describe("compiled frontend smoke checks", () => {
     await page.locator("#id_password1").fill("SecurePass123!");
     await page.locator("#id_password2").fill("SecurePass123!");
     await page.locator("#id_has_motorcycle_0").check();
-    await page.getByRole("button", { name: "Create account" }).click();
+    await page.getByRole("button", { name: /(Create account|Crear cuenta)/i }).click();
 
     await expect(page).toHaveURL(/\/home\/$/);
 
@@ -194,7 +203,7 @@ test.describe("compiled frontend smoke checks", () => {
     await expect(page.locator(".account-shell")).toBeVisible();
     await expect(page.locator(".profile-avatar-card")).toBeVisible();
     await expect(page.locator(".profile-fleet-card")).toBeVisible();
-    await expect(page.locator(".profile-fleet-card")).toContainText("Active Garage Rider");
+    await expect(page.locator(".profile-fleet-card")).toContainText(/(Active Garage Rider|Motorista activo de garaje)/);
     await expect(page.locator(".profile-comments-section")).toBeVisible();
 
     // 3. Simulated error pages

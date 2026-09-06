@@ -65,7 +65,7 @@
                   <div class="landing-hero__card-badge-row">
                     <span class="editorial-kicker text-stone-300">{% translate "Featured Build" %}</span>
                     {% if featured_build.reading_time %}
-                      <span class="landing-hero__card-meta">{{ featured_build.reading_time }} min read</span>
+                      <span class="landing-hero__card-meta">{% blocktranslate with minutes=featured_build.reading_time %}{{ minutes }} min read{% endblocktranslate %}</span>
                     {% endif %}
                   </div>
                   <h2 class="font-bebas text-3xl sm:text-4xl text-white tracking-wide mt-1.5 group-hover:text-stone-300 transition-colors">
@@ -114,8 +114,8 @@
             {% translate "Caffeine Lane is an independent journal dedicated to cafe racers, custom garage builds, and the road culture that binds us. Every machine featured is built with intention, tested in the elements, and documented down to the last fastener." %}
           </p>
           <div class="landing-manifesto-card__quote">
-            <span class="landing-manifesto-card__signoff">“The road is ours.”</span>
-            <span class="text-xs text-stone-500 font-semibold tracking-wider uppercase">— The Rider</span>
+            <span class="landing-manifesto-card__signoff">{% translate "“The road is ours.”" %}</span>
+            <span class="text-xs text-stone-500 font-semibold tracking-wider uppercase">— {% translate "The Rider" %}</span>
           </div>
         </div>
       </div>
@@ -168,9 +168,9 @@
             {% translate "One-of-a-kind cafe racers, trackers, and brats forged with craft, sweat, and steel." %}
           </p>
           <div class="category-card__tags">
-            <span class="category-card__tag">Cafe Racers</span>
-            <span class="category-card__tag">Trackers</span>
-            <span class="category-card__tag">Scramblers</span>
+            <span class="category-card__tag">{% translate "Cafe Racers" %}</span>
+            <span class="category-card__tag">{% translate "Trackers" %}</span>
+            <span class="category-card__tag">{% translate "Scramblers" %}</span>
           </div>
           <span class="category-card__link">
             {% translate "View Builds" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
@@ -193,9 +193,9 @@
             {% translate "Step-by-step teardowns, carburetor tuning, wiring schematics, and bench wisdom." %}
           </p>
           <div class="category-card__tags">
-            <span class="category-card__tag">Carburetors</span>
-            <span class="category-card__tag">Electrical</span>
-            <span class="category-card__tag">Engine Tuning</span>
+            <span class="category-card__tag">{% translate "Carburetors" %}</span>
+            <span class="category-card__tag">{% translate "Electrical" %}</span>
+            <span class="category-card__tag">{% translate "Engine Tuning" %}</span>
           </div>
           <span class="category-card__link">
             {% translate "Read Guides" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
@@ -218,9 +218,9 @@
             {% translate "Helmets, leathers, boots, and tools evaluated across thousands of real road miles." %}
           </p>
           <div class="category-card__tags">
-            <span class="category-card__tag">Helmets</span>
-            <span class="category-card__tag">Leathers</span>
-            <span class="category-card__tag">Garage Tools</span>
+            <span class="category-card__tag">{% translate "Helmets" %}</span>
+            <span class="category-card__tag">{% translate "Leathers" %}</span>
+            <span class="category-card__tag">{% translate "Garage Tools" %}</span>
           </div>
           <span class="category-card__link">
             {% translate "Browse Reviews" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
