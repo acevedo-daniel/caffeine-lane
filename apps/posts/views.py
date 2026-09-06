@@ -153,8 +153,8 @@ def category_view(request, category_slug):
         "seo_page_description": category.description
         or localized_copy(
             request,
-            f"Historias editoriales de la categoría {category.name}.",
-            f"Editorial stories from the {category.name} category.",
+            f"Proyectos, guías de taller y notas dedicadas a {category.name.lower()}.",
+            f"Handcrafted builds, workshop guides, and stories filed under {category.name.lower()}.",
         ),
         "seo_page_image": (
             request.build_absolute_uri(category.image.url) if category.image else None
@@ -318,13 +318,14 @@ class PostSearchView(ListView):
         context["current_sort"] = self.search_form.cleaned_data.get("sort", "relevance")
         context["pagination_query"] = pagination_query.urlencode()
         context["seo_page_title"] = localized_copy(
-            self.request, "Buscar en Caffeine Lane", "Search Caffeine Lane"
+            self.request,
+            "Buscar en el archivo · Caffeine Lane",
+            "Search the Archives · Caffeine Lane",
         )
         context["seo_page_description"] = localized_copy(
             self.request,
-            "Buscá proyectos cafe racer, guías de taller, reseñas y despachos "
-            "motociclistas.",
-            "Search cafe racer builds, workshop guides, reviews, and rider dispatches.",
+            "Explorá el archivo de motos custom, guías prácticas de taller y pruebas de ruta.",
+            "Explore our archive of custom builds, hands-on workshop guides, and road tests.",
         )
         context["seo_robots"] = "noindex, follow"
         return context

@@ -928,20 +928,20 @@ msgid "Create a profile to join the conversation, follow the builds, and be part
 msgstr "Creá un perfil para sumarte a la conversación, seguir los proyectos y ser parte de la comunidad."
 
 #: .\apps\core\templates\core\landing.html:4
-msgid "CAFFEINE LANE · Curated Cafe Racer Culture"
-msgstr "CAFFEINE LANE · Cultura Café Racer Curada"
+msgid "CAFFEINE LANE · Independent Cafe Racer Culture"
+msgstr "CAFFEINE LANE · Cultura Café Racer Independiente"
 
 #: .\apps\core\templates\core\landing.html:14
 msgid "Issue 2026"
 msgstr "Edición 2026"
 
 #: .\apps\core\templates\core\landing.html:15
-msgid "Curated Moto Journeys"
-msgstr "Viajes en moto seleccionados"
+msgid "Journeys & Garage Notes"
+msgstr "Rutas y notas de taller"
 
 #: .\apps\core\templates\core\landing.html:18
-msgid "HAND-BUILT HONESTY. CURATED CAFE RACER CULTURE."
-msgstr "HONESTIDAD HECHA A MANO. CULTURA CAFÉ RACER CURADA."
+msgid "HAND-BUILT HONESTY. INDEPENDENT CAFE RACER CULTURE."
+msgstr "HONESTIDAD HECHA A MANO. CULTURA CAFÉ RACER INDEPENDIENTE."
 
 #: .\apps\core\templates\core\landing.html:21
 msgid "Stories, technical teardowns, and garage craft for riders who take the long way home."
@@ -960,8 +960,8 @@ msgid "Hand-Built"
 msgstr "Hecho a mano"
 
 #: .\apps\core\templates\core\landing.html:38
-msgid "Curated garage features"
-msgstr "Historias seleccionadas de garaje"
+msgid "Handcrafted garage features"
+msgstr "Proyectos de garaje seleccionados"
 
 #: .\apps\core\templates\core\landing.html:44
 #: .\apps\core\templates\core\landing.html:132
@@ -1045,8 +1045,8 @@ msgid "No trailer queens. Every machine and piece of gear is evaluated across th
 msgstr "Nada de motos para exhibición en remolque. Cada máquina y pieza de equipo se evalúa a lo largo de miles de kilómetros reales en ruta."
 
 #: .\apps\core\templates\core\landing.html:148
-msgid "Core Taxonomy"
-msgstr "Taxonomía principal"
+msgid "Workshop Sections"
+msgstr "Secciones del taller"
 
 #: .\apps\core\templates\core\landing.html:150
 msgid "Explore By Category"
@@ -1129,8 +1129,8 @@ msgid "View all stories"
 msgstr "Ver todas las historias"
 
 #: .\apps\core\templates\core\landing.html:263
-msgid "Global Collective"
-msgstr "Comunidad global"
+msgid "The Garage Collective"
+msgstr "Comunidad de garaje"
 
 #: .\apps\core\templates\core\landing.html:265
 msgid "Join 1,000+ custom motorcycle builders"
@@ -2090,7 +2090,7 @@ msgstr "CAFFEINE LANE"
 
 #: .\templates\components\post_card.html:19
 msgid "Dispatch"
-msgstr "Despacho"
+msgstr "Nota"
 
 #: .\templates\layouts\account.html:7
 msgid "Account"

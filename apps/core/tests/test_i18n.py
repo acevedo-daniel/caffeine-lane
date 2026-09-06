@@ -18,7 +18,9 @@ class InternationalizationTests(TestCase):
         self.assertEqual(response.status_code, 200)
         content = response.content.decode("utf-8")
         self.assertIn('lang="es"', content)
-        self.assertIn("HONESTIDAD HECHA A MANO. CULTURA CAFÉ RACER CURADA.", content)
+        self.assertIn(
+            "HONESTIDAD HECHA A MANO. CULTURA CAFÉ RACER INDEPENDIENTE.", content
+        )
 
     def test_set_language_to_english_and_preserves_next_url(self):
         """Switching to English sets cookie and switches language in subsequent requests."""

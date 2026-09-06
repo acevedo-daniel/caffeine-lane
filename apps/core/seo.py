@@ -7,12 +7,12 @@ from django.utils.safestring import mark_safe
 
 SITE_NAME = "Caffeine Lane"
 DEFAULT_DESCRIPTION = (
-    "Editorial journal for cafe racer builds, practical workshop guides, reviews, "
-    "and rider culture."
+    "An independent journal for cafe racer builds, workshop logs, reviews, "
+    "and motorcycle craft."
 )
 DEFAULT_DESCRIPTION_ES = (
-    "Publicación editorial sobre cafe racers, guías prácticas de taller, reseñas "
-    "y cultura motociclista."
+    "Diario independiente de cafe racers, proyectos de taller, reseñas "
+    "y cultura de garaje."
 )
 
 

@@ -1,7 +1,7 @@
 {
   "name": "Caffeine Lane",
   "short_name": "Caffeine Lane",
-  "description": "Editorial journal for cafe racer builds, practical workshop guides, reviews, and rider culture.",
+  "description": "Diario independiente de cafe racers, proyectos de taller, reseñas y cultura de garaje.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

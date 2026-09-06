@@ -74,15 +74,15 @@ def landing(request):
         "reviews_category_slug": CategorySlug.REVIEWS,
         "seo_page_title": localized_copy(
             request,
-            "Caffeine Lane · Cultura cafe racer curada",
-            "Caffeine Lane · Curated Cafe Racer Culture",
+            "Caffeine Lane · Motos custom, taller y cultura rider",
+            "Caffeine Lane · Custom Bikes, Workshop & Rider Culture",
         ),
         "seo_page_description": localized_copy(
             request,
             "Historias de taller, despieces técnicos y cultura cafe racer para "
             "quienes eligen el camino largo a casa.",
-            "Workshop stories, technical breakdowns, and cafe racer culture for "
-            "riders who choose the long way home.",
+            "Workshop stories, technical teardowns, and cafe racer craft for "
+            "riders who take the long way home.",
         ),
         "seo_page_image": (
             request.build_absolute_uri(featured_build.featured_image.url)
@@ -118,15 +118,13 @@ def home(request):
         "categories": categories,
         "seo_page_title": localized_copy(
             request,
-            "Caffeine Lane · Inicio editorial",
-            "Caffeine Lane · Editorial Home",
+            "Caffeine Lane · Diario de motos custom y taller",
+            "Caffeine Lane · Custom Bikes & Workshop Journal",
         ),
         "seo_page_description": localized_copy(
             request,
-            "Explorá proyectos, guías y reseñas de motocicletas construidas para "
-            "el taller y la ruta.",
-            "Explore motorcycle builds, workshop guides, and reviews made for the "
-            "garage and the open road.",
+            "Proyectos de garaje, guías prácticas de mecánica y reseñas honestas hechas para rodar.",
+            "Garage projects, hands-on mechanical guides, and honest reviews built for the open road.",
         ),
         "seo_page_image": (
             request.build_absolute_uri(banner_posts[0].featured_image.url)
@@ -147,15 +145,13 @@ def about(request):
             "guides_category_slug": CategorySlug.GUIDES,
             "seo_page_title": localized_copy(
                 request,
-                "Acerca de Caffeine Lane · Cultura moto editorial",
-                "About Caffeine Lane · Editorial Moto Culture",
+                "Manifiesto · Caffeine Lane",
+                "Manifesto · Caffeine Lane",
             ),
             "seo_page_description": localized_copy(
                 request,
-                "Conocé el enfoque editorial de Caffeine Lane: oficio de garaje, "
-                "criterio técnico y cultura motociclista.",
-                "Learn about Caffeine Lane's editorial approach to garage craft, "
-                "technical judgment, and motorcycle culture.",
+                "El porqué de Caffeine Lane: oficio de garaje, criterio técnico y pasión por las dos ruedas sin atajos.",
+                "Why Caffeine Lane exists: hands-on garage craft, technical judgment, and two wheels without shortcuts.",
             ),
         },
     )
@@ -228,12 +224,12 @@ def contact(request):
     context = {
         "form": form,
         "seo_page_title": localized_copy(
-            request, "Contacto · Caffeine Lane", "Contact Caffeine Lane"
+            request, "Contacto · Caffeine Lane", "Contact · Caffeine Lane"
         ),
         "seo_page_description": localized_copy(
             request,
-            "Contactá al equipo editorial de Caffeine Lane.",
-            "Contact the Caffeine Lane editorial team.",
+            "Escribinos al taller: consultas sobre proyectos, colaboraciones o notas de ruta.",
+            "Get in touch with the workshop: build inquiries, collaborations, or road dispatches.",
         ),
         "seo_robots": "noindex, follow",
     }

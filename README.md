@@ -125,7 +125,7 @@ uv run ruff format --check .
 uv run python manage.py check
 uv run python manage.py makemigrations --check --dry-run
 
-# Backend test suite with coverage (100 tests)
+# Backend test suite with coverage (108 tests)
 uv run pytest
 
 # Frontend asset and module unit tests (23 tests)
