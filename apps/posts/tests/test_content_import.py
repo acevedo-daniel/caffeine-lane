@@ -72,7 +72,7 @@ class ContentImportTests(TestCase):
         )
         self.assertEqual(
             posts.order_by("-published_at").first().slug,
-            "la-salida-que-inicia-la-historia",
+            "una-lista-de-trabajo-que-si-terminas",
         )
 
     def test_seed_editorial_dry_run_validates_without_writing_data(self):

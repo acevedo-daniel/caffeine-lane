@@ -355,28 +355,6 @@ EDITORIAL_POSTS = (
         "alt": "Detalle de terminaciones cuidadas en una motocicleta preparada.",
     },
     {
-        "slug": "una-lista-de-trabajo-que-si-terminas",
-        "title": "Una lista de trabajo que sí terminás",
-        "excerpt": "Dividí un proyecto grande en pasos seguros y visibles para mantener el impulso.",
-        "content": (
-            "Los talleres y garajes particulares del mundo entero están llenos de proyectos que comenzaron con "
-            "desbordante entusiasmo y terminaron abandonados en cajas de cartón cubiertas de polvo. El factor decisivo "
-            "entre una moto que vuelve a rodar y una que termina vendida por piezas no es el presupuesto ni la herramienta "
-            "más cara, sino la metodología con la que se administra el tiempo de trabajo.\n\n"
-            "Nuestro método divide la restauración en tres etapas cerradas y consecutivas: primero la salud motriz y la "
-            "seguridad dinámica (frenos, rodamientos, suspensiones y compresión de motor); segundo la ergonomía y la "
-            "instalación eléctrica; y solo al final los acabados estéticos, pintura y tapicería. Cada etapa debe concluir "
-            "con una prueba de rodaje funcional antes de autorizar la apertura del siguiente paquete de tareas.\n\n"
-            "Anotar cada avance en una pizarra visible del taller y marcar las tareas cumplidas genera una inercia positiva "
-            "que combate la frustración en los días difíciles. Saber exactamente qué tornillo vas a ajustar antes de apagar "
-            "la luz del garaje garantiza que la próxima sesión empiece con determinación y sin vacilaciones."
-        ),
-        "category": CategorySlug.BUILDS,
-        "published_at": "2026-05-12T12:00:00+00:00",
-        "image": "source/builds/build-09.webp",
-        "alt": "Motocicleta preparada lista para una revisión final de taller.",
-    },
-    {
         "slug": "equipaje-liviano-para-una-salida-de-dia",
         "title": "Equipaje liviano para una salida de día",
         "excerpt": "Llevá lo esencial sin convertir una salida corta en un ejercicio de logística.",
@@ -394,7 +372,7 @@ EDITORIAL_POSTS = (
             "preocupaciones en cada parada y más atención puesta en el disfrute puro del asfalto."
         ),
         "category": CategorySlug.GUIDES,
-        "published_at": "2026-05-19T12:00:00+00:00",
+        "published_at": "2026-05-12T12:00:00+00:00",
         "image": "source/guides/guide-04.webp",
         "alt": "Motocicleta con equipaje liviano estacionada junto a una ruta abierta.",
     },
@@ -415,7 +393,7 @@ EDITORIAL_POSTS = (
             "se convierte en una danza armónica donde cada movimiento se encadena con naturalidad y sin sobresaltos."
         ),
         "category": CategorySlug.GUIDES,
-        "published_at": "2026-05-26T12:00:00+00:00",
+        "published_at": "2026-05-19T12:00:00+00:00",
         "image": "source/guides/guide-05.webp",
         "alt": "Motociclista acercándose a una ruta rural con curvas.",
     },
@@ -436,7 +414,7 @@ EDITORIAL_POSTS = (
             "desajuste menor esa misma tarde garantiza que la próxima salida comience con la moto lista para arrancar sin contratiempos."
         ),
         "category": CategorySlug.GUIDES,
-        "published_at": "2026-06-02T12:00:00+00:00",
+        "published_at": "2026-05-26T12:00:00+00:00",
         "image": "source/guides/guide-06.webp",
         "alt": "Persona revisando una motocicleta después de una salida.",
     },
@@ -457,9 +435,31 @@ EDITORIAL_POSTS = (
             "certeza de que, al día siguiente, volverás al garaje a planear la próxima salida por el camino más largo."
         ),
         "category": CategorySlug.REVIEWS,
-        "published_at": "2026-06-09T12:00:00+00:00",
+        "published_at": "2026-06-02T12:00:00+00:00",
         "image": "source/reviews/review-04.webp",
         "alt": "Motociclista recorriendo una ruta abierta durante la hora dorada.",
+    },
+    {
+        "slug": "una-lista-de-trabajo-que-si-terminas",
+        "title": "Una lista de trabajo que sí terminás",
+        "excerpt": "Dividí un proyecto grande en pasos seguros y visibles para mantener el impulso.",
+        "content": (
+            "Los talleres y garajes particulares del mundo entero están llenos de proyectos que comenzaron con "
+            "desbordante entusiasmo y terminaron abandonados en cajas de cartón cubiertas de polvo. El factor decisivo "
+            "entre una moto que vuelve a rodar y una que termina vendida por piezas no es el presupuesto ni la herramienta "
+            "más cara, sino la metodología con la que se administra el tiempo de trabajo.\n\n"
+            "Nuestro método divide la restauración en tres etapas cerradas y consecutivas: primero la salud motriz y la "
+            "seguridad dinámica (frenos, rodamientos, suspensiones y compresión de motor); segundo la ergonomía y la "
+            "instalación eléctrica; y solo al final los acabados estéticos, pintura y tapicería. Cada etapa debe concluir "
+            "con una prueba de rodaje funcional antes de autorizar la apertura del siguiente paquete de tareas.\n\n"
+            "Anotar cada avance en una pizarra visible del taller y marcar las tareas cumplidas genera una inercia positiva "
+            "que combate la frustración en los días difíciles. Saber exactamente qué tornillo vas a ajustar antes de apagar "
+            "la luz del garaje garantiza que la próxima sesión empiece con determinación y sin vacilaciones."
+        ),
+        "category": CategorySlug.BUILDS,
+        "published_at": "2026-06-09T12:00:00+00:00",
+        "image": "source/builds/build-09.webp",
+        "alt": "Motocicleta preparada lista para una revisión final de taller.",
     },
 )
 
