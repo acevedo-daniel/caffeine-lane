@@ -1,4 +1,4 @@
-# Caffeine Lane — Deployment
+# Caffeine Lane: Deployment
 
 > Vercel runtime, Neon database releases, environment boundaries, and production verification.
 

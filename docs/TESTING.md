@@ -1,4 +1,4 @@
-# Caffeine Lane — Testing
+# Caffeine Lane: Testing
 
 > Test strategy, layers, data dependencies, and quality gates.
 

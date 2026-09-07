@@ -1,4 +1,4 @@
-# Caffeine Lane — Architecture
+# Caffeine Lane: Architecture
 
 > System structure, component boundaries, persistence, external integrations, and technical trade-offs.
 
