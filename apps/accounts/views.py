@@ -65,7 +65,7 @@ def register_step2(request):
                 messages.success(request, _("Account created."))
                 messages.info(
                     request,
-                    _("Welcome — head to your profile to add your details."),
+                    _("Welcome! Head to your profile to add your details."),
                 )
                 return redirect("home")
     else:

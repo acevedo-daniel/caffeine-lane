@@ -1,4 +1,4 @@
-# Caffeine Lane — Development
+# Caffeine Lane: Development
 
 > Local setup, environment configuration, commands, and database workflow.
 

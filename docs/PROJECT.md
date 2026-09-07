@@ -1,4 +1,4 @@
-# Caffeine Lane — Project
+# Caffeine Lane: Project
 
 > Product scope, actors, domain concepts, and durable business rules.
 

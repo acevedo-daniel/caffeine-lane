@@ -575,9 +575,9 @@ msgstr "Empezar de nuevo"
 msgid "Account created."
 msgstr "Cuenta creada."
 
-#: .\apps\accounts\views.py:63
-msgid "Welcome — head to your profile to add your details."
-msgstr "Bienvenido — visitá tu perfil para agregar tus datos."
+#: .\apps\accounts\views.py:68
+msgid "Welcome! Head to your profile to add your details."
+msgstr "¡Bienvenido! Visitá tu perfil para agregar tus datos."
 
 #: .\apps\accounts\views.py:78
 msgid "Profile updated."
@@ -668,7 +668,7 @@ msgid "We believe a motorcycle is more than transportation. It is a record of ch
 msgstr "Creemos que una motocicleta es más que transporte. Es un registro de decisiones, trabajo manual, desvíos y los kilómetros que demuestran lo que importa."
 
 #: .\apps\core\templates\core\about.html:25
-msgid "That is why we make room for practical guides, honest reviews, and builds with a point of view — work worth taking from the bench to the open road."
+msgid "That is why we make room for practical guides, honest reviews, and builds with a point of view: work worth taking from the bench to the open road."
 msgstr "Por eso damos lugar a guías prácticas, reseñas honestas y proyectos con punto de vista: trabajo que vale la pena llevar del banco a la ruta abierta."
 
 #: .\apps\core\templates\core\about.html:31

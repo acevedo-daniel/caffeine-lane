@@ -252,7 +252,7 @@ EDITORIAL_POSTS = (
             "pintura base mate sin barnizar. Salimos a rodarla por autopistas rápidas y caminos de ripio compacto para "
             "exigir el conjunto y anotar rigurosamente solo aquello que comprometiera la seguridad de frenado, la "
             "estabilidad de dirección o la fiabilidad de carga de la batería.\n\n"
-            "Los detalles estéticos menores pueden —y deben— evolucionar con el tiempo y los kilómetros compartidos. Una "
+            "Los detalles estéticos menores pueden (y deben) evolucionar con el tiempo y los kilómetros compartidos. Una "
             "moto que rueda con pequeñas imperfecciones tiene un alma infinitamente superior a una que descansa impecable "
             "pero estéril en un soporte de taller. La obra se completa verdaderamente en la ruta, con viento en el pecho "
             "y el cuentavueltas trepando hacia la línea roja."

@@ -6,7 +6,7 @@
 
 Caffeine Lane is crafted for builders and riders who appreciate greasy knuckles, clean lines, and thoughtful engineering. Instead of another noisy social feed, it is a deliberate, server-rendered publishing platform: long-form build logs with technical specs, practical garage guides, honest reviews, focused reader discussions, and a bilingual interface in Spanish and English.
 
-**[Explore the Live Journal — caffeine-lane.vercel.app](https://caffeine-lane.vercel.app/)** · **[Deployment Guide](docs/DEPLOYMENT.md)**
+**[Explore the Live Journal (caffeine-lane.vercel.app)](https://caffeine-lane.vercel.app/)** · **[Deployment Guide](docs/DEPLOYMENT.md)**
 
 ## Live demo
 
@@ -31,7 +31,7 @@ The public instance is live and running at [caffeine-lane.vercel.app](https://ca
 | --- | --- |
 | ![Caffeine Lane search results and category filters in dark theme](docs/screenshots/search-results.png) | ![Caffeine Lane public landing with editorial cafe racer hero in dark theme](docs/screenshots/public-landing.png) |
 
-## What's inside
+## Key capabilities
 
 - **Curated publishing:** In-depth build breakdowns, garage tutorials, and gear reviews organized around three structural categories (`builds`, `guides`, `reviews`), complete with verified image uploads and motorcycle spec sheets.
 - **Search that works:** Weighted PostgreSQL full-text search with relevance ranking, instant input clearing, and category filters that survive pagination.
@@ -39,7 +39,7 @@ The public instance is live and running at [caffeine-lane.vercel.app](https://ca
 - **Bilingual by design:** Seamless switching between Spanish and English powered by Django's native gettext runtime.
 - **Thoughtful reading experience:** Reading progress indicator, dark mode with system preference detection, and zero heavy client-side framework bloat.
 
-## Engineering decisions
+## Engineering highlights
 
 - **Server-rendered with intent.** Rather than bolting on a complex single-page app framework, Caffeine Lane leans into classic Django templates, modern Tailwind CSS, and surgical vanilla JavaScript. Pages render instantly from the server and feel snappy on mobile screens.
 - **Email-first identity.** The custom `accounts.User` model makes email the primary identifier from day one, backed by Argon2 password hashing in production, completely bypassing Django's historical username baggage.
@@ -78,7 +78,7 @@ Django acts as the cohesive core: routing, authentication, form validation, busi
 | `templates/` | Shared server-rendered layouts and page templates. |
 | `tests/` | Frontend asset tests and Playwright browser tests. |
 
-## Quickstart
+## Local development
 
 Prerequisites: Python 3.14+, uv, Node.js 22, pnpm 10, and Docker Compose.
 
@@ -114,7 +114,7 @@ uv run python manage.py runserver
 
 Open [`http://localhost:8000`](http://localhost:8000) to browse the journal locally.
 
-## Quality & tests
+## Quality
 
 The codebase is backed by a multi-tier test suite:
 
@@ -139,8 +139,8 @@ CI runs the Python suite against PostgreSQL 18 on Python 3.14, validates product
 
 ## Documentation
 
-- [Project & Domain](docs/PROJECT.md) — Scope, user personas, editorial rules, and provenance.
-- [Architecture](docs/ARCHITECTURE.md) — System topology, component boundaries, invariants, and trade-offs.
-- [Development Workflow](docs/DEVELOPMENT.md) — Local environment, database commands, and asset pipeline.
-- [Testing Strategy](docs/TESTING.md) — Testing strategy, test layers, and quality gates.
-- [Deployment Guide](docs/DEPLOYMENT.md) — Hosting topology, Vercel runtime contract, and release pipeline.
+- [Project & Domain](docs/PROJECT.md): Scope, user personas, editorial rules, and provenance.
+- [Architecture](docs/ARCHITECTURE.md): System topology, component boundaries, invariants, and trade-offs.
+- [Development Workflow](docs/DEVELOPMENT.md): Local environment, database commands, and asset pipeline.
+- [Testing Strategy](docs/TESTING.md): Testing strategy, test layers, and quality gates.
+- [Deployment Guide](docs/DEPLOYMENT.md): Hosting topology, Vercel runtime contract, and release pipeline.

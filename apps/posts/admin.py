@@ -8,7 +8,7 @@ from .services import publish_post, unpublish_post
 
 def image_thumbnail(image, description):
     if not image:
-        return "—"
+        return "-"
     return format_html(
         '<img src="{}" alt="{}" width="48" height="48" />',
         image.url,
