@@ -91,7 +91,7 @@ The contact form requires CSRF, rejects the hidden honeypot field, limits each i
 | Watch assets | `pnpm run dev` | Watch and rebuild frontend assets during development. |
 | Run Django | `uv run python manage.py runserver` | Start the local Django development server. |
 | Django system check | `uv run python manage.py check` | Validate Django configuration and models. |
-| Check migration drift | `uv run python manage.py makemigrations --check --dry-run` | Detect uncommitted model changes without migrations. |
+| Check migration drift | `uv run python manage.py makemigrations --settings=config.settings.test --check --dry-run` | Detect uncommitted model changes without migrations in an isolated test configuration. |
 | Apply migrations | `uv run python manage.py migrate` | Apply pending Django migrations. |
 | Baseline guard | `uv run python manage.py check_fresh_baseline` | Verify database does not contain legacy profile tables. |
 | Verify editorial baseline | `uv run python manage.py verify_editorial_baseline` | Validate that structural categories and editorial constraints are met. |

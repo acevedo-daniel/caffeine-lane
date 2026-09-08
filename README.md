@@ -123,7 +123,7 @@ The codebase is backed by a multi-tier test suite:
 uv run ruff check .
 uv run ruff format --check .
 uv run python manage.py check
-uv run python manage.py makemigrations --check --dry-run
+uv run python manage.py makemigrations --settings=config.settings.test --check --dry-run
 
 # Backend test suite with coverage (108 tests)
 uv run pytest
@@ -135,7 +135,11 @@ pnpm test
 pnpm run test:e2e
 ```
 
-CI runs the Python suite against PostgreSQL 18 on Python 3.14, validates production settings, builds and tests frontend assets, runs Playwright browser smoke tests, and verifies the production Docker container.
+CI runs the playbook-aligned Quality, Tests, E2E, Production, and Docker jobs,
+then exposes one stable CI Gate check for the protected main branch. The suite
+uses PostgreSQL 18 on Python 3.14, validates production settings, builds and
+tests frontend assets, runs Playwright browser smoke tests, and verifies the
+production Docker container.
 
 ## Documentation
 
