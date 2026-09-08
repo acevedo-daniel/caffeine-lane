@@ -92,6 +92,8 @@ jobs:
           cache: pnpm
       - name: Install frontend dependencies (locked)
         run: pnpm install --frozen-lockfile
+      - name: Build frontend assets for unit tests
+        run: pnpm run build
       - name: Run frontend unit tests
         run: pnpm test
 
