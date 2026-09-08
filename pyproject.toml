@@ -22,7 +22,7 @@ dev = [
     "django-debug-toolbar>=7.0.0",
     "django-stubs==5.2.2",
     "django-stubs-ext==5.2.2",
-    "djlint==1.36.4",
+    "djlint==1.45.2",
     "factory-boy>=3.3.3",
     "pre-commit>=4.6.1",
     "pytest>=9.1.1",
