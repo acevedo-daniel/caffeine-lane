@@ -128,7 +128,8 @@ uv run python manage.py makemigrations --settings=config.settings.test --check -
 # Backend test suite with coverage (108 tests)
 uv run pytest
 
-# Frontend asset and module unit tests (23 tests)
+# Build frontend assets and run module unit tests (23 tests)
+pnpm run build
 pnpm test
 
 # Full browser smoke tests with Playwright (9 tests)
