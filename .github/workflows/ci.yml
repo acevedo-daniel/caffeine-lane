@@ -28,7 +28,7 @@ jobs:
         with:
           python-version-file: .python-version
       - name: Set up uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
       - name: Install Python dependencies (locked)
@@ -68,7 +68,7 @@ jobs:
         with:
           python-version-file: .python-version
       - name: Set up uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
       - name: Install Python dependencies (locked)
@@ -82,7 +82,7 @@ jobs:
           CONTACT_RECIPIENT_EMAIL: owner@example.test
         run: uv run pytest
       - name: Set up pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: 10.18.3
       - name: Set up Node.js
@@ -109,13 +109,13 @@ jobs:
         with:
           python-version-file: .python-version
       - name: Set up uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
       - name: Install Python dependencies (locked)
         run: uv sync --locked
       - name: Set up pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: 10.18.3
       - name: Set up Node.js
@@ -166,13 +166,13 @@ jobs:
         with:
           python-version-file: .python-version
       - name: Set up uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
       - name: Install Python dependencies (locked)
         run: uv sync --locked
       - name: Set up pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: 10.18.3
       - name: Set up Node.js
