@@ -2,17 +2,50 @@ name: CI
 
 on:
   pull_request:
-    branches: [main]
+    branches:
+      - main
   push:
-    branches: [main]
+    branches:
+      - main
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
 
 jobs:
-  test:
-    name: Python 3.14
+  quality:
+    name: Quality
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version-file: .python-version
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install Python dependencies (locked)
+        run: uv sync --locked
+      - name: Run Ruff linter
+        run: uv run ruff check .
+      - name: Verify Ruff formatting
+        run: uv run ruff format --check .
+      - name: Run Django system checks
+        run: uv run python manage.py check
+      - name: Verify migration state
+        run: uv run python manage.py makemigrations --settings=config.settings.test --check --dry-run
+
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
     services:
       postgres:
         image: postgres:18
@@ -28,33 +61,138 @@ jobs:
           --health-timeout 5s
           --health-retries 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Check out repository
+        uses: actions/checkout@v7
+      - name: Set up Python
+        uses: actions/setup-python@v7
         with:
-          python-version: "3.14"
-      - uses: astral-sh/setup-uv@v5
+          python-version-file: .python-version
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
-      - run: uv sync --locked
-      - run: uv run ruff check .
-      - run: uv run ruff format --check .
-      - run: uv run python manage.py makemigrations --check --dry-run
-      - name: Run Python tests against PostgreSQL 18
+      - name: Install Python dependencies (locked)
+        run: uv sync --locked
+      - name: Run Python tests against PostgreSQL
         env:
           DJANGO_SETTINGS_MODULE: config.settings.test
-          TEST_DATABASE_URL: postgresql://caffeine-lane:caffeine-lane@localhost:5432/caffeine-lane
+          TEST_DATABASE_URL: "postgresql://caffeine-lane:caffeine-lane@localhost:5432/caffeine-lane"
           SECRET_KEY: ci-only-secret-key-not-for-production-0123456789
           DEFAULT_FROM_EMAIL: noreply@example.test
           CONTACT_RECIPIENT_EMAIL: owner@example.test
         run: uv run pytest
-      - name: Check production deployment settings in isolation
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.18.3
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install frontend dependencies (locked)
+        run: pnpm install --frozen-lockfile
+      - name: Run frontend unit tests
+        run: pnpm test
+
+  e2e:
+    name: E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version-file: .python-version
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install Python dependencies (locked)
+        run: uv sync --locked
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.18.3
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install frontend dependencies (locked)
+        run: pnpm install --frozen-lockfile
+      - name: Build frontend assets
+        run: pnpm run build
+      - name: Prepare isolated browser data
+        env:
+          DJANGO_SETTINGS_MODULE: config.settings.local
+          DATABASE_URL: "sqlite:////tmp/caffeine-lane-e2e.sqlite3"
+          DEBUG_TOOLBAR_ENABLED: "false"
+        run: |
+          rm -f /tmp/caffeine-lane-e2e.sqlite3
+          uv run python manage.py check_fresh_baseline
+          uv run python manage.py migrate --noinput
+          uv run python manage.py seed_editorial
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Run browser smoke tests
+        env:
+          E2E_DATABASE_URL: "sqlite:////tmp/caffeine-lane-e2e.sqlite3"
+        run: pnpm run test:e2e
+      - name: Upload browser failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-failure-artifacts
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 7
+
+  production:
+    name: Production
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version-file: .python-version
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install Python dependencies (locked)
+        run: uv sync --locked
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.18.3
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install frontend dependencies (locked)
+        run: pnpm install --frozen-lockfile
+      - name: Build production assets
+        run: pnpm run build
+      - name: Verify Vercel build contract
+        run: >-
+          uv run python -c "import tomllib; config = tomllib.load(open('pyproject.toml', 'rb')); assert config['tool']['vercel']['scripts']['build'] == 'pnpm run build'"
+      - name: Check production settings
         env:
           DJANGO_SETTINGS_MODULE: config.settings.production
           SECRET_KEY: ci-production-secret-key-not-for-production-0123456789
           DATABASE_URL: "sqlite:///:memory:"
           ALLOWED_HOSTS: example.test
-          CSRF_TRUSTED_ORIGINS: https://example.test
-          CLOUDINARY_URL: cloudinary://123456789012345:ci-secret@example
+          CSRF_TRUSTED_ORIGINS: "https://example.test"
+          CLOUDINARY_URL: "cloudinary://123456789012345:ci-secret@example"
           RESEND_API_KEY: re_ci_not_a_real_key
           DEFAULT_FROM_EMAIL: noreply@example.test
           CONTACT_RECIPIENT_EMAIL: owner@example.test
@@ -64,70 +202,31 @@ jobs:
           SECURE_HSTS_INCLUDE_SUBDOMAINS: "true"
           SECURE_HSTS_PRELOAD: "true"
         run: uv run python manage.py check --deploy
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10.18.3
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-      - name: Install frontend dependencies
-        run: pnpm install --frozen-lockfile
-      - name: Build and verify generated frontend assets
-        run: |
-          pnpm run build
-          pnpm test
-      - name: Verify Vercel build contract
-        run: >-
-          uv run python -c "import tomllib; config = tomllib.load(open('pyproject.toml', 'rb')); assert config['tool']['vercel']['scripts']['build'] == 'pnpm run build'"
-      - name: Prepare isolated local browser data
-        env:
-          DJANGO_SETTINGS_MODULE: config.settings.local
-          DATABASE_URL: sqlite:////tmp/caffeine-lane-e2e.sqlite3
-          DEBUG_TOOLBAR_ENABLED: "false"
-        run: |
-          rm -f /tmp/caffeine-lane-e2e.sqlite3
-          uv run python manage.py check_fresh_baseline
-          uv run python manage.py migrate --noinput
-          uv run python manage.py seed_editorial
-          uv run python manage.py shell -c "from apps.accounts.models import User; from apps.posts.models import Comment, Post; user, _ = User.objects.get_or_create(email='e2e-rider@example.test', defaults={'username': 'e2e-rider', 'display_name': 'E2E Rider'}); user.set_password('e2e-rider-password'); user.save(); post = Post.objects.get(slug='cafe-racer-de-garaje'); Comment.objects.get_or_create(post=post, author=user, content='E2E smoke comment')"
-      - name: Install Chromium for browser smoke tests
-        run: pnpm exec playwright install --with-deps chromium
-      - name: Run browser smoke tests against compiled assets
-        env:
-          E2E_DATABASE_URL: sqlite:////tmp/caffeine-lane-e2e.sqlite3
-        run: pnpm run test:e2e
-      - name: Upload browser traces on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report
-          path: |
-            playwright-report/
-            test-results/
-          if-no-files-found: ignore
 
-  docker-smoke:
-    name: Docker smoke test
+  docker:
+    name: Docker
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - name: Build the production image
+      - name: Check out repository
+        uses: actions/checkout@v7
+      - name: Build production image
         run: docker build -t caffeine-lane-ci .
-      - name: Verify the image contains the generated carousel asset
+      - name: Verify generated asset in image
+        shell: bash
         run: |
           set -euo pipefail
           source_hash=$(sha256sum static/src/js/home-carousel.js | awk '{print $1}')
           image_hash=$(docker run --rm --entrypoint sha256sum caffeine-lane-ci /app/static/dist/js/home-carousel.js | awk '{print $1}')
           test "$source_hash" = "$image_hash"
-      - name: Start the production image and verify public endpoints
+      - name: Start image and verify public endpoints
+        shell: bash
         env:
           CONTAINER_NAME: caffeine-lane-ci
           CONTAINER_PORT: "10000"
         run: |
           set -euo pipefail
           docker image inspect caffeine-lane-ci --format '{{range .Config.Env}}{{println .}}{{end}}' | grep -qx 'SEED_EDITORIAL_ON_START=false'
-
           docker run --detach --name "$CONTAINER_NAME" --publish "$CONTAINER_PORT:$CONTAINER_PORT" \
             --env PORT="$CONTAINER_PORT" \
             --env DJANGO_SETTINGS_MODULE=config.settings.production \
@@ -145,13 +244,11 @@ jobs:
             --env RUN_MIGRATIONS_ON_START=true \
             --env SEED_EDITORIAL_ON_START=false \
             caffeine-lane-ci
-
           cleanup() {
             docker logs "$CONTAINER_NAME" || true
             docker rm --force "$CONTAINER_NAME" || true
           }
           trap cleanup EXIT
-
           for attempt in $(seq 1 30); do
             if curl --fail --silent --show-error "http://127.0.0.1:$CONTAINER_PORT/healthz/"; then
               break
@@ -162,8 +259,41 @@ jobs:
               exit 1
             fi
           done
-
           secure_header='X-Forwarded-Proto: https'
           curl --fail --silent --show-error -H "$secure_header" "http://127.0.0.1:$CONTAINER_PORT/home/" >/dev/null
           curl --fail --silent --show-error -H "$secure_header" "http://127.0.0.1:$CONTAINER_PORT/static/dist/css/app.css" >/dev/null
           curl --fail --silent --show-error -H "$secure_header" "http://127.0.0.1:$CONTAINER_PORT/static/dist/js/home-carousel.js" >/dev/null
+
+  ci-gate:
+    name: CI Gate
+    if: always()
+    needs:
+      - quality
+      - tests
+      - e2e
+      - production
+      - docker
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify required jobs
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Quality:    ${{ needs.quality.result }}"
+          echo "Tests:      ${{ needs.tests.result }}"
+          echo "E2E:        ${{ needs.e2e.result }}"
+          echo "Production: ${{ needs.production.result }}"
+          echo "Docker:     ${{ needs.docker.result }}"
+          for result in \
+            "${{ needs.quality.result }}" \
+            "${{ needs.tests.result }}" \
+            "${{ needs.e2e.result }}" \
+            "${{ needs.production.result }}" \
+            "${{ needs.docker.result }}"; do
+            if [ "$result" != "success" ]; then
+              echo "::error::A required CI job failed, was cancelled, or was skipped."
+              exit 1
+            fi
+          done
+          echo "All required CI gates completed successfully. Safe to merge."

@@ -1,157 +1,149 @@
 # Caffeine Lane: Testing
 
-> Test strategy, layers, data dependencies, and quality gates.
+> Test strategy, isolation guarantees, local commands, and CI merge gates.
 
 ## Strategy
 
-Caffeine Lane separates verification across distinct boundaries:
+Caffeine Lane follows the playbook boundary order:
 
-- Django and ORM tests cover backend application behavior, services, and domain rules.
-- Node.js tests verify the authored and generated frontend asset pipeline.
-- Playwright exercises critical user-facing browser interactions against a running Django instance.
-- CI validates production security settings and verifies the containerized production Docker image.
+~~~~text
+Unit -> Integration -> E2E
+~~~~
 
-Python coverage is measured through `pytest-cov` across `apps` and `config`.
+Each behavior is tested at the lowest reliable boundary. Django and ORM tests
+verify application behavior and persistence contracts, Node tests verify the
+frontend asset pipeline, and Playwright covers critical user journeys through a
+running application.
+
+CI keeps the technical contract explicit through these conceptual jobs:
+
+~~~~text
+Quality -> Tests -> E2E -> Production
+                    \          /
+                     Docker
+                       |
+                    CI Gate
+~~~~
+
+CI Gate is the single stable check intended for the GitHub Ruleset protecting
+main. Version-specific runtimes and implementation jobs must not be required
+directly by the Ruleset.
 
 ## Test layers
 
 | Layer | Purpose | Tool / location |
 | --- | --- | --- |
-| Django / ORM | Accounts, permissions, forms, editorial lifecycle, comments, search behavior, and management commands | Pytest + pytest-django in `apps/**/tests/` |
-| Frontend assets | Asset pipeline build output, progressive enhancements, theme controller, and JavaScript modules | Node.js test runner in `tests/frontend/` |
-| Browser smoke | End-to-end user workflows against a real running Django server | Playwright / Chromium in `tests/e2e/` |
-| Production settings | Validate Django's production security settings with `check --deploy` | GitHub Actions / Django system checks |
-| Docker smoke | Build production container, verify bundled assets, and test health/public endpoints | Docker in GitHub Actions |
+| Unit | Frontend asset transformations and browser-independent JavaScript behavior | Node test runner in tests/frontend/ |
+| Integration | Django views, models, forms, services, permissions, search, comments, and management commands | Pytest + pytest-django in apps/**/tests/ |
+| E2E | Critical user workflows through a running Django application | Playwright + Chromium in tests/e2e/ |
+| Production | Production settings and generated frontend artifact verification | Django checks and asset build in GitHub Actions |
+| Docker | Production image build, bundled assets, health endpoint, and public responses | Docker smoke test in GitHub Actions |
+
+The Python suite measures coverage for apps and config with pytest-cov.
+Coverage is diagnostic; the project does not enforce an arbitrary global
+threshold.
 
 ## Test data and dependencies
 
-### Django tests
+### Python tests
 
-`config.settings.test` isolates test execution:
+config.settings.test uses an in-memory SQLite database locally, an in-memory
+email backend, isolated uploaded-media storage, and a fast password hasher.
+CI sets TEST_DATABASE_URL to a PostgreSQL 18 service so database-specific
+behavior is verified against the production database technology.
 
-- SQLite in memory by default.
-- In-memory email backend.
-- In-memory uploaded-media storage.
-- Fast MD5 password hasher to optimize test runtimes.
-
-Email tests use Django's in-memory backend and do not send real messages. Hosted Resend delivery must be verified separately with a controlled recipient; the test suite should continue to cover provider failures without requiring Resend credentials.
-
-In CI, `TEST_DATABASE_URL` is set so the Python suite executes against a real PostgreSQL 18 service on Python 3.14. This distinction ensures fast local feedback while verifying database-specific behavior (such as PostgreSQL full-text search) in CI.
+Tests do not require production databases, APIs, email providers, Cloudinary,
+or real credentials.
 
 ### Browser tests
 
-Playwright starts an isolated Django test server at:
+Playwright runs Chromium with one worker and retains traces on failure. CI
+creates a dedicated SQLite database, applies migrations, seeds deterministic
+editorial data, creates the E2E user/comment fixture, and waits for
+/healthz/ before executing browser tests.
 
-```text
-http://127.0.0.1:8000
-```
+## Run tests locally
 
-and waits for the readiness signal:
+Install locked dependencies first:
 
-```text
-/healthz/
-```
+~~~~bash
+uv sync --locked
+pnpm install --frozen-lockfile
+~~~~
 
-The test runner uses Chromium, single-worker isolation, and retained failure traces. Locally, browser tests can run against the active development database; in CI, `scripts/prepare-e2e.mjs` provisions a dedicated database with migrations and editorial seed data prior to execution.
+Run the same fast validation used by the CI Quality and Tests jobs:
 
-## Run tests
-
-Execute local test suites:
-
-```bash
-# Python linting, format check, and Django system checks
+~~~~bash
 uv run ruff check .
 uv run ruff format --check .
 uv run python manage.py check
-uv run python manage.py makemigrations --check --dry-run
-
-# Python test suite with coverage
+uv run python manage.py makemigrations --settings=config.settings.test --check --dry-run
 uv run pytest
-
-# Frontend asset build and unit tests
-pnpm run build
 pnpm test
-```
+~~~~
+
+On Windows, pwsh ./scripts/check.ps1 runs this local validation sequence.
 
 ## End-to-end verification
 
-### Playwright browser suite
+Install the browser binary once:
 
-Install the Chromium browser binary (one-time setup):
-
-```bash
+~~~~bash
 pnpm exec playwright install chromium
-```
+~~~~
 
-Run browser smoke tests:
+Run the browser smoke suite:
 
-```bash
+~~~~bash
+pnpm run build
 pnpm run test:e2e
-```
+~~~~
 
-Playwright automatically spawns and terminates the Django server defined in `playwright.config.mjs`. If `E2E_DATABASE_URL` is provided, it configures the database connection for the browser-test process.
+The Playwright configuration starts Django automatically and uses the active
+local database unless E2E_DATABASE_URL is provided.
 
-## CI
+## CI and quality gates
 
-Automated quality gates are managed in `.github/workflows/ci.yml` across two parallel jobs:
+.github/workflows/ci.yml runs for pull requests targeting main and pushes
+to main. It uses locked dependency installation, minimum read-only
+permissions, explicit timeouts, and cancels obsolete runs for the same ref.
 
-### Application suite
+The jobs are:
 
-On Python 3.14:
-1. Starts a PostgreSQL 18 service container.
-2. Synchronizes the locked Python environment with uv.
-3. Executes Ruff linting and formatting checks.
-4. Verifies database schema for uncommitted migration drift.
-5. Runs the Pytest suite against PostgreSQL with coverage.
-6. Validates production security configuration via `python manage.py check --deploy`.
-7. Installs frontend dependencies and runs Node asset tests.
-8. Sets up isolated test data and executes Playwright browser tests.
+- Quality: Ruff, Django system checks, and migration drift checks.
+- Tests: Python tests against PostgreSQL 18 and frontend unit tests.
+- E2E: isolated database setup, asset build, and Playwright browser smoke tests.
+- Production: frontend production build, Vercel build contract, and Django
+  production security checks.
+- Docker: production image build, asset integrity, startup, health endpoint,
+  static assets, and public response smoke tests.
+- CI Gate: fails unless every required job completes successfully.
 
-### Docker smoke
-
-A dedicated container verification job:
-1. Builds the production multi-stage Docker image.
-2. Verifies that compiled assets inside the image match authored source.
-3. Launches the container in an isolated network environment.
-4. Waits for `/healthz/` liveness.
-5. Verifies public responses, static asset delivery, and HTTP headers.
-
-### Hosted verification
-
-After a successful Vercel deployment, verify the public application at [caffeine-lane.vercel.app](https://caffeine-lane.vercel.app/):
-
-- `/healthz/` returns HTTP 200.
-- The landing page, home, categories, search and article detail render correctly.
-- Authentication and contact flows return controlled responses.
-- Contact POSTs require CSRF, reject the honeypot, enforce field limits, rate-limit repeated submissions, and do not log message contents or visitor email addresses on delivery failure.
-- Registration does not reveal an existing email during the first step; duplicate-account handling remains generic.
-- Contact delivery is tested only with an approved Resend test recipient or a verified sender domain.
-- Password recovery remains visibly unavailable while `PASSWORD_RESET_ENABLED=false`.
-- `/robots.txt` lists only the intended crawl exclusions and points to the public sitemap.
-- `/sitemap.xml`, canonical URLs, social cards, and JSON-LD use the configured `PUBLIC_SITE_URL` in production.
-- Vercel runtime logs contain no import, database, static asset or email configuration errors.
+The repository Ruleset should require exactly CI Gate, with pull requests,
+resolved conversations, linear history, squash merging, deletion protection,
+and force-push protection enabled. The Ruleset configuration is applied in
+GitHub repository settings; the workflow provides the required check.
 
 ## Pre-release verification
 
-Recommended local pre-release verification sequence:
+For a fuller local release check, run:
 
-```bash
+~~~~bash
 uv run ruff check .
 uv run ruff format --check .
 uv run python manage.py check
-uv run python manage.py makemigrations --check --dry-run
+uv run python manage.py makemigrations --settings=config.settings.test --check --dry-run
 uv run pytest
-pnpm install --frozen-lockfile --prod=false
+pnpm install --frozen-lockfile
 pnpm run build
 pnpm test
 pnpm run test:e2e
 docker build -t caffeine-lane-local-check .
-```
+~~~~
 
 ## Related documentation
 
-- [README](../README.md)
-- [Project](PROJECT.md)
-- [Architecture](ARCHITECTURE.md)
-- [Development](DEVELOPMENT.md)
-- [Deployment](DEPLOYMENT.md)
+- [Development Workflow](DEVELOPMENT.md)
+- [Deployment Guide](DEPLOYMENT.md)
+- CI and Testing Standard (maintained in the engineering playbook)
+- GitHub Ruleset Standard (maintained in the engineering playbook)

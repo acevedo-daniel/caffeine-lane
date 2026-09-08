@@ -99,7 +99,7 @@ The base template also provides the favicon, web manifest, theme colors, Open Gr
 ```bash
 # Generate and verify migrations locally
 uv run python manage.py makemigrations
-uv run python manage.py makemigrations --check --dry-run
+uv run python manage.py makemigrations --settings=config.settings.test --check --dry-run
 
 # Run production migration release (macOS / Linux)
 ./scripts/release.sh
@@ -132,7 +132,7 @@ Before production:
 ```bash
 uv run ruff check .
 uv run ruff format --check .
-uv run python manage.py makemigrations --check --dry-run
+uv run python manage.py makemigrations --settings=config.settings.test --check --dry-run
 uv run python manage.py check --deploy
 uv run pytest
 pnpm install --frozen-lockfile --prod=false

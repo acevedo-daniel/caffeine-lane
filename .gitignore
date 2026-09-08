@@ -73,8 +73,5 @@ Thumbs.db
 /tmp/
 /scratch/
 
-# Local documentation and agent tooling
-/docs/temporal/
-/docs/templates/
-/design/
-AGENTS.md
+# Local documentation
+/local-docs/
