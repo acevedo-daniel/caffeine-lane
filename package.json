@@ -16,7 +16,7 @@
   "devDependencies": {
     "@playwright/test": "1.62.1",
     "@tailwindcss/cli": "^4.3.3",
-    "chokidar": "4.0.3",
+    "chokidar": "5.0.0",
     "tailwindcss": "^4.3.3"
   },
   "packageManager": "pnpm@10.18.3",
