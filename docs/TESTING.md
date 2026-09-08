@@ -15,14 +15,14 @@ verify application behavior and persistence contracts, Node tests verify the
 frontend asset pipeline, and Playwright covers critical user journeys through a
 running application.
 
-CI keeps the technical contract explicit through these conceptual jobs:
+CI keeps the technical contract explicit through parallel conceptual jobs:
 
 ~~~~text
-Quality -> Tests -> E2E -> Production
-                    \          /
-                     Docker
-                       |
-                    CI Gate
+Quality -----\
+Tests --------\
+E2E -----------> CI Gate
+Production ----/
+Docker --------/
 ~~~~
 
 CI Gate is the single stable check intended for the GitHub Ruleset protecting
