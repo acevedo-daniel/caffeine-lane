@@ -3,7 +3,8 @@ FROM node:26.8.1-alpine AS assets
 
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
-RUN corepack enable && pnpm install --frozen-lockfile
+RUN npm install --global pnpm@10.18.3 \
+    && pnpm install --frozen-lockfile
 COPY scripts ./scripts
 COPY static/src ./static/src
 COPY templates ./templates
