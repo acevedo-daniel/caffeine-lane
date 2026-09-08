@@ -82,7 +82,7 @@ jobs:
           CONTACT_RECIPIENT_EMAIL: owner@example.test
         run: uv run pytest
       - name: Set up pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: 10.18.3
       - name: Set up Node.js
@@ -113,7 +113,7 @@ jobs:
       - name: Install Python dependencies (locked)
         run: uv sync --locked
       - name: Set up pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: 10.18.3
       - name: Set up Node.js
@@ -170,7 +170,7 @@ jobs:
       - name: Install Python dependencies (locked)
         run: uv sync --locked
       - name: Set up pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: 10.18.3
       - name: Set up Node.js
