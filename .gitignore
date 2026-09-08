@@ -75,3 +75,6 @@ Thumbs.db
 
 # Local documentation
 /local-docs/
+
+# Local AI agent instructions
+/AGENTS.md
