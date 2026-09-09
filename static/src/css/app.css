@@ -5041,9 +5041,11 @@
   }
 
   @media (min-width: 768px) {
-    .home-hero { height: clamp(34rem, 62vh, 43rem); }
+    .home-hero { min-height: clamp(34rem, 62vh, 43rem); }
+    .home-hero__track,
+    .home-hero__slide { min-height: inherit; }
     .home-hero__slide { grid-template-columns: minmax(0, 63fr) minmax(21rem, 37fr); }
-    .home-hero__media { aspect-ratio: auto; height: 100%; }
+    .home-hero__media { aspect-ratio: auto; min-height: 100%; }
     .home-hero__panel {
       border-top: 0;
       border-left: 1px solid var(--border-dark);
