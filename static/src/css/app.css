@@ -2623,7 +2623,7 @@
     border-top: 1px solid var(--border-dark);
     background: var(--surface-dark);
     color: var(--color-white);
-    padding: clamp(1.5rem, 6vw, 3rem) clamp(1.25rem, 6vw, 3.75rem) 5.75rem;
+    padding: clamp(1.5rem, 6vw, 3rem) clamp(1.25rem, 6vw, 3.75rem) clamp(6.5rem, 12vw, 8rem);
   }
 
   .home-hero__title {
@@ -2633,6 +2633,8 @@
     line-height: 1.05;
     letter-spacing: 0.025em;
     overflow-wrap: anywhere;
+    min-height: 2.1em;
+    text-wrap: balance;
   }
 
   .home-hero__title-link {
@@ -5045,7 +5047,7 @@
     .home-hero__panel {
       border-top: 0;
       border-left: 1px solid var(--border-dark);
-      padding: clamp(2rem, 4vw, 4rem);
+      padding: clamp(2rem, 4vw, 4rem) clamp(2rem, 4vw, 4rem) clamp(6rem, 8vw, 7.5rem);
     }
     .home-hero__title { font-size: clamp(3.5rem, 4.5vw, 5.75rem); }
     .home-hero__global-controls { min-width: min(30vw, 18rem); justify-content: space-between; }
