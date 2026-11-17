@@ -4,13 +4,11 @@ on:
   pull_request:
     branches:
       - main
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
@@ -23,6 +21,15 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Check unfilled template placeholders
+        run: |
+          status=0
+          git grep -nE '<(FILL|OPTIONAL)[:>]|^(# )?TEMPLATE |^status: template$' -- . ':!.agents/' ':!.claude/' ':!*.template.*' || status=$?
+          if [ "$status" -ne 1 ]; then echo "::error::Unfilled template placeholders or template headers found"; exit 1; fi
+
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
@@ -63,6 +70,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
@@ -104,6 +113,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
@@ -143,15 +154,27 @@ jobs:
         env:
           E2E_DATABASE_URL: "sqlite:////tmp/caffeine-lane-e2e.sqlite3"
         run: pnpm run test:e2e
-      - name: Upload browser failure artifacts
-        if: failure()
+      - name: Report flaky E2E tests
+        # Reads the Playwright JSON reporter; adapt for other runners.
+        if: ${{ !cancelled() }}
+        run: |
+          report=playwright-report/results.json
+          [ -f "$report" ] || exit 0
+          jq -r '.. | objects | select(has("specs")) | .specs[] | select(any(.tests[]; .status == "flaky")) | "\(.file):\(.line) \(.title)"' "$report" \
+            | sort -u | while read -r entry; do
+                echo "::warning title=Flaky E2E test::$entry"
+                echo "- $entry" >> "$GITHUB_STEP_SUMMARY"
+              done
+
+      - name: Upload test artifacts
+        # keep traces of retried tests too
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7
         with:
-          name: playwright-failure-artifacts
+          name: e2e-artifacts
           path: |
             playwright-report/
             test-results/
-          if-no-files-found: ignore
           retention-days: 7
 
   production:
@@ -161,6 +184,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
@@ -212,6 +237,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Build production image
         run: docker build -t caffeine-lane-ci .
       - name: Verify generated asset in image
@@ -278,24 +305,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Verify required jobs
-        shell: bash
+      - name: Verify required upstream jobs
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
         run: |
-          set -euo pipefail
-          echo "Quality:    ${{ needs.quality.result }}"
-          echo "Tests:      ${{ needs.tests.result }}"
-          echo "E2E:        ${{ needs.e2e.result }}"
-          echo "Production: ${{ needs.production.result }}"
-          echo "Docker:     ${{ needs.docker.result }}"
-          for result in \
-            "${{ needs.quality.result }}" \
-            "${{ needs.tests.result }}" \
-            "${{ needs.e2e.result }}" \
-            "${{ needs.production.result }}" \
-            "${{ needs.docker.result }}"; do
-            if [ "$result" != "success" ]; then
-              echo "::error::A required CI job failed, was cancelled, or was skipped."
-              exit 1
-            fi
+          for result in $RESULTS; do
+            if [ "$result" != "success" ]; then echo "::error::A required job finished with: $result"; exit 1; fi
           done
-          echo "All required CI gates completed successfully. Safe to merge."
