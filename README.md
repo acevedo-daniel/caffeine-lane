@@ -4,13 +4,9 @@
 
 > An independent editorial journal for cafe racer builds, workshop guides, reviews, and rider culture.
 
-Caffeine Lane is crafted for builders and riders who appreciate greasy knuckles, clean lines, and thoughtful engineering. Instead of another noisy social feed, it is a deliberate, server-rendered publishing platform: long-form build logs with technical specs, practical garage guides, honest reviews, focused reader discussions, and a bilingual interface in Spanish and English.
+Caffeine Lane publishes long-form motorcycle build logs with technical specs, workshop guides, and reviews, plus reader discussions and an interface in Spanish and English. It is a server-rendered Django application rather than a social feed or a single-page app.
 
-**[Explore the Live Journal (caffeine-lane.vercel.app)](https://caffeine-lane.vercel.app/)** · **[Deployment Guide](docs/DEPLOYMENT.md)**
-
-## Live demo
-
-The public instance is live and running at [caffeine-lane.vercel.app](https://caffeine-lane.vercel.app/).
+**[Open the live demo](https://caffeine-lane.vercel.app/)**
 
 > [!NOTE]
 > The live demo keeps password recovery disabled by default. Until a custom domain is verified in Resend, outbound transactional emails are restricted to sandbox recipients.
@@ -33,19 +29,19 @@ The public instance is live and running at [caffeine-lane.vercel.app](https://ca
 
 ## Key capabilities
 
-- **Curated publishing:** In-depth build breakdowns, garage tutorials, and gear reviews organized around three structural categories (`builds`, `guides`, `reviews`), complete with verified image uploads and motorcycle spec sheets.
-- **Search that works:** Weighted PostgreSQL full-text search with relevance ranking, instant input clearing, and category filters that survive pagination.
-- **Reader community:** Clean email authentication, personal rider profiles with custom avatars, and one-level deep discussion threads designed for meaningful dialogue rather than endless comment trees.
-- **Bilingual by design:** Seamless switching between Spanish and English powered by Django's native gettext runtime.
-- **Thoughtful reading experience:** Reading progress indicator, dark mode with system preference detection, and zero heavy client-side framework bloat.
+- **Editorial publishing:** Build logs, workshop guides, and reviews organized in three categories (`builds`, `guides`, `reviews`), with validated image uploads and motorcycle spec sheets.
+- **Search:** Weighted PostgreSQL full-text search ranked by relevance, with category filters that persist across pagination.
+- **Reader community:** Email-based accounts, rider profiles with avatars, and comment threads limited to one reply level so discussions stay readable.
+- **Bilingual interface:** Spanish and English through Django's gettext translations.
+- **Reading experience:** A reading progress indicator and dark mode that follows the system preference, without a client-side framework.
 
 ## Engineering highlights
 
-- **Server-rendered with intent.** Rather than bolting on a complex single-page app framework, Caffeine Lane leans into classic Django templates, modern Tailwind CSS, and surgical vanilla JavaScript. Pages render instantly from the server and feel snappy on mobile screens.
-- **Email-first identity.** The custom `accounts.User` model makes email the primary identifier from day one, backed by Argon2 password hashing in production, completely bypassing Django's historical username baggage.
-- **PostgreSQL search with a graceful fallback.** Production queries leverage PostgreSQL's native `SearchVector` and `SearchRank` with tuned weights across titles, excerpts, and content, while keeping a clean SQLite `icontains` fallback so offline local development stays friction-free.
-- **Disciplined discussion boundaries.** Comments are validated through an explicit service layer before touching the database. Replies are strictly capped at one level to keep threads readable, with clear states for withdrawn comments and moderator actions.
-- **Dual-connection database topology.** Web requests run through Neon's connection pooler for serverless efficiency, while schema migrations execute strictly out-of-band over an unpooled direct connection to avoid transaction pooling lockups.
+- **Server-rendered by design.** Django templates, Tailwind CSS, and small vanilla JavaScript modules render pages on the server instead of shipping a single-page app, which keeps the client light and the rendering logic in one place.
+- **Email-first identity.** The custom `accounts.User` model uses email as the primary identifier from the start, with Argon2 password hashing in production.
+- **PostgreSQL search with a local fallback.** Production queries use PostgreSQL `SearchVector` and `SearchRank` with weights across titles, excerpts, and content; local development without PostgreSQL falls back to SQLite `icontains`.
+- **Discussion rules in a service layer.** Comments are validated in a service layer before they are saved. Replies are capped at one level, and withdrawn and moderator-hidden comments have explicit states.
+- **Separate database connections.** Web requests use Neon's pooled connection, while migrations run over a direct, unpooled connection to avoid transaction-pooling issues.
 
 ## Architecture
 
@@ -56,7 +52,7 @@ Browser -> Vercel CDN / Django function (Python 3.14)
                   -> Resend (transactional email)
 ```
 
-Django acts as the cohesive core: routing, authentication, form validation, business rules, and template rendering all live together. Static assets compile to minified CSS and clean ES modules, served directly from Vercel's global edge network.
+Django owns routing, authentication, form validation, business rules, and template rendering. Static assets are compiled to minified CSS and ES modules and served from Vercel's CDN.
 
 ## Technology stack
 
@@ -116,8 +112,6 @@ Open [`http://localhost:8000`](http://localhost:8000) to browse the journal loca
 
 ## Quality
 
-The codebase is backed by a multi-tier test suite:
-
 ```bash
 # Linting, formatting, and Django system checks
 uv run ruff check .
@@ -125,18 +119,18 @@ uv run ruff format --check .
 uv run python manage.py check
 uv run python manage.py makemigrations --settings=config.settings.test --check --dry-run
 
-# Backend test suite with coverage (108 tests)
+# Backend tests with coverage
 uv run pytest
 
-# Build frontend assets and run module unit tests (23 tests)
+# Build frontend assets and run module unit tests
 pnpm run build
 pnpm test
 
-# Full browser smoke tests with Playwright (9 tests)
+# Browser smoke tests with Playwright
 pnpm run test:e2e
 ```
 
-CI runs the playbook-aligned Quality, Tests, E2E, Production, and Docker jobs,
+CI runs the Quality, Tests, E2E, Production, and Docker jobs,
 then exposes one stable CI Gate check for the protected main branch. The suite
 uses PostgreSQL 18 on Python 3.14, validates production settings, builds and
 tests frontend assets, runs Playwright browser smoke tests, and verifies the
@@ -149,3 +143,7 @@ production Docker container.
 - [Development Workflow](docs/DEVELOPMENT.md): Local environment, database commands, and asset pipeline.
 - [Testing Strategy](docs/TESTING.md): Testing strategy, test layers, and quality gates.
 - [Deployment Guide](docs/DEPLOYMENT.md): Hosting topology, Vercel runtime contract, and release pipeline.
+
+## License
+
+[MIT](LICENSE)

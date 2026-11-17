@@ -37,7 +37,7 @@ test.describe("compiled frontend smoke checks", () => {
   test("language and custom selects synchronize with their native controls", async ({ page }) => {
     await page.goto("/home/");
 
-    // Phase 3 requirement: Default is Spanish on cold visit
+    // Default is Spanish on cold visit
     await expect(page.locator("html")).toHaveAttribute("lang", "es");
 
     const languageSelect = page.locator("#language-switcher");
@@ -90,7 +90,7 @@ test.describe("compiled frontend smoke checks", () => {
     await expect(replyForm).toBeHidden();
   });
 
-  test("Phase 3: Public Landing and Category Archive render editorial surfaces with The Rider", async ({ page }) => {
+  test("Public Landing and Category Archive render editorial surfaces with The Rider", async ({ page }) => {
     // 1. Public Landing checks
     await page.goto("/");
     await expect(page.locator("h1#landing-hero-title")).toBeVisible();
@@ -116,7 +116,7 @@ test.describe("compiled frontend smoke checks", () => {
     await expect(page.locator(".category-post-grid")).toBeVisible();
   });
 
-  test("Phase 4: Article page features reading progress, build specs inspector, author seal, and comment discussion", async ({ page }) => {
+  test("Article page features reading progress, build specs inspector, author seal, and comment discussion", async ({ page }) => {
     await page.goto("/posts/cafe-racer-de-garaje/");
 
     // 1. Reading progress bar
@@ -140,7 +140,7 @@ test.describe("compiled frontend smoke checks", () => {
     await expect(page.locator(".comment-participation__rider, .comment-empty__rider").first()).toBeVisible();
   });
 
-  test("Phase 5: Search interface, clear button, category chips, results highlighting, and zero-results empty card", async ({ page }) => {
+  test("Search interface, clear button, category chips, results highlighting, and zero-results empty card", async ({ page }) => {
     // 1. Search page load with query
     await page.goto("/posts/search/?q=cafe");
     await expect(page.locator(".search-panel")).toBeVisible();
@@ -166,14 +166,14 @@ test.describe("compiled frontend smoke checks", () => {
     await expect(emptyCard.locator(".search-suggestion-pill").first()).toContainText("CB750");
   });
 
-  test("Phase 6: Reader identity, two-step registration, profile hub, and simulated error pages", async ({ page }) => {
+  test("Reader identity, two-step registration, profile hub, and simulated error pages", async ({ page }) => {
     // 1. Two-step registration flow
     await page.goto("/accounts/register/");
     await expect(page.locator(".auth-shell")).toBeVisible();
     await expect(page.locator(".auth-shell__rider")).toBeVisible();
 
     const timestamp = Date.now();
-    const testEmail = `e2e-phase6-${timestamp}@example.test`;
+    const testEmail = `e2e-rider-${timestamp}@example.test`;
     await page.locator("#id_email").fill(testEmail);
     await page.getByRole("button", { name: /(Continue|Continuar)/i }).click();
 
@@ -182,7 +182,7 @@ test.describe("compiled frontend smoke checks", () => {
     await expect(page.locator(".auth-shell__rider")).toBeVisible();
     await expect(page.locator("[data-avatar-preview-card]")).toBeVisible();
     await page.locator("#id_username").fill(`rider${timestamp}`);
-    await page.locator("#id_display_name").fill("Phase 6 Test Rider");
+    await page.locator("#id_display_name").fill("Test Rider");
     await page.locator("#id_password1").fill("SecurePass123!");
     await page.locator("#id_password2").fill("SecurePass123!");
     await page.locator("#id_has_motorcycle_0").check();
@@ -218,7 +218,7 @@ test.describe("compiled frontend smoke checks", () => {
     await expect(page.locator(".error-page__action")).toBeVisible();
   });
 
-  test("Phase 4: Dark mode toggle switches themes, synchronizes mobile drawer, and persists across reloads", async ({ page }) => {
+  test("Dark mode toggle switches themes, synchronizes mobile drawer, and persists across reloads", async ({ page }) => {
     // 1. Visit home page and clear existing theme in storage
     await page.goto("/home/");
     await page.evaluate(() => localStorage.removeItem("caffeine_lane_theme"));
