@@ -121,7 +121,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "argon2-cffi", specifier = ">=25.1.0" },
-    { name = "cloudinary", specifier = "==1.46.2" },
+    { name = "cloudinary", specifier = "==1.47.0" },
     { name = "dj-database-url", specifier = "==3.1.2" },
     { name = "django", specifier = ">=6.0.8,<6.2" },
     { name = "django-anymail", extras = ["resend"], specifier = ">=15.2" },
@@ -273,16 +273,16 @@ wheels = [
 
 [[package]]
 name = "cloudinary"
-version = "1.46.2"
+version = "1.47.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "certifi" },
     { name = "six" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d9/da/a837db79b7a233611583a0040a04ebc0c835e04e38878a4b2ca58cbe3ab9/cloudinary-1.46.2.tar.gz", hash = "sha256:491ebf4f66ded86a7cff31151e85056520e5a184caf42c7de71b3025da358b95", size = 232297, upload-time = "2026-08-27T15:07:58.353Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/85/c9/45a9e1f0e6cdbba979d7ad86eba731ba62224c6538c5685537058609d971/cloudinary-1.47.0.tar.gz", hash = "sha256:a42d1312b9b581a68a387ba81b3df7ce35d1870d6ff7bfd9d2777589c247e014", size = 240930, upload-time = "2026-11-05T12:54:49.969Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/32/98/e68ad32066b7900200e23a457c600296ce1f8fb768f161fdbb03e5ed2633/cloudinary-1.46.2-py3-none-any.whl", hash = "sha256:c552d819cd76cb7cd3c15a8a5ea23557ed6ad0ded661ad4b3f3b46ff353fc391", size = 192542, upload-time = "2026-08-27T15:07:57.191Z" },
+    { url = "https://files.pythonhosted.org/packages/64/8a/81af3c596570d928c99e4148c5de8f8428163b599a639eeaa1c7b637e4ee/cloudinary-1.47.0-py3-none-any.whl", hash = "sha256:cf14b75d969960ee4dc04125826c12a6ea02a0ecbb75d4bde2ce2e82af0ad010", size = 199532, upload-time = "2026-11-05T12:54:48.606Z" },
 ]
 
 [[package]]
