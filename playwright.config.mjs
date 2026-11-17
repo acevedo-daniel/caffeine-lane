@@ -15,7 +15,10 @@ export default defineConfig({
   workers: 1,
   timeout: 30_000,
   expect: { timeout: 8_000 },
-  reporter: process.env.CI ? "github" : "list",
+  retries: process.env.CI ? 1 : 0,
+  reporter: process.env.CI
+    ? [["github"], ["json", { outputFile: "playwright-report/results.json" }]]
+    : "list",
   use: {
     baseURL: "http://127.0.0.1:8000",
     browserName: "chromium",

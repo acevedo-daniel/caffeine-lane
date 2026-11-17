@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test.describe("compiled frontend smoke checks", () => {
   test("Hero controls navigate and autoplay advances the active slide", async ({ page }) => {
+    await page.clock.install();
     await page.goto("/home/");
 
     const hero = page.locator("[aria-roledescription='carousel']");
@@ -21,16 +22,18 @@ test.describe("compiled frontend smoke checks", () => {
     await expect(index).toHaveText("02");
 
     await page.mouse.move(0, 0);
-    await expect(index).not.toHaveText("02", { timeout: 9_000 });
+    await page.clock.runFor(7_500);
+    await expect(index).toHaveText("03");
   });
 
   test("Hero disables autoplay when reduced motion is requested", async ({ page }) => {
+    await page.clock.install();
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/home/");
 
     const index = page.locator("[aria-roledescription='carousel'] [data-carousel-index]");
     await expect(index).toHaveText("01");
-    await page.waitForTimeout(7_500);
+    await page.clock.runFor(7_500);
     await expect(index).toHaveText("01");
   });
 
