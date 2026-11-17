@@ -27,10 +27,10 @@ def create_test_image(format="PNG", size=(100, 100), color="blue"):
     )
 
 
-class Phase6AccountTests(TestCase):
+class ReaderAccountTests(TestCase):
     def setUp(self):
         self.user = UserFactory(
-            username="phase6rider", email="phase6@example.com", has_motorcycle=True
+            username="readerrider", email="reader@example.com", has_motorcycle=True
         )
         self.category = CategoryFactory(name="Builds")
         self.post = PostFactory(title="Norton Commando Build", categories=self.category)

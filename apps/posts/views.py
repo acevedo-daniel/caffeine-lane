@@ -379,7 +379,3 @@ class PostDeleteView(
         ):
             return qs
         return qs.filter(author=self.request.user)
-
-    def delete(self, request, *args, **kwargs):
-        messages.success(request, self.success_message)
-        return super().delete(request, *args, **kwargs)

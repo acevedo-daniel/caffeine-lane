@@ -650,7 +650,7 @@
   }
 
   /* ==========================================================================
-     Global Navigation Header: 4.5rem Unified Sticky Shell (Phase 2)
+     Global Navigation Header: 4.5rem Unified Sticky Shell
      ========================================================================== */
 
   .site-header {
@@ -985,7 +985,7 @@
   }
 
   /* ==========================================================================
-     Mobile Navigation Drawer (Slide-Over Panel, Phase 2)
+     Mobile Navigation Drawer (Slide-Over Panel)
      ========================================================================== */
 
   .has-mobile-menu .mobile-drawer {
@@ -1187,7 +1187,7 @@
   }
 
   /* ==========================================================================
-     Deep Espresso Footer (Phase 2)
+     Deep Espresso Footer
      ========================================================================== */
 
   .editorial-footer {
@@ -1343,7 +1343,7 @@
   }
 
   /* ==========================================================================
-     System Feedback Banners (Phase 2)
+     System Feedback Banners
      ========================================================================== */
 
   .flash-messages {
@@ -1870,7 +1870,7 @@
   .flash-message--info > i { color: var(--info); }
 
   /* ==========================================================================
-     Phase 3: Public Landing View (.landing-view)
+     Public Landing View (.landing-view)
      ========================================================================== */
 
   .landing-view {
@@ -2494,7 +2494,7 @@
   }
 
   /* ==========================================================================
-     Phase 3: Taxonomy Navigation Ribbon (.taxonomy-ribbon)
+     Taxonomy Navigation Ribbon (.taxonomy-ribbon)
      ========================================================================== */
 
   .taxonomy-ribbon {
@@ -4378,7 +4378,7 @@
 
   .account-state--warning .account-state__icon { color: var(--warning); }
 
-  /* Phase 6: Avatar Preview & Management */
+  /* Avatar Preview & Management */
   .avatar-preview-card {
     display: flex;
     align-items: center;
@@ -4466,7 +4466,7 @@
     margin-top: 0.25rem;
   }
 
-  /* Phase 6: Motorcycle Fleet Overview */
+  /* Motorcycle Fleet Overview */
   .profile-fleet-card {
     padding: 1.25rem;
     border: 1px solid var(--border);
@@ -4531,7 +4531,7 @@
     line-height: 1.6;
   }
 
-  /* Phase 6: Recent Comments History */
+  /* Recent Comments History */
   .profile-comments-list {
     display: grid;
     gap: 1rem;
