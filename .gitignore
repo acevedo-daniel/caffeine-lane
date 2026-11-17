@@ -78,3 +78,5 @@ Thumbs.db
 
 # Local AI agent instructions
 /AGENTS.md
+/.agents/skills/
+/.claude/skills/
