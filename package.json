@@ -14,10 +14,10 @@
     "test:e2e": "node scripts/prepare-e2e.mjs && playwright test"
   },
   "devDependencies": {
-    "@playwright/test": "1.63.0",
-    "@tailwindcss/cli": "^4.3.3",
+    "@playwright/test": "1.65.1",
+    "@tailwindcss/cli": "^4.3.5",
     "chokidar": "6.0.0",
-    "tailwindcss": "^4.3.3"
+    "tailwindcss": "^4.3.5"
   },
   "packageManager": "pnpm@10.18.3",
   "description": "Django editorial application with accounts, moderation, media management and PostgreSQL."
