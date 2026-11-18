@@ -276,11 +276,13 @@ class PostSearchView(ListView):
         if query:
             if connection.vendor == "postgresql":
                 vector = (
-                    SearchVector("title", weight="A")
-                    + SearchVector("excerpt", weight="B")
-                    + SearchVector("content", weight="C")
+                    SearchVector("title", weight="A", config="spanish")
+                    + SearchVector("excerpt", weight="B", config="spanish")
+                    + SearchVector("content", weight="C", config="spanish")
                 )
-                search_query = SearchQuery(query, search_type="websearch")
+                search_query = SearchQuery(
+                    query, search_type="websearch", config="spanish"
+                )
                 queryset = queryset.annotate(
                     rank=SearchRank(vector, search_query)
                 ).filter(rank__gt=0)
@@ -292,8 +294,8 @@ class PostSearchView(ListView):
                 )
 
         sort_mapping = {
-            "newest": "-created_at",
-            "oldest": "created_at",
+            "newest": "-published_at",
+            "oldest": "published_at",
             "title_asc": "title",
             "title_desc": "-title",
         }
