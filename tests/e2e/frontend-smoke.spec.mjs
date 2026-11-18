@@ -222,16 +222,21 @@ test.describe("compiled frontend smoke checks", () => {
   });
 
   test("Dark mode toggle switches themes, synchronizes mobile drawer, and persists across reloads", async ({ page }) => {
-    // 1. Visit home page and clear existing theme in storage
+    // 1. Follow system light preference when no theme is stored
+    await page.emulateMedia({ colorScheme: "light" });
     await page.goto("/home/");
-    await page.evaluate(() => localStorage.removeItem("caffeine_lane_theme"));
-    await page.reload();
-
     const html = page.locator("html");
+    await expect(html).toHaveAttribute("data-theme", "light");
+    await expect(html).not.toHaveClass(/dark/);
+
+    // 2. Follow system dark preference before navigation when storage is clear
+    await page.emulateMedia({ colorScheme: "dark" });
+    await page.evaluate(() => localStorage.removeItem("caffeine_lane_theme"));
+    await page.goto("/home/");
+
     const desktopToggle = page.locator(".site-header__actions [data-theme-toggle]");
     await expect(desktopToggle).toBeVisible();
 
-    // 2. Default theme without storage is dark
     await expect(html).toHaveAttribute("data-theme", "dark");
     await expect(html).toHaveClass(/dark/);
     await expect(desktopToggle).toHaveAttribute("aria-pressed", "true");

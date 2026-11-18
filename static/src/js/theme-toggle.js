@@ -34,7 +34,7 @@ export class ThemeController {
   }
 
   getCurrentTheme() {
-    return this.getStoredTheme() || THEME_DARK;
+    return this.getStoredTheme() || this.getSystemTheme();
   }
 
   isDark() {
