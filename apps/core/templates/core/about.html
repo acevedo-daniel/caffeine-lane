@@ -6,7 +6,7 @@
     <section class="about-hero">
       <div class="about-hero__container editorial-container">
         <div class="about-hero__copy">
-          <p class="editorial-kicker text-stone-300">{% translate "The Caffeine Lane" %}</p>
+          <p class="editorial-kicker text-white/80">{% translate "The Caffeine Lane" %}</p>
           <h1 class="about-hero__title">{% translate "Built for the ride between the garage and the road." %}</h1>
           <p class="about-hero__intro">{% translate "The Caffeine Lane is an editorial home for the people who keep a machine close, a tool roll nearby, and a better route in mind." %}</p>
         </div>
@@ -31,9 +31,9 @@
         {% translate "The Rider working in the garage" as mechanic_alt %}
         {% include "components/character_badge.html" with asset="character-mechanic.webp" size="lg" alt=mechanic_alt class_name="about-garage__rider" %}
         <div>
-          <p class="editorial-kicker text-stone-300">{% translate "The garage" %}</p>
+          <p class="editorial-kicker text-white/80">{% translate "The garage" %}</p>
           <h2 class="mt-2 font-bebas text-5xl leading-[0.85] tracking-wide text-white sm:text-6xl">{% translate "Learn it. Tune it. Ride it." %}</h2>
-          <p class="mt-5 max-w-xl leading-7 text-stone-300">{% translate "The garage is where curiosity becomes confidence. We share the thinking behind maintenance and modification, so every rider can understand the machine beneath them." %}</p>
+          <p class="mt-5 max-w-xl leading-7 text-white/80">{% translate "The garage is where curiosity becomes confidence. We share the thinking behind maintenance and modification, so every rider can understand the machine beneath them." %}</p>
           <a class="about-inline-link" href="{% url 'category_view' category_slug=guides_category_slug %}">{% translate "Explore the guides" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
         </div>
       </div>
@@ -64,7 +64,7 @@
     </section>
 
     <section class="about-cta editorial-container" aria-labelledby="about-cta-heading">
-      <p class="editorial-kicker text-stone-300">{% translate "Your place in the lane" %}</p>
+      <p class="editorial-kicker text-white/80">{% translate "Your place in the lane" %}</p>
       <h2 id="about-cta-heading">{% translate "Build your story. Share your ride." %}</h2>
       <p>{% translate "Create a profile and add your voice to the conversations that move the culture forward." %}</p>
       <a class="landing-cta motion-cta" href="{% url 'register' %}">{% translate "Join the ride" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>

@@ -58,13 +58,13 @@
   </form>
 
   <!-- Recent Comments History -->
-  <section class="profile-comments-section mt-10 pt-8 border-t border-stone-200" aria-labelledby="recent-comments-heading">
+  <section class="profile-comments-section mt-10 pt-8 border-t border-border-subtle" aria-labelledby="recent-comments-heading">
     <div class="flex items-center justify-between mb-4">
       <div>
-        <p class="account-panel__eyebrow text-xs font-bold uppercase tracking-wider text-stone-500">{% translate "Activity" %}</p>
-        <h3 id="recent-comments-heading" class="font-bebas text-3xl tracking-wide text-stone-950">{% translate "Recent Garage Comments" %}</h3>
+        <p class="account-panel__eyebrow text-xs font-bold uppercase tracking-wider text-foreground-muted">{% translate "Activity" %}</p>
+        <h3 id="recent-comments-heading" class="font-bebas text-3xl tracking-wide text-foreground">{% translate "Recent Garage Comments" %}</h3>
       </div>
-      <span class="text-xs font-bold text-stone-500 uppercase tracking-wider">
+      <span class="text-xs font-bold text-foreground-muted uppercase tracking-wider">
         {% blocktranslate count counter=recent_comments|length %}{{ counter }} recent{% plural %}{{ counter }} recent{% endblocktranslate %}
       </span>
     </div>
@@ -102,8 +102,8 @@
           {% include "components/character_badge.html" with asset="character-talking.webp" size="sm" alt=talking_alt %}
         </div>
         <div class="profile-comments-empty__content">
-          <h4 class="font-bebas text-2xl text-stone-900">{% translate "No comments posted yet" %}</h4>
-          <p class="text-sm text-stone-600 mt-1">{% translate "Join the garage discussions, share technical feedback, or ask questions on builds." %}</p>
+          <h4 class="font-bebas text-2xl text-foreground">{% translate "No comments posted yet" %}</h4>
+          <p class="text-sm text-foreground-secondary mt-1">{% translate "Join the garage discussions, share technical feedback, or ask questions on builds." %}</p>
           <a href="{% url 'home' %}" class="editorial-button mt-4">{% translate "Explore latest stories" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
         </div>
       </div>

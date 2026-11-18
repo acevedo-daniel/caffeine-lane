@@ -12,7 +12,7 @@
         <div class="landing-hero__content">
           <div class="landing-hero__eyebrow">
             <span class="landing-hero__badge">{% translate "Issue 2026" %}</span>
-            <p class="editorial-kicker text-stone-500">{% translate "Journeys & Garage Notes" %}</p>
+            <p class="editorial-kicker text-foreground-muted">{% translate "Journeys & Garage Notes" %}</p>
           </div>
           <h1 id="landing-hero-title" class="landing-hero__title">
             {% translate "HAND-BUILT HONESTY. INDEPENDENT CAFE RACER CULTURE." %}
@@ -63,12 +63,12 @@
                 <div class="landing-hero__image-overlay"></div>
                 <div class="landing-hero__card-caption">
                   <div class="landing-hero__card-badge-row">
-                    <span class="editorial-kicker text-stone-300">{% translate "Featured Build" %}</span>
+                    <span class="editorial-kicker text-white/80">{% translate "Featured Build" %}</span>
                     {% if featured_build.reading_time %}
                       <span class="landing-hero__card-meta">{% blocktranslate with minutes=featured_build.reading_time %}{{ minutes }} min read{% endblocktranslate %}</span>
                     {% endif %}
                   </div>
-                  <h2 class="font-bebas text-3xl sm:text-4xl text-white tracking-wide mt-1.5 group-hover:text-stone-300 transition-colors">
+                  <h2 class="font-bebas text-3xl sm:text-4xl text-white tracking-wide mt-1.5 group-hover:text-white/80 transition-colors">
                     {{ featured_build.title }}
                   </h2>
                   <span class="landing-hero__card-cta">
@@ -80,9 +80,9 @@
           {% else %}
             <div class="landing-hero__card-fallback">
               <div class="landing-hero__fallback-inner">
-                <i class="fa-solid fa-motorcycle text-5xl text-stone-700 mb-3" aria-hidden="true"></i>
-                <span class="font-bebas text-3xl text-stone-300 tracking-wider">CAFFEINE LANE</span>
-                <p class="text-xs text-stone-400 uppercase tracking-widest mt-1">{% translate "Garage to Road" %}</p>
+                <i class="fa-solid fa-motorcycle text-5xl text-white/30 mb-3" aria-hidden="true"></i>
+                <span class="font-bebas text-3xl text-white/80 tracking-wider">CAFFEINE LANE</span>
+                <p class="text-xs text-white/75 uppercase tracking-widest mt-1">{% translate "Garage to Road" %}</p>
               </div>
             </div>
           {% endif %}
@@ -115,7 +115,7 @@
           </p>
           <div class="landing-manifesto-card__quote">
             <span class="landing-manifesto-card__signoff">{% translate "“The road is ours.”" %}</span>
-            <span class="text-xs text-stone-500 font-semibold tracking-wider uppercase">{% translate "The Rider" %}</span>
+            <span class="text-xs text-foreground-muted font-semibold tracking-wider uppercase">{% translate "The Rider" %}</span>
           </div>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <section class="landing-categories" aria-labelledby="landing-categories-title">
     <div class="editorial-container">
       <div class="editorial-rule">
-        <p class="editorial-kicker text-stone-400">{% translate "Workshop Sections" %}</p>
+        <p class="editorial-kicker text-white/75">{% translate "Workshop Sections" %}</p>
         <h2 id="landing-categories-title" class="editorial-heading text-white mt-1">
           {% translate "Explore By Category" %}
         </h2>
@@ -161,7 +161,7 @@
             </div>
             <span class="category-card__index">01</span>
           </div>
-          <h3 class="category-card__title group-hover:text-stone-300 transition-colors">
+          <h3 class="category-card__title group-hover:text-white/80 transition-colors">
             {% translate "Builds" %}
           </h3>
           <p class="category-card__desc">
@@ -186,7 +186,7 @@
             </div>
             <span class="category-card__index">02</span>
           </div>
-          <h3 class="category-card__title group-hover:text-stone-300 transition-colors">
+          <h3 class="category-card__title group-hover:text-white/80 transition-colors">
             {% translate "Guides" %}
           </h3>
           <p class="category-card__desc">
@@ -211,7 +211,7 @@
             </div>
             <span class="category-card__index">03</span>
           </div>
-          <h3 class="category-card__title group-hover:text-stone-300 transition-colors">
+          <h3 class="category-card__title group-hover:text-white/80 transition-colors">
             {% translate "Reviews" %}
           </h3>
           <p class="category-card__desc">
@@ -260,7 +260,7 @@
     <div class="editorial-container">
       <div class="landing-community__panel">
         <div class="landing-community__content">
-          <p class="editorial-kicker text-stone-400">{% translate "The Garage Collective" %}</p>
+          <p class="editorial-kicker text-white/75">{% translate "The Garage Collective" %}</p>
           <h2 id="landing-community-title" class="landing-community__title">
             {% translate "Join 1,000+ custom motorcycle builders" %}
           </h2>
