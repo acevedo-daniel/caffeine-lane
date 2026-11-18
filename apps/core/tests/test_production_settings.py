@@ -156,6 +156,88 @@ class ProductionSettingsTests(SimpleTestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("verified custom domain", result.stderr)
 
+    def test_production_settings_use_database_cache(self):
+        environment = os.environ.copy()
+        environment.update(
+            {
+                "DJANGO_SETTINGS_MODULE": "config.settings.production",
+                "SECRET_KEY": "test-production-secret-key-not-for-deployment-0123456789",
+                "DATABASE_URL": "sqlite:///:memory:",
+                "ALLOWED_HOSTS": "example.test",
+                "CLOUDINARY_URL": "cloudinary://123456789012345:test@example",
+                "RESEND_API_KEY": "re_test_not_a_real_key",
+                "CONTACT_RECIPIENT_EMAIL": "owner@example.test",
+            }
+        )
+        result = subprocess.run(
+            [
+                sys.executable,
+                "manage.py",
+                "shell",
+                "--settings=config.settings.production",
+                "-c",
+                (
+                    "from django.conf import settings; "
+                    "print(settings.CACHES['default']['BACKEND']); "
+                    "print(settings.CACHES['default']['LOCATION'])"
+                ),
+            ],
+            cwd=Path(__file__).resolve().parents[3],
+            env=environment,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(
+            [line for line in result.stdout.splitlines() if line][-2:],
+            [
+                "django.core.cache.backends.db.DatabaseCache",
+                "django_cache",
+            ],
+        )
+
+    def test_production_settings_enforce_csp_with_nonce_by_default(self):
+        environment = os.environ.copy()
+        environment.pop("CSP_ENFORCE", None)
+        environment.update(
+            {
+                "SECRET_KEY": "test-production-secret-key-not-for-deployment-0123456789",
+                "DATABASE_URL": "sqlite:///:memory:",
+                "ALLOWED_HOSTS": "example.test",
+                "CLOUDINARY_URL": "cloudinary://123456789012345:test@example",
+                "RESEND_API_KEY": "re_test_not_a_real_key",
+                "CONTACT_RECIPIENT_EMAIL": "owner@example.test",
+            }
+        )
+        script = "\n".join(
+            [
+                "from unittest.mock import patch",
+                "import environ",
+                "with patch.object(environ.Env, 'read_env', return_value=None):",
+                "    from config.settings import production",
+                "from django.utils.csp import CSP",
+                "print(bool(getattr(production, 'SECURE_CSP', {})))",
+                "print(bool(getattr(production, 'SECURE_CSP_REPORT_ONLY', {})))",
+                "print(CSP.NONCE in production.SECURE_CSP['script-src'])",
+            ]
+        )
+        result = subprocess.run(
+            [sys.executable, "-c", script],
+            cwd=Path(__file__).resolve().parents[3],
+            env=environment,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(
+            [line for line in result.stdout.splitlines() if line][-3:],
+            ["True", "False", "True"],
+        )
+
 
 class LocalSettingsTests(SimpleTestCase):
     def test_local_settings_are_explicitly_development_oriented(self):

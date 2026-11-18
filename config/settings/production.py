@@ -49,6 +49,12 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"
     },
 }
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "django_cache",
+    }
+}
 
 SECURE_SSL_REDIRECT = True
 SECURE_REDIRECT_EXEMPT = [r"^health/$", r"^healthz/$"]
@@ -79,11 +85,11 @@ _CSP_POLICY = {
     "frame-ancestors": [CSP.SELF],
     "img-src": [CSP.SELF, "https://res.cloudinary.com"],
     "object-src": [CSP.NONE],
-    "script-src": [CSP.SELF],
+    "script-src": [CSP.SELF, CSP.NONCE],
     "style-src": [CSP.SELF, "https://fonts.googleapis.com"],
     "report-uri": ["/csp-report/"],
 }
-if env.bool("CSP_ENFORCE", default=False):
+if env.bool("CSP_ENFORCE", default=True):
     SECURE_CSP = _CSP_POLICY
 else:
     SECURE_CSP_REPORT_ONLY = _CSP_POLICY

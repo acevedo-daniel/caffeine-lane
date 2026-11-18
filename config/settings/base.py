@@ -49,6 +49,7 @@ TEMPLATES = [
             "context_processors": [
                 "django.template.context_processors.request",
                 "django.template.context_processors.i18n",
+                "django.template.context_processors.csp",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "apps.accounts.context_processors.feature_flags",
@@ -110,5 +111,11 @@ DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL", default="noreply@example.com"
 CONTACT_RECIPIENT_EMAIL = env.str("CONTACT_RECIPIENT_EMAIL", default=DEFAULT_FROM_EMAIL)
 CONTACT_RATE_LIMIT = env.int("CONTACT_RATE_LIMIT", default=5)
 CONTACT_RATE_LIMIT_WINDOW = env.int("CONTACT_RATE_LIMIT_WINDOW", default=3600)
+AUTH_RATE_LIMIT = env.int("AUTH_RATE_LIMIT", default=10)
+AUTH_RATE_LIMIT_WINDOW = env.int("AUTH_RATE_LIMIT_WINDOW", default=900)
+REGISTRATION_RATE_LIMIT = env.int("REGISTRATION_RATE_LIMIT", default=5)
+REGISTRATION_RATE_LIMIT_WINDOW = env.int("REGISTRATION_RATE_LIMIT_WINDOW", default=3600)
+COMMENT_RATE_LIMIT = env.int("COMMENT_RATE_LIMIT", default=10)
+COMMENT_RATE_LIMIT_WINDOW = env.int("COMMENT_RATE_LIMIT_WINDOW", default=600)
 PASSWORD_RESET_ENABLED = env.bool("PASSWORD_RESET_ENABLED", default=False)
 PUBLIC_SITE_URL = env.str("PUBLIC_SITE_URL", default="")

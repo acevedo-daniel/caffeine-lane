@@ -4,7 +4,6 @@ import logging
 from anymail.exceptions import AnymailAPIError
 from django.conf import settings
 from django.contrib import messages
-from django.core.cache import cache
 from django.core.mail import EmailMultiAlternatives
 from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse
 from django.shortcuts import redirect, render
@@ -17,6 +16,7 @@ from apps.posts.models import Category, Post
 from apps.posts.taxonomy import CategorySlug
 
 from .forms import ContactForm
+from .rate_limit import client_ip, rate_limit_exceeded
 from .seo import absolute_url, article_schema, localized_copy, website_schema
 
 logger = logging.getLogger(__name__)
@@ -161,18 +161,12 @@ def contact(request):
     if request.method == "POST":
         form = ContactForm(request.POST)
         if form.is_valid():
-            forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
-            client_ip = (
-                forwarded_for.split(",")[0].strip()
-                if forwarded_for
-                else request.META.get("REMOTE_ADDR", "")
-            )
-            rate_limit_key = f"contact-rate-limit:{client_ip}"
-            if not cache.add(
-                rate_limit_key, 1, timeout=settings.CONTACT_RATE_LIMIT_WINDOW
+            if rate_limit_exceeded(
+                scope="contact",
+                identity=client_ip(request),
+                limit=settings.CONTACT_RATE_LIMIT,
+                window=settings.CONTACT_RATE_LIMIT_WINDOW,
             ):
-                cache.incr(rate_limit_key)
-            if cache.get(rate_limit_key, 0) > settings.CONTACT_RATE_LIMIT:
                 form.add_error(None, _("Too many messages. Please try again later."))
                 return render(request, "core/contact.html", {"form": form})
 
