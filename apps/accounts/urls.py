@@ -10,7 +10,7 @@ urlpatterns = [
     path("register/step2/", views.register_step2, name="register_step2"),
     path(
         "login/",
-        auth_views.LoginView.as_view(
+        views.RateLimitedLoginView.as_view(
             authentication_form=EmailAuthenticationForm,
             template_name="accounts/login.html",
         ),

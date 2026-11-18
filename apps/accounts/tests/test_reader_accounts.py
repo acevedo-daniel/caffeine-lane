@@ -1,6 +1,7 @@
 import io
 from unittest.mock import patch
 
+from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, override_settings
 from django.urls import reverse
@@ -29,6 +30,7 @@ def create_test_image(format="PNG", size=(100, 100), color="blue"):
 
 class ReaderAccountTests(TestCase):
     def setUp(self):
+        cache.clear()
         self.user = UserFactory(
             username="readerrider", email="reader@example.com", has_motorcycle=True
         )
@@ -177,3 +179,111 @@ class ReaderAccountTests(TestCase):
         self.assertContains(response, "character-badge--xl", status_code=404)
         self.assertContains(response, "Wrong turn.", status_code=404)
         self.assertContains(response, reverse("search"), status_code=404)
+
+    @override_settings(AUTH_RATE_LIMIT=2, AUTH_RATE_LIMIT_WINDOW=60)
+    def test_login_rate_limit_returns_429_after_limit_exceeded(self):
+        login_url = reverse("login")
+        payload = {"username": self.user.email, "password": "wrong-password"}
+
+        for _ in range(2):
+            response = self.client.post(login_url, payload)
+            self.assertEqual(response.status_code, 200)
+
+        limited_response = self.client.post(login_url, payload)
+        self.assertEqual(limited_response.status_code, 429)
+        self.assertContains(
+            limited_response,
+            "Too many sign-in attempts. Please try again later.",
+            status_code=429,
+        )
+
+    @override_settings(AUTH_RATE_LIMIT=1, AUTH_RATE_LIMIT_WINDOW=60, LANGUAGE_CODE="es")
+    def test_login_rate_limit_renders_spanish_error_under_es(self):
+        login_url = reverse("login")
+        payload = {"username": self.user.email, "password": "wrong-password"}
+
+        self.client.post(login_url, payload)
+        limited_response = self.client.post(login_url, payload)
+
+        self.assertEqual(limited_response.status_code, 429)
+        self.assertContains(
+            limited_response,
+            "Demasiados intentos de inicio de sesión. Intentá de nuevo más tarde.",
+            status_code=429,
+        )
+
+    @override_settings(REGISTRATION_RATE_LIMIT=1, REGISTRATION_RATE_LIMIT_WINDOW=60)
+    def test_registration_rate_limit_returns_429_and_creates_no_user(self):
+        self.client.post(reverse("register_step1"), {"email": "first@example.com"})
+        first_response = self.client.post(
+            reverse("register_step2"),
+            {
+                "username": "firstrider",
+                "display_name": "First Rider",
+                "password1": "SecurePass123!",
+                "password2": "SecurePass123!",
+                "has_motorcycle": "true",
+            },
+        )
+        self.assertRedirects(first_response, reverse("home"))
+        self.client.post(reverse("logout"))
+
+        user_count_before = User.objects.count()
+        self.client.post(reverse("register_step1"), {"email": "second@example.com"})
+        limited_response = self.client.post(
+            reverse("register_step2"),
+            {
+                "username": "secondrider",
+                "display_name": "Second Rider",
+                "password1": "SecurePass123!",
+                "password2": "SecurePass123!",
+                "has_motorcycle": "true",
+            },
+        )
+
+        self.assertEqual(limited_response.status_code, 429)
+        self.assertContains(
+            limited_response,
+            "Too many accounts were created from this connection. Please try again later.",
+            status_code=429,
+        )
+        self.assertEqual(User.objects.count(), user_count_before)
+        self.assertFalse(User.objects.filter(email="second@example.com").exists())
+
+    @override_settings(
+        REGISTRATION_RATE_LIMIT=1,
+        REGISTRATION_RATE_LIMIT_WINDOW=60,
+        LANGUAGE_CODE="es",
+    )
+    def test_registration_rate_limit_renders_spanish_error_under_es(self):
+        self.client.post(reverse("register_step1"), {"email": "esfirst@example.com"})
+        self.client.post(
+            reverse("register_step2"),
+            {
+                "username": "esfirstrider",
+                "display_name": "ES First",
+                "password1": "SecurePass123!",
+                "password2": "SecurePass123!",
+                "has_motorcycle": "true",
+            },
+        )
+        self.client.post(reverse("logout"))
+
+        self.client.post(reverse("register_step1"), {"email": "essecond@example.com"})
+        limited_response = self.client.post(
+            reverse("register_step2"),
+            {
+                "username": "essecondrider",
+                "display_name": "ES Second",
+                "password1": "SecurePass123!",
+                "password2": "SecurePass123!",
+                "has_motorcycle": "true",
+            },
+        )
+
+        self.assertEqual(limited_response.status_code, 429)
+        self.assertContains(
+            limited_response,
+            "Se crearon demasiadas cuentas desde esta conexión. Intentá de nuevo más tarde.",
+            status_code=429,
+        )
