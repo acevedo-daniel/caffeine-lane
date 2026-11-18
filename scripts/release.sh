@@ -12,4 +12,5 @@ export DATABASE_URL="$DIRECT_DATABASE_URL"
 
 uv run python manage.py check_fresh_baseline
 uv run python manage.py migrate --noinput
+uv run python manage.py createcachetable
 uv run python manage.py verify_editorial_baseline

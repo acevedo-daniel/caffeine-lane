@@ -8,7 +8,27 @@ from django.shortcuts import redirect, render
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 
+from apps.core.rate_limit import client_ip, rate_limit_exceeded
+
 from .forms import EmailRegistrationForm, ProfileForm, RegistrationStep2Form
+
+
+class RateLimitedLoginView(auth_views.LoginView):
+    def post(self, request, *args, **kwargs):
+        if rate_limit_exceeded(
+            scope="login",
+            identity=client_ip(request),
+            limit=settings.AUTH_RATE_LIMIT,
+            window=settings.AUTH_RATE_LIMIT_WINDOW,
+        ):
+            form = self.get_form_class()(request=request)
+            form.cleaned_data = {}
+            form.add_error(
+                None,
+                _("Too many sign-in attempts. Please try again later."),
+            )
+            return self.render_to_response(self.get_context_data(form=form), status=429)
+        return super().post(request, *args, **kwargs)
 
 
 def password_reset(request):
@@ -47,6 +67,24 @@ def register_step2(request):
         return redirect("register_step1")
 
     if request.method == "POST":
+        if rate_limit_exceeded(
+            scope="register",
+            identity=client_ip(request),
+            limit=settings.REGISTRATION_RATE_LIMIT,
+            window=settings.REGISTRATION_RATE_LIMIT_WINDOW,
+        ):
+            form = RegistrationStep2Form()
+            form.cleaned_data = {}
+            form.add_error(
+                None,
+                _(
+                    "Too many accounts were created from this connection. Please try again later."
+                ),
+            )
+            return render(
+                request, "accounts/register_step2.html", {"form": form}, status=429
+            )
+
         form = RegistrationStep2Form(request.POST, request.FILES)
         if form.is_valid() and form.validate_registration_email(email):
             try:

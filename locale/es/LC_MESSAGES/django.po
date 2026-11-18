@@ -2164,3 +2164,15 @@ msgstr "Modo claro"
 #: templates/components/header.html
 msgid "Theme"
 msgstr "Tema"
+
+#: apps/accounts/views.py
+msgid "Too many sign-in attempts. Please try again later."
+msgstr "Demasiados intentos de inicio de sesión. Intentá de nuevo más tarde."
+
+#: apps/accounts/views.py
+msgid "Too many accounts were created from this connection. Please try again later."
+msgstr "Se crearon demasiadas cuentas desde esta conexión. Intentá de nuevo más tarde."
+
+#: apps/posts/views.py
+msgid "You are commenting too quickly. Please wait a few minutes."
+msgstr "Estás comentando demasiado rápido. Esperá unos minutos."

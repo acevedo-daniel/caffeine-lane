@@ -23,6 +23,7 @@ try {
 
     Invoke-DjangoCommand @("check_fresh_baseline")
     Invoke-DjangoCommand @("migrate", "--noinput")
+    Invoke-DjangoCommand @("createcachetable")
     Invoke-DjangoCommand @("verify_editorial_baseline")
 }
 finally {

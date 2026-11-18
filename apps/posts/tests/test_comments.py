@@ -1,6 +1,7 @@
 from django.contrib.auth.models import Permission
+from django.core.cache import cache
 from django.core.exceptions import PermissionDenied, ValidationError
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 
 from apps.posts.comment_services import update_comment
@@ -19,6 +20,9 @@ class CommentModerationTests(TestCase):
         )
         cls.post = PostFactory(author=cls.author)
         cls.other_post = PostFactory(author=cls.author)
+
+    def setUp(self):
+        cache.clear()
 
     def create_comment(self, *, author=None, content="A useful comment", parent=None):
         return Comment.objects.create(
@@ -231,3 +235,74 @@ class CommentModerationTests(TestCase):
         self.assertEqual(response.status_code, 403)
         comment.refresh_from_db()
         self.assertEqual(comment.visibility, Comment.Visibility.HIDDEN)
+
+    @override_settings(COMMENT_RATE_LIMIT=2, COMMENT_RATE_LIMIT_WINDOW=60)
+    def test_comment_post_rate_limit_redirects_and_creates_nothing(self):
+        self.client.force_login(self.author)
+        post_url = self.post.get_absolute_url()
+
+        for idx in range(2):
+            response = self.client.post(
+                post_url, {"content": f"Allowed comment {idx}", "website": ""}
+            )
+            self.assertRedirects(response, post_url)
+
+        limited_response = self.client.post(
+            post_url,
+            {"content": "Blocked comment", "website": ""},
+            follow=True,
+        )
+        self.assertRedirects(limited_response, post_url)
+        self.assertContains(
+            limited_response,
+            "You are commenting too quickly. Please wait a few minutes.",
+        )
+        self.assertFalse(Comment.objects.filter(content="Blocked comment").exists())
+
+    @override_settings(COMMENT_RATE_LIMIT=1, COMMENT_RATE_LIMIT_WINDOW=60)
+    def test_comment_reply_rate_limit_redirects_and_creates_nothing(self):
+        root = self.create_comment()
+        self.client.force_login(self.other_user)
+        reply_url = reverse("comment_reply", args=[root.pk])
+
+        first_response = self.client.post(
+            reply_url, {"content": "Allowed reply", "website": ""}
+        )
+        self.assertRedirects(first_response, self.post.get_absolute_url())
+
+        limited_response = self.client.post(
+            reply_url,
+            {"content": "Blocked reply", "website": ""},
+            follow=True,
+        )
+        self.assertRedirects(limited_response, self.post.get_absolute_url())
+        self.assertContains(
+            limited_response,
+            "You are commenting too quickly. Please wait a few minutes.",
+        )
+        self.assertFalse(Comment.objects.filter(content="Blocked reply").exists())
+
+    @override_settings(
+        COMMENT_RATE_LIMIT=1,
+        COMMENT_RATE_LIMIT_WINDOW=60,
+        LANGUAGE_CODE="es",
+    )
+    def test_comment_rate_limit_renders_spanish_message_under_es(self):
+        self.client.force_login(self.author)
+        post_url = self.post.get_absolute_url()
+
+        self.client.post(post_url, {"content": "Primer comentario", "website": ""})
+        limited_response = self.client.post(
+            post_url,
+            {"content": "Segundo comentario bloqueado", "website": ""},
+            follow=True,
+        )
+
+        self.assertRedirects(limited_response, post_url)
+        self.assertContains(
+            limited_response,
+            "Estás comentando demasiado rápido. Esperá unos minutos.",
+        )
+        self.assertFalse(
+            Comment.objects.filter(content="Segundo comentario bloqueado").exists()
+        )

@@ -1,5 +1,8 @@
+import re
+
 from django.test import TestCase, override_settings
 from django.urls import reverse
+from django.utils.csp import CSP
 
 from apps.tests.factories import PostFactory
 
@@ -77,4 +80,32 @@ class PublicMetadataTests(TestCase):
         )
         self.assertContains(
             robots, "Sitemap: https://caffeine-lane.vercel.app/sitemap.xml"
+        )
+
+    @override_settings(
+        MIDDLEWARE=[
+            "django.middleware.security.SecurityMiddleware",
+            "django.middleware.csp.ContentSecurityPolicyMiddleware",
+            "django.contrib.sessions.middleware.SessionMiddleware",
+            "django.middleware.common.CommonMiddleware",
+            "django.middleware.csrf.CsrfViewMiddleware",
+            "django.contrib.auth.middleware.AuthenticationMiddleware",
+            "django.contrib.messages.middleware.MessageMiddleware",
+        ],
+        SECURE_CSP={
+            "default-src": [CSP.SELF],
+            "script-src": [CSP.SELF, CSP.NONCE],
+        },
+    )
+    def test_enforced_csp_boot_script_nonce_matches_header(self):
+        response = self.client.get(reverse("home"))
+
+        self.assertEqual(response.status_code, 200)
+        header = response["Content-Security-Policy"]
+        match = re.search(r"'nonce-([^']+)'", header)
+        self.assertIsNotNone(match, f"Expected nonce in CSP header: {header}")
+        nonce = match.group(1)
+        self.assertContains(response, f'<script nonce="{nonce}">')
+        self.assertContains(
+            response, f'<script type="application/ld+json" nonce="{nonce}">'
         )

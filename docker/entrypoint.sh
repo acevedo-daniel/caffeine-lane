@@ -10,6 +10,7 @@ if [ "${RUN_MIGRATIONS_ON_START:-false}" = "true" ]; then
     pooled_database_url="$DATABASE_URL"
     export DATABASE_URL="$DIRECT_DATABASE_URL"
     python manage.py migrate --noinput
+    python manage.py createcachetable
     export DATABASE_URL="$pooled_database_url"
 fi
 

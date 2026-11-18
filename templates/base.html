@@ -28,7 +28,7 @@
     <link rel="icon" href="{% static 'images/favicon.svg' %}" type="image/svg+xml">
     <link rel="manifest" href="{% static 'images/site.webmanifest' %}">
     <title>{% block title %}CAFFEINE LANE{% endblock %}</title>
-    <script>
+    <script nonce="{{ csp_nonce }}">
       (function() {
         try {
           var saved = null;
@@ -52,7 +52,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'vendor/fontawesome-free-7.0.0-web/css/all.min.css' %}">
     <link rel="stylesheet" href="{% static 'dist/css/app.css' %}">
-    {% if seo_structured_data %}<script type="application/ld+json">{{ seo_structured_data }}</script>{% endif %}
+    {% if seo_structured_data %}<script type="application/ld+json" nonce="{{ csp_nonce }}">{{ seo_structured_data }}</script>{% endif %}
   </head>
   <body class="flex min-h-screen flex-col bg-canvas font-mont text-foreground antialiased transition-colors duration-200">
     {% block header %}{% include "components/header.html" %}{% endblock %}

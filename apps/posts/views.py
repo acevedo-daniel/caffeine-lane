@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -13,6 +14,7 @@ from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
+from apps.core.rate_limit import rate_limit_exceeded
 from apps.core.seo import article_schema, localized_copy
 
 from .comment_services import (
@@ -53,6 +55,18 @@ def post_detail(request, slug):
         if not request.user.is_authenticated:
             messages.error(request, _("You must be logged in to comment."))
             return redirect("login")
+
+        if rate_limit_exceeded(
+            scope="comment",
+            identity=str(request.user.pk),
+            limit=settings.COMMENT_RATE_LIMIT,
+            window=settings.COMMENT_RATE_LIMIT_WINDOW,
+        ):
+            messages.error(
+                request,
+                _("You are commenting too quickly. Please wait a few minutes."),
+            )
+            return redirect("post_detail", slug=post.slug)
 
         if form.is_valid():
             try:
@@ -101,6 +115,18 @@ def post_detail(request, slug):
 def comment_reply(request, comment_id):
     parent = get_object_or_404(Comment.objects.select_related("post"), pk=comment_id)
     post = get_object_or_404(Post.objects.published(), pk=parent.post_id)
+    if rate_limit_exceeded(
+        scope="comment",
+        identity=str(request.user.pk),
+        limit=settings.COMMENT_RATE_LIMIT,
+        window=settings.COMMENT_RATE_LIMIT_WINDOW,
+    ):
+        messages.error(
+            request,
+            _("You are commenting too quickly. Please wait a few minutes."),
+        )
+        return redirect("post_detail", slug=post.slug)
+
     form = CommentForm(request.POST)
     if form.is_valid():
         try:
