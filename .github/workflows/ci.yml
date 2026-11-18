@@ -224,7 +224,7 @@ jobs:
           DEFAULT_FROM_EMAIL: noreply@example.test
           CONTACT_RECIPIENT_EMAIL: owner@example.test
           USE_X_FORWARDED_PROTO: "true"
-          CSP_ENFORCE: "false"
+          CSP_ENFORCE: "true"
           SECURE_HSTS_SECONDS: "31536000"
           SECURE_HSTS_INCLUDE_SUBDOMAINS: "true"
           SECURE_HSTS_PRELOAD: "true"
@@ -269,7 +269,7 @@ jobs:
             --env DEFAULT_FROM_EMAIL=noreply@example.test \
             --env CONTACT_RECIPIENT_EMAIL=owner@example.test \
             --env USE_X_FORWARDED_PROTO=true \
-            --env CSP_ENFORCE=false \
+            --env CSP_ENFORCE=true \
             --env RUN_MIGRATIONS_ON_START=true \
             --env SEED_EDITORIAL_ON_START=false \
             caffeine-lane-ci
