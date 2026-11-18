@@ -31,13 +31,18 @@
     <script>
       (function() {
         try {
-          var saved = localStorage.getItem('caffeine_lane_theme');
-          if (saved === 'light') {
-            document.documentElement.setAttribute('data-theme', 'light');
-            document.documentElement.classList.remove('dark');
-          } else {
-            document.documentElement.setAttribute('data-theme', 'dark');
+          var saved = null;
+          try {
+            saved = localStorage.getItem('caffeine_lane_theme');
+          } catch (e) {}
+          var theme = (saved === 'light' || saved === 'dark')
+            ? saved
+            : (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+          document.documentElement.setAttribute('data-theme', theme);
+          if (theme === 'dark') {
             document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
           }
         } catch (e) {}
       })();

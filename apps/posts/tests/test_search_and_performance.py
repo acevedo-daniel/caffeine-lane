@@ -1,7 +1,12 @@
+from datetime import timedelta
+
+import pytest
 from django.contrib.auth.models import Permission
 from django.contrib.messages import get_messages
+from django.db import connection
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
 
 from apps.posts.models import Post
 from apps.tests.factories import CategoryFactory, PostFactory, UserFactory
@@ -154,8 +159,6 @@ class SearchAndListingTests(TestCase):
         self.assertIn('<mark class="search-highlight">cafe</mark>', safe_result)
 
     def test_search_ranking_prioritizes_title_over_content_in_postgresql(self):
-        from django.db import connection
-
         title_match = PostFactory(
             title="Custom Mikuni setup",
             excerpt="General workshop update",
@@ -179,6 +182,70 @@ class SearchAndListingTests(TestCase):
         if connection.vendor == "postgresql":
             # Title match (weight A) must rank ahead of content match (weight C)
             self.assertEqual(results[0], title_match)
+
+    @pytest.mark.skipif(
+        connection.vendor != "postgresql",
+        reason="PostgreSQL Spanish full-text search only",
+    )
+    def test_spanish_search_ignores_stopwords_stems_plurals_and_ranks_title(self):
+        title_match = PostFactory(
+            title="Carburador de taller",
+            excerpt="Notas de ajuste",
+            content="Manual de puesta a punto",
+            author=self.author,
+            categories=self.builds,
+        )
+        content_match = PostFactory(
+            title="Ajuste de ruta",
+            excerpt="Notas generales",
+            content="Limpieza de carburadores en banco",
+            author=self.author,
+            categories=self.builds,
+        )
+
+        stopword_response = self.client.get(reverse("search"), {"q": "de"})
+        self.assertEqual(list(stopword_response.context["results"]), [])
+
+        stem_response = self.client.get(reverse("search"), {"q": "carburador"})
+        results = list(stem_response.context["results"])
+        self.assertEqual(results, [title_match, content_match])
+
+    def test_search_date_sorting_follows_published_at(self):
+        now = timezone.now()
+        older_created_newer_published = PostFactory(
+            title="Sortcheck newer published",
+            author=self.author,
+            categories=self.builds,
+            published_at=now - timedelta(days=1),
+        )
+        newer_created_older_published = PostFactory(
+            title="Sortcheck older published",
+            author=self.author,
+            categories=self.builds,
+            published_at=now - timedelta(days=10),
+        )
+        Post.objects.filter(pk=older_created_newer_published.pk).update(
+            created_at=now - timedelta(days=5)
+        )
+        Post.objects.filter(pk=newer_created_older_published.pk).update(
+            created_at=now - timedelta(days=1)
+        )
+
+        newest_response = self.client.get(
+            reverse("search"), {"q": "Sortcheck", "sort": "newest"}
+        )
+        oldest_response = self.client.get(
+            reverse("search"), {"q": "Sortcheck", "sort": "oldest"}
+        )
+
+        self.assertEqual(
+            list(newest_response.context["results"]),
+            [older_created_newer_published, newer_created_older_published],
+        )
+        self.assertEqual(
+            list(oldest_response.context["results"]),
+            [newer_created_older_published, older_created_newer_published],
+        )
 
     def test_draft_preview_in_post_detail_by_role(self):
         draft = Post.objects.create(

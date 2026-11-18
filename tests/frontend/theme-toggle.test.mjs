@@ -99,8 +99,9 @@ const createMockWindow = ({ prefersDark = false } = {}) => {
 
   return {
     matchMedia(query) {
+      const matches = query === "(prefers-color-scheme: light)" ? !prefersDark : prefersDark;
       return {
-        matches: prefersDark,
+        matches,
         media: query,
         addEventListener(name, cb) {
           if (name === "change") mediaListener = cb;
@@ -137,10 +138,23 @@ test("ThemeController uses stored theme when available", () => {
   assert.equal(controller.isDark(), true);
 });
 
-test("ThemeController falls back to default dark when no storage is set", () => {
+test("ThemeController follows system light preference when no storage is set", () => {
   const storage = createMockStorage();
   const doc = createMockDocument();
   const win = createMockWindow({ prefersDark: false });
+
+  const controller = new ThemeController({ storage, documentRef: doc, windowRef: win });
+  controller.initialize();
+
+  assert.equal(doc.documentElement.getAttribute("data-theme"), THEME_LIGHT);
+  assert.equal(doc.documentElement.classList.contains("dark"), false);
+  assert.equal(controller.getCurrentTheme(), THEME_LIGHT);
+});
+
+test("ThemeController follows system dark preference when no storage is set", () => {
+  const storage = createMockStorage();
+  const doc = createMockDocument();
+  const win = createMockWindow({ prefersDark: true });
 
   const controller = new ThemeController({ storage, documentRef: doc, windowRef: win });
   controller.initialize();
@@ -155,7 +169,7 @@ test("ThemeController toggle switches between dark and light and persists to sto
   const desktopToggle = createMockElement({ tagName: "BUTTON", attributes: { "data-theme-toggle": "" } });
   const mobileToggle = createMockElement({ tagName: "BUTTON", attributes: { "data-theme-toggle": "" } });
   const doc = createMockDocument({ toggles: [desktopToggle, mobileToggle] });
-  const win = createMockWindow({ prefersDark: false });
+  const win = createMockWindow({ prefersDark: true });
 
   const controller = new ThemeController({ storage, documentRef: doc, windowRef: win });
   controller.initialize();
@@ -187,7 +201,7 @@ test("ThemeController syncs across tabs via storage event", () => {
   const storage = createMockStorage();
   const desktopToggle = createMockElement({ tagName: "BUTTON", attributes: { "data-theme-toggle": "" } });
   const doc = createMockDocument({ toggles: [desktopToggle] });
-  const win = createMockWindow({ prefersDark: false });
+  const win = createMockWindow({ prefersDark: true });
 
   const controller = new ThemeController({ storage, documentRef: doc, windowRef: win });
   controller.initialize();

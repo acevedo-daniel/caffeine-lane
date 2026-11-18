@@ -17,6 +17,7 @@ export default defineConfig({
   use: {
     baseURL: "http://127.0.0.1:8010",
     browserName: "chromium",
+    colorScheme: "dark",
   },
   webServer: {
     command: djangoCommand,

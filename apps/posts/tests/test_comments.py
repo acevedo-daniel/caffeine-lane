@@ -219,3 +219,15 @@ class CommentModerationTests(TestCase):
         comment.refresh_from_db()
         self.assertEqual(comment.content, "After edit")
         self.assertTrue(comment.is_edited)
+
+    def test_author_cannot_withdraw_comment_hidden_by_moderation(self):
+        comment = self.create_comment()
+        self.client.force_login(self.moderator)
+        self.client.post(reverse("comment_hide", args=[comment.pk]))
+
+        self.client.force_login(self.author)
+        response = self.client.post(reverse("comment_withdraw", args=[comment.pk]))
+
+        self.assertEqual(response.status_code, 403)
+        comment.refresh_from_db()
+        self.assertEqual(comment.visibility, Comment.Visibility.HIDDEN)
