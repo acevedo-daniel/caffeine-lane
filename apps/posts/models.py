@@ -13,6 +13,20 @@ from apps.core.image_validators import validate_uploaded_image
 
 RESERVED_POST_SLUGS = {"search", "new"}
 
+BUILD_SPEC_KEYS = (
+    "donor",
+    "displacement",
+    "frame",
+    "carburetor",
+    "suspension",
+    "front_brake",
+    "rear_brake",
+    "electrical",
+    "seat",
+    "cockpit",
+    "exhaust",
+)
+
 
 def is_reserved_post_slug(slug):
     return slug.lower() in RESERVED_POST_SLUGS
@@ -80,6 +94,13 @@ class Post(models.Model):
         max_length=10, choices=Status.choices, default=Status.DRAFT
     )
     published_at = models.DateTimeField(null=True, blank=True)
+    build_specs = models.JSONField(
+        default=dict,
+        blank=True,
+        help_text=(
+            f"Optional JSON object using keys from: {', '.join(BUILD_SPEC_KEYS)}."
+        ),
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -98,6 +119,30 @@ class Post(models.Model):
             raise ValidationError(
                 {"featured_image_alt": _("Visible images require alternative text.")}
             )
+        self._clean_build_specs()
+
+    def _clean_build_specs(self):
+        if not isinstance(self.build_specs, dict):
+            raise ValidationError(
+                {"build_specs": _("Build specifications must be a JSON object.")}
+            )
+        unknown_keys = [key for key in self.build_specs if key not in BUILD_SPEC_KEYS]
+        if unknown_keys:
+            raise ValidationError(
+                {
+                    "build_specs": _("Unknown build specification keys: %(keys)s.")
+                    % {"keys": ", ".join(unknown_keys)}
+                }
+            )
+        for value in self.build_specs.values():
+            if not isinstance(value, str) or not value.strip():
+                raise ValidationError(
+                    {
+                        "build_specs": _(
+                            "Build specification values must be non-empty strings."
+                        )
+                    }
+                )
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -125,48 +170,17 @@ class Post(models.Model):
         return max(1, round(words / 200))
 
     @property
-    def build_specs(self):
-        """Return technical build specifications dictionary for build posts, or None."""
-        if not self.categories.filter(slug="builds").exists():
-            return None
-
-        title_lower = self.title.lower()
-        if "frenos" in title_lower:
-            return {
-                "donor": "Yamaha SR500",
-                "displacement": "Monocilíndrico de 499 cc",
-                "frame": "Doble cuna original, aligerado y sin soportes superfluos",
-                "front_brake": "Doble disco perforado de 298 mm con pinzas Brembo de dos pistones",
-                "rear_brake": "Tambor ventilado mejorado con varillaje a medida",
-                "exhaust": "SuperTrapp de acero inoxidable con cono inverso de 1,75 pulgadas",
-            }
-        elif "cableado" in title_lower:
-            return {
-                "donor": "Moto Guzzi Le Mans II",
-                "displacement": "Bicilíndrico en V a 90° de 844 cc",
-                "frame": "Bastidor de espina Lino Tonti con acabado satinado cepillado",
-                "carburetor": "Carburadores Dell'Orto PHF de 36 mm con bomba de aceleración",
-                "electrical": "Arnés simplificado a medida con módulo de estado sólido",
-                "exhaust": "Doble escape Lafranconi Competizione de acero inoxidable",
-            }
-        elif "asiento" in title_lower or "postura" in title_lower:
-            return {
-                "donor": "Honda CB550 Four",
-                "displacement": "Cuatro cilindros en línea SOHC de 544 cc refrigerado por aire",
-                "frame": "Subchasis trasero acortado con aro LED integrado",
-                "seat": "Espuma de alta densidad moldeada a mano y cuero coñac envejecido",
-                "cockpit": "Semimanillares Tommaselli y estriberas retrasadas Tarozzi",
-                "exhaust": "Colector 4 en 1 negro cerámico con cono inverso",
-            }
-        else:
-            return {
-                "donor": "1978 Honda CB750 Four",
-                "displacement": "Cuatro cilindros en línea SOHC de 736 cc",
-                "frame": "Aro trasero a medida, sin soportes superfluos y pintura negra satinada",
-                "carburetor": "Keihin de 28 mm reconstruidos con trompetas y chicleres de bronce",
-                "exhaust": "Escape 4 en 1 a medida en acero inoxidable crudo con silenciador megáfono",
-                "suspension": "Showa de 35 mm rebajada 30 mm con resortes progresivos",
-            }
+    def build_spec_rows(self):
+        """Return ordered (key, value) pairs for stored build specifications."""
+        if not isinstance(self.build_specs, dict):
+            return []
+        return [
+            (key, self.build_specs[key])
+            for key in BUILD_SPEC_KEYS
+            if key in self.build_specs
+            and isinstance(self.build_specs[key], str)
+            and self.build_specs[key].strip()
+        ]
 
     class Meta:
         ordering = ["-published_at", "-created_at"]

@@ -53,7 +53,7 @@
       <div class="post-detail__reading-column">
         <div class="post-detail__body prose prose-stone prose-headings:font-bebas prose-headings:tracking-wide">{{ post.content|linebreaks }}</div>
 
-        {% if post.build_specs %}
+        {% if post.build_spec_rows %}
           <section class="build-specs-inspector" aria-labelledby="specs-heading">
             <div class="build-specs-inspector__header">
               <div class="build-specs-inspector__badge">
@@ -63,7 +63,7 @@
               <h2 id="specs-heading" class="build-specs-inspector__title">{% translate "Technical Specs Inspector" %}</h2>
             </div>
             <dl class="build-specs-inspector__grid">
-              {% for key, value in post.build_specs.items %}
+              {% for key, value in post.build_spec_rows %}
                 <div class="build-specs-inspector__row">
                   <dt class="build-specs-inspector__label">
                     {% if key == "donor" %}{% translate "Donor Bike" %}

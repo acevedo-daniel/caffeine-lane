@@ -17,10 +17,11 @@ from apps.core.image_validators import (
     MAX_IMAGE_DIMENSION,
 )
 from apps.posts.content_import import clean_text
-from apps.posts.models import Category, Post
+from apps.posts.models import BUILD_SPEC_KEYS, Category, Post
 from apps.posts.taxonomy import STRUCTURAL_CATEGORIES, CategorySlug
 
 EXPECTED_POST_COUNTS = {"builds": 9, "guides": 6, "reviews": 4}
+REQUIRED_BUILD_SPEC_SLUGS = frozenset({"cafe-racer-de-garaje"})
 EDITORIAL_AUTHOR_EMAIL = "editorial-author@example.invalid"
 EDITORIAL_AUTHOR_USERNAME = "editorial-author"
 
@@ -50,6 +51,14 @@ EDITORIAL_POSTS = (
         "published_at": "2026-02-03T12:00:00+00:00",
         "image": "source/builds/build-01.webp",
         "alt": "Café racer negra en restauración dentro de un taller luminoso.",
+        "build_specs": {
+            "donor": "1978 Honda CB750 Four",
+            "displacement": "Cuatro cilindros en línea SOHC de 736 cc",
+            "frame": "Aro trasero a medida, sin soportes superfluos y pintura negra satinada",
+            "carburetor": "Keihin de 28 mm reconstruidos con trompetas y chicleres de bronce",
+            "exhaust": "Escape 4 en 1 a medida en acero inoxidable crudo con silenciador megáfono",
+            "suspension": "Showa de 35 mm rebajada 30 mm con resortes progresivos",
+        },
     },
     {
         "slug": "frenos-antes-de-potencia",
@@ -75,6 +84,14 @@ EDITORIAL_POSTS = (
         "published_at": "2026-02-10T12:00:00+00:00",
         "image": "source/builds/build-02.webp",
         "alt": "Detalle de una café racer preparada en un banco de trabajo.",
+        "build_specs": {
+            "donor": "Yamaha SR500",
+            "displacement": "Monocilíndrico de 499 cc",
+            "frame": "Doble cuna original, aligerado y sin soportes superfluos",
+            "front_brake": "Doble disco perforado de 298 mm con pinzas Brembo de dos pistones",
+            "rear_brake": "Tambor ventilado mejorado con varillaje a medida",
+            "exhaust": "SuperTrapp de acero inoxidable con cono inverso de 1,75 pulgadas",
+        },
     },
     {
         "slug": "cableado-que-se-puede-reparar",
@@ -98,6 +115,14 @@ EDITORIAL_POSTS = (
         "published_at": "2026-02-17T12:00:00+00:00",
         "image": "source/builds/build-03.webp",
         "alt": "Motocicleta café racer y herramientas ordenadas en un taller.",
+        "build_specs": {
+            "donor": "Moto Guzzi Le Mans II",
+            "displacement": "Bicilíndrico en V a 90° de 844 cc",
+            "frame": "Bastidor de espina Lino Tonti con acabado satinado cepillado",
+            "carburetor": "Carburadores Dell'Orto PHF de 36 mm con bomba de aceleración",
+            "electrical": "Arnés simplificado a medida con módulo de estado sólido",
+            "exhaust": "Doble escape Lafranconi Competizione de acero inoxidable",
+        },
     },
     {
         "slug": "asiento-y-postura-para-rutas-cortas",
@@ -121,6 +146,14 @@ EDITORIAL_POSTS = (
         "published_at": "2026-02-24T12:00:00+00:00",
         "image": "source/builds/build-04.webp",
         "alt": "Café racer de perfil en un taller de restauración.",
+        "build_specs": {
+            "donor": "Honda CB550 Four",
+            "displacement": "Cuatro cilindros en línea SOHC de 544 cc refrigerado por aire",
+            "frame": "Subchasis trasero acortado con aro LED integrado",
+            "seat": "Espuma de alta densidad moldeada a mano y cuero coñac envejecido",
+            "cockpit": "Semimanillares Tommaselli y estriberas retrasadas Tarozzi",
+            "exhaust": "Colector 4 en 1 negro cerámico con cono inverso",
+        },
     },
     {
         "slug": "checklist-para-salir-el-fin-de-semana",
@@ -481,13 +514,38 @@ LEGACY_SLUGS = {
 }
 
 
-def validate_editorial_dataset(assets_dir):
+def validate_build_specs(item):
+    slug = item.get("slug", "")
+    if "build_specs" not in item:
+        if slug in REQUIRED_BUILD_SPEC_SLUGS:
+            return [f"Missing build specifications for {slug}."]
+        return []
+
+    build_specs = item["build_specs"]
+    if item.get("category") != CategorySlug.BUILDS:
+        return [f"Build specifications are only allowed on builds: {slug}."]
+    if not isinstance(build_specs, dict) or not build_specs:
+        return [f"Build specifications must be a non-empty object for {slug}."]
+
+    errors = []
+    unknown_keys = sorted(set(build_specs) - set(BUILD_SPEC_KEYS))
+    if unknown_keys:
+        errors.append(
+            f"Unknown build specification keys for {slug}: {', '.join(unknown_keys)}."
+        )
+    for key, value in build_specs.items():
+        if not isinstance(value, str) or not value.strip():
+            errors.append(f"Empty build specification value for {slug}: {key}.")
+    return errors
+
+
+def validate_editorial_dataset(assets_dir, posts=EDITORIAL_POSTS):
     expected_categories = set(EXPECTED_POST_COUNTS)
     category_counts = Counter()
     seen_slugs = set()
     errors = []
 
-    for item in EDITORIAL_POSTS:
+    for item in posts:
         slug = item.get("slug", "")
         if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug):
             errors.append(f"Invalid editorial slug: {slug!r}.")
@@ -509,6 +567,8 @@ def validate_editorial_dataset(assets_dir):
 
         if parse_datetime(item.get("published_at", "")) is None:
             errors.append(f"Invalid publication datetime for {slug}.")
+
+        errors.extend(validate_build_specs(item))
 
         image_name = item.get("image", "")
         expected_prefix = f"source/{category}/"
@@ -637,6 +697,7 @@ class Command(BaseCommand):
                         "status": Post.Status.PUBLISHED,
                         "published_at": parse_datetime(item["published_at"]),
                         "featured_image_alt": item["alt"],
+                        "build_specs": item.get("build_specs", {}),
                     },
                 )
                 post.categories.set([categories[item["category"]]])

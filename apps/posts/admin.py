@@ -38,6 +38,7 @@ class PostAdmin(admin.ModelAdmin):
         ("Content", {"fields": ("title", "slug", "excerpt", "content")}),
         ("Media", {"fields": ("featured_image", "featured_image_alt", "thumbnail")}),
         ("Publication", {"fields": ("author", "categories", "status", "published_at")}),
+        ("Build specification", {"fields": ("build_specs",)}),
         ("Timestamps", {"fields": ("created_at", "updated_at")}),
     ]
 
