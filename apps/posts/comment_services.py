@@ -30,6 +30,8 @@ def create_comment(*, post: Post, author, content: str, parent=None) -> Comment:
 def withdraw_comment(*, comment: Comment, actor) -> Comment:
     if comment.author_id != actor.pk:
         raise PermissionDenied
+    if not comment.is_visible:
+        raise PermissionDenied
     comment.visibility = Comment.Visibility.WITHDRAWN
     comment.moderated_at = timezone.now()
     comment.moderated_by = actor
