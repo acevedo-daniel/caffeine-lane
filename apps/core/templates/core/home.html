@@ -16,7 +16,7 @@
             {% endif %}
             <div class="home-hero__panel">
               <div class="home-hero__panel-copy">
-                <p class="editorial-kicker text-stone-300">
+                <p class="editorial-kicker text-white/80">
                   {% for category in post.categories.all %}{{ category|localized_category }}{% if not forloop.last %} · {% endif %}{% endfor %}
                 </p>
                 <h1 class="home-hero__title"><a class="home-hero__title-link motion-title" href="{{ post.get_absolute_url }}">{{ post.title }}</a></h1>
@@ -43,11 +43,11 @@
       {% endif %}
     </section>
   {% else %}
-    <section class="bg-stone-950 px-5 py-20 text-white sm:px-8 sm:py-28">
+    <section class="bg-surface-dark px-5 py-20 text-white sm:px-8 sm:py-28">
       <div class="mx-auto max-w-7xl">
-        <p class="text-xs font-bold uppercase tracking-[0.2em] text-stone-400">{% translate "The Caffeine Lane" %}</p>
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-white/75">{% translate "The Caffeine Lane" %}</p>
         <h1 class="mt-3 font-bebas text-6xl leading-[0.88] tracking-wide sm:text-8xl">{% translate "Stories for the road." %}</h1>
-        <p class="mt-6 max-w-2xl text-lg text-stone-300">{% translate "New dispatches are being prepared." %}</p>
+        <p class="mt-6 max-w-2xl text-lg text-white/80">{% translate "New dispatches are being prepared." %}</p>
       </div>
     </section>
   {% endif %}
@@ -85,7 +85,7 @@
           <div>
             <p class="editorial-kicker">{% translate "Builds & features" %}</p>
             <h2 id="builds-heading" class="editorial-heading mt-1">{% translate "Builds" %}</h2>
-            <p class="mt-3 text-stone-600">{% translate "Built in garages. Made for the road." %}</p>
+            <p class="mt-3 text-foreground-secondary">{% translate "Built in garages. Made for the road." %}</p>
           </div>
           <a class="editorial-button" href="{% url 'category_view' category_slug=builds_category_slug %}">{% translate "View all" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
         </div>
@@ -104,7 +104,7 @@
           <div>
             <p class="editorial-kicker">{% translate "How-to & guides" %}</p>
             <h2 id="guides-heading" class="editorial-heading mt-1">{% translate "Guides" %}</h2>
-            <p class="mt-3 text-stone-600">{% translate "Wrench smarter. Ride farther." %}</p>
+            <p class="mt-3 text-foreground-secondary">{% translate "Wrench smarter. Ride farther." %}</p>
           </div>
           <a class="editorial-button" href="{% url 'category_view' category_slug=guides_category_slug %}">{% translate "View all" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
         </div>
@@ -120,8 +120,8 @@
       <aside class="home-garage-note" aria-labelledby="garage-note-heading">
         <div class="home-garage-note__copy">
           <p class="editorial-kicker">{% translate "Workshop Spotlight" %}</p>
-          <h2 id="garage-note-heading" class="mt-2 font-bebas text-4xl leading-[0.9] tracking-wide text-stone-950 sm:text-5xl">{% translate "Garage to road" %}</h2>
-          <p class="mt-3 max-w-2xl text-stone-600">{% translate "The best miles begin at the bench: a careful check, a cleaner adjustment, and a machine you know well enough to trust when the road opens up." %}</p>
+          <h2 id="garage-note-heading" class="mt-2 font-bebas text-4xl leading-[0.9] tracking-wide text-foreground sm:text-5xl">{% translate "Garage to road" %}</h2>
+          <p class="mt-3 max-w-2xl text-foreground-secondary">{% translate "The best miles begin at the bench: a careful check, a cleaner adjustment, and a machine you know well enough to trust when the road opens up." %}</p>
           <a class="home-garage-note__link" href="{% url 'category_view' category_slug=guides_category_slug %}">{% translate "Explore workshop guides" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
         </div>
         {% translate "The Rider working on a motorcycle" as mechanic_alt %}
@@ -134,7 +134,7 @@
           <div>
             <p class="editorial-kicker">{% translate "Gear & product reviews" %}</p>
             <h2 id="reviews-heading" class="editorial-heading mt-1">{% translate "Reviews" %}</h2>
-            <p class="mt-3 text-stone-600">{% translate "Gear worth taking on the road." %}</p>
+            <p class="mt-3 text-foreground-secondary">{% translate "Gear worth taking on the road." %}</p>
           </div>
           <a class="editorial-button" href="{% url 'category_view' category_slug=reviews_category_slug %}">{% translate "View all" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
         </div>
@@ -150,9 +150,9 @@
       <!-- Community Callout Section -->
       <section class="home-community" aria-labelledby="join-the-ride-heading">
         <div class="home-community-copy">
-          <p class="editorial-kicker text-stone-300">{% translate "The Caffeine Lane community" %}</p>
+          <p class="editorial-kicker text-white/80">{% translate "The Caffeine Lane community" %}</p>
           <h2 id="join-the-ride-heading" class="mt-2 font-bebas text-5xl leading-[0.9] tracking-wide text-white sm:text-6xl">{% translate "Join the ride" %}</h2>
-          <p class="mt-4 max-w-xl text-stone-300">{% translate "Create a profile to join the conversation, follow the builds, and be part of the community." %}</p>
+          <p class="mt-4 max-w-xl text-white/80">{% translate "Create a profile to join the conversation, follow the builds, and be part of the community." %}</p>
           <a class="home-community-cta motion-cta" href="{% url 'register' %}">{% translate "Create an account" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
         </div>
         {% translate "The Rider" as pointing_alt %}

@@ -1,21 +1,21 @@
 {% load i18n post_i18n %}
 <article class="editorial-card group motion-card">
   <a class="flex h-full flex-col no-underline text-inherit" href="{{ post.get_absolute_url }}">
-    <div class="relative overflow-hidden aspect-[3/2] w-full bg-stone-900">
+    <div class="relative overflow-hidden aspect-[3/2] w-full bg-surface-dark-secondary">
       {% if post.featured_image %}
         <img class="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-105" src="{{ post.featured_image.url }}" alt="{{ post.featured_image_alt }}" width="640" height="427" loading="lazy" decoding="async">
       {% else %}
-        <div class="flex h-full w-full items-end bg-stone-950 p-5" aria-hidden="true">
-          <span class="font-bebas text-3xl tracking-wide text-stone-400">{% translate "CAFFEINE LANE" %}</span>
+        <div class="flex h-full w-full items-end bg-surface-dark p-5" aria-hidden="true">
+          <span class="font-bebas text-3xl tracking-wide text-white/75">{% translate "CAFFEINE LANE" %}</span>
         </div>
       {% endif %}
       <div class="absolute top-3 left-3 flex flex-wrap gap-1.5 pointer-events-none">
         {% for category in post.categories.all %}
-          <span class="inline-block px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider bg-stone-950/85 text-stone-100 backdrop-blur-sm rounded-sm">
+          <span class="inline-block px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider bg-surface-dark/85 text-white backdrop-blur-sm rounded-sm">
             {{ category|localized_category }}
           </span>
         {% empty %}
-          <span class="inline-block px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider bg-stone-950/85 text-stone-100 backdrop-blur-sm rounded-sm">
+          <span class="inline-block px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider bg-surface-dark/85 text-white backdrop-blur-sm rounded-sm">
             {% translate "Dispatch" %}
           </span>
         {% endfor %}

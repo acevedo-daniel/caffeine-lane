@@ -13,7 +13,7 @@
         {% translate "Back to home" %}
       </a>
       <div class="mt-4">
-        <p class="editorial-kicker text-stone-300">{% translate "Editorial Archive" %}</p>
+        <p class="editorial-kicker text-white/80">{% translate "Editorial Archive" %}</p>
         <h1 id="category-title" class="category-hero__title">{{ category|localized_category }}</h1>
         <p class="category-hero__count">
           {% blocktranslate count counter=page_obj.paginator.count %}
@@ -30,19 +30,19 @@
     <div class="editorial-container editorial-section">
       <section aria-labelledby="category-posts-heading">
         <!-- Controls Toolbar -->
-        <div class="category-toolbar flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 mb-8 border-b border-stone-200">
+        <div class="category-toolbar flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 mb-8 border-b border-border-subtle">
           <div>
-            <h2 id="category-posts-heading" class="font-bebas text-3xl sm:text-4xl tracking-wide text-stone-950">
+            <h2 id="category-posts-heading" class="font-bebas text-3xl sm:text-4xl tracking-wide text-foreground">
               {% blocktranslate with category_name=category|localized_category %}All {{ category_name }}{% endblocktranslate %}
             </h2>
-            <p class="text-xs text-stone-500 font-semibold uppercase tracking-wider mt-0.5">
+            <p class="text-xs text-foreground-muted font-semibold uppercase tracking-wider mt-0.5">
               {% blocktranslate count counter=page_obj.paginator.count %}Showing {{ counter }} article{% plural %}Showing {{ counter }} articles{% endblocktranslate %}
             </p>
           </div>
 
           <!-- Sort Order Dropdown -->
           <form method="get" class="category-toolbar__sort flex items-center gap-2">
-            <label for="sort-select" class="text-xs font-bold uppercase tracking-wider text-stone-600 whitespace-nowrap">
+            <label for="sort-select" class="text-xs font-bold uppercase tracking-wider text-foreground-secondary whitespace-nowrap">
               <i class="fa-solid fa-arrow-down-short-wide mr-1" aria-hidden="true"></i>{% translate "Sort:" %}
             </label>
             <select id="sort-select" name="sort" data-submit-on-change="true" class="text-xs font-semibold uppercase tracking-wider">
@@ -76,7 +76,7 @@
 
         <!-- Pagination -->
         {% if is_paginated %}
-          <nav class="editorial-pagination mt-12 pt-6 border-t border-stone-200 flex items-center justify-between" aria-label="{% blocktranslate with category_name=category|localized_category %}Pages in {{ category_name }}{% endblocktranslate %}">
+          <nav class="editorial-pagination mt-12 pt-6 border-t border-border-subtle flex items-center justify-between" aria-label="{% blocktranslate with category_name=category|localized_category %}Pages in {{ category_name }}{% endblocktranslate %}">
             <div>
               {% if page_obj.has_previous %}
                 <a class="editorial-button inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider" href="?page={{ page_obj.previous_page_number }}{% if pagination_query %}&{{ pagination_query }}{% endif %}">
@@ -84,7 +84,7 @@
                 </a>
               {% endif %}
             </div>
-            <p class="editorial-pagination__status text-xs font-bold uppercase tracking-widest text-stone-500">
+            <p class="editorial-pagination__status text-xs font-bold uppercase tracking-widest text-foreground-muted">
               {% translate "Page" %} {{ page_obj.number }} <span aria-hidden="true">/</span> <span class="sr-only">{% translate "of" %}</span> {{ page_obj.paginator.num_pages }}
             </p>
             <div>

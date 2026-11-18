@@ -5,7 +5,7 @@
   <div class="editorial-page search-page">
     <header class="search-page__hero">
       <div class="editorial-container">
-        <p class="editorial-kicker text-stone-300">{% translate "The Caffeine Lane · Archive" %}</p>
+        <p class="editorial-kicker text-white/80">{% translate "The Caffeine Lane · Archive" %}</p>
         <h1 class="search-page__title">{% translate "Search the lane" %}</h1>
         <p class="search-page__intro">{% translate "Find builds, technical guides, reviews, and garage dispatches." %}</p>
 
@@ -70,7 +70,7 @@
           {% endif %}
         </div>
         {% if is_paginated or results %}
-          <p class="search-results-count text-sm text-stone-600 font-semibold">
+          <p class="search-results-count text-sm text-foreground-secondary font-semibold">
             {% blocktranslate count counter=page_obj.paginator.count %}{{ counter }} story found{% plural %}{{ counter }} stories found{% endblocktranslate %}
           </p>
         {% endif %}
@@ -98,7 +98,7 @@
               {% include "components/character_badge.html" with asset="character-searching.webp" size="lg" alt=searching_alt class_name="search-empty-badge" %}
             </div>
             <div class="search-empty-card__content">
-              <p class="editorial-kicker text-stone-500">{% translate "Zero Results Found" %}</p>
+              <p class="editorial-kicker text-foreground-muted">{% translate "Zero Results Found" %}</p>
               <h3 class="search-empty-card__title">
                 {% if query %}
                   {% blocktranslate with search_query=query %}No stories found for “{{ search_query }}”{% endblocktranslate %}
