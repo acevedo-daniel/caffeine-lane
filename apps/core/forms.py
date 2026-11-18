@@ -9,7 +9,6 @@ class ContactForm(forms.Form):
         max_length=100,
         widget=forms.TextInput(
             attrs={
-                "class": "w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent",
                 "placeholder": _("What should we call you?"),
             }
         ),
@@ -21,7 +20,6 @@ class ContactForm(forms.Form):
         max_length=254,
         widget=forms.EmailInput(
             attrs={
-                "class": "w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent",
                 "placeholder": _("So we can reply"),
             }
         ),
@@ -33,7 +31,6 @@ class ContactForm(forms.Form):
         max_length=150,
         widget=forms.TextInput(
             attrs={
-                "class": "w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent",
                 "placeholder": _("What is your message about?"),
             }
         ),
@@ -45,7 +42,6 @@ class ContactForm(forms.Form):
         max_length=5000,
         widget=forms.Textarea(
             attrs={
-                "class": "w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent",
                 "placeholder": _("Write your message..."),
                 "rows": 5,
             }
