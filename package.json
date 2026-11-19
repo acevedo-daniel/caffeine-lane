@@ -20,5 +20,5 @@
     "tailwindcss": "^4.3.5"
   },
   "packageManager": "pnpm@10.18.3",
-  "description": "Django editorial application with accounts, moderation, media management and PostgreSQL."
+  "description": "An independent editorial journal for cafe racer builds, workshop guides, reviews, and rider culture."
 }

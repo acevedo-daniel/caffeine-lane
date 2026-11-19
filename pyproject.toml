@@ -1,7 +1,7 @@
 [project]
 name = "caffeine-lane"
-version = "1.0.0"
-description = "Django editorial application with accounts, moderation, media management and PostgreSQL."
+version = "1.1.0"
+description = "An independent editorial journal for cafe racer builds, workshop guides, reviews, and rider culture."
 requires-python = ">=3.14,<3.15"
 dependencies = [
     "django>=6.0.8,<6.2",
