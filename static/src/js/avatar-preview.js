@@ -97,9 +97,14 @@ export class AvatarPreviewController {
 
     if (typeof URL !== "undefined" && typeof URL.createObjectURL === "function") {
       const previewUrl = URL.createObjectURL(file);
-      this.previewImg.src = previewUrl;
-      this.previewImg.setAttribute?.("src", previewUrl);
-      this.previewImg.classList?.add("has-custom-preview");
+      if (
+        typeof previewUrl === "string" &&
+        /^blob:(?:https?:\/\/|null\/)[^\s"'<>]+$/i.test(previewUrl)
+      ) {
+        this.previewImg.src = previewUrl;
+        this.previewImg.setAttribute?.("src", previewUrl);
+        this.previewImg.classList?.add("has-custom-preview");
+      }
     }
   }
 

@@ -57,7 +57,7 @@ extend-exclude = ["apps/*/migrations", "README.md", "docs"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
-ignore = ["E501", "F401", "F811"]
+ignore = ["E501"]
 
 [tool.ruff.format]
 quote-style = "double"

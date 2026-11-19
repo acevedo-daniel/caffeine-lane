@@ -31,7 +31,6 @@ Attribution is not mandatory under the license, but preserving the original URL 
 | `source/reviews/review-02.webp` | Public: `viajar-liviano-en-dos-ruedas` | Unsplash.com | Compatible license | Unsplash License |
 | `source/reviews/review-03.webp` | Public: `cuando-un-proyecto-esta-listo` | Unsplash.com | Compatible license | Unsplash License |
 | `source/reviews/review-04.webp` | Public: `la-salida-que-inicia-la-historia` | Unsplash.com | Compatible license | Unsplash License |
-| `source/reviews/review-05.webp` | Reserved | Unsplash.com | Compatible license | Unsplash License |
 
 ## Maintenance Rule
 
