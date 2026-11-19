@@ -1,3 +1,4 @@
+import { initializeFileFields } from "./file-field.js";
 import { initializeThemeToggle } from "./theme-toggle.js";
 
 export class MobileMenuController {
@@ -141,12 +142,14 @@ export const initializeSearchShortcut = (documentRef = document) => {
   });
 };
 
+export { initializeFileFields } from "./file-field.js";
 export { initializeThemeToggle } from "./theme-toggle.js";
 
 const initializeBase = () => {
   initializeMobileMenu();
   initializeFlashMessages();
   initializeSearchShortcut();
+  initializeFileFields();
   initializeThemeToggle();
 };
 

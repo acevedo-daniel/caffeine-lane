@@ -190,6 +190,18 @@ test("avatar preview rejects files exceeding 5MB and unsupported formats", () =>
   input.files = [{ name: "doc.pdf", type: "application/pdf", size: 1024 }];
   input.emit("change", { target: input });
   assert.equal(errorContainer.textContent, "Images must use JPEG, PNG, or WebP format.");
+
+  // Test translated client error via data-message-type attribute and input reset
+  errorContainer.dataset = {
+    messageType: "Las imágenes deben ser JPEG, PNG o WebP.",
+  };
+  input.value = "C:\\fakepath\\doc.pdf";
+  input.emit("change", { target: input });
+  assert.equal(
+    errorContainer.textContent,
+    "Las imágenes deben ser JPEG, PNG o WebP.",
+  );
+  assert.equal(input.value, "");
 });
 
 test("dismissFlashMessage adds is-dismissing class and removes message from DOM", async () => {

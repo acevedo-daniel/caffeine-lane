@@ -1,6 +1,14 @@
+{% load i18n %}
 <div class="space-y-2">
   {% if field.field.widget.input_type == "checkbox" %}
     <label class="flex items-center gap-3 text-sm font-bold text-foreground">{{ field }} {{ field.label }}</label>
+  {% elif field.field.widget.input_type == "file" %}
+    <label class="block text-sm font-bold text-foreground" for="{{ field.id_for_label }}">{{ field.label }}</label>
+    <div class="file-field" data-file-field>
+      {{ field }}
+      <label class="file-field__button" for="{{ field.id_for_label }}"><i class="fa-solid fa-image" aria-hidden="true"></i> {% translate "Choose photo" %}</label>
+      <span class="file-field__name" data-file-field-name data-empty-label="{% translate 'No photo selected' %}" aria-live="polite">{% translate "No photo selected" %}</span>
+    </div>
   {% else %}
     <label class="block text-sm font-bold text-foreground" for="{{ field.id_for_label }}">{{ field.label }}</label>
     {{ field }}
