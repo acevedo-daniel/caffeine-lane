@@ -33,7 +33,7 @@ EDITORIAL_POSTS = (
         "content": (
             "El proyecto no arrancó con un catálogo de accesorios en la mano ni buscando llamar la atención "
             "en redes sociales, sino con una premisa mucho más pragmática: postura de manejo y confiabilidad "
-            "mecánica. Rescatamos una base japonesa de cuatro cilindros que llevaba años guardada bajo una lona "
+            "mecánica. Rescatamos una Norton monocilíndrica de los años cincuenta que llevaba años guardada bajo una lona "
             "en un galpón húmedo. Antes de cortar el primer tubo del subchasis o desarmar la pintura original, "
             "revisamos el tren delantero, cambiamos los rodamientos cónicos de dirección y purgamos el líquido "
             "de frenos apelmazado.\n\n"
@@ -50,14 +50,14 @@ EDITORIAL_POSTS = (
         "category": CategorySlug.BUILDS,
         "published_at": "2026-02-03T12:00:00+00:00",
         "image": "source/builds/build-01.webp",
-        "alt": "Café racer negra en restauración dentro de un taller luminoso.",
+        "alt": "Norton monocilíndrica negra con filetes dorados en el tanque, junto a su piloto.",
         "build_specs": {
-            "donor": "1978 Honda CB750 Four",
-            "displacement": "Cuatro cilindros en línea SOHC de 736 cc",
-            "frame": "Aro trasero a medida, sin soportes superfluos y pintura negra satinada",
-            "carburetor": "Keihin de 28 mm reconstruidos con trompetas y chicleres de bronce",
-            "exhaust": "Escape 4 en 1 a medida en acero inoxidable crudo con silenciador megáfono",
-            "suspension": "Showa de 35 mm rebajada 30 mm con resortes progresivos",
+            "donor": "1957 Norton ES2",
+            "displacement": "Monocilíndrico OHV de varillas de 490 cc",
+            "frame": "Chasis original con colín acortado y pintura negra con filetes dorados",
+            "carburetor": "Amal Monobloc reconstruido con filtro de aire cónico",
+            "exhaust": "Escape simple cromado de salida baja con silenciador corto",
+            "suspension": "Horquilla Roadholder con aceite nuevo y amortiguadores traseros renovados",
         },
     },
     {

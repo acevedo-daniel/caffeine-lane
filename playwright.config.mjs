@@ -1,7 +1,9 @@
 import { defineConfig } from "@playwright/test";
 import { existsSync } from "node:fs";
 
-const databaseUrl = process.env.E2E_DATABASE_URL || process.env.DATABASE_URL;
+import { resolveE2eDatabaseUrl } from "./scripts/e2e-database.mjs";
+
+const databaseUrl = resolveE2eDatabaseUrl();
 const localWindowsPython = ".\\.venv\\Scripts\\python.exe";
 const djangoCommand = process.env.E2E_PYTHON
   ? `"${process.env.E2E_PYTHON}" manage.py runserver 127.0.0.1:8000 --noreload`
@@ -32,7 +34,7 @@ export default defineConfig({
     env: {
       ...process.env,
       DJANGO_SETTINGS_MODULE: "config.settings.local",
-      ...(databaseUrl ? { DATABASE_URL: databaseUrl } : {}),
+      DATABASE_URL: databaseUrl,
       DEBUG_TOOLBAR_ENABLED: "false",
     },
   },
