@@ -496,23 +496,6 @@ EDITORIAL_POSTS = (
     },
 )
 
-LEGACY_AUTHOR_EMAILS = ("portfolio-author@example.invalid",)
-
-LEGACY_SLUGS = {
-    "review-una-cafe-racer-para-la-ciudad": "una-cafe-racer-para-la-ciudad",
-    "review-viajar-liviano-en-dos-ruedas": "viajar-liviano-en-dos-ruedas",
-    "review-cuando-un-proyecto-ya-esta-listo": "cuando-un-proyecto-esta-listo",
-    "garage-layout-that-keeps-you-moving": "un-taller-que-invita-a-volver",
-    "choosing-tires-for-real-roads": "neumaticos-para-las-rutas-que-haces",
-    "the-case-for-simple-controls": "mandos-simples-para-manejar-concentrado",
-    "finishing-details-that-age-well": "detalles-que-mejoran-con-el-uso",
-    "a-build-list-you-can-finish": "una-lista-de-trabajo-que-si-terminas",
-    "packing-light-for-a-day-ride": "equipaje-liviano-para-una-salida-de-dia",
-    "reading-the-road-before-the-corner": "leer-la-ruta-antes-de-la-curva",
-    "a-five-minute-post-ride-check": "chequeo-de-cinco-minutos-despues-de-rodar",
-    "review-the-ride-that-starts-the-story": "la-salida-que-inicia-la-historia",
-}
-
 
 def validate_build_specs(item):
     slug = item.get("slug", "")
@@ -610,24 +593,6 @@ def validate_editorial_dataset(assets_dir, posts=EDITORIAL_POSTS):
         raise CommandError("\n".join(errors))
 
 
-def migrate_legacy_slugs(author):
-    legacy_authors = User.objects.filter(email__in=LEGACY_AUTHOR_EMAILS)
-    if legacy_authors.exists():
-        Post.objects.filter(author__in=legacy_authors).update(author=author)
-
-    migrated = 0
-    for legacy_slug, current_slug in LEGACY_SLUGS.items():
-        if Post.objects.filter(slug=current_slug).exists():
-            continue
-        legacy_post = Post.objects.filter(slug=legacy_slug, author=author).first()
-        if legacy_post is None:
-            continue
-        legacy_post.slug = current_slug
-        legacy_post.save(update_fields=["slug"])
-        migrated += 1
-    return migrated
-
-
 class Command(BaseCommand):
     help = "Create the idempotent public editorial dataset and upload its images."
 
@@ -663,8 +628,6 @@ class Command(BaseCommand):
             author.is_superuser = False
             author.set_unusable_password()
             author.save(update_fields=["is_staff", "is_superuser", "password"])
-
-            migrated_legacy_slugs = migrate_legacy_slugs(author)
 
             categories = {}
             for category in STRUCTURAL_CATEGORIES:
@@ -710,6 +673,6 @@ class Command(BaseCommand):
         self.stdout.write(
             self.style.SUCCESS(
                 f"Editorial dataset ready: {len(STRUCTURAL_CATEGORIES)} categories and "
-                f"{len(EDITORIAL_POSTS)} posts; {migrated_legacy_slugs} legacy URLs updated."
+                f"{len(EDITORIAL_POSTS)} posts."
             )
         )

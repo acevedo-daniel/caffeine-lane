@@ -1,7 +1,7 @@
 [project]
 name = "caffeine-lane"
-version = "1.0.0"
-description = "Django editorial application with accounts, moderation, media management and PostgreSQL."
+version = "1.1.0"
+description = "An independent editorial journal for cafe racer builds, workshop guides, reviews, and rider culture."
 requires-python = ">=3.14,<3.15"
 dependencies = [
     "django>=6.0.8,<6.2",
@@ -20,9 +20,6 @@ dependencies = [
 [dependency-groups]
 dev = [
     "django-debug-toolbar>=8.0.0",
-    "django-stubs==6.1.2",
-    "django-stubs-ext==6.1.2",
-    "djlint==1.50.1",
     "factory-boy>=3.3.3",
     "pre-commit>=4.6.2",
     "pytest>=9.1.1",
@@ -57,7 +54,7 @@ extend-exclude = ["apps/*/migrations", "README.md", "docs"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
-ignore = ["E501", "F401", "F811"]
+ignore = ["E501"]
 
 [tool.ruff.format]
 quote-style = "double"

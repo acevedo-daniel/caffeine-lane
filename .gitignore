@@ -80,3 +80,5 @@ Thumbs.db
 /AGENTS.md
 /.agents/skills/
 /.claude/skills/
+CLAUDE.local.md
+.claude/settings.local.json

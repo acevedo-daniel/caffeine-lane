@@ -2,32 +2,23 @@
 
 ## Reporting a vulnerability
 
-Do not open a public issue for a security vulnerability.
+Do not open a public issue for a security vulnerability. Report it privately through [GitHub Private Vulnerability Reporting](https://github.com/acevedo-daniel/caffeine-lane/security/advisories/new).
 
-Use GitHub Private Vulnerability Reporting when available:
+### What to include
 
-- [Report via GitHub Private Vulnerability Reporting](https://github.com/acevedo-daniel/caffeine-lane/security/advisories/new)
-
-Include the affected component, impact assessment, reproduction steps or a
-minimal proof of concept, and any known mitigation.
+- Affected component and URL or file
+- Impact assessment
+- Steps to reproduce or a minimal proof of concept
+- Known mitigations, if any
 
 ## Response expectations
 
-Reports are reviewed on a best-effort basis. Valid reports will be handled
-privately while a fix or mitigation is evaluated.
+Reports are reviewed on a best-effort basis and handled privately until a fix or mitigation is available.
 
 ## Supported versions
 
-| Version | Status |
-| --- | :---: |
-| 1.x | Supported |
+Only the latest version on `main`, which is the version deployed to the live demo, is supported.
 
 ## Scope
 
-This policy covers the source code in this repository. Vulnerabilities in
-third-party dependencies should be reported to their respective maintainers.
-
-## Recognition
-
-Contributors who responsibly disclose valid vulnerabilities may be
-acknowledged in release notes unless they prefer to remain anonymous.
+This policy covers the source code in this repository and the live demo at https://caffeine-lane.vercel.app/. Vulnerabilities in third-party dependencies should be reported to their maintainers.

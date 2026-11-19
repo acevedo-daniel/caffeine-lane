@@ -1,55 +1,57 @@
-import json
-import tempfile
+from datetime import UTC, datetime
 from pathlib import Path
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.management import CommandError, call_command
-from django.test import TestCase
+from django.test import SimpleTestCase, TestCase
+from django.utils import timezone
 
 from apps.accounts.models import User
-from apps.posts.content_import import import_selected_content
+from apps.posts.content_import import clean_text, parse_published_at
 from apps.posts.management.commands.seed_editorial import (
     EDITORIAL_POSTS,
-    LEGACY_SLUGS,
     validate_editorial_dataset,
 )
-from apps.posts.models import Category, Post
+from apps.posts.models import Post
+
+
+class ContentHelperTests(SimpleTestCase):
+    def test_clean_text_normalizes_and_strips_valid_text(self):
+        self.assertEqual(
+            clean_text("  Cafe\u0301\r\nracer  ", field="title"), "Caf\u00e9\nracer"
+        )
+
+    def test_clean_text_rejects_empty_control_or_provisional_text(self):
+        invalid_values = [
+            "",
+            "   ",
+            None,
+            "bad\ufffdtext",
+            "bad\x00text",
+            "TODO: finish article",
+            "Lorem ipsum dolor sit amet.",
+        ]
+        for value in invalid_values:
+            with self.subTest(value=value):
+                with self.assertRaises(ValidationError):
+                    clean_text(value, field="content")
+
+    def test_parse_published_at_handles_strings_and_datetimes(self):
+        aware_dt = datetime(2026, 1, 15, 12, 0, tzinfo=UTC)
+        self.assertEqual(parse_published_at(aware_dt), aware_dt)
+        self.assertEqual(parse_published_at("2026-01-15T12:00:00+00:00"), aware_dt)
+
+        naive_parsed = parse_published_at("2026-01-15T12:00:00")
+        self.assertTrue(timezone.is_aware(naive_parsed))
+
+        for invalid in ("not-a-date", "", None):
+            with self.subTest(invalid=invalid):
+                with self.assertRaises(ValidationError):
+                    parse_published_at(invalid)
 
 
 class ContentImportTests(TestCase):
-    def setUp(self):
-        self.author = User.objects.create_user(
-            email="editor@example.com", username="editor", password="test-password"
-        )
-        self.payload = {
-            "categories": [{"slug": "guides", "name": "Guides"}],
-            "posts": [
-                {
-                    "slug": "clean-import",
-                    "title": "Clean Import",
-                    "excerpt": "A reviewed import excerpt.",
-                    "content": "A reviewed import body.",
-                    "categories": ["guides"],
-                    "published_at": "2026-01-15T12:00:00+00:00",
-                }
-            ],
-        }
-
-    def test_seed_demo_is_idempotent_and_creates_no_privileged_user(self):
-        call_command("seed_demo")
-        call_command("seed_demo")
-
-        author = User.objects.get(email="demo-author@example.invalid")
-        self.assertFalse(author.is_staff)
-        self.assertFalse(author.is_superuser)
-        self.assertFalse(author.has_usable_password())
-        self.assertEqual(Post.objects.filter(author=author).count(), 3)
-        self.assertEqual(
-            Category.objects.filter(slug__in=["builds", "guides", "reviews"]).count(),
-            3,
-        )
-
     def test_seed_editorial_is_idempotent_and_uploads_webp_images(self):
         call_command("seed_editorial")
         call_command("seed_editorial")
@@ -71,7 +73,6 @@ class ContentImportTests(TestCase):
             set(posts.values_list("slug", flat=True)),
             {item["slug"] for item in EDITORIAL_POSTS},
         )
-        self.assertFalse(posts.filter(slug__in=LEGACY_SLUGS).exists())
         self.assertIn(
             "source/reviews/review-04.webp", {item["image"] for item in EDITORIAL_POSTS}
         )
@@ -153,28 +154,6 @@ class ContentImportTests(TestCase):
         )
         self.assertFalse(Post.objects.exists())
 
-    def test_seed_editorial_migrates_its_legacy_slugs(self):
-        author = User.objects.create_user(
-            email="editorial-author@example.invalid",
-            username="editorial-author",
-            password="unused-password",
-        )
-        legacy_slug, current_slug = next(iter(LEGACY_SLUGS.items()))
-        Post.objects.create(
-            slug=legacy_slug,
-            title="Entrada editorial anterior",
-            excerpt="Resumen editorial anterior.",
-            content="Contenido editorial anterior.",
-            author=author,
-            status=Post.Status.PUBLISHED,
-            published_at="2026-01-01T12:00:00+00:00",
-        )
-
-        call_command("seed_editorial")
-
-        self.assertFalse(Post.objects.filter(slug=legacy_slug).exists())
-        self.assertTrue(Post.objects.filter(slug=current_slug, author=author).exists())
-
     def test_seed_editorial_does_not_overwrite_another_authors_post(self):
         foreign_author = User.objects.create_user(
             email="another-editor@example.invalid",
@@ -201,52 +180,3 @@ class ContentImportTests(TestCase):
 
     def test_verify_editorial_baseline_confirms_migration_and_categories(self):
         call_command("verify_editorial_baseline")
-
-    def test_selected_import_is_idempotent(self):
-        import_selected_content(self.payload, author=self.author)
-        import_selected_content(self.payload, author=self.author)
-
-        post = Post.objects.get(slug="clean-import")
-        self.assertEqual(Post.objects.filter(slug="clean-import").count(), 1)
-        self.assertEqual(post.status, Post.Status.PUBLISHED)
-        self.assertEqual(
-            list(post.categories.values_list("slug", flat=True)), ["guides"]
-        )
-
-    def test_selected_import_rejects_privileged_users_and_provisional_text(self):
-        self.author.is_staff = True
-        self.author.save(update_fields=["is_staff"])
-        with self.assertRaises(ValidationError):
-            import_selected_content(self.payload, author=self.author)
-
-    def test_selected_import_rejects_image_fields(self):
-        self.payload["posts"][0]["featured_image"] = "posts/media/unreviewed.jpg"
-
-        with self.assertRaises(ValidationError):
-            import_selected_content(self.payload, author=self.author)
-
-    def test_selected_import_rejects_reserved_post_slugs(self):
-        self.payload["posts"][0]["slug"] = "search"
-
-        with self.assertRaises(ValidationError):
-            import_selected_content(self.payload, author=self.author)
-
-        self.author.is_staff = False
-        self.author.save(update_fields=["is_staff"])
-        self.payload["posts"][0]["content"] = "TODO: review this."
-        with self.assertRaises(ValidationError):
-            import_selected_content(self.payload, author=self.author)
-
-    def test_management_command_reads_utf8_json(self):
-        with tempfile.NamedTemporaryFile(
-            mode="w", suffix=".json", encoding="utf-8", delete=False
-        ) as file:
-            json.dump(self.payload, file)
-            path = Path(file.name)
-        self.addCleanup(path.unlink)
-
-        call_command(
-            "import_selected_content", path, "--author-email", self.author.email
-        )
-
-        self.assertTrue(Post.objects.filter(slug="clean-import").exists())

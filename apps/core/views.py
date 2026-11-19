@@ -17,7 +17,7 @@ from apps.posts.taxonomy import CategorySlug
 
 from .forms import ContactForm
 from .rate_limit import client_ip, rate_limit_exceeded
-from .seo import absolute_url, article_schema, localized_copy, website_schema
+from .seo import absolute_url, localized_copy, website_schema
 
 logger = logging.getLogger(__name__)
 
