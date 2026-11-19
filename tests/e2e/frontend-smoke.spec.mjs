@@ -55,12 +55,13 @@ test.describe("compiled frontend smoke checks", () => {
     await expect(page.locator("html")).toHaveAttribute("lang", "es");
 
     await page.goto("/posts/search/");
-    const categorySelect = page.locator("#id_category");
-    const categoryControl = categorySelect.locator("..");
-    const initialCategoryValue = await categorySelect.inputValue();
-    await categoryControl.getByRole("combobox").click();
-    await categoryControl.getByRole("option").nth(1).click();
-    await expect(categorySelect).not.toHaveValue(initialCategoryValue);
+    await page.locator("#filter-toggle-btn").click();
+    const sortSelect = page.locator("#id_sort");
+    const sortControl = sortSelect.locator("..");
+    const initialSortValue = await sortSelect.inputValue();
+    await sortControl.getByRole("combobox").click();
+    await sortControl.getByRole("option").nth(1).click();
+    await expect(sortSelect).not.toHaveValue(initialSortValue);
   });
 
   test("the mobile navigation opens and the reply composer remains progressive", async ({ page }) => {
@@ -166,7 +167,7 @@ test.describe("compiled frontend smoke checks", () => {
     await expect(emptyCard).toBeVisible();
     await expect(emptyCard.locator(".search-empty-badge")).toBeVisible();
     await expect(emptyCard.locator(".search-suggestion-pill")).toHaveCount(4);
-    await expect(emptyCard.locator(".search-suggestion-pill").first()).toContainText("CB750");
+    await expect(emptyCard.locator(".search-suggestion-pill").first()).toContainText(/(Brakes|Frenos)/);
   });
 
   test("Reader identity, two-step registration, profile hub, and simulated error pages", async ({ page }) => {

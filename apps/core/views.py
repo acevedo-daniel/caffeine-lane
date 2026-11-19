@@ -64,10 +64,12 @@ def landing(request):
         or Post.objects.for_listing().first()
     )
     recent_posts = Post.objects.for_listing()[:3]
+    total_posts = Post.objects.for_listing().count()
     categories = Category.objects.all()
     context = {
         "featured_build": featured_build,
         "recent_posts": recent_posts,
+        "total_posts": total_posts,
         "categories": categories,
         "builds_category_slug": CategorySlug.BUILDS,
         "guides_category_slug": CategorySlug.GUIDES,

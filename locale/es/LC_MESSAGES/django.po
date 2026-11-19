@@ -39,15 +39,15 @@ msgid "Profile picture (optional)"
 msgstr "Foto de perfil (opcional)"
 
 #: .\apps\accounts\templates\accounts\login.html:3
-msgid "Sign in · The Caffeine Lane"
-msgstr "Iniciar sesión · The Caffeine Lane"
+msgid "Sign in · Caffeine Lane"
+msgstr "Iniciar sesión · Caffeine Lane"
 
 #: .\apps\accounts\templates\accounts\login.html:5
 #: .\apps\accounts\templates\accounts\register_step1.html:5
 #: .\apps\accounts\templates\accounts\register_step2.html:5
 #: .\apps\core\templates\core\home.html:153
-msgid "The Caffeine Lane community"
-msgstr "La comunidad de The Caffeine Lane"
+msgid "Caffeine Lane community"
+msgstr "La comunidad de Caffeine Lane"
 
 #: .\apps\accounts\templates\accounts\login.html:6
 msgid "Back on the road."
@@ -96,8 +96,8 @@ msgid "Create an account"
 msgstr "Crear una cuenta"
 
 #: .\apps\accounts\templates\accounts\password_change.html:3
-msgid "Change password · The Caffeine Lane"
-msgstr "Cambiar contraseña · The Caffeine Lane"
+msgid "Change password · Caffeine Lane"
+msgstr "Cambiar contraseña · Caffeine Lane"
 
 #: .\apps\accounts\templates\accounts\password_change.html:4
 msgid "Keep your keys close."
@@ -134,8 +134,8 @@ msgstr "Cancelar"
 
 #: .\apps\accounts\templates\accounts\password_change_done.html:3
 #: .\apps\accounts\templates\accounts\password_reset_complete.html:3
-msgid "Password updated · The Caffeine Lane"
-msgstr "Contraseña actualizada · The Caffeine Lane"
+msgid "Password updated · Caffeine Lane"
+msgstr "Contraseña actualizada · Caffeine Lane"
 
 #: .\apps\accounts\templates\accounts\password_change_done.html:4
 msgid "Password updated."
@@ -163,8 +163,8 @@ msgid "Back to profile"
 msgstr "Volver al perfil"
 
 #: .\apps\accounts\templates\accounts\password_reset.html:3
-msgid "Reset password · The Caffeine Lane"
-msgstr "Restablecer contraseña · The Caffeine Lane"
+msgid "Reset password · Caffeine Lane"
+msgstr "Restablecer contraseña · Caffeine Lane"
 
 #: .\apps\accounts\templates\accounts\password_reset.html:5
 #: .\apps\accounts\templates\accounts\password_reset.html:10
@@ -224,8 +224,8 @@ msgid "Your password has been reset. You can now sign in with it."
 msgstr "Tu contraseña fue restablecida. Ya podés iniciar sesión con ella."
 
 #: .\apps\accounts\templates\accounts\password_reset_confirm.html:3
-msgid "Choose a new password · The Caffeine Lane"
-msgstr "Elegí una nueva contraseña · The Caffeine Lane"
+msgid "Choose a new password · Caffeine Lane"
+msgstr "Elegí una nueva contraseña · Caffeine Lane"
 
 #: .\apps\accounts\templates\accounts\password_reset_confirm.html:6
 msgid "Almost there."
@@ -273,8 +273,8 @@ msgid "Request reset link"
 msgstr "Solicitar enlace de recuperación"
 
 #: .\apps\accounts\templates\accounts\password_reset_done.html:3
-msgid "Check your email · The Caffeine Lane"
-msgstr "Revisá tu correo · The Caffeine Lane"
+msgid "Check your email · Caffeine Lane"
+msgstr "Revisá tu correo · Caffeine Lane"
 
 #: .\apps\accounts\templates\accounts\password_reset_done.html:6
 msgid "Check your inbox."
@@ -311,12 +311,12 @@ msgid "Use the following link to choose a new password:"
 msgstr "Usá el siguiente enlace para elegir una contraseña nueva:"
 
 #: .\apps\accounts\templates\accounts\password_reset_subject.txt:1
-msgid "Password reset for The Caffeine Lane"
-msgstr "Restablecimiento de contraseña de The Caffeine Lane"
+msgid "Password reset for Caffeine Lane"
+msgstr "Restablecimiento de contraseña de Caffeine Lane"
 
 #: .\apps\accounts\templates\accounts\password_reset_unavailable.html:3
-msgid "Password recovery unavailable · The Caffeine Lane"
-msgstr "Recuperación de contraseña no disponible · The Caffeine Lane"
+msgid "Password recovery unavailable · Caffeine Lane"
+msgstr "Recuperación de contraseña no disponible · Caffeine Lane"
 
 #: .\apps\accounts\templates\accounts\password_reset_unavailable.html:6
 msgid "A temporary detour."
@@ -347,8 +347,8 @@ msgid "This feature remains available in internal test environments only."
 msgstr "Esta función sólo sigue disponible en entornos internos de prueba."
 
 #: .\apps\accounts\templates\accounts\profile.html:3
-msgid "Your profile · The Caffeine Lane"
-msgstr "Tu perfil · The Caffeine Lane"
+msgid "Your profile · Caffeine Lane"
+msgstr "Tu perfil · Caffeine Lane"
 
 #: .\apps\accounts\templates\accounts\profile.html:4
 msgid "Your profile."
@@ -465,8 +465,8 @@ msgid "Sign out"
 msgstr "Cerrar sesión"
 
 #: .\apps\accounts\templates\accounts\register_step1.html:3
-msgid "Create an account · The Caffeine Lane"
-msgstr "Crear una cuenta · The Caffeine Lane"
+msgid "Create an account · Caffeine Lane"
+msgstr "Crear una cuenta · Caffeine Lane"
 
 #: .\apps\accounts\templates\accounts\register_step1.html:6
 msgid "Join the ride."
@@ -505,8 +505,8 @@ msgid "Already riding with us?"
 msgstr "¿Ya rodás con nosotros?"
 
 #: .\apps\accounts\templates\accounts\register_step2.html:3
-msgid "Finish your profile · The Caffeine Lane"
-msgstr "Completá tu perfil · The Caffeine Lane"
+msgid "Finish your profile · Caffeine Lane"
+msgstr "Completá tu perfil · Caffeine Lane"
 
 #: .\apps\accounts\templates\accounts\register_step2.html:6
 #: .\apps\core\templates\core\about.html:68
@@ -636,24 +636,24 @@ msgid "Upload a valid image file."
 msgstr "Subí un archivo de imagen válido."
 
 #: .\apps\core\templates\core\about.html:3
-msgid "About · The Caffeine Lane"
-msgstr "Acerca de · The Caffeine Lane"
+msgid "About · Caffeine Lane"
+msgstr "Acerca de · Caffeine Lane"
 
 #: .\apps\core\templates\core\about.html:9
 #: .\apps\core\templates\core\contact.html:8
 #: .\apps\core\templates\core\home.html:48
 #: .\apps\posts\templates\posts\post_detail.html:50
 #: .\templates\layouts\auth.html:11
-msgid "The Caffeine Lane"
-msgstr "The Caffeine Lane"
+msgid "Caffeine Lane"
+msgstr "Caffeine Lane"
 
 #: .\apps\core\templates\core\about.html:10
 msgid "Built for the ride between the garage and the road."
 msgstr "Hecho para el viaje entre el garaje y la ruta."
 
 #: .\apps\core\templates\core\about.html:11
-msgid "The Caffeine Lane is an editorial home for the people who keep a machine close, a tool roll nearby, and a better route in mind."
-msgstr "The Caffeine Lane es un hogar editorial para quienes mantienen una máquina cerca, un juego de herramientas a mano y una mejor ruta en mente."
+msgid "Caffeine Lane is an editorial home for the people who keep a machine close, a tool roll nearby, and a better route in mind."
+msgstr "Caffeine Lane es un hogar editorial para quienes mantienen una máquina cerca, un juego de herramientas a mano y una mejor ruta en mente."
 
 #: .\apps\core\templates\core\about.html:20
 msgid "The mission"
@@ -749,8 +749,8 @@ msgid "Join the ride"
 msgstr "Sumate a la ruta"
 
 #: .\apps\core\templates\core\contact.html:3
-msgid "Contact · The Caffeine Lane"
-msgstr "Contacto · The Caffeine Lane"
+msgid "Contact · Caffeine Lane"
+msgstr "Contacto · Caffeine Lane"
 
 #: .\apps\core\templates\core\contact.html:9
 msgid "Talk shop. Share the road."
@@ -793,8 +793,8 @@ msgid "Subject:"
 msgstr "Asunto:"
 
 #: .\apps\core\templates\core\home.html:3
-msgid "Home · The Caffeine Lane"
-msgstr "Inicio · The Caffeine Lane"
+msgid "Home · Caffeine Lane"
+msgstr "Inicio · Caffeine Lane"
 
 #: .\apps\core\templates\core\home.html:6
 msgid "Featured posts"
@@ -1133,8 +1133,8 @@ msgid "The Garage Collective"
 msgstr "Comunidad de garaje"
 
 #: .\apps\core\templates\core\landing.html:265
-msgid "Join 1,000+ custom motorcycle builders"
-msgstr "Sumate a más de 1.000 constructores de motos custom"
+msgid "Join the garage"
+msgstr "Sumate al garaje"
 
 #: .\apps\core\templates\core\landing.html:268
 msgid "Create your rider profile, follow the builds, participate in discussions, and join an international community of builders and riders."
@@ -1149,16 +1149,16 @@ msgid "Sign In"
 msgstr "Iniciar sesión"
 
 #: .\apps\core\templates\core\landing.html:283
-msgid "Riders & Builders"
-msgstr "Pilotos y constructores"
+msgid "Published stories"
+msgstr "Historias publicadas"
 
 #: .\apps\core\templates\core\landing.html:287
-msgid "Independent & Ad-Free"
-msgstr "Independiente y sin publicidad"
+msgid "Editorial sections"
+msgstr "Secciones editoriales"
 
 #: .\apps\core\templates\core\landing.html:291
-msgid "Fresh Dispatches"
-msgstr "Publicaciones recientes"
+msgid "Bilingual interface"
+msgstr "Interfaz bilingüe"
 
 #: .\apps\core\templates\core\landing.html:297
 msgid "The Rider pointing towards community registration"
@@ -1333,8 +1333,8 @@ msgstr "Las respuestas sólo pueden tener un nivel de profundidad."
 
 #: .\apps\posts\templates\posts\category_view.html:3
 #, python-format
-msgid "%(category_name)s · The Caffeine Lane"
-msgstr "%(category_name)s · The Caffeine Lane"
+msgid "%(category_name)s · Caffeine Lane"
+msgstr "%(category_name)s · Caffeine Lane"
 
 #: .\apps\posts\templates\posts\category_view.html:13
 msgid "Back to home"
@@ -1433,8 +1433,8 @@ msgid "Next"
 msgstr "Siguiente"
 
 #: .\apps\posts\templates\posts\comment_edit.html:3
-msgid "Edit comment · The Caffeine Lane"
-msgstr "Editar comentario · The Caffeine Lane"
+msgid "Edit comment · Caffeine Lane"
+msgstr "Editar comentario · Caffeine Lane"
 
 #: .\apps\posts\templates\posts\comment_edit.html:7
 #: .\apps\posts\templates\posts\post_form.html:7
@@ -1454,8 +1454,8 @@ msgid "Make your correction, then save it back into the discussion."
 msgstr "Hacé tu corrección y guardala de nuevo en la conversación."
 
 #: .\apps\posts\templates\posts\post_confirm_delete.html:3
-msgid "Delete post · The Caffeine Lane"
-msgstr "Eliminar publicación · The Caffeine Lane"
+msgid "Delete post · Caffeine Lane"
+msgstr "Eliminar publicación · Caffeine Lane"
 
 #: .\apps\posts\templates\posts\post_confirm_delete.html:7
 msgid "Irreversible action"
@@ -1483,8 +1483,8 @@ msgstr "Conservar publicación"
 
 #: .\apps\posts\templates\posts\post_detail.html:3
 #, python-format
-msgid "%(post_title)s · The Caffeine Lane"
-msgstr "%(post_title)s · The Caffeine Lane"
+msgid "%(post_title)s · Caffeine Lane"
+msgstr "%(post_title)s · Caffeine Lane"
 
 #: .\apps\posts\templates\posts\post_detail.html:11
 #: .\apps\posts\templates\posts\post_form.html:7
@@ -1562,8 +1562,8 @@ msgid "Authored by"
 msgstr "Escrito por"
 
 #: .\apps\posts\templates\posts\post_detail.html:105
-msgid "Staff builder and technical writer at The Caffeine Lane, chronicling garage craft, vintage iron, and cafe culture."
-msgstr "Constructor y redactor técnico de The Caffeine Lane, documentando oficio de garaje, fierros clásicos y cultura café racer."
+msgid "Staff builder and technical writer at Caffeine Lane, chronicling garage craft, vintage iron, and cafe culture."
+msgstr "Constructor y redactor técnico de Caffeine Lane, documentando oficio de garaje, fierros clásicos y cultura café racer."
 
 #: .\apps\posts\templates\posts\post_detail.html:114
 msgid "Keep exploring"
@@ -1681,12 +1681,12 @@ msgid "Be the first to share your thoughts, questions, or garage experiences."
 msgstr "Sé el primero en compartir tus ideas, preguntas o experiencias de taller."
 
 #: .\apps\posts\templates\posts\post_form.html:3
-msgid "Edit post · The Caffeine Lane"
-msgstr "Editar publicación · The Caffeine Lane"
+msgid "Edit post · Caffeine Lane"
+msgstr "Editar publicación · Caffeine Lane"
 
 #: .\apps\posts\templates\posts\post_form.html:3
-msgid "New post · The Caffeine Lane"
-msgstr "Nueva publicación · The Caffeine Lane"
+msgid "New post · Caffeine Lane"
+msgstr "Nueva publicación · Caffeine Lane"
 
 #: .\apps\posts\templates\posts\post_form.html:9
 msgid "Editorial desk"
@@ -1715,16 +1715,16 @@ msgstr "Guardar publicación"
 
 #: .\apps\posts\templates\posts\search_results.html:3
 #, python-format
-msgid "“%(search_query)s” · Search · The Caffeine Lane"
-msgstr "“%(search_query)s” · Búsqueda · The Caffeine Lane"
+msgid "“%(search_query)s” · Search · Caffeine Lane"
+msgstr "“%(search_query)s” · Búsqueda · Caffeine Lane"
 
 #: .\apps\posts\templates\posts\search_results.html:3
-msgid "Search stories · The Caffeine Lane"
-msgstr "Buscar historias · The Caffeine Lane"
+msgid "Search stories · Caffeine Lane"
+msgstr "Buscar historias · Caffeine Lane"
 
 #: .\apps\posts\templates\posts\search_results.html:8
-msgid "The Caffeine Lane · Archive"
-msgstr "The Caffeine Lane · Archivo"
+msgid "Caffeine Lane · Archive"
+msgstr "Caffeine Lane · Archivo"
 
 #: .\apps\posts\templates\posts\search_results.html:9 .\templates\404.html:11
 msgid "Search the lane"
@@ -1764,11 +1764,7 @@ msgstr "Categoría:"
 msgid "All Categories"
 msgstr "Todas las categorías"
 
-#: .\apps\posts\templates\posts\search_results.html:49
-msgid "Category selection"
-msgstr "Selección de categoría"
-
-#: .\apps\posts\templates\posts\search_results.html:53
+#: .\apps\posts\templates\posts\search_results.html:52
 msgid "Sort order"
 msgstr "Orden de clasificación"
 
@@ -1833,13 +1829,21 @@ msgstr "No encontramos proyectos de garaje, guías ni notas que coincidan con tu
 msgid "Popular workshop searches:"
 msgstr "Búsquedas populares del taller:"
 
-#: .\apps\posts\templates\posts\search_results.html:118
-msgid "Carb Tuning"
-msgstr "Puesta a punto de carburador"
+#: .\apps\posts\templates\posts\search_results.html:115
+msgid "Brakes"
+msgstr "Frenos"
 
-#: .\apps\posts\templates\posts\search_results.html:119
-msgid "Cafe Seat Guide"
-msgstr "Guía de colines café racer"
+#: .\apps\posts\templates\posts\search_results.html:116
+msgid "Tires"
+msgstr "Neumáticos"
+
+#: .\apps\posts\templates\posts\search_results.html:117
+msgid "Wiring"
+msgstr "Cableado"
+
+#: .\apps\posts\templates\posts\search_results.html:118
+msgid "Café racer"
+msgstr "Café racer"
 
 #: .\apps\posts\templates\posts\search_results.html:125
 msgid "Reset all filters"
@@ -1898,8 +1902,8 @@ msgid "Post deleted successfully."
 msgstr "Publicación eliminada exitosamente."
 
 #: .\templates\400.html:3
-msgid "Bad request · The Caffeine Lane"
-msgstr "Solicitud incorrecta · The Caffeine Lane"
+msgid "Bad request · Caffeine Lane"
+msgstr "Solicitud incorrecta · Caffeine Lane"
 
 #: .\templates\400.html:8
 msgid "400 · Request misfire"
@@ -1922,8 +1926,8 @@ msgid "The Rider noticing a request that did not fit"
 msgstr "The Rider notando una solicitud que no encajó"
 
 #: .\templates\403.html:3
-msgid "Access denied · The Caffeine Lane"
-msgstr "Acceso denegado · The Caffeine Lane"
+msgid "Access denied · Caffeine Lane"
+msgstr "Acceso denegado · Caffeine Lane"
 
 #: .\templates\403.html:8
 msgid "403 · Access restricted"
@@ -1942,8 +1946,8 @@ msgid "The Rider at a closed road"
 msgstr "The Rider frente a una ruta cerrada"
 
 #: .\templates\404.html:3
-msgid "Page not found · The Caffeine Lane"
-msgstr "Página no encontrada · The Caffeine Lane"
+msgid "Page not found · Caffeine Lane"
+msgstr "Página no encontrada · Caffeine Lane"
 
 #: .\templates\404.html:8
 msgid "404 · Page not found"
@@ -1962,8 +1966,8 @@ msgid "The Rider taking a wrong turn"
 msgstr "The Rider tomando un desvío"
 
 #: .\templates\500.html:3
-msgid "Server error · The Caffeine Lane"
-msgstr "Error del servidor · The Caffeine Lane"
+msgid "Server error · Caffeine Lane"
+msgstr "Error del servidor · Caffeine Lane"
 
 #: .\templates\500.html:8
 msgid "500 · Server error"
@@ -2130,8 +2134,8 @@ msgid "Password and security"
 msgstr "Contraseña y seguridad"
 
 #: .\templates\layouts\auth.html:10
-msgid "The Caffeine Lane home"
-msgstr "Inicio de The Caffeine Lane"
+msgid "Caffeine Lane home"
+msgstr "Inicio de Caffeine Lane"
 
 #: .\templates\layouts\auth.html:12
 msgid "Ride · Build · Repeat"

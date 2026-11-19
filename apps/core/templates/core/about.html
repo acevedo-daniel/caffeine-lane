@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block title %}{% translate "About · The Caffeine Lane" %}{% endblock title %}
+{% block title %}{% translate "About · Caffeine Lane" %}{% endblock title %}
 {% block content %}
   <div class="about-page editorial-page">
     <section class="about-hero">
       <div class="about-hero__container editorial-container">
         <div class="about-hero__copy">
-          <p class="editorial-kicker text-white/80">{% translate "The Caffeine Lane" %}</p>
+          <p class="editorial-kicker text-white/80">{% translate "Caffeine Lane" %}</p>
           <h1 class="about-hero__title">{% translate "Built for the ride between the garage and the road." %}</h1>
-          <p class="about-hero__intro">{% translate "The Caffeine Lane is an editorial home for the people who keep a machine close, a tool roll nearby, and a better route in mind." %}</p>
+          <p class="about-hero__intro">{% translate "Caffeine Lane is an editorial home for the people who keep a machine close, a tool roll nearby, and a better route in mind." %}</p>
         </div>
         {% translate "The Rider signature" as signature_alt %}
         {% include "components/character_badge.html" with asset="character-signature.webp" size="lg" alt=signature_alt class_name="about-hero__rider" %}

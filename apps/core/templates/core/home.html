@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load i18n post_i18n %}
-{% block title %}{% translate "Home · The Caffeine Lane" %}{% endblock title %}
+{% block title %}{% translate "Home · Caffeine Lane" %}{% endblock title %}
 {% block content %}
   {% if banner_posts %}
     <section class="home-hero" aria-roledescription="carousel" aria-label="{% translate 'Featured posts' %}" tabindex="0">
@@ -45,7 +45,7 @@
   {% else %}
     <section class="bg-surface-dark px-5 py-20 text-white sm:px-8 sm:py-28">
       <div class="mx-auto max-w-7xl">
-        <p class="text-xs font-bold uppercase tracking-[0.2em] text-white/75">{% translate "The Caffeine Lane" %}</p>
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-white/75">{% translate "Caffeine Lane" %}</p>
         <h1 class="mt-3 font-bebas text-6xl leading-[0.88] tracking-wide sm:text-8xl">{% translate "Stories for the road." %}</h1>
         <p class="mt-6 max-w-2xl text-lg text-white/80">{% translate "New dispatches are being prepared." %}</p>
       </div>
@@ -81,7 +81,7 @@
 
       <!-- Builds Section -->
       <section class="home-section home-section--builds" aria-labelledby="builds-heading">
-        <div class="home-section__header home-section__header--builds">
+        <div class="home-section__header">
           <div>
             <p class="editorial-kicker">{% translate "Builds & features" %}</p>
             <h2 id="builds-heading" class="editorial-heading mt-1">{% translate "Builds" %}</h2>
@@ -100,7 +100,7 @@
 
       <!-- Guides Section with Workshop Spotlight -->
       <section class="home-section home-section--guides" aria-labelledby="guides-heading">
-        <div class="home-section__header home-section__header--guides">
+        <div class="home-section__header">
           <div>
             <p class="editorial-kicker">{% translate "How-to & guides" %}</p>
             <h2 id="guides-heading" class="editorial-heading mt-1">{% translate "Guides" %}</h2>
@@ -130,7 +130,7 @@
 
       <!-- Reviews Section -->
       <section class="home-section home-section--reviews" aria-labelledby="reviews-heading">
-        <div class="home-section__header home-section__header--reviews">
+        <div class="home-section__header">
           <div>
             <p class="editorial-kicker">{% translate "Gear & product reviews" %}</p>
             <h2 id="reviews-heading" class="editorial-heading mt-1">{% translate "Reviews" %}</h2>
@@ -150,7 +150,7 @@
       <!-- Community Callout Section -->
       <section class="home-community" aria-labelledby="join-the-ride-heading">
         <div class="home-community-copy">
-          <p class="editorial-kicker text-white/80">{% translate "The Caffeine Lane community" %}</p>
+          <p class="editorial-kicker text-white/80">{% translate "Caffeine Lane community" %}</p>
           <h2 id="join-the-ride-heading" class="mt-2 font-bebas text-5xl leading-[0.9] tracking-wide text-white sm:text-6xl">{% translate "Join the ride" %}</h2>
           <p class="mt-4 max-w-xl text-white/80">{% translate "Create a profile to join the conversation, follow the builds, and be part of the community." %}</p>
           <a class="home-community-cta motion-cta" href="{% url 'register' %}">{% translate "Create an account" %} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>

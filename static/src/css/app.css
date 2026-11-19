@@ -685,7 +685,7 @@
     align-items: center;
     justify-content: space-between;
     height: 4.5rem;
-    gap: 1.5rem;
+    gap: 1rem;
   }
 
   /* Brand / Logo lockup */
@@ -726,6 +726,7 @@
     line-height: 1;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+    white-space: nowrap;
     transition: color 150ms ease;
   }
 
@@ -737,7 +738,7 @@
   .site-header__nav {
     display: flex;
     align-items: center;
-    gap: 1.75rem;
+    gap: clamp(1rem, 1.4vw, 1.5rem);
     height: 100%;
   }
 
@@ -753,6 +754,7 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
     text-decoration: none;
+    white-space: nowrap;
     border-bottom: 3px solid transparent;
     transition: color 150ms ease, border-color 150ms ease;
   }
@@ -772,7 +774,7 @@
   .site-header__actions {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.75rem;
     flex-shrink: 0;
   }
 
@@ -888,6 +890,7 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
     text-decoration: none;
+    white-space: nowrap;
     transition: color 150ms ease;
   }
 
@@ -910,6 +913,7 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
     text-decoration: none;
+    white-space: nowrap;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease, color 150ms ease;
   }
@@ -1178,7 +1182,7 @@
   }
 
   /* Progressive enhancement fallback before JS initializes */
-  @media (max-width: 1023px) {
+  @media (max-width: 1279px) {
     :not(.has-mobile-menu) .mobile-drawer {
       display: block;
       position: static;
@@ -2765,23 +2769,8 @@
     align-items: end;
     justify-content: space-between;
     gap: 1.25rem;
-  }
-
-  .home-section__header--builds {
     border-top: 4px solid var(--foreground);
     padding-top: 1.25rem;
-  }
-
-  .home-section__header--guides {
-    align-items: start;
-    border-bottom: 1px solid var(--border-subtle);
-    padding-bottom: 1.25rem;
-  }
-
-  .home-section__header--reviews {
-    align-items: center;
-    border-left: 4px solid var(--foreground);
-    padding-left: clamp(1rem, 3vw, 1.75rem);
   }
 
   .home-garage-note {
@@ -3476,6 +3465,8 @@
     font-weight: 500;
   }
 
+  .post-detail__body > p + p { margin-top: 1.25em; }
+
   .post-detail__body :where(h2, h3) { margin-top: 2.25em; }
 
   .build-specs-inspector {
@@ -4039,6 +4030,10 @@
     font-size: clamp(3.25rem, 8vw, 4.5rem);
     letter-spacing: 0.035em;
     line-height: 1.05;
+  }
+
+  .auth-card__title--compact {
+    font-size: clamp(2rem, 4.5vw, 2.75rem);
   }
 
   .auth-card__intro {
@@ -5051,7 +5046,7 @@
 
   .site-menu-button { display: none; }
 
-  @media (max-width: 767.98px) {
+  @media (max-width: 1279.98px) {
     .has-mobile-menu .site-menu-button { display: inline-flex; }
     .has-mobile-menu [data-mobile-menu-panel] { display: none; }
     .has-mobile-menu [data-mobile-menu-panel].is-open { display: flex; }

@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% load i18n post_i18n static %}
-{% block title %}{% if query %}{% blocktranslate with search_query=query %}“{{ search_query }}” · Search · The Caffeine Lane{% endblocktranslate %}{% else %}{% translate "Search stories · The Caffeine Lane" %}{% endif %}{% endblock title %}
+{% block title %}{% if query %}{% blocktranslate with search_query=query %}“{{ search_query }}” · Search · Caffeine Lane{% endblocktranslate %}{% else %}{% translate "Search stories · Caffeine Lane" %}{% endif %}{% endblock title %}
 {% block content %}
   <div class="editorial-page search-page">
     <header class="search-page__hero">
       <div class="editorial-container">
-        <p class="editorial-kicker text-white/80">{% translate "The Caffeine Lane · Archive" %}</p>
+        <p class="editorial-kicker text-white/80">{% translate "Caffeine Lane · Archive" %}</p>
         <h1 class="search-page__title">{% translate "Search the lane" %}</h1>
         <p class="search-page__intro">{% translate "Find builds, technical guides, reviews, and garage dispatches." %}</p>
 
@@ -20,7 +20,7 @@
               </button>
             </div>
             <div class="search-panel__actions">
-              <button id="filter-toggle-btn" class="search-filter-toggle" type="button" aria-controls="filter-section" aria-expanded="{% if selected_category_slugs or current_sort != 'relevance' %}true{% else %}false{% endif %}">
+              <button id="filter-toggle-btn" class="search-filter-toggle" type="button" aria-controls="filter-section" aria-expanded="{% if current_sort != 'relevance' %}true{% else %}false{% endif %}">
                 <i class="fa-solid fa-sliders" aria-hidden="true"></i> {% translate "Sort & Filters" %}
               </button>
               <button class="editorial-button editorial-button--solid" type="submit">
@@ -28,6 +28,10 @@
               </button>
             </div>
           </div>
+
+          {% for slug in selected_category_slugs %}
+            <input type="hidden" name="category" value="{{ slug }}">
+          {% endfor %}
 
           <!-- Category Filter Chips -->
           <div class="search-category-chips" aria-label="{% translate 'Filter by category' %}">
@@ -44,15 +48,9 @@
 
           <!-- Advanced Filter Drawer -->
           <div id="filter-section" class="search-panel__filters" data-search-filter-panel>
-            <div class="grid gap-5 sm:grid-cols-2">
-              <div>
-                <label class="search-panel__label" for="{{ form.category.id_for_label }}">{% translate "Category selection" %}</label>
-                {{ form.category }}
-              </div>
-              <div>
-                <label class="search-panel__label" for="{{ form.sort.id_for_label }}">{% translate "Sort order" %}</label>
-                {{ form.sort }}
-              </div>
+            <div class="max-w-xs">
+              <label class="search-panel__label" for="{{ form.sort.id_for_label }}">{% translate "Sort order" %}</label>
+              {{ form.sort }}
             </div>
           </div>
         </form>
@@ -113,10 +111,10 @@
               <div class="search-suggestions">
                 <p class="search-suggestions__label">{% translate "Popular workshop searches:" %}</p>
                 <div class="search-suggestions__pills">
-                  <a class="search-suggestion-pill" href="{% url 'search' %}?q=CB750"><i class="fa-solid fa-magnifying-glass text-[10px]" aria-hidden="true"></i> CB750</a>
-                  <a class="search-suggestion-pill" href="{% url 'search' %}?q=BMW+R-Series"><i class="fa-solid fa-magnifying-glass text-[10px]" aria-hidden="true"></i> BMW R-Series</a>
-                  <a class="search-suggestion-pill" href="{% url 'search' %}?q=Carb+Tuning"><i class="fa-solid fa-magnifying-glass text-[10px]" aria-hidden="true"></i> {% translate "Carb Tuning" %}</a>
-                  <a class="search-suggestion-pill" href="{% url 'search' %}?q=Cafe+Seat+Guide"><i class="fa-solid fa-magnifying-glass text-[10px]" aria-hidden="true"></i> {% translate "Cafe Seat Guide" %}</a>
+                  <a class="search-suggestion-pill" href="{% url 'search' %}?q=frenos"><i class="fa-solid fa-magnifying-glass text-[10px]" aria-hidden="true"></i> {% translate "Brakes" %}</a>
+                  <a class="search-suggestion-pill" href="{% url 'search' %}?q=neum%C3%A1ticos"><i class="fa-solid fa-magnifying-glass text-[10px]" aria-hidden="true"></i> {% translate "Tires" %}</a>
+                  <a class="search-suggestion-pill" href="{% url 'search' %}?q=cableado"><i class="fa-solid fa-magnifying-glass text-[10px]" aria-hidden="true"></i> {% translate "Wiring" %}</a>
+                  <a class="search-suggestion-pill" href="{% url 'search' %}?q=caf%C3%A9+racer"><i class="fa-solid fa-magnifying-glass text-[10px]" aria-hidden="true"></i> {% translate "Café racer" %}</a>
                 </div>
               </div>
 

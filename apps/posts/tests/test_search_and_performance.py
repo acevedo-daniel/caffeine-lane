@@ -3,6 +3,7 @@ from datetime import timedelta
 import pytest
 from django.contrib.auth.models import Permission
 from django.contrib.messages import get_messages
+from django.core.management import call_command
 from django.db import connection
 from django.test import TestCase
 from django.urls import reverse
@@ -136,12 +137,26 @@ class SearchAndListingTests(TestCase):
     def test_zero_results_renders_rider_empty_state_and_suggested_topic_pills(self):
         response = self.client.get(reverse("search"), {"q": "nonexistenttermxyz"})
         self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, 'id="id_category"')
+        self.assertContains(response, 'id="id_sort"')
         self.assertContains(response, "search-empty-card")
         self.assertContains(response, "character-searching.webp")
-        self.assertContains(response, "CB750")
-        self.assertContains(response, "BMW R-Series")
-        self.assertContains(response, "Carb Tuning")
-        self.assertContains(response, "Cafe Seat Guide")
+        self.assertContains(response, "?q=frenos")
+        self.assertContains(response, "?q=neum%C3%A1ticos")
+        self.assertContains(response, "?q=cableado")
+        self.assertContains(response, "?q=caf%C3%A9+racer")
+        self.assertContains(response, "Brakes")
+        self.assertContains(response, "Tires")
+        self.assertContains(response, "Wiring")
+        self.assertContains(response, "Café racer")
+
+    def test_suggested_search_queries_return_seeded_results(self):
+        call_command("seed_editorial")
+        for query in ("frenos", "neumáticos", "cableado", "café racer"):
+            with self.subTest(query=query):
+                response = self.client.get(reverse("search"), {"q": query})
+                self.assertEqual(response.status_code, 200)
+                self.assertGreater(len(response.context["results"]), 0)
 
     def test_search_highlighting_template_filter(self):
         from apps.posts.templatetags.post_i18n import highlight_search

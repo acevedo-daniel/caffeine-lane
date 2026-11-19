@@ -343,7 +343,9 @@ class PostSearchView(ListView):
         )
         context["all_categories"] = Category.objects.all().order_by("name")
         context["current_category"] = self.request.GET.get("category", "")
-        context["current_sort"] = self.search_form.cleaned_data.get("sort", "relevance")
+        context["current_sort"] = (
+            self.search_form.cleaned_data.get("sort") or "relevance"
+        )
         context["pagination_query"] = pagination_query.urlencode()
         context["seo_page_title"] = localized_copy(
             self.request,
