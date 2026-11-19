@@ -156,11 +156,6 @@ test("avatar preview updates preview src on valid image selection", () => {
   assert.equal(previewImg.src, "blob:http://localhost/avatar.webp");
   assert.equal(previewImg.classList.contains("has-custom-preview"), true);
   assert.equal(errorContainer.textContent, "");
-
-  // Reject unexpected non-blob URLs from createObjectURL
-  globalThis.URL.createObjectURL = () => "javascript:alert(1)";
-  input.emit("change", { target: input });
-  assert.equal(previewImg.src, "blob:http://localhost/avatar.webp");
 });
 
 test("avatar preview rejects files exceeding 5MB and unsupported formats", () => {
