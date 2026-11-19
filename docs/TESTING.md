@@ -100,8 +100,12 @@ pnpm run build
 pnpm run test:e2e
 ~~~~
 
-The Playwright configuration starts Django automatically and uses the active
-local database unless E2E_DATABASE_URL is provided.
+The Playwright configuration starts Django automatically. Because the suite
+creates users and comments, it never uses DATABASE_URL: it uses
+E2E_DATABASE_URL, or the isolated SQLite file tmp/e2e.sqlite3 when that
+variable is unset. scripts/prepare-e2e.mjs migrates that database, seeds the
+editorial dataset when it is missing, and creates the E2E accounts. Any
+E2E_DATABASE_URL that is not SQLite or a local PostgreSQL database is refused.
 
 ## CI and quality gates
 

@@ -84,7 +84,7 @@ class ContentImportTests(TestCase):
         call_command("seed_editorial")
 
         post = Post.objects.get(slug="cafe-racer-de-garaje")
-        self.assertEqual(post.build_specs["donor"], "1978 Honda CB750 Four")
+        self.assertEqual(post.build_specs["donor"], "1957 Norton ES2")
         self.assertEqual(
             Post.objects.get(slug="frenos-antes-de-potencia").build_specs["donor"],
             "Yamaha SR500",
@@ -99,7 +99,7 @@ class ContentImportTests(TestCase):
         call_command("seed_editorial")
 
         post.refresh_from_db()
-        self.assertEqual(post.build_specs["donor"], "1978 Honda CB750 Four")
+        self.assertEqual(post.build_specs["donor"], "1957 Norton ES2")
         self.assertEqual(post.featured_image.name, image_name)
         self.assertEqual(Post.objects.filter(slug="cafe-racer-de-garaje").count(), 1)
 
