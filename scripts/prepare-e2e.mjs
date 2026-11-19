@@ -2,11 +2,15 @@ import { spawnSync } from "node:child_process";
 
 const databaseUrl = process.env.E2E_DATABASE_URL || process.env.DATABASE_URL;
 const command = [
-  "from apps.accounts.models import User; from apps.posts.models import Comment, Post; " +
+  "from django.contrib.auth.models import Permission; " +
+    "from apps.accounts.models import User; from apps.posts.models import Comment, Post; " +
     "user, _ = User.objects.get_or_create(email='e2e-rider@example.test', defaults={'username': 'e2e-rider', 'display_name': 'E2E Rider'}); " +
     "user.set_password('e2e-rider-password'); user.save(); " +
     "post = Post.objects.get(slug='cafe-racer-de-garaje'); " +
-    "Comment.objects.get_or_create(post=post, author=user, content='E2E smoke comment')",
+    "Comment.objects.get_or_create(post=post, author=user, content='E2E smoke comment'); " +
+    "editor, _ = User.objects.get_or_create(email='e2e-editor@example.test', defaults={'username': 'e2e-editor', 'display_name': 'E2E Editor'}); " +
+    "editor.set_password('e2e-editor-password'); editor.is_staff = True; editor.save(); " +
+    "editor.user_permissions.add(Permission.objects.get(codename='delete_post', content_type__app_label='posts'))",
 ];
 
 const result = spawnSync(
