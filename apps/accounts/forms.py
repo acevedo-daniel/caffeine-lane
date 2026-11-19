@@ -38,6 +38,7 @@ class RegistrationStep2Form(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
         fields = ("username", "display_name", "has_motorcycle", "avatar")
+        labels = {"display_name": _("Display name")}
 
     def validate_registration_email(self, email):
         if User.objects.filter(email__iexact=email).exists():
@@ -72,6 +73,13 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ["display_name", "bio", "avatar", "personal_url", "has_motorcycle"]
+        labels = {
+            "display_name": _("Display name"),
+            "bio": _("Bio"),
+            "avatar": _("Profile picture (optional)"),
+            "personal_url": _("Personal website"),
+            "has_motorcycle": _("I ride a motorcycle"),
+        }
         widgets = {
             "bio": forms.Textarea(attrs={"rows": 3}),
             "has_motorcycle": forms.CheckboxInput(),

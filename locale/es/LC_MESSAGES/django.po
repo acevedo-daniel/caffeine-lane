@@ -1845,10 +1845,6 @@ msgstr "Cableado"
 msgid "Café racer"
 msgstr "Café racer"
 
-#: .\apps\posts\templates\posts\search_results.html:125
-msgid "Reset all filters"
-msgstr "Restablecer todos los filtros"
-
 #: .\apps\posts\templates\posts\search_results.html:128
 msgid "Return to magazine"
 msgstr "Volver a la revista"
@@ -2180,3 +2176,19 @@ msgstr "Se crearon demasiadas cuentas desde esta conexión. Intentá de nuevo m�
 #: apps/posts/views.py
 msgid "You are commenting too quickly. Please wait a few minutes."
 msgstr "Estás comentando demasiado rápido. Esperá unos minutos."
+
+#: apps/accounts/forms.py
+msgid "Display name"
+msgstr "Nombre visible"
+
+#: apps/accounts/forms.py
+msgid "Bio"
+msgstr "Biografía"
+
+#: apps/accounts/forms.py
+msgid "Personal website"
+msgstr "Sitio personal"
+
+#: apps/accounts/forms.py
+msgid "I ride a motorcycle"
+msgstr "Ando en moto"
