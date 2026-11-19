@@ -4,7 +4,7 @@
 
 ## Summary
 
-Caffeine Lane is an unapologetically server-rendered Django application.
+Caffeine Lane is a server-rendered Django application.
 
 Django handles routing, authentication, forms and validation, persistence, editorial publishing, community discussions, internationalization, and template rendering within a single cohesive boundary. A lean Node.js/pnpm pipeline compiles Tailwind CSS and vanilla JavaScript modules into static assets served directly from Vercel's global CDN. In production, Django runs as a managed WSGI function connected to PostgreSQL on Neon.
 
@@ -19,7 +19,7 @@ Browser -> Vercel CDN / Django function
 
 | Component | Owns | Boundary |
 | --- | --- | --- |
-| `apps/core` | Landing/home surfaces, contact flow, image validation, CSP reporting, health endpoints | Does not own accounts or editorial domain models |
+| `apps/core` | Landing/home surfaces, contact flow, image validation, shared rate limiting, CSP reporting, health endpoints | Does not own accounts or editorial domain models |
 | `apps/accounts` | Custom user model, authentication, registration, profiles, password flows | Does not own post/comment behavior |
 | `apps/posts` | Categories, posts, publishing behavior, search, comments, and moderation | Uses Django's user/permission boundary rather than owning authentication |
 | `config/settings` | Base, local, test, and production configuration | Does not own application business behavior |
@@ -82,7 +82,8 @@ Caffeine Lane relies on Django's session authentication and permission system:
 
 - Secure session and CSRF cookies in production.
 - HTTPS redirect and configurable HSTS.
-- Content Security Policy (CSP) supporting report-only or enforced modes.
+- An enforced Content Security Policy in production through Django's `ContentSecurityPolicyMiddleware`: scripts load only from the site itself or carry the per-request `csp_nonce`, images come from the site or Cloudinary, and fonts and styles also allow Google Fonts. Violations are posted to `/csp-report/`. `CSP_ENFORCE=false` keeps reporting violations but stops blocking them.
+- Rate limits on sign-in, registration, comments, and contact through `apps/core/rate_limit.py`, keyed by client IP address or, for comments, by user. Counters live in Django's cache.
 - Restricted production hosts and trusted CSRF origins.
 - Argon2 as the prioritized password hasher in production.
 - Provider credentials injected via environment variables rather than committed to source control.
@@ -98,15 +99,19 @@ Tests use an isolated configuration: in-memory SQLite by default, or the explici
 Core persistent entities:
 - **`accounts.User`:** Custom user model with unique email authentication.
 - **`posts.Category`:** Editorial taxonomy records.
-- **`posts.Post`:** Draft/published editorial articles with categories and media metadata.
+- **`posts.Post`:** Draft/published editorial articles with categories, media metadata, and an optional `build_specs` JSON object. Build specs are post data validated by the model against a fixed key list, edited in the Django Admin, and rendered as the article's spec sheet.
 - **`posts.Comment`:** Discussion records with explicit visibility and optional one-level parent relations.
 
 Django migrations are the single source of truth for the database schema.
 
+### Cache
+
+Production uses Django's `DatabaseCache` in the `django_cache` table, so rate-limit counters are shared by every serverless instance. The release scripts, and the Docker entrypoint when `RUN_MIGRATIONS_ON_START=true`, create the table with `createcachetable`. Local development and tests use Django's default in-memory cache.
+
 ### Search architecture
 
 Search behavior adapts to the active database backend:
-- **PostgreSQL:** Published content uses weighted full-text search (`SearchVector`, `SearchQuery`, `SearchRank`) across title (weight A), excerpt (weight B), and content (weight C).
+- **PostgreSQL:** Published content uses weighted full-text search (`SearchVector`, `SearchQuery` with `websearch` syntax, `SearchRank`) across title (weight A), excerpt (weight B), and content (weight C). Vectors and queries use the `spanish` text search configuration, so Spanish stemming applies and stop words such as "de" match nothing.
 - **SQLite fallback:** Falls back to case-insensitive substring matching (`icontains`) across title, excerpt, and content, keeping offline development functional without emulating full-text search.
 
 ## Hosted topology

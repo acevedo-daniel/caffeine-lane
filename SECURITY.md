@@ -13,7 +13,7 @@ Do not open a public issue for a security vulnerability. Report it privately thr
 
 ## Response expectations
 
-Reports are reviewed on a best-effort basis and handled privately until a fix or mitigation is available.
+Reports are reviewed as the maintainer's time allows and handled privately until a fix or mitigation is available.
 
 ## Supported versions
 
