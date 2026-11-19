@@ -68,8 +68,8 @@ Do not replace the Install Command with `pnpm install` alone: a custom install c
 | `DJANGO_SETTINGS_MODULE` | Vercel runtime | Must be set to `config.settings.production`. |
 | `SECRET_KEY` | Vercel runtime | Unique Django cryptographic secret. |
 | `DATABASE_URL` | Vercel runtime | Neon **pooled** connection string used by the web runtime. |
-| `ALLOWED_HOSTS` | Vercel runtime | Production and preview hostnames, comma-separated. |
-| `CSRF_TRUSTED_ORIGINS` | Vercel runtime | HTTPS production and preview origins, comma-separated. |
+| `ALLOWED_HOSTS` | Vercel runtime | Production hostnames, comma-separated. |
+| `CSRF_TRUSTED_ORIGINS` | Vercel runtime | HTTPS production origins, comma-separated. |
 | `PUBLIC_SITE_URL` | Vercel runtime | Canonical, sitemap, and social-card base URL; set production to `https://caffeine-lane.vercel.app`. |
 | `CLOUDINARY_URL` | Vercel runtime | Cloudinary storage credentials. |
 | `RESEND_API_KEY` | Vercel runtime | Resend API credential. |
@@ -85,7 +85,7 @@ Do not replace the Install Command with `pnpm install` alone: a custom install c
 
 Do **not** add `DIRECT_DATABASE_URL` to the Vercel runtime. It is only used by a controlled release command from a trusted terminal or release runner.
 
-Vercel builds a Preview deployment for every pull request, behind Vercel deployment protection. The Preview environment must not hold the production `DATABASE_URL`, `CLOUDINARY_URL`, `RESEND_API_KEY`, or `SECRET_KEY`. If previews cannot run without production credentials, disable preview builds with this Ignored Build Step; CI already validates every pull request:
+Runtime environment variables are scoped strictly to Production so no Preview deployment can reach production data or providers (`DATABASE_URL`, `CLOUDINARY_URL`, `RESEND_API_KEY`, and `SECRET_KEY`). Preview builds are disabled in Vercel with this Ignored Build Step, and GitHub Actions CI validates every pull request:
 
 ```bash
 if [ "$VERCEL_ENV" = "production" ]; then exit 1; else exit 0; fi
