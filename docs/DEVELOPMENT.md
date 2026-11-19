@@ -51,6 +51,11 @@ On Windows PowerShell, use `Copy-Item .env.example .env`.
 | `DEFAULT_FROM_EMAIL` | No | Sender address used by local console email flow. |
 | `CONTACT_RECIPIENT_EMAIL` | No | Recipient address when testing contact submissions. |
 | `PASSWORD_RESET_ENABLED` | No | Controls whether password-reset UI and routes are enabled. |
+| `CONTACT_RATE_LIMIT` / `CONTACT_RATE_LIMIT_WINDOW` | No | Contact messages per IP address and window in seconds; defaults `5` / `3600`. |
+| `AUTH_RATE_LIMIT` / `AUTH_RATE_LIMIT_WINDOW` | No | Sign-in attempts per IP address and window in seconds; defaults `10` / `900`. |
+| `REGISTRATION_RATE_LIMIT` / `REGISTRATION_RATE_LIMIT_WINDOW` | No | Final registration step submissions per IP address and window in seconds; defaults `5` / `3600`. |
+| `COMMENT_RATE_LIMIT` / `COMMENT_RATE_LIMIT_WINDOW` | No | Comment and reply submissions per user and window in seconds; defaults `10` / `600`. |
+| `CSP_ENFORCE` | No | Read only by production settings, which enforce CSP unless this is `false`. Local settings send no CSP header. |
 
 Never include real secrets.
 
@@ -77,12 +82,14 @@ The local email backend writes messages directly to the Django server log. Uploa
 
 Password recovery is disabled by default in local and production-like environments unless `PASSWORD_RESET_ENABLED=true` is explicitly configured. Do not enable it for a hosted environment until the Resend sender domain is verified and delivery has been tested.
 
-The contact form requires CSRF, rejects the hidden honeypot field, limits each input length, and permits five submissions per hour by default. The rate limit uses Django's configured cache and is intentionally a basic best-effort guard in serverless deployments.
+The contact form requires CSRF, rejects the hidden honeypot field, and limits each input length. Contact, sign-in, registration, and comment submissions are rate limited through Django's cache; locally the in-memory cache resets when the server restarts. The defaults are listed in the environment table above.
 
 ## Commands
 
 | Task | Command | Purpose |
 | --- | --- | --- |
+| Verify (mirrors CI Gate) | `.\scripts\verify.ps1` | Reproduce the CI Gate jobs on Windows: the fast check against PostgreSQL 18, Playwright E2E on an isolated SQLite database, production settings checks, and a Docker image build. |
+| Fast check (Windows) | `.\scripts\check.ps1` | Run Ruff, Django and migration checks, Python tests, the asset build, and frontend tests. |
 | Start database | `docker compose up -d db` | Start local PostgreSQL 18 in background. |
 | Stop database | `docker compose down` | Stop Compose services while preserving database volume. |
 | Install Python deps | `uv sync --locked` | Install locked Python environment dependencies. |
@@ -135,15 +142,7 @@ The editorial seed populates a curated Spanish-language content set used for loc
 
 Vercel deployments never seed automatically. Docker startup executes `seed_editorial` only when `SEED_EDITORIAL_ON_START=true` is explicitly provided.
 
-### Vercel build contract
-
-Vercel installs the Python environment from `pyproject.toml` and `uv.lock` automatically. Keep the Vercel project **Install Command** at its default. Because the repository also needs pnpm dependencies for Tailwind and the JavaScript asset copy, use this Vercel **Build Command**:
-
-```bash
-pnpm install --frozen-lockfile --prod=false && pnpm run build
-```
-
-The repository's `pyproject.toml` build hook remains `pnpm run build` for CI. If the Vercel build reports `ModuleNotFoundError: No module named 'django'`, remove the custom pnpm-only Install Command and redeploy so Vercel can restore the Python installation.
+Hosted builds are configured as described in [Deployment › Vercel web runtime](DEPLOYMENT.md#vercel-web-runtime).
 
 ## Generated frontend assets
 

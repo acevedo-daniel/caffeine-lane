@@ -29,16 +29,22 @@ The live application is [caffeine-lane.vercel.app](https://caffeine-lane.vercel.
 
 ```text
 Pull request
--> GitHub Actions CI
--> Vercel preview (no production migrations)
--> Review preview
--> Merge to main
--> Explicit Neon release command (direct connection)
+-> GitHub Actions CI Gate green
+-> Release command from the pull request branch (direct connection; additive migrations and createcachetable)
+-> Squash merge to main
 -> Vercel production deployment
 -> Health and user-flow verification
 ```
 
+Vercel deploys production as soon as a pull request merges, so the release command runs first, from the pull request branch. That order is safe only because migrations stay additive: the schema they create must also work with the code currently in production. Pull requests without migrations skip the release command.
+
 Schema changes are deliberately outside the Vercel build. A preview must never alter the production Neon database.
+
+## Rollback
+
+- **Application:** In the Vercel dashboard, redeploy or promote the previous production deployment. This takes seconds and needs no Git change.
+- **Database:** Migrations and seeded data are not rolled back. Keep schema changes additive so the previous deployment still runs against the newer schema.
+- **Content Security Policy:** Set `CSP_ENFORCE=false` in the Vercel production environment and redeploy; violations are still reported but no longer blocked, without a code change.
 
 ## Vercel web runtime
 
@@ -71,14 +77,19 @@ Do not replace the Install Command with `pnpm install` alone: a custom install c
 | `CONTACT_RECIPIENT_EMAIL` | Vercel runtime | Recipient for contact submissions. |
 | `PASSWORD_RESET_ENABLED` | Vercel runtime | Keep `false` until a verified Resend sending domain is configured. |
 | `USE_X_FORWARDED_PROTO` | Vercel runtime | Must be `true` behind Vercel's HTTPS proxy. |
-| `CSP_ENFORCE` | Vercel runtime | Start with `false`; enable after CSP reports are reviewed. |
+| `CSP_ENFORCE` | Vercel runtime | Leave unset or `true` to enforce CSP (the default); `false` is the rollback that reports violations without blocking them. |
+| `*_RATE_LIMIT` / `*_RATE_LIMIT_WINDOW` | Vercel runtime | Optional overrides for the contact, sign-in, registration, and comment limits; names and defaults are in [Development › Local environment](DEVELOPMENT.md#local-environment). |
 | `SECURE_HSTS_SECONDS` | Vercel runtime | Positive duration after the production domain is stable. |
 | `SECURE_HSTS_INCLUDE_SUBDOMAINS` | Vercel runtime | Enable only when every subdomain is HTTPS-ready. |
 | `SECURE_HSTS_PRELOAD` | Vercel runtime | Enable only after an intentional preload decision. |
 
 Do **not** add `DIRECT_DATABASE_URL` to the Vercel runtime. It is only used by a controlled release command from a trusted terminal or release runner.
 
-Preview deployments need an isolated Neon branch/database and their own `DATABASE_URL`, `ALLOWED_HOSTS`, and `CSRF_TRUSTED_ORIGINS`. Until that branch integration is configured, keep previews read-only or use no database-backed preview paths.
+Vercel builds a Preview deployment for every pull request, behind Vercel deployment protection. The Preview environment must not hold the production `DATABASE_URL`, `CLOUDINARY_URL`, `RESEND_API_KEY`, or `SECRET_KEY`. If previews cannot run without production credentials, disable preview builds with this Ignored Build Step; CI already validates every pull request:
+
+```bash
+if [ "$VERCEL_ENV" = "production" ]; then exit 1; else exit 0; fi
+```
 
 ### Resend boundary
 
@@ -86,7 +97,7 @@ Production settings require the Resend configuration because the production emai
 
 The contact flow must report a delivery failure instead of showing success when Resend rejects or cannot deliver a message. Exercise that failure path in tests and use Resend's [safe test recipients](https://resend.com/docs/dashboard/emails/send-test-emails) for controlled delivery checks.
 
-Contact protection combines CSRF, a hidden honeypot field, input length limits, and an IP-based rate limit. The default limit is five submissions per hour (`CONTACT_RATE_LIMIT=5`, `CONTACT_RATE_LIMIT_WINDOW=3600`). Vercel's default cache is not a shared distributed limiter, so this is a basic best-effort protection; introduce shared rate limiting only if real abuse requires it.
+Contact protection combines CSRF, a hidden honeypot field, input length limits, and an IP-based rate limit. Production keeps rate-limit counters in the `django_cache` database table, which every Vercel function instance shares; the release command creates it with `createcachetable`.
 
 ### Public metadata boundary
 
@@ -139,7 +150,10 @@ pnpm install --frozen-lockfile --prod=false
 pnpm run build
 pnpm test
 pnpm run test:e2e
+docker build -t caffeine-lane-local-check .
 ```
+
+`check --deploy` needs the production environment variables. On Windows, `.\scripts\verify.ps1` runs this sequence with safe placeholder values and an isolated E2E database.
 
 After deployment, verify:
 

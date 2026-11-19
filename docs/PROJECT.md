@@ -70,6 +70,7 @@ Reader authenticates -> Submits comment on published post
 - Public post listings and article detail pages expose only posts in `PUBLISHED` state with a valid publication timestamp.
 - The slugs `search` and `new` are reserved for application routes and cannot be used by posts.
 - A post with a visible featured image requires alternative text.
+- A post may store an optional build spec sheet. Its keys are limited to `donor`, `displacement`, `frame`, `carburetor`, `suspension`, `front_brake`, `rear_brake`, `electrical`, `seat`, `cockpit`, and `exhaust`; every value must be a non-empty string. The article page shows only the keys that have values, in that order.
 - Uploaded images are validated before persistence (accepted formats: JPEG, PNG, WebP, with enforced dimension and file-size limits).
 - A comment reply must belong to the same post as its parent.
 - Comment nesting is strictly limited to one reply level (replies to replies are rejected).
@@ -77,6 +78,8 @@ Reader authenticates -> Submits comment on published post
 - An author may withdraw their own comment; hiding requires the `posts.moderate_comment` permission.
 - Repeated identical comments from the same author on the same post are temporarily rejected to prevent duplicate submissions.
 - Email is globally unique and serves as the single authentication identifier.
+- Public forms are rate limited. By default, sign-in allows 10 attempts per IP address every 15 minutes, the final registration step allows 5 submissions per IP address per hour, and comments and replies allow 10 submissions per user every 10 minutes. Exceeding the sign-in or registration limit returns HTTP 429; exceeding the comment limit rejects the submission with a message.
+- The contact form allows 5 valid messages per IP address per hour by default.
 
 ## Current limitations
 

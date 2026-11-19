@@ -9,6 +9,8 @@ Caffeine Lane publishes long-form motorcycle build logs with technical specs, wo
 **[Open the live demo](https://caffeine-lane.vercel.app/)**
 
 > [!NOTE]
+> Caffeine Lane is feature-complete. The live demo stays online, and the repository receives dependency and security updates only. No new features are planned.
+>
 > The live demo keeps password recovery disabled by default. Until a custom domain is verified in Resend, outbound transactional emails are restricted to sandbox recipients.
 
 ## Screenshots
@@ -29,9 +31,10 @@ Caffeine Lane publishes long-form motorcycle build logs with technical specs, wo
 
 ## Key capabilities
 
-- **Editorial publishing:** Build logs, workshop guides, and reviews organized in three categories (`builds`, `guides`, `reviews`), with validated image uploads and motorcycle spec sheets.
-- **Search:** Weighted PostgreSQL full-text search ranked by relevance, with category filters that persist across pagination.
+- **Editorial publishing:** Build logs, workshop guides, and reviews organized in three categories (`builds`, `guides`, `reviews`), with validated image uploads and a per-post build spec sheet stored with each article.
+- **Search:** Weighted PostgreSQL full-text search with the Spanish text configuration, ranked by relevance, with category filters that persist across pagination.
 - **Reader community:** Email-based accounts, rider profiles with avatars, and comment threads limited to one reply level so discussions stay readable.
+- **Hardened public forms:** Rate-limited sign-in, registration, comments, and contact, plus an enforced Content Security Policy with per-request nonces.
 - **Bilingual interface:** Spanish and English through Django's gettext translations.
 - **Reading experience:** A reading progress indicator and dark mode that follows the system preference, without a client-side framework.
 
@@ -68,15 +71,18 @@ Django owns routing, authentication, form validation, business rules, and templa
 | `apps/accounts` | Custom user model, authentication, registration, profiles, and password flows. |
 | `apps/core` | Landing/home surfaces, contact flow, image validation, and health endpoints. |
 | `apps/posts` | Editorial content, taxonomy, search, comments, moderation, and publishing behavior. |
+| `assets/` | Editorial and brand source images. |
 | `config/settings` | Base, local, test, and production Django settings. |
 | `docker/` | Production container startup and migration orchestration. |
+| `locale/` | Spanish translations. |
+| `scripts/` | Build, E2E, screenshot, verification, and release scripts. |
 | `static/` | Authored frontend source and compiled distribution assets. |
 | `templates/` | Shared server-rendered layouts and page templates. |
 | `tests/` | Frontend asset tests and Playwright browser tests. |
 
 ## Local development
 
-Prerequisites: Python 3.14+, uv, Node.js 22, pnpm 10, and Docker Compose.
+Prerequisites: Python 3.14, uv, Node.js 22, pnpm 10, and Docker Compose.
 
 ```bash
 # 1. Setup environment and database container

@@ -58,6 +58,9 @@ const context = await browser.newContext({
 const page = await context.newPage();
 
 try {
+  await visit(page, "/home/");
+  await capture(page, "public-home.png");
+
   await visit(page, "/");
   await capture(page, "public-landing.png");
 
