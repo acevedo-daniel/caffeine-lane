@@ -1686,7 +1686,13 @@
     height: 100%;
     object-fit: cover;
     scale: var(--character-scale);
-    translate: var(--character-shift-x) var(--character-shift-y);
+    /* The opaque source must always cover the circle: a shift may not exceed the
+       overflow its scale creates on each side, or the badge background shows as a
+       flat crescent at the edge. 1px of overlap absorbs subpixel rounding. */
+    --character-max-shift: calc((var(--character-scale) - 1) * 50% - 1px);
+    translate:
+      clamp(calc(-1 * var(--character-max-shift)), var(--character-shift-x), var(--character-max-shift))
+      clamp(calc(-1 * var(--character-max-shift)), var(--character-shift-y), var(--character-max-shift));
     transform-origin: center;
   }
 
