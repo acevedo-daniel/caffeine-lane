@@ -15,30 +15,40 @@ const ROUTES = [
   "/404/",
 ];
 
-// Routes that only render for a signed-in reader (user seeded by prepare-e2e.mjs).
-const SIGNED_IN_ROUTES = ["/accounts/profile/"];
+// Accounts seeded by scripts/prepare-e2e.mjs.
+const ACCOUNTS = {
+  reader: ["e2e-rider@example.test", "e2e-rider-password"],
+  editor: ["e2e-editor@example.test", "e2e-editor-password"],
+};
+
+// Routes that only render for a signed-in account.
+const SIGNED_IN_ROUTES = [
+  { route: "/accounts/profile/", account: "reader" },
+  { route: "/posts/cafe-racer-de-garaje/delete/", account: "editor" },
+];
 
 const CASES = [
-  ...ROUTES.map((route) => ({ route, signedIn: false })),
-  ...SIGNED_IN_ROUTES.map((route) => ({ route, signedIn: true })),
+  ...ROUTES.map((route) => ({ route, account: null })),
+  ...SIGNED_IN_ROUTES,
 ];
 
 const THEMES = ["light", "dark"];
 
 test.describe("WCAG AA text contrast", () => {
   for (const theme of THEMES) {
-    for (const { route, signedIn } of CASES) {
-      const label = signedIn ? `${route} (${theme}, signed in)` : `${route} (${theme})`;
+    for (const { route, account } of CASES) {
+      const label = account ? `${route} (${theme}, signed in as ${account})` : `${route} (${theme})`;
       test(label, async ({ page }) => {
         await page.setViewportSize({ width: 1440, height: 900 });
         await page.addInitScript((selectedTheme) => {
           localStorage.setItem("caffeine_lane_theme", selectedTheme);
         }, theme);
 
-        if (signedIn) {
+        if (account) {
+          const [email, password] = ACCOUNTS[account];
           await page.goto("/accounts/login/");
-          await page.locator("#id_username").fill("e2e-rider@example.test");
-          await page.locator("#id_password").fill("e2e-rider-password");
+          await page.locator("#id_username").fill(email);
+          await page.locator("#id_password").fill(password);
           await page.locator("form button[type=submit]").click();
           await page.waitForURL((url) => !url.pathname.startsWith("/accounts/login/"));
         }
