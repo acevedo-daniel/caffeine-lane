@@ -15,16 +15,33 @@ const ROUTES = [
   "/404/",
 ];
 
+// Routes that only render for a signed-in reader (user seeded by prepare-e2e.mjs).
+const SIGNED_IN_ROUTES = ["/accounts/profile/"];
+
+const CASES = [
+  ...ROUTES.map((route) => ({ route, signedIn: false })),
+  ...SIGNED_IN_ROUTES.map((route) => ({ route, signedIn: true })),
+];
+
 const THEMES = ["light", "dark"];
 
 test.describe("WCAG AA text contrast", () => {
   for (const theme of THEMES) {
-    for (const route of ROUTES) {
-      test(`${route} (${theme})`, async ({ page }) => {
+    for (const { route, signedIn } of CASES) {
+      const label = signedIn ? `${route} (${theme}, signed in)` : `${route} (${theme})`;
+      test(label, async ({ page }) => {
         await page.setViewportSize({ width: 1440, height: 900 });
         await page.addInitScript((selectedTheme) => {
           localStorage.setItem("caffeine_lane_theme", selectedTheme);
         }, theme);
+
+        if (signedIn) {
+          await page.goto("/accounts/login/");
+          await page.locator("#id_username").fill("e2e-rider@example.test");
+          await page.locator("#id_password").fill("e2e-rider-password");
+          await page.locator("form button[type=submit]").click();
+          await page.waitForURL((url) => !url.pathname.startsWith("/accounts/login/"));
+        }
 
         await page.goto(route);
         await page.evaluate(() => document.fonts.ready);
@@ -236,7 +253,7 @@ test.describe("WCAG AA text contrast", () => {
 
         expect(
           failures,
-          `${route} (${theme}) contrast failures:\n${failures.join("\n")}`,
+          `${label} contrast failures:\n${failures.join("\n")}`,
         ).toEqual([]);
       });
     }

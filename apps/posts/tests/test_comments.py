@@ -306,3 +306,26 @@ class CommentModerationTests(TestCase):
         self.assertFalse(
             Comment.objects.filter(content="Segundo comentario bloqueado").exists()
         )
+
+    def test_visitor_with_zero_comments_sees_single_sign_in_cta(self):
+        post_url = self.post.get_absolute_url()
+        login_href = f"{reverse('login')}?next={post_url}"
+
+        response = self.client.get(post_url)
+        html = response.content.decode("utf-8")
+        comments_section = html.split("post-detail__section--comments", 1)[1]
+
+        self.assertEqual(comments_section.count(login_href), 1)
+        self.assertIn("Start the conversation.", comments_section)
+        self.assertNotIn("Got something to add?", comments_section)
+
+    def test_signed_in_reader_with_zero_comments_sees_composer_inside_empty_card(self):
+        self.client.force_login(self.author)
+        response = self.client.get(self.post.get_absolute_url())
+        html = response.content.decode("utf-8")
+        comments_section = html.split("post-detail__section--comments", 1)[1]
+
+        self.assertIn("Start the conversation.", comments_section)
+        self.assertIn('class="comment-compose"', comments_section)
+        self.assertNotIn("Got something to add?", comments_section)
+        self.assertNotIn("Sign in to comment", comments_section)

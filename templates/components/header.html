@@ -12,8 +12,8 @@
       </a>
     </div>
 
-    <!-- Center Navigation: Desktop Editorial Categories (>= 1024px) -->
-    <nav class="site-header__nav hidden lg:flex" aria-label="{% translate 'Primary navigation' %}">
+    <!-- Center Navigation: Desktop Editorial Categories (>= 1280px) -->
+    <nav class="site-header__nav hidden xl:flex" aria-label="{% translate 'Primary navigation' %}">
       <a class="site-header__nav-link{% if request.resolver_match.url_name == 'home' %} is-active{% endif %}" href="{% url 'home' %}">{% translate "Home" %}</a>
       {% for category in navigation_categories %}
         <a class="site-header__nav-link{% if current_category.slug == category.slug %} is-active{% endif %}" href="{% url 'category_view' category_slug=category.slug %}">{{ category|localized_category }}</a>
@@ -23,7 +23,7 @@
     </nav>
 
     <!-- Right Actions: Desktop Search, Language, Auth -->
-    <div class="site-header__actions hidden lg:flex items-center gap-4">
+    <div class="site-header__actions hidden xl:flex items-center gap-3">
       <!-- Search Trigger Button -->
       <a href="{% url 'search' %}" class="site-header__search-trigger" aria-label="{% translate 'Search posts' %}">
         <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
@@ -76,8 +76,8 @@
       </div>
     </div>
 
-    <!-- Mobile Header Controls (< 1024px) -->
-    <div class="flex items-center gap-2 lg:hidden">
+    <!-- Mobile Header Controls (< 1280px) -->
+    <div class="flex items-center gap-2 xl:hidden">
       <a href="{% url 'search' %}" class="site-header__mobile-search-btn" aria-label="{% translate 'Search posts' %}">
         <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
       </a>

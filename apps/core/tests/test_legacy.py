@@ -22,6 +22,18 @@ class LegacyCoreCharacterizationTests(TestCase):
                 response = self.client.get(reverse(name))
                 self.assertEqual(response.status_code, 200)
 
+    def test_landing_shows_published_post_count_without_invented_metrics(self):
+        PostFactory.create_batch(4)
+
+        response = self.client.get(reverse("landing"))
+
+        self.assertEqual(response.context["total_posts"], 4)
+        self.assertContains(
+            response, '<span class="landing-community__metric-val">4</span>', html=True
+        )
+        self.assertNotContains(response, "1,000+")
+        self.assertNotContains(response, "Weekly")
+
     def test_health_endpoint_is_available_without_database_queries(self):
         with self.assertNumQueries(0):
             response = self.client.get(reverse("healthz"))

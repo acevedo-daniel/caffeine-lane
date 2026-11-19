@@ -1,6 +1,6 @@
 {% extends "layouts/account.html" %}
 {% load i18n static %}
-{% block title %}{% translate "Your profile · The Caffeine Lane" %}{% endblock title %}
+{% block title %}{% translate "Your profile · Caffeine Lane" %}{% endblock title %}
 {% block account_title %}{% translate "Your profile." %}{% endblock account_title %}
 {% block account_intro %}{% translate "Set the details that ride with your name, from the garage to every conversation ahead." %}{% endblock account_intro %}
 {% block account_panel %}
@@ -78,7 +78,7 @@
                 {{ comment.post.title }} <i class="fa-solid fa-arrow-up-right-from-square text-[10px]" aria-hidden="true"></i>
               </a>
               <time class="profile-comment-item__date" datetime="{{ comment.created_at|date:'Y-m-d\TH:i:s' }}">
-                {{ comment.created_at|date:"M j, Y · H:i" }}
+                {{ comment.created_at|date:"DATE_FORMAT" }} · {{ comment.created_at|time:"TIME_FORMAT" }}
               </time>
             </div>
             <p class="profile-comment-item__content">{{ comment.content|truncatechars:180 }}</p>

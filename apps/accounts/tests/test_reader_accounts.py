@@ -153,6 +153,18 @@ class ReaderAccountTests(TestCase):
         self.assertContains(response, "Enthusiast & Project Builder")
         self.assertContains(response, "No comments posted yet")
 
+    def test_profile_form_labels_are_translated_to_spanish(self):
+        self.client.force_login(self.user)
+        self.client.cookies.load({"django_language": "es"})
+
+        response = self.client.get(reverse("profile"))
+
+        self.assertEqual(response.status_code, 200)
+        for label in ("Nombre visible", "Biografía", "Sitio personal", "Ando en moto"):
+            self.assertContains(response, label)
+        for untranslated in ("Display name", "Personal url", "Has motorcycle"):
+            self.assertNotContains(response, untranslated)
+
     def test_simulated_error_pages_render_rider_oops_in_xl_bezel(self):
         for status_code, url, kicker in [
             (400, "/400/", "400 · Request misfire"),

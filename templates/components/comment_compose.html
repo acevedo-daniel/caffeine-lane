@@ -1,0 +1,9 @@
+{% load i18n %}
+<form method="post" class="comment-compose" novalidate>
+  {% csrf_token %}
+  {{ form.website }}
+  <label class="comment-compose__label" for="{{ form.content.id_for_label }}">{% translate "Add to the conversation" %}</label>
+  <div class="mt-2">{{ form.content }}</div>
+  {% for error in form.content.errors %}<p class="form-error" role="alert">{{ error }}</p>{% endfor %}
+  <button class="button-primary mt-4" type="submit">{% translate "Post comment" %}</button>
+</form>

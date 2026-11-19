@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load i18n post_i18n %}
-{% block title %}{% blocktranslate with category_name=category|localized_category %}{{ category_name }} · The Caffeine Lane{% endblocktranslate %}{% endblock title %}
+{% block title %}{% blocktranslate with category_name=category|localized_category %}{{ category_name }} · Caffeine Lane{% endblocktranslate %}{% endblock title %}
 {% block content %}
   <section class="category-hero" aria-labelledby="category-title">
     {% if category.image %}

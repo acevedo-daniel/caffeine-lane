@@ -22,7 +22,8 @@ class PublicMetadataTests(TestCase):
         )
         self.assertContains(response, 'type="application/ld+json"')
         self.assertContains(response, '"@type": "WebSite"')
-        self.assertContains(response, "images/favicon.svg")
+        self.assertContains(response, "images/favicon.ico")
+        self.assertContains(response, "images/apple-touch-icon.png")
         self.assertContains(response, "images/site.webmanifest")
 
     def test_article_metadata_has_article_schema(self):
