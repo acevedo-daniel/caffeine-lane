@@ -21,10 +21,11 @@ const seedFixtures =
   "user, _ = User.objects.get_or_create(email='e2e-rider@example.test', defaults={'username': 'e2e-rider', 'display_name': 'E2E Rider'}); " +
   "user.set_password('e2e-rider-password'); user.save(); " +
   "post = Post.objects.get(slug='cafe-racer-de-garaje'); " +
-  "Comment.objects.get_or_create(post=post, author=user, content='E2E smoke comment'); " +
+  "comment, _ = Comment.objects.get_or_create(post=post, author=user, parent=None, defaults={'content': 'E2E smoke comment'}); " +
   "editor, _ = User.objects.get_or_create(email='e2e-editor@example.test', defaults={'username': 'e2e-editor', 'display_name': 'E2E Editor'}); " +
   "editor.set_password('e2e-editor-password'); editor.is_staff = True; editor.save(); " +
-  "editor.user_permissions.add(Permission.objects.get(codename='delete_post', content_type__app_label='posts'))";
+  "editor.user_permissions.add(Permission.objects.get(codename='delete_post', content_type__app_label='posts')); " +
+  "Comment.objects.get_or_create(post=post, author=editor, parent=comment, defaults={'content': 'E2E smoke reply'})";
 
 for (const args of [
   ["manage.py", "migrate", "--noinput"],
