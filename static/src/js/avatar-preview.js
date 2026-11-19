@@ -14,6 +14,7 @@ export class AvatarPreviewController {
     this.maxSizeBytes = maxSizeBytes;
     this.allowedTypes = allowedTypes;
     this.originalSrc = this.previewImg?.getAttribute?.("src") || this.previewImg?.src || "";
+    this.isClearingInput = false;
   }
 
   initialize() {
@@ -22,7 +23,37 @@ export class AvatarPreviewController {
     return true;
   }
 
+  getErrorMessage(datasetKey, attributeName, fallback) {
+    return (
+      this.errorContainer?.dataset?.[datasetKey] ||
+      this.errorContainer?.getAttribute?.(attributeName) ||
+      fallback
+    );
+  }
+
+  clearRejectedInput() {
+    if (!this.input) return;
+    this.isClearingInput = true;
+    try {
+      try {
+        this.input.value = "";
+      } catch {
+        // Ignore read-only value mocks in unit tests.
+      }
+      if (
+        typeof this.input.dispatchEvent === "function" &&
+        typeof Event === "function"
+      ) {
+        this.input.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+    } finally {
+      this.isClearingInput = false;
+    }
+  }
+
   handleFileChange(event) {
+    if (this.isClearingInput) return;
+
     const file = event?.target?.files?.[0] || this.input?.files?.[0];
     if (!file) {
       this.resetPreview();
@@ -31,15 +62,29 @@ export class AvatarPreviewController {
 
     // Validate MIME type
     if (file.type && !this.allowedTypes.includes(file.type.toLowerCase())) {
-      this.showError("Images must use JPEG, PNG, or WebP format.");
+      this.showError(
+        this.getErrorMessage(
+          "messageType",
+          "data-message-type",
+          "Images must use JPEG, PNG, or WebP format.",
+        ),
+      );
       this.resetPreview();
+      this.clearRejectedInput();
       return;
     }
 
     // Validate file size (5MB limit)
     if (file.size && file.size > this.maxSizeBytes) {
-      this.showError("Images must be 5 MB or smaller.");
+      this.showError(
+        this.getErrorMessage(
+          "messageSize",
+          "data-message-size",
+          "Images must be 5 MB or smaller.",
+        ),
+      );
       this.resetPreview();
+      this.clearRejectedInput();
       return;
     }
 

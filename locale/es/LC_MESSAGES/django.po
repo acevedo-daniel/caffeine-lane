@@ -2192,3 +2192,15 @@ msgstr "Sitio personal"
 #: apps/accounts/forms.py
 msgid "I ride a motorcycle"
 msgstr "Ando en moto"
+
+#: .\templates\components\form_field.html
+msgid "Choose photo"
+msgstr "Elegir foto"
+
+#: .\templates\components\form_field.html
+msgid "No photo selected"
+msgstr "Ninguna foto seleccionada"
+
+#: .\apps\accounts\templates\accounts\profile.html .\apps\accounts\templates\accounts\register_step2.html
+msgid "Images must use JPEG, PNG, or WebP format."
+msgstr "Las imágenes deben ser JPEG, PNG o WebP."

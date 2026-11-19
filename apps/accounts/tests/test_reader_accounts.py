@@ -164,6 +164,12 @@ class ReaderAccountTests(TestCase):
             self.assertContains(response, label)
         for untranslated in ("Display name", "Personal url", "Has motorcycle"):
             self.assertNotContains(response, untranslated)
+        for upload_copy in (
+            "Elegir foto",
+            "Ninguna foto seleccionada",
+            "Las imágenes deben ser JPEG, PNG o WebP.",
+        ):
+            self.assertContains(response, upload_copy)
 
     def test_simulated_error_pages_render_rider_oops_in_xl_bezel(self):
         for status_code, url, kicker in [
