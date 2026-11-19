@@ -25,7 +25,9 @@
     <meta name="twitter:image" content="{{ seo_page_image|default:'/static/images/brand/character/character-welcome.webp' }}">
     <meta name="theme-color" content="#fbf9f5" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#0c0a09" media="(prefers-color-scheme: dark)">
-    <link rel="icon" href="{% static 'images/favicon.svg' %}" type="image/svg+xml">
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" sizes="32x32">
+    <link rel="icon" href="{% static 'images/icon-192.png' %}" type="image/png" sizes="192x192">
+    <link rel="apple-touch-icon" href="{% static 'images/apple-touch-icon.png' %}">
     <link rel="manifest" href="{% static 'images/site.webmanifest' %}">
     <title>{% block title %}CAFFEINE LANE{% endblock %}</title>
     <script nonce="{{ csp_nonce }}">
